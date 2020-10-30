@@ -1,5 +1,7 @@
 package org.openmrs.module.pharmacy;
 
+import org.openmrs.Location;
+
 import javax.persistence.*;
 
 @Entity(name = "ProductSupplier")
@@ -27,6 +29,10 @@ public class ProductSupplier extends AbstractPharmacyObject {
 
     @Column(name = "email")
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
     public ProductSupplier() {
     }
@@ -77,5 +83,13 @@ public class ProductSupplier extends AbstractPharmacyObject {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

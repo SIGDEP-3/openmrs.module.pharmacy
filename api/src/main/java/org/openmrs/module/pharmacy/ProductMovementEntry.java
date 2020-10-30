@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity(name = "ProductMovementEntry")
 @Table(name = "pharmacy_product_movement_entry")
-public class ProductMovementEntry extends Operation {
+public class ProductMovementEntry extends ProductOperation {
 
     @ManyToOne
     @JoinColumn(name = "sender", nullable = false)

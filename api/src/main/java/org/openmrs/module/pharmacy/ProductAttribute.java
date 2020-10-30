@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "ProductAttribute")
-@Table(name = "pharmacy_operation_type")
-public class ProductAttribute extends AbstractPharmacyData {
+@Table(name = "pharmacy_product_attribute")
+public class ProductAttribute extends AbstractPharmacyObject {
 
     private static final long serialVersionUID = 1L;
 

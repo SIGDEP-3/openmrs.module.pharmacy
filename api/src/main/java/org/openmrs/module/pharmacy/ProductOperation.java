@@ -11,8 +11,8 @@ import java.util.Set;
 
 @Entity(name = "Operation")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "pharmacy_operation")
-public abstract class Operation extends AbstractPharmacyData {
+@Table(name = "pharmacy_product_operation")
+public abstract class ProductOperation extends AbstractPharmacyData {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public abstract class Operation extends AbstractPharmacyData {
     @JoinColumn(nullable = false, name = "location_id")
     private Location location;
 
-    @Column(name = "operation_status")
+    @Column(name = "status")
     private OperationStatus operationStatus;
 
     @Column(name = "incidence", nullable = false)
@@ -48,7 +48,7 @@ public abstract class Operation extends AbstractPharmacyData {
     @OneToMany(mappedBy = "operation", cascade = CascadeType.ALL)
     private Set<ProductAttributeFlux> productAttributeFluxes;
 
-    public Operation() {
+    public ProductOperation() {
     }
 
     public Integer getProductOperationId() {

@@ -6,9 +6,9 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "Dispensing")
-@Table(name = "pharmacy_dispensing")
-public class Dispensing extends Operation {
+@Entity(name = "ProductDispensing")
+@Table(name = "pharmacy_product_dispensing")
+public class ProductDispensing extends ProductOperation {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,11 +22,14 @@ public class Dispensing extends Operation {
     @Column(name = "treatment_days", nullable = false)
     private Integer treatmentDays;
 
+    @Column(name = "treatment_end_date", nullable = false)
+    private Date treatmentEndDate;
+
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    public Dispensing() {
+    public ProductDispensing() {
         this.setIncidence(Incidence.NEGATIVE);
     }
 
@@ -52,6 +55,14 @@ public class Dispensing extends Operation {
 
     public void setTreatmentDays(Integer treatmentDays) {
         this.treatmentDays = treatmentDays;
+    }
+
+    public Date getTreatmentEndDate() {
+        return treatmentEndDate;
+    }
+
+    public void setTreatmentEndDate(Date treatmentEndDate) {
+        this.treatmentEndDate = treatmentEndDate;
     }
 
     public Patient getPatient() {

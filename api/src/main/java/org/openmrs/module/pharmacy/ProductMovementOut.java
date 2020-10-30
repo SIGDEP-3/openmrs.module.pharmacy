@@ -2,19 +2,20 @@ package org.openmrs.module.pharmacy;
 
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.StockEntryType;
+import org.openmrs.module.pharmacy.enumerations.StockOutType;
 
 import javax.persistence.*;
 
 @Entity(name = "ProductMovementOut")
 @Table(name = "pharmacy_product_movement_out")
-public class ProductMovementOut extends Operation {
+public class ProductMovementOut extends ProductOperation {
 
     @ManyToOne
-    @JoinColumn(name = "sender", nullable = false)
+    @JoinColumn(name = "recipient", nullable = false)
     private ProductExchangeEntity recipient;
 
-    @Column(name = "stock_entry_type", nullable = false)
-    private StockEntryType stockEntryType;
+    @Column(name = "stock_out_type", nullable = false)
+    private StockOutType stockOutType;
 
     public ProductMovementOut() {
         setIncidence(Incidence.POSITIVE);
@@ -28,11 +29,11 @@ public class ProductMovementOut extends Operation {
         this.recipient = recipient;
     }
 
-    public StockEntryType getStockEntryType() {
-        return stockEntryType;
+    public StockOutType getStockOutType() {
+        return stockOutType;
     }
 
-    public void setStockEntryType(StockEntryType stockEntryType) {
-        this.stockEntryType = stockEntryType;
+    public void setStockOutType(StockOutType stockOutType) {
+        this.stockOutType = stockOutType;
     }
 }

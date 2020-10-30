@@ -24,9 +24,52 @@ public class ProductAttributeFlux extends AbstractPharmacyData {
 
     @ManyToOne
     @JoinColumn(name = "operation_id", nullable = false)
-    private Operation operation;
+    private ProductOperation productOperation;
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
+
+    public ProductAttributeFlux() {
+    }
+
+    public Integer getProductAttributeFluxId() {
+        return productAttributeFluxId;
+    }
+
+    public void setProductAttributeFluxId(Integer productAttributeFluxId) {
+        this.productAttributeFluxId = productAttributeFluxId;
+    }
+
+    public ProductAttribute getProductAttribute() {
+        return productAttribute;
+    }
+
+    public void setProductAttribute(ProductAttribute productAttribute) {
+        this.productAttribute = productAttribute;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public ProductOperation getProductOperation() {
+        return productOperation;
+    }
+
+    public void setProductOperation(ProductOperation productOperation) {
+        this.productOperation = productOperation;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

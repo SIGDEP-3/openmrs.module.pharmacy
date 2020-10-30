@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity(name = "ProductInventory")
 @Table(name = "pharmacy_product_inventory")
-public class ProductInventory extends Operation {
+public class ProductInventory extends ProductOperation {
 
     private static final long serialVersionUID = 1L;
 

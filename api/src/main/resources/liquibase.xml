@@ -167,7 +167,12 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-supplier" author="BOGUI SERGE">
-        <createTable tableName="pharmacy_product_unit">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_supplier"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_supplier">
             <column name="product_supplier_id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -175,13 +180,431 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="short_name" type="varchar(50)"/>
-            <column name="description" type="varchar(255)"/>
             <column name="phone_number" type="varchar(50)"/>
+            <column name="description" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>
+            <column name="location_id" type="int"/>
             <column name="uuid" type="varchar(38)">
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_supplier_location"
+                                 baseTableName="pharmacy_product_supplier" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-attribute" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_attribute"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_attribute">
+            <column name="product_attribute_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="batch_number" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="expiry_date" type="date"/>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_product"
+                                 baseTableName="pharmacy_product_attribute" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_location"
+                                 baseTableName="pharmacy_product_attribute" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-operation" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_operation"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_operation">
+            <column name="product_operation_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="operation_number" type="varchar(100)"/>
+            <column name="program_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_status" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="incidence" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="observation" type="varchar(255)"/>
+
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_operation_program"
+                                 baseTableName="pharmacy_operation" baseColumnNames="program_id"
+                                 referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_operation_creator"
+                                 baseTableName="pharmacy_product_operation" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_operation_changed_by"
+                                 baseTableName="pharmacy_product_operation" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_operation_voided_by"
+                                 baseTableName="pharmacy_product_operation" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_operation_location"
+                                 baseTableName="pharmacy_product_operation" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-attribute-flux" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_attribute_flux"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_attribute_flux">
+            <column name="product_attribute_flux_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_attribute_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_product_attribute"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="product_attribute_id"
+                                 referencedTableName="pharmacy_product_attribute" referencedColumnNames="product_program_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_product_operation"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_creator"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_changed_by"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_voided_by"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_location"
+                                 baseTableName="pharmacy_product_attribute_flux" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-reception" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_reception"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_reception">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_supplier_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reception_mode" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_reception_product_operation"
+                                 baseTableName="pharmacy_product_reception" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_reception_product_supplier"
+                                 baseTableName="pharmacy_product_reception" baseColumnNames="product_supplier_id"
+                                 referencedTableName="pharmacy_product_supplier" referencedColumnNames="product_supplier_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-inventory" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_inventory"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_inventory">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="inventory_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inventory_start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inventory_end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_inventory_product_operation"
+                                 baseTableName="pharmacy_product_inventory" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+
+    </changeSet>
+
+    <changeSet id="pharmacy-product-dispensing" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_dispensing"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_dispensing">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="regimen_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prescription_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="treatment_days" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="treatment_end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_dispensing_product_operation"
+                                 baseTableName="pharmacy_product_dispensing" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_dispensing_product_regimen"
+                                 baseTableName="pharmacy_product_dispensing" baseColumnNames="regimen_id"
+                                 referencedTableName="pharmacy_product_regimen" referencedColumnNames="product_regimen_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_dispensing_patient"
+                                 baseTableName="pharmacy_product_dispensing" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-mobile-patient" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_mobile_patient"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_mobile_patient">
+            <column name="mobile_patient_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="age" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identifier" type="varchar(100)"/>
+            <column name="gender" type="varchar(5)"/>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_location"
+                                 baseTableName="pharmacy_mobile_patient" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-mobile-patient-product-dispensing-members" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_mobile_patient_product_dispensing_members">
+            <column name="product_dispensing_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="mobile_patient_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_product_dispensing_members_dispensing"
+                                 baseTableName="pharmacy_mobile_patient_product_dispensing_members"
+                                 baseColumnNames="product_dispensing_id"
+                                 referencedTableName="pharmacy_product_dispensing" referencedColumnNames="product_dispensing_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_product_dispensing_members_mobile_patient"
+                                 baseTableName="pharmacy_mobile_patient_product_dispensing_members"
+                                 baseColumnNames="mobile_patient_id"
+                                 referencedTableName="pharmacy_mobile_patient" referencedColumnNames="mobile_patient_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-exchange-entity" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_exchange_entity"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_exchange_entity">
+            <column name="product_exchange_entity_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="location_id" type="int"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_exchange_entity_location"
+                                 baseTableName="pharmacy_product_exchange_entity" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-movement-entry" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_movement_entry"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_movement_entry">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sender" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock_entry_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_movement_entry_operation"
+                                 baseTableName="pharmacy_product_movement_entry" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_movement_entry_sender"
+                                 baseTableName="pharmacy_product_movement_entry" baseColumnNames="sender"
+                                 referencedTableName="pharmacy_product_exchange_entity" referencedColumnNames="product_exchange_entity_id"/>
+
+    </changeSet>
+
+    <changeSet id="pharmacy-product-movement-out" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_movement_out"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="pharmacy_product_movement_out">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="recipient" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock_out_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_movement_out_operation"
+                                 baseTableName="pharmacy_product_movement_out" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_movement_out_recipient"
+                                 baseTableName="pharmacy_product_movement_out" baseColumnNames="recipient"
+                                 referencedTableName="pharmacy_product_exchange_entity" referencedColumnNames="product_exchange_entity_id"/>
+
+    </changeSet>
+
+    <changeSet id="pharmacy-product-attribute-stock" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_attribute_stock"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_attribute_stock">
+            <column name="product_attribute_stock_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_attribute_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_in_stock" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="date"/>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_product_attribute"
+                                 baseTableName="pharmacy_product_attribute_stock" baseColumnNames="product_attribute_id"
+                                 referencedTableName="pharmacy_product_attribute" referencedColumnNames="product_attribute_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_location"
+                                 baseTableName="pharmacy_product_attribute_stock" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
     </changeSet>
 
 </databaseChangeLog>

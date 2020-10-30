@@ -1,9 +1,11 @@
 package org.openmrs.module.pharmacy;
 
+import org.openmrs.Location;
+
 import javax.persistence.*;
 
-@Entity(name = "ProductSender")
-@Table(name = "pharmacy_product_sender")
+@Entity(name = "ProductExchangeEntity")
+@Table(name = "pharmacy_product_exchange_entity")
 public class ProductExchangeEntity extends AbstractPharmacyObject {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +20,10 @@ public class ProductExchangeEntity extends AbstractPharmacyObject {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     public ProductExchangeEntity() {
     }
@@ -44,5 +50,13 @@ public class ProductExchangeEntity extends AbstractPharmacyObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

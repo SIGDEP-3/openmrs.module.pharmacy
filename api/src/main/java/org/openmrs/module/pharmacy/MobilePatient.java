@@ -19,21 +19,21 @@ public class MobilePatient extends AbstractPharmacyObject {
     @Column(name = "age")
     private Integer age;
 
-    @Column(name = "identifier", unique = true)
+    @Column(name = "identifier")
     private String identifier;
 
     @Column(name = "gender")
     private String gender;
 
-    @ManyToMany
-    @JoinTable(name = "pharmacy_mobile_patient_delivery_members",
-            joinColumns = @JoinColumn(name = "mobile_patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "dispensing_id"))
-    private Set<Dispensing> dispensing;
-
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
+
+    @ManyToMany
+    @JoinTable(name = "pharmacy_mobile_patient_product_dispensing_members",
+            joinColumns = @JoinColumn(name = "mobile_patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_dispensing_id"))
+    private Set<ProductDispensing> productDispensing;
 
     public MobilePatient() {
     }
@@ -80,12 +80,12 @@ public class MobilePatient extends AbstractPharmacyObject {
         this.gender = gender;
     }
 
-    public Set<Dispensing> getDispensing() {
-        return dispensing;
+    public Set<ProductDispensing> getDispensing() {
+        return productDispensing;
     }
 
-    public void setDispensing(Set<Dispensing> orderDeliveries) {
-        this.dispensing = orderDeliveries;
+    public void setDispensing(Set<ProductDispensing> orderDeliveries) {
+        this.productDispensing = orderDeliveries;
     }
 
     public Location getLocation() {
