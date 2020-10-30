@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+
+    <changeSet id="pharmacy-product-unit" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_unit">
+            <column name="product_unit_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="pharmacy-product" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product">
+            <column name="product_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="retail_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="wholesale_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="product_retail_unit" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_wholesale_unit" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_conversion" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_unit_retail"
+                                 baseTableName="pharmacy_product" baseColumnNames="product_retail_unit"
+                                 referencedTableName="pharmacy_product_unit" referencedColumnNames="product_unit_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_unit_wholesale"
+                                 baseTableName="pharmacy_product" baseColumnNames="product_wholesale_unit"
+                                 referencedTableName="pharmacy_product_unit" referencedColumnNames="product_unit_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-price" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_price">
+            <column name="product_price_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_program_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sale_price" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="purchase_price" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="tinyint(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_price_product"
+                                 baseTableName="pharmacy_product_price" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_price_program"
+                                 baseTableName="pharmacy_product_price" baseColumnNames="product_program_id"
+                                 referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-regimen" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_regimen">
+            <column name="product_regimen_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="concept_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_regimen_concept"
+                                 baseTableName="pharmacy_product_regimen" baseColumnNames="concept_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-regimen-members" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_regimen_members">
+            <column name="regimen_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_regimen_members_regimen"
+                                 baseTableName="pharmacy_product_regimen_members" baseColumnNames="regimen_id"
+                                 referencedTableName="pharmacy_product_regimen" referencedColumnNames="product_regiment_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_regimen_members_product"
+                                 baseTableName="pharmacy_product_regimen_members" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-program" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_program">
+            <column name="product_program_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-program-members" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_program_members">
+            <column name="program_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_program"
+                                 baseTableName="pharmacy_product_program_members" baseColumnNames="program_id"
+                                 referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_product"
+                                 baseTableName="pharmacy_product_program_members" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-supplier" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_unit">
+            <column name="product_supplier_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="short_name" type="varchar(50)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="phone_number" type="varchar(50)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
