@@ -20,7 +20,7 @@ public class ProductRegimen extends AbstractPharmacyObject {
     @JoinColumn(nullable = false, name = "concept_id")
     private Concept concept;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pharmacy_product_regimen_members",
             joinColumns = @JoinColumn(name = "regimen_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))

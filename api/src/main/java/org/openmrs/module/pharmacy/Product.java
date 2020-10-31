@@ -1,6 +1,8 @@
 package org.openmrs.module.pharmacy;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "pharmacy_product")
@@ -31,6 +33,15 @@ public class Product extends AbstractPharmacyObject {
 
     @Column(name = "unit_conversion", nullable = false)
     private Double unitConversion;
+
+    @ManyToMany(mappedBy="products", fetch = FetchType.EAGER)
+    private Set<ProductRegimen> productRegimens = new HashSet<ProductRegimen>();
+
+    @ManyToMany(mappedBy="products", fetch = FetchType.EAGER)
+    private Set<ProductProgram> productPrograms = new HashSet<ProductProgram>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private Set<ProductPrice> productPrices = new HashSet<ProductPrice>();
 
     @Override
     public Integer getId() {
@@ -100,4 +111,30 @@ public class Product extends AbstractPharmacyObject {
     public void setUnitConversion(Double unitConversion) {
         this.unitConversion = unitConversion;
     }
+
+    public Set<ProductRegimen> getProductRegimens() {
+        return productRegimens;
+    }
+
+    public void setProductRegimens(Set<ProductRegimen> productRegimens) {
+        this.productRegimens = productRegimens;
+    }
+
+    public Set<ProductProgram> getProductPrograms() {
+        return productPrograms;
+    }
+
+    public void setProductPrograms(Set<ProductProgram> productPrograms) {
+        this.productPrograms = productPrograms;
+    }
+
+    public Set<ProductPrice> getProductPrices() {
+        return productPrices;
+    }
+
+    public void setProductPrices(Set<ProductPrice> productPrices) {
+        this.productPrices = productPrices;
+    }
+
+
 }

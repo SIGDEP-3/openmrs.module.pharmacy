@@ -20,7 +20,7 @@ public class ProductProgram extends AbstractPharmacyObject {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pharmacy_product_program_members",
             joinColumns = @JoinColumn(name = "program_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
