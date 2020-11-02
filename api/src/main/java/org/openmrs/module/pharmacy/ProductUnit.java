@@ -15,6 +15,9 @@ public class ProductUnit extends AbstractPharmacyObject {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Override
     public Integer getId() {
         return getProductUnitId();
@@ -39,5 +42,13 @@ public class ProductUnit extends AbstractPharmacyObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

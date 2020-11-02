@@ -10,8 +10,8 @@
 
 	<artifactId>pharmacy-api</artifactId>
 	<packaging>jar</packaging>
-	<name>PharmacyOM Module API</name>
-	<description>API project for PharmacyOM</description>
+	<name>Pharmacy Module API</name>
+	<description>API project for Pharmacy</description>
 
 	<dependencies>
 	

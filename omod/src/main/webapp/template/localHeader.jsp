@@ -1,3 +1,6 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fct" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <spring:htmlEscape defaultHtmlEscape="true" />
 <ul id="menu">
 	<li class="first"><a

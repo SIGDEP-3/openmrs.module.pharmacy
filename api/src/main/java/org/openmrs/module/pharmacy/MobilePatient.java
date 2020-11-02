@@ -5,7 +5,7 @@ import org.openmrs.Location;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "MobilePatient")
 @Table(name = "pharmacy_mobile_patient")
 public class MobilePatient extends AbstractPharmacyObject {
 

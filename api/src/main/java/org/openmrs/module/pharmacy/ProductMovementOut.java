@@ -1,7 +1,6 @@
 package org.openmrs.module.pharmacy;
 
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.enumerations.StockEntryType;
 import org.openmrs.module.pharmacy.enumerations.StockOutType;
 
 import javax.persistence.*;

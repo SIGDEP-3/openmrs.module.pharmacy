@@ -60,6 +60,40 @@
                                  referencedTableName="pharmacy_product_unit" referencedColumnNames="product_unit_id"/>
     </changeSet>
 
+    <changeSet id="pharmacy-product-program" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_program">
+            <column name="product_program_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-program-members" author="BOGUI SERGE">
+        <createTable tableName="pharmacy_product_program_members">
+            <column name="program_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_program"
+                                 baseTableName="pharmacy_product_program_members" baseColumnNames="program_id"
+                                 referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_product"
+                                 baseTableName="pharmacy_product_program_members" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+    </changeSet>
+
     <changeSet id="pharmacy-product-price" author="BOGUI SERGE">
         <createTable tableName="pharmacy_product_price">
             <column name="product_price_id" type="int" autoIncrement="true">
@@ -125,44 +159,10 @@
 
         <addForeignKeyConstraint constraintName="pharmacy_product_product_regimen_members_regimen"
                                  baseTableName="pharmacy_product_regimen_members" baseColumnNames="regimen_id"
-                                 referencedTableName="pharmacy_product_regimen" referencedColumnNames="product_regiment_id"/>
+                                 referencedTableName="pharmacy_product_regimen" referencedColumnNames="product_regimen_id"/>
 
         <addForeignKeyConstraint constraintName="pharmacy_product_product_regimen_members_product"
                                  baseTableName="pharmacy_product_regimen_members" baseColumnNames="product_id"
-                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
-    </changeSet>
-
-    <changeSet id="pharmacy-product-program" author="BOGUI SERGE">
-        <createTable tableName="pharmacy_product_program">
-            <column name="product_program_id" type="int" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="description" type="varchar(255)"/>
-            <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="pharmacy-product-program-members" author="BOGUI SERGE">
-        <createTable tableName="pharmacy_product_program_members">
-            <column name="program_id" type="int">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="product_id" type="int">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-        </createTable>
-
-        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_program"
-                                 baseTableName="pharmacy_product_program_members" baseColumnNames="program_id"
-                                 referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
-
-        <addForeignKeyConstraint constraintName="pharmacy_product_product_program_members_product"
-                                 baseTableName="pharmacy_product_program_members" baseColumnNames="product_id"
                                  referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
     </changeSet>
 
@@ -275,7 +275,7 @@
             </column>
         </createTable>
         <addForeignKeyConstraint constraintName="pharmacy_product_operation_program"
-                                 baseTableName="pharmacy_operation" baseColumnNames="program_id"
+                                 baseTableName="pharmacy_product_operation" baseColumnNames="program_id"
                                  referencedTableName="pharmacy_product_program" referencedColumnNames="product_program_id"/>
         <addForeignKeyConstraint constraintName="pharmacy_product_operation_creator"
                                  baseTableName="pharmacy_product_operation" baseColumnNames="creator"
@@ -340,7 +340,7 @@
         </createTable>
         <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_product_attribute"
                                  baseTableName="pharmacy_product_attribute_flux" baseColumnNames="product_attribute_id"
-                                 referencedTableName="pharmacy_product_attribute" referencedColumnNames="product_program_id"/>
+                                 referencedTableName="pharmacy_product_attribute" referencedColumnNames="product_attribute_id"/>
         <addForeignKeyConstraint constraintName="pharmacy_product_attribute_flux_product_operation"
                                  baseTableName="pharmacy_product_attribute_flux" baseColumnNames="operation_id"
                                  referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
@@ -485,9 +485,9 @@
         <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_product_dispensing_members_dispensing"
                                  baseTableName="pharmacy_mobile_patient_product_dispensing_members"
                                  baseColumnNames="product_dispensing_id"
-                                 referencedTableName="pharmacy_product_dispensing" referencedColumnNames="product_dispensing_id"/>
+                                 referencedTableName="pharmacy_product_dispensing" referencedColumnNames="product_operation_id"/>
 
-        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_product_dispensing_members_mobile_patient"
+        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_product_dispensing_mobile_patient"
                                  baseTableName="pharmacy_mobile_patient_product_dispensing_members"
                                  baseColumnNames="mobile_patient_id"
                                  referencedTableName="pharmacy_mobile_patient" referencedColumnNames="mobile_patient_id"/>

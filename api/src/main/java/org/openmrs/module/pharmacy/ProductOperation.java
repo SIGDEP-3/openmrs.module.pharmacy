@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "Operation")
+@Entity(name = "ProductOperation")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "pharmacy_product_operation")
 public abstract class ProductOperation extends AbstractPharmacyData {
@@ -45,7 +45,7 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @Column(name = "observation")
     private String observation;
 
-    @OneToMany(mappedBy = "operation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL)
     private Set<ProductAttributeFlux> productAttributeFluxes;
 
     public ProductOperation() {

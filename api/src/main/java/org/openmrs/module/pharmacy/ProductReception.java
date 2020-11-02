@@ -5,7 +5,7 @@ import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "ProductReception")
 @Table(name = "pharmacy_product_reception")
 public class ProductReception extends ProductOperation {
     private static final long serialVersionUID = 1L;
