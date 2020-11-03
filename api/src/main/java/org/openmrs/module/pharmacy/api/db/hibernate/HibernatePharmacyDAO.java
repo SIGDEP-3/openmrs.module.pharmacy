@@ -18,7 +18,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 
@@ -164,5 +168,83 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class);
 		return (List<Product>) criteria.add(Restrictions.or(Restrictions.like("wholesaleName", nameSearch),
 				Restrictions.like("retailName", nameSearch))).list();
+	}
+
+	/******* PRODUCTS PROGRAMS *******/
+
+	@Override
+	public ProductProgram saveProductProgram(ProductProgram productProgram) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productProgram);
+		return productProgram;
+	}
+
+	@Override
+	public void removeProductProgram(ProductProgram productProgram) {
+		sessionFactory.getCurrentSession().delete(productProgram);
+	}
+
+	@Override
+	public ProductProgram getOneProductProgramById(Integer productProgramId) {
+		return (ProductProgram) sessionFactory.getCurrentSession().get(ProductUnit.class, productProgramId);
+	}
+
+	@Override
+	public ProductProgram getOneProductProgramByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductProgram.class);
+		return (ProductProgram) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductProgram getOneProductProgramByName(String name) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductProgram.class);
+		return (ProductProgram) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductProgram> getAllProductProgram() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductProgram.class).list();
+	}
+
+	@Override
+	public ProductRegimen saveProductRegimen(ProductRegimen productRegimen) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productRegimen);
+		return productRegimen;
+	}
+
+	@Override
+	public void removeProductRegimen(ProductRegimen productRegimen) {
+		sessionFactory.getCurrentSession().delete(productRegimen);
+	}
+
+	@Override
+	public ProductRegimen getOneProductRegimenById(Integer regimenId) {
+		return (ProductRegimen) sessionFactory.getCurrentSession().get(ProductRegimen.class, regimenId);
+	}
+
+	@Override
+	public ProductRegimen getOneProductRegimenByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class);
+		return (ProductRegimen) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductRegimen getOneProductRegimenByConceptName(String name) {
+		Concept concept = Context.getConceptService().getConceptByName(name);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class);
+		return (ProductRegimen) criteria.add(Restrictions.eq("concept", concept)).uniqueResult();
+	}
+
+	@Override
+	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId) {
+		Concept concept = Context.getConceptService().getConcept(conceptId);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class);
+		return (ProductRegimen) criteria.add(Restrictions.eq("concept", concept)).uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductRegimen> getAllProductRegimen() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class).list();
 	}
 }

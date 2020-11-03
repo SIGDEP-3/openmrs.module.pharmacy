@@ -63,5 +63,12 @@
 	</messages>
 	<!-- /Internationalization -->
 
+	<!-- Global Properties -->
+	<globalProperty>
+		<property>pharmacy.regimenConcept</property>
+		<defaultValue>165033</defaultValue>
+		<description>Regimen in concept that answers are used to map with pharmacy regimens</description>
+	</globalProperty>
+	<!-- Global Properties -->
 </module>
 

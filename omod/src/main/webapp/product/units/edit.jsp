@@ -4,39 +4,55 @@
 <%@ include file="../../template/localHeader.jsp"%>
 
 <hr>
-<h4>${title}</h4>
+<div class="row">
+    <div class="col-6">
+        <h4>${title}</h4>
+    </div>
+    <div class="col-6 text-right">
+        <c:url value="/module/pharmacy/product/units/list.form" var="createUrl"/>
+        <button class="btn btn-primary" onclick="window.location='${createUrl}'" title="Voir la liste">
+            <i class="fa fa-list"></i>
+        </button>
+    </div>
+</div>
 <hr>
+<div class="container">
+    <form:form modelAttribute="unitForm" method="post" action="" id="form">
+        <form:hidden path="productUnitId"/>
+        <form:hidden path="uuid"/>
 
-<form:form modelAttribute="unitForm" method="post" action="" id="form">
-    <form:hidden path="productUnitId"/>
-    <form:hidden path="uuid"/>
-
-    <table>
-        <tr>
-            <td><spring:message code="pharmacy.name"/> <span class="required">*</span> : </td>
-            <td><form:input path="name" cssClass="form-control" /></td>
-            <td><form:errors path="name" cssClass="error"/></td>
-        </tr>
-        <tr>
-            <td><spring:message code="pharmacy.description"/> : </td>
-            <td><form:textarea path="description" cssClass="form-control"/></td>
-            <td><form:errors path="description" cssClass="error"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <button>
+        <div class="row">
+            <div class="col-6 mb-2">
+                <labe><spring:message code="pharmacy.name"/> <span class="required">*</span></labe>
+                <form:input path="name" cssClass="form-control" />
+                <form:errors path="name" cssClass="error"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 mb-2">
+                <labe><spring:message code="pharmacy.description"/></labe>
+                <form:textarea path="description" cssClass="form-control" />
+                <form:errors path="description" cssClass="error"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button class="btn btn-success">
                     <c:if test="${not empty unitForm.productUnitId}">
+                        <i class="fa fa-edit"></i>
                         <spring:message code="pharmacy.edit" />
                     </c:if>
                     <c:if test="${empty unitForm.productUnitId}">
+                        <i class="fa fa-save"></i>
                         <spring:message code="pharmacy.save" />
                     </c:if>
                 </button>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
 
-</form:form>
+    </form:form>
+</div>
 
+
+<%@ include file="../../template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

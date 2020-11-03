@@ -14,6 +14,8 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 
@@ -48,4 +50,18 @@ public interface PharmacyDAO {
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
 	List<Product> searchProductByNameLike(String nameSearch);
 
+	ProductProgram saveProductProgram(ProductProgram programForm);
+	void removeProductProgram(ProductProgram productProgram);
+	ProductProgram getOneProductProgramById(Integer programId);
+	ProductProgram getOneProductProgramByUuid(String uuid);
+	ProductProgram getOneProductProgramByName(String name);
+	List<ProductProgram> getAllProductProgram();
+
+	ProductRegimen saveProductRegimen(ProductRegimen productRegimen);
+	void removeProductRegimen(ProductRegimen productRegimen);
+	ProductRegimen getOneProductRegimenById(Integer regimenId);
+	ProductRegimen getOneProductRegimenByUuid(String uuid);
+	ProductRegimen getOneProductRegimenByConceptName(String name);
+	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
+	List<ProductRegimen> getAllProductRegimen();
 }

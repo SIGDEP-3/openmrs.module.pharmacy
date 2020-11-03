@@ -17,6 +17,8 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
@@ -144,4 +146,72 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     public List<Product> searchProductByNameLike(String nameSearch) {
         return dao.searchProductByNameLike(nameSearch);
     }
+
+    @Override
+    public List<ProductProgram> getAllProductProgram() {
+        return dao.getAllProductProgram();
+    }
+
+    @Override
+    public ProductProgram getOneProductProgramById(Integer programId) {
+        return dao.getOneProductProgramById(programId);
+    }
+
+    @Override
+    public void removeProductProgram(ProductProgram productProgram) {
+        dao.removeProductProgram(productProgram);
+    }
+
+    @Override
+    public ProductProgram saveProductProgram(ProductProgram programForm) {
+        return dao.saveProductProgram(programForm);
+    }
+
+    @Override
+    public ProductProgram getOneProductProgramByUuid(String uuid) {
+        return dao.getOneProductProgramByUuid(uuid);
+    }
+
+    @Override
+    public ProductProgram getOneProductProgramByName(String name) {
+        return dao.getOneProductProgramByName(name);
+    }
+
+    /**** PRODUCTS REGIMENS ****/
+
+    @Override
+    public ProductRegimen saveProductRegimen(ProductRegimen productRegimen) {
+        return dao.saveProductRegimen(productRegimen);
+    }
+
+    @Override
+    public void removeProductRegimen(ProductRegimen productRegimen) {
+        dao.removeProductRegimen(productRegimen);
+    }
+
+    @Override
+    public ProductRegimen getOneProductRegimenById(Integer regimenId) {
+        return dao.getOneProductRegimenById(regimenId);
+    }
+
+    @Override
+    public ProductRegimen getOneProductRegimenByUuid(String uuid) {
+        return dao.getOneProductRegimenByUuid(uuid);
+    }
+
+    @Override
+    public ProductRegimen getOneProductRegimenByConceptName(String name) {
+        return dao.getOneProductRegimenByConceptName(name);
+    }
+
+    @Override
+    public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId) {
+        return dao.getOneProductRegimenByConceptId(conceptId);
+    }
+
+    @Override
+    public List<ProductRegimen> getAllProductRegimen() {
+        return dao.getAllProductRegimen();
+    }
+
 }

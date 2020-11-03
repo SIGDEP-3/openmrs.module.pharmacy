@@ -5,7 +5,7 @@ import org.openmrs.Concept;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "ProductRegimen")
 @Table(name = "pharmacy_product_regimen")
 public class ProductRegimen extends AbstractPharmacyObject {
 
@@ -17,13 +17,10 @@ public class ProductRegimen extends AbstractPharmacyObject {
     private Integer productRegimenId;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "concept_id")
+    @JoinColumn(nullable = false, name = "concept_id", unique = true)
     private Concept concept;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "pharmacy_product_regimen_members",
-            joinColumns = @JoinColumn(name = "regimen_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @ManyToMany(mappedBy="productRegimens", fetch = FetchType.LAZY)
     private Set<Product> products;
 
     @Override

@@ -1,6 +1,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fct" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<%@ include file="includeStyle.jsp"%>
+
+<script type="application/javascript" >
+	if (jQuery) {
+		jQuery(document).ready(function (){
+			jQuery('.s2').select2();
+		});
+	}
+</script>
+
 <spring:htmlEscape defaultHtmlEscape="true" />
 <ul id="menu">
 	<li class="first"><a

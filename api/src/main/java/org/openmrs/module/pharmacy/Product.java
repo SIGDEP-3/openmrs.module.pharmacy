@@ -17,10 +17,10 @@ public class Product extends AbstractPharmacyObject {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "retail_name", nullable = false, unique = true)
+    @Column(name = "retail_name", nullable = false)
     private String retailName;
 
-    @Column(name = "wholesale_name", nullable = false, unique = true)
+    @Column(name = "wholesale_name", nullable = false)
     private String wholesaleName;
 
     @ManyToOne
@@ -34,10 +34,16 @@ public class Product extends AbstractPharmacyObject {
     @Column(name = "unit_conversion", nullable = false)
     private Double unitConversion;
 
-    @ManyToMany(mappedBy="products", fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "pharmacy_product_regimen_members",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "regimen_id"))
     private Set<ProductRegimen> productRegimens = new HashSet<ProductRegimen>();
 
-    @ManyToMany(mappedBy="products", fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "pharmacy_product_program_members",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "program_id"))
     private Set<ProductProgram> productPrograms = new HashSet<ProductProgram>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)

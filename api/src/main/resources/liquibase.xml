@@ -33,10 +33,10 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="retail_name" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="wholesale_name" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="product_retail_unit" type="int">
                 <constraints nullable="false"/>

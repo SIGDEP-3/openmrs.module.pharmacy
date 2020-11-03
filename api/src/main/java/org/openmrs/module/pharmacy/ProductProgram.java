@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -20,11 +21,8 @@ public class ProductProgram extends AbstractPharmacyObject {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "pharmacy_product_program_members",
-            joinColumns = @JoinColumn(name = "program_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products;
+    @ManyToMany(mappedBy="productPrograms", fetch = FetchType.LAZY)
+    private Set<Product> products = new HashSet<Product>();
 
     @Override
     public Integer getId() {

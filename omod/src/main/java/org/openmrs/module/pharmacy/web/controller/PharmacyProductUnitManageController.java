@@ -2,11 +2,10 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.validations.ProductUnitFormValidation;
+import org.openmrs.module.pharmacy.forms.validations.ProductUnitFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
