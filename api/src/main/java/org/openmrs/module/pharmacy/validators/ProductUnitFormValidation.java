@@ -1,4 +1,4 @@
-package org.openmrs.module.pharmacy.forms.validations;
+package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;

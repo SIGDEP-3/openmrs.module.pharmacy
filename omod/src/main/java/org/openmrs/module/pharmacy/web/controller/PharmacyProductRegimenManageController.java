@@ -8,7 +8,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
-import org.openmrs.module.pharmacy.forms.validations.ProductRegimenFormValidation;
+import org.openmrs.module.pharmacy.validators.ProductRegimenFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

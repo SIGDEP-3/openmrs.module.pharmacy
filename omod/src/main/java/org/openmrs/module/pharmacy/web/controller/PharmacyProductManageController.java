@@ -8,13 +8,17 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.forms.ProductForm;
-import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
+import org.openmrs.module.pharmacy.validators.ProductFormValidation;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,29 +64,34 @@ public class PharmacyProductManageController {
     }
 
     @RequestMapping(value = "/module/pharmacy/product/edit.form", method = RequestMethod.POST)
-    public String save(ModelMap modelMap) {
+    public String save(ModelMap modelMap,
+                       HttpServletRequest request,
+                       ProductForm productForm,
+                       BindingResult result) {
+        if (Context.isAuthenticated()) {
+            HttpSession session = request.getSession();
+
+            new ProductFormValidation().validate(productForm, result);
+
+            if (!result.hasErrors()) {
+                boolean idExist = (productForm.getProductId() != null);
+                service().saveProduct(productForm.getProduct());
+                if (!idExist) {
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit ajouté avec succès");
+                } else {
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
+                }
+                return "redirect:/module/pharmacy/product/list.form";
+            }
+            modelMap.addAttribute("productForm", productForm);
+            modelMap.addAttribute("product", productForm.getProduct());
+            modelMap.addAttribute("availablePrograms", service().getAllProductProgram());
+            modelMap.addAttribute("availableRetailUnits", service().getAllProductUnit());
+            modelMap.addAttribute("availableWholesaleUnits", service().getAllProductUnit());
+            modelMap.addAttribute("availableRegimens", service().getAllProductRegimen());
+            modelMap.addAttribute("title", "Formulaire de saisie des Programmes");
+        }
+
         return null;
-    }
-
-    private Map<Integer, String> getAvailablePrograms(Set<ProductProgram> productPrograms) {
-        Map<Integer, String> returnedMap = new LinkedHashMap<Integer, String>();
-        List<ProductProgram> programs = service().getAllProductProgram();
-        for (ProductProgram program : programs) {
-            if (!productPrograms.contains(program)) {
-                returnedMap.put(program.getProductProgramId(), program.getName());
-            }
-        }
-        return returnedMap;
-    }
-
-    private Map<Integer, String> getAvailableRegimens(Set<ProductRegimen> productRegimen) {
-        Map<Integer, String> returnedMap = new LinkedHashMap<Integer, String>();
-        List<ProductRegimen> regimens = service().getAllProductRegimen();
-        for (ProductRegimen regimen : regimens) {
-            if (!productRegimen.contains(regimen)) {
-                returnedMap.put(regimen.getProductRegimenId(), regimen.getConcept().getName().getName());
-            }
-        }
-        return returnedMap;
     }
 }

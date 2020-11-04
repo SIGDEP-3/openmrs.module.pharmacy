@@ -27,6 +27,7 @@ public class ProductPrice extends AbstractPharmacyObject {
     @Column(name = "purchase_price", nullable = false)
     private Double purchasePrice;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_created", nullable = false)
     private Date dateCreated = new Date();
 
