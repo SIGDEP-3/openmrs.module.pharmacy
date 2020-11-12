@@ -1,34 +1,26 @@
 package org.openmrs.module.pharmacy;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 import javax.persistence.*;
-import java.util.Date;
 
-@Entity(name = "ProductAttributeFlux")
-@Table(name = "pharmacy_product_attribute_flux")
-public class ProductAttributeFlux extends AbstractPharmacyData {
+@Entity(name = "ProductAttributeOtherFlux")
+@Table(name = "pharmacy_product_attribute_other_flux")
+public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_attribute_flux_id")
-    private Integer productAttributeFluxId;
+    @Column(name = "product_attribute_other_flux_id")
+    private Integer productAttributeOtherFluxId;
 
     @ManyToOne
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
-    @Column(name = "operation_date")
-    private Date operationDate;
-
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
-    @Column(name = "status")
-    private OperationStatus status;
 
     @ManyToOne
     @JoinColumn(name = "operation_id", nullable = false)
@@ -38,15 +30,15 @@ public class ProductAttributeFlux extends AbstractPharmacyData {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    public ProductAttributeFlux() {
+    public ProductAttributeOtherFlux() {
     }
 
-    public Integer getProductAttributeFluxId() {
-        return productAttributeFluxId;
+    public Integer getProductAttributeOtherFluxId() {
+        return productAttributeOtherFluxId;
     }
 
-    public void setProductAttributeFluxId(Integer productAttributeFluxId) {
-        this.productAttributeFluxId = productAttributeFluxId;
+    public void setProductAttributeOtherFluxId(Integer productAttributeFluxId) {
+        this.productAttributeOtherFluxId = productAttributeFluxId;
     }
 
     public ProductAttribute getProductAttribute() {

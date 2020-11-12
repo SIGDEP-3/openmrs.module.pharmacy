@@ -358,6 +358,43 @@
                                  referencedTableName="location" referencedColumnNames="location_id"/>
     </changeSet>
 
+    <changeSet id="pharmacy-product-attribute-other-flux" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_attribute_other_flux"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_attribute_other_flux">
+            <column name="product_attribute_other_flux_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_attribute_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_other_flux_product_attribute"
+                                 baseTableName="pharmacy_product_attribute_other_flux" baseColumnNames="product_attribute_id"
+                                 referencedTableName="pharmacy_product_attribute" referencedColumnNames="product_attribute_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_other_flux_product_operation"
+                                 baseTableName="pharmacy_product_attribute_other_flux" baseColumnNames="operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_other_flux_location"
+                                 baseTableName="pharmacy_product_attribute_other_flux" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
     <changeSet id="pharmacy-product-reception" author="BOGUI SERGE">
         <preConditions>
             <not>
@@ -427,9 +464,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="treatment_days" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="treatment_end_date" type="date">
                 <constraints nullable="false"/>
             </column>
             <column name="patient_id" type="int"/>
@@ -605,6 +639,15 @@
         <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_location"
                                  baseTableName="pharmacy_product_attribute_stock" baseColumnNames="location_id"
                                  referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+    <changeSet id="add-encounter-type-dispensing" author="BOGUI SERGE">
+        <preConditions>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_type WHERE name = 'DISPENSATION'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO encounter_type (encounter_type_id, name, description, creator, date_created, retired, uuid)
+            VALUE (17, 'DISPENSATION', NULL, 1, '2020-11-10', 0, 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86');
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
