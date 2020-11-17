@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
-<<<<<<< HEAD
-=======
 import org.openmrs.Location;
->>>>>>> dca3db3d41f3f3bf9fe2d7cfd49907008016bd2e
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
@@ -71,7 +68,6 @@ public interface PharmacyDAO {
 	ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
 	List<ProductRegimen> getAllProductRegimen();
 
-<<<<<<< HEAD
 	ProductPrice saveProductPrice(ProductPrice productPrice);
 	void removeProductPrice(ProductPrice productPrice);
 	ProductPrice getOneProductPriceById(Integer productPriceId);
@@ -81,7 +77,7 @@ public interface PharmacyDAO {
 	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
 	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
 	List<ProductPrice> getAllProductPrices();
-=======
+
 	List<ProductSupplier> getAllProductSuppliers();
 	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
 	ProductSupplier editProductSupplier(ProductSupplier productSupplier);
@@ -141,5 +137,4 @@ public interface PharmacyDAO {
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
->>>>>>> dca3db3d41f3f3bf9fe2d7cfd49907008016bd2e
 }

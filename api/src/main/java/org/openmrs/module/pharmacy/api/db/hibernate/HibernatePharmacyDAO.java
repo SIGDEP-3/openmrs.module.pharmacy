@@ -253,7 +253,6 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		return sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class).list();
 	}
 
-<<<<<<< HEAD
 	/******* PRODUCTS PRICES *******/
 
 	@Override
@@ -281,7 +280,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	@Override
 	public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
 		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
-=======
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductSupplier> getAllProductSuppliers() {
@@ -329,12 +328,10 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReception.class);
 		return criteria.add(Restrictions.eq("location", location)).
 				add(Restrictions.eq("voided", includeVoided)).list();
->>>>>>> dca3db3d41f3f3bf9fe2d7cfd49907008016bd2e
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-<<<<<<< HEAD
 	public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
 		return (List<ProductPrice>) criteria.add(Restrictions.eq("true", status));
@@ -362,7 +359,6 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		return sessionFactory.getCurrentSession().createCriteria(ProductPrice.class).list();
 	}
 
-=======
 	public List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReception.class);
 		return criteria
@@ -717,5 +713,4 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
 		return (ProductAttributeOtherFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
->>>>>>> dca3db3d41f3f3bf9fe2d7cfd49907008016bd2e
 }

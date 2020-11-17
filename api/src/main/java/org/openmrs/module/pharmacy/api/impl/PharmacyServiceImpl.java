@@ -214,7 +214,6 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
         return dao.getAllProductRegimen();
     }
 
-<<<<<<< HEAD
     /**** PRODUCTS PRICE ****/
 
     @Override
@@ -260,7 +259,7 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public List<ProductPrice> getAllProductPrices() {
         return dao.getAllProductPrices();
-=======
+
     @Override
     public List<ProductSupplier> getAllProductSuppliers() {
         return dao.getAllProductSuppliers();
@@ -529,7 +528,6 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid) {
         return dao.getOneProductAttributeOtherFluxByUuid(uuid);
->>>>>>> dca3db3d41f3f3bf9fe2d7cfd49907008016bd2e
     }
 
 }

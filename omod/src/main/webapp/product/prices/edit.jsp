@@ -22,7 +22,7 @@
         <form:hidden path="uuid"/>
         <div class="row mb-2">
             <div class="col-6 mb-2">
-                <labe>Product<span class="required">*</span></labe>
+                <labe>Produits<span class="required">*</span></labe>
                 <form:select path="productId" cssClass="form-control s2" >
                     <form:option value="" label=""/>
                     <form:options items="${availableProduct}" itemValue="productId" itemLabel="name" />
