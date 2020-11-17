@@ -19,6 +19,9 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
+    @Column(name = "label", nullable = false)
+    private String label;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
@@ -71,5 +74,13 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

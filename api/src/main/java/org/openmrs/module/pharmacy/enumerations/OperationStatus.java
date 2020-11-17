@@ -1,7 +1,8 @@
 package org.openmrs.module.pharmacy.enumerations;
 
 public enum OperationStatus {
-    PENDING,
-    NOT_VALIDATED,
-    VALIDATED
+    AWAITING_VALIDATION,
+    DISABLED,
+    VALIDATED,
+    NOT_COMPLETED
 }

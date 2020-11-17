@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity(name = "ProductAttributeFlux")
 @Table(name = "pharmacy_product_attribute_flux")
-public class ProductAttributeFlux extends AbstractPharmacyData {
+public class ProductAttributeFlux extends AbstractPharmacyData implements Comparable<ProductAttributeFlux> {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,6 +21,7 @@ public class ProductAttributeFlux extends AbstractPharmacyData {
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "operation_date")
     private Date operationDate;
 
@@ -33,6 +34,9 @@ public class ProductAttributeFlux extends AbstractPharmacyData {
     @ManyToOne
     @JoinColumn(name = "operation_id", nullable = false)
     private ProductOperation productOperation;
+
+    @Column(name = "observation")
+    private String observation;
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
@@ -79,5 +83,34 @@ public class ProductAttributeFlux extends AbstractPharmacyData {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public Date getOperationDate() {
+        return operationDate;
+    }
+
+    public void setOperationDate(Date operationDate) {
+        this.operationDate = operationDate;
+    }
+
+    public OperationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OperationStatus status) {
+        this.status = status;
+    }
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
+    }
+
+    @Override
+    public int compareTo(ProductAttributeFlux o) {
+        return this.getDateCreated().compareTo(o.getDateCreated());
     }
 }

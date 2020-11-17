@@ -36,7 +36,7 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @JoinColumn(nullable = false, name = "location_id")
     private Location location;
 
-    @Column(name = "status")
+    @Column(name = "operation_status")
     private OperationStatus operationStatus;
 
     @Column(name = "incidence", nullable = false)

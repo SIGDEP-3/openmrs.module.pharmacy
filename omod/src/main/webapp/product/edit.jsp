@@ -24,14 +24,14 @@
         <div class="row">
             <div class="col-2 mb-2">
                 <labe>Code <span class="required">*</span></labe>
-                <form:input path="code" cssClass="form-control" />
+                <form:input path="code" cssClass="form-control form-control-sm" />
                 <form:errors path="code" cssClass="error"/>
             </div>
         </div>
         <div class="row">
             <div class="col-8 mb-2">
                 <labe>Nom (detail) <span class="required">*</span></labe>
-                <form:input path="retailName" cssClass="form-control" />
+                <form:input path="retailName" cssClass="form-control form-control-sm" />
                 <form:errors path="retailName" cssClass="error"/>
             </div>
             <div class="col-3 mb-2">
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-8 mb-2">
                 <labe>Nom (Gros) <span class="required">*</span></labe>
-                <form:input path="wholesaleName" cssClass="form-control" />
+                <form:input path="wholesaleName" cssClass="form-control form-control-sm" />
                 <form:errors path="wholesaleName" cssClass="error"/>
             </div>
             <div class="col-3 mb-2">
@@ -61,7 +61,7 @@
         <div class="row mb-2">
             <div class="col-2">
                 <labe>Unite de conversion <span class="required">*</span></labe>
-                <form:input path="unitConversion" cssClass="form-control" />
+                <form:input path="unitConversion" cssClass="form-control form-control-sm" />
                 <form:errors path="unitConversion" cssClass="error"/>
             </div>
         </div>
@@ -85,6 +85,8 @@
                 <form:errors path="productRegimenIds" cssClass="error"/>
             </div>
         </div>
+
+        <hr>
 
         <div class="row">
             <div class="col-12">

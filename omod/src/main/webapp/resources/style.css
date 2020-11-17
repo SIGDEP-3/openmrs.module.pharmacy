@@ -4,9 +4,66 @@
 
 body {
     font-size: 12px;
+    margin: 0;
+    padding: 0;
 }
 
 input[type=text].form-control {
     border-radius: 0;
     padding: 5px;
 }
+
+.bg-turquoise {
+    background-color: #1abc9c;
+}
+
+.bg-green-sea {
+    background-color: #16a085;
+}
+
+.bg-emerald {
+    background-color: #2ecc71;
+}
+
+.bg-nephritis {
+    background-color: #27ae60;
+}
+
+.bg-peter-river {
+    background-color: #3498db;
+}
+
+.bg-belize-hole {
+    background-color: #2980b9;
+}
+
+.bg-jade-just {
+    background-color: #00d2d3;
+}
+
+.bg-cyanite {
+    background-color: #0abde3;
+}
+
+.bg-joust-blue {
+    background-color: #54a0ff;
+}
+
+.bg-blue-de-france {
+    background-color: #2e86de;
+}
+
+.bg-clear-chill {
+    background-color: #1e90ff;
+}
+
+.bg-summer-sky {
+    background-color: #34ace0;
+}
+
+a.text-decoration-none {
+    text-decoration: none;
+}
+
+
+

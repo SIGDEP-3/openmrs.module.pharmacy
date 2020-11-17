@@ -13,13 +13,13 @@
  */
 package org.openmrs.module.pharmacy.api;
 
+import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,4 +75,65 @@ public interface PharmacyService extends OpenmrsService {
 	ProductRegimen getOneProductRegimenByConceptName(String name);
 	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
 	List<ProductRegimen> getAllProductRegimen();
+
+    List<ProductSupplier> getAllProductSuppliers();
+	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
+	ProductSupplier editProductSupplier(ProductSupplier productSupplier);
+	void removeProductSupplier(ProductSupplier productSupplier);
+	ProductSupplier getOneProductSupplierById(Integer productSupplierId);
+	ProductSupplier getOneProductSupplierByUuid(String uuid);
+	ProductSupplier getOneProductSupplierByName(String name);
+
+    List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
+    List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+    List<ProductReception> getAllProductReceptions(Location location);
+    List<ProductReception> getAllProductReceptions(Boolean includeVoided);
+	ProductReception getOneProductReceptionById(Integer id);
+	ProductReception saveProductReception(ProductReception productReception);
+	ProductReception editProductReception(ProductReception productReception);
+	void removeProductReception(ProductReception productReception);
+	ProductReception getOneProductReceptionByUuid(String uuid);
+	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
+
+	List<ProductAttribute> getAllProductAttributes(Location location, Boolean includeVoided);
+	List<ProductAttribute> getAllProductAttributes(Location location);
+	List<ProductAttribute> getAllProductAttributes(Boolean includeVoided);
+	List<ProductAttribute> getAllProductAttributes(Product product);
+	ProductAttribute getOneProductAttributeById(Integer id);
+	ProductAttribute saveProductAttribute(ProductAttribute productAttribute);
+	ProductAttribute editProductAttribute(ProductAttribute productAttribute);
+	void removeProductAttribute(ProductAttribute productAttribute);
+	ProductAttribute getOneProductAttributeByUuid(String uuid);
+	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
+
+	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Boolean includeVoided);
+	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location);
+	List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided);
+	List<ProductAttributeFlux> getAllProductAttributeFluxByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+	List<ProductAttributeFlux> getAllProductAttributeFluxByOperation(ProductOperation productOperation, Boolean includeVoided);
+	ProductAttributeFlux getOneProductAttributeFluxById(Integer id);
+	ProductAttributeFlux getOneProductAttributeFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+	ProductAttributeFlux saveProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+	ProductAttributeFlux editProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+	void removeProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+
+	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
+	List<ProductAttributeStock> getAllProductAttributeStocks(Location location, Boolean includeVoided);
+	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
+	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
+	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+	ProductAttributeStock getOneProductAttributeStockById(Integer id);
+	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
+	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
+	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
+
+	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
+	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
+	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
 }

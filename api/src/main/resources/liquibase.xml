@@ -650,4 +650,139 @@
         </sql>
     </changeSet>
 
+    <changeSet id="insert-pharmacy-program-data" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_program</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (1, 'PNLSARVIO', null, '44ac1b52-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (2, 'PNLSLAB', null, '44ac98f8-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (3, 'ME_REC', null, '44ac9d75-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (4, 'GTC', null, '44ac9e02-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (5, 'PNSME', null, '44ac9e6c-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (6, 'PNLT', null, '44ac9ecd-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (7, 'PNLP', null, '44ac9f24-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (8, 'CONSO', null, '44ac9f79-2691-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (9, 'PNLSTRC', null, '44aca368-2691-11eb-ae9e-0242ac1a0002');
+        </sql>
+    </changeSet>
+
+    <changeSet id="insert-pharmacy-unit-data" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_unit</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (1, 'AIGUILLE', null, '5764bf2b-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (2, 'AMPOULE', null, '5763fc7b-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (3, 'BALLE', null, '57655045-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (4, 'BANDE', null, '5764bea8-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (5, 'BIDON', null, '57644fde-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (6, 'BOITE', null, '5763fd30-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (7, 'CAPSULE', null, '57640088-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (8, 'CARTON', null, '57655c3e-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (9, 'CASSET', null, '57656917-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (10, 'CASSETTE', null, '5764a441-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (11, 'COMPRIME', null, '5763fcb3-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (12, 'CORPS', null, '5764bf5f-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (13, 'CRYOTUBE', null, '5764b1f5-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (14, 'CUPS', null, '5764b13d-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (15, 'CUPULE', null, '5764a080-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (16, 'CUVETTE', null, '5764a427-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (17, 'EMBOUT', null, '5764b1c0-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (18, 'FIL', null, '5764509c-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (19, 'FL', null, '57640edc-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (20, 'FLACON', null, '5763fc2e-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (21, 'GELULE', null, '5764040f-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (22, 'KIT', null, '5763fba9-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (23, 'LANCETTE', null, '5764bd30-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (24, 'MICROTUBE', null, '5764b624-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (25, 'OVULE', null, '57640bf5-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (26, 'PAIRE', null, '5764581e-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (27, 'PAQUET', null, '57644366-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (28, 'PASTILLE', null, '5764c02e-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (29, 'PIECE', null, '5764b6d8-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (30, 'PLAQUETTE', null, '576487ac-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (31, 'POCHE', null, '57643b53-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (32, 'POT', null, '576418e5-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (33, 'RACK', null, '5764bc7f-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (34, 'ROUL', null, '57650319-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (35, 'ROULEAU', null, '5764429a-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (36, 'SAC', null, '5764b6fc-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (37, 'SACHET', null, '5763fe70-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (38, 'SEGMENT', null, '5764a0de-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (39, 'SERINGUE', null, '576497cf-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (40, 'SUPPOSITOIRE', null, '57641f48-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (41, 'TEST', null, '57648bba-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (42, 'TUBE', null, '57645693-2693-11eb-ae9e-0242ac1a0002');
+            INSERT INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (43, 'UNITE', null, '5763ff79-2693-11eb-ae9e-0242ac1a0002');
+        </sql>
+    </changeSet>
+
+    <changeSet id="insert-pharmacy-supplier" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_supplier</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO pharmacy_product_supplier (name, short_name, phone_number, description, email, location_id, uuid)
+            VALUE ('NOUVELLE PHARMACIE DE LA SANTE PUBLIQUE', 'NPSP', NULL, NULL, NULL, NULL, uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-add-column-observation-flux" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <columnExists tableName="pharmacy_product_attribute_flux" columnName="observation"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_attribute_flux">
+            <column name="observation" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="pharmacy-drop-index-patient-dispensing" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="pharmacy_product_dispensing_patient"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="pharmacy_product_dispensing" constraintName="pharmacy_product_dispensing_patient"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-remove-patient-id-dispensing" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="pharmacy_product_dispensing" columnName="patient_id"/>
+        </preConditions>
+        <dropColumn tableName="pharmacy_product_dispensing" columnName="patient_id"/>
+        <addColumn tableName="pharmacy_product_dispensing">
+            <column name="encounter_id" type="int"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="pharmacy_product_dispensing_encounter"
+                                 baseTableName="pharmacy_product_dispensing" baseColumnNames="encounter_id"
+                                 referencedTableName="encounter" referencedColumnNames="encounter_id"/>
+    </changeSet>
+
+<!--    <changeSet id="pharmacy-remove-foreign-key-other-flux" author="BOGUI SERGE">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <foreignKeyConstraintExists foreignKeyName="pharmacy_product_attribute_other_flux_product_attribute"/>-->
+<!--        </preConditions>-->
+<!--        <dropForeignKeyConstraint baseTableName="pharmacy_product_attribute_other_flux" constraintName="pharmacy_product_attribute_other_flux_product_attribute"/>-->
+<!--        <dropForeignKeyConstraint baseTableName="pharmacy_product_attribute_other_flux" constraintName="pharmacy_product_attribute_other_flux_product_operation"/>-->
+<!--        <dropColumn tableName="pharmacy_product_attribute_other_flux" columnName="product_attribute_id"/>-->
+<!--        <dropColumn tableName="pharmacy_product_attribute_other_flux" columnName="operation_id"/>-->
+<!--    </changeSet>-->
+
+    <changeSet id="pharmacy-add-column-attribute-flux-to-other-flux" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="pharmacy_product_attribute_other_flux" columnName="label"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_attribute_other_flux">
+            <column name="label" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+<!--        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_other_flux_product_attribute_flux"-->
+<!--                                 baseTableName="pharmacy_product_attribute_other_flux" baseColumnNames="product_attribute_flux_id"-->
+<!--                                 referencedTableName="pharmacy_product_attribute_flux" referencedColumnNames="product_attribute_flux_id"/>-->
+    </changeSet>
+
 </databaseChangeLog>

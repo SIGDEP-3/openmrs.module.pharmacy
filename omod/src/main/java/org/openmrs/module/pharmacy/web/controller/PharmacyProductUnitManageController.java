@@ -19,11 +19,6 @@ import javax.servlet.http.HttpSession;
 public class PharmacyProductUnitManageController {
     protected final Log log = LogFactory.getLog(getClass());
 
-//    @ModelAttribute("userLocation")
-//    public Location getUserLocation() {
-//        return Context.getUserContext().getLocation();
-//    }
-
     private PharmacyService service() {
         return Context.getService(PharmacyService.class);
     }
