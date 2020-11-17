@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 
 import java.util.List;
@@ -58,10 +55,23 @@ public interface PharmacyDAO {
 	List<ProductProgram> getAllProductProgram();
 
 	ProductRegimen saveProductRegimen(ProductRegimen productRegimen);
+
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId);
+
 	void removeProductRegimen(ProductRegimen productRegimen);
 	ProductRegimen getOneProductRegimenById(Integer regimenId);
 	ProductRegimen getOneProductRegimenByUuid(String uuid);
 	ProductRegimen getOneProductRegimenByConceptName(String name);
 	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
 	List<ProductRegimen> getAllProductRegimen();
+
+	ProductPrice saveProductPrice(ProductPrice productPrice);
+	void removeProductPrice(ProductPrice productPrice);
+	ProductPrice getOneProductPriceById(Integer productPriceId);
+	ProductPrice getOneProductPriceByUuid(String uuid);
+	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+	ProductPrice getOneProductPriceByProductId(Integer productId);
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+	List<ProductPrice> getAllProductPrices();
 }
