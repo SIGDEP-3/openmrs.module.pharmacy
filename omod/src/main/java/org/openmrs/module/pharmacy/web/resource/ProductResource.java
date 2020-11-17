@@ -66,6 +66,8 @@ public class ProductResource extends DelegatingCrudResource<Product> {
             description.addProperty("productRetailUnit", Representation.FULL);
             description.addProperty("productWholesaleUnit", Representation.FULL);
             description.addProperty("unitConversion");
+            description.addProperty("productPrograms", Representation.DEFAULT);
+            description.addProperty("productRegimens", Representation.DEFAULT);
             description.addProperty("uuid");
         } else if (representation instanceof DefaultRepresentation) {
             description = new DelegatingResourceDescription();

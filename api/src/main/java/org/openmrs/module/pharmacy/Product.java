@@ -46,6 +46,9 @@ public class Product extends AbstractPharmacyObject {
             inverseJoinColumns = @JoinColumn(name = "program_id"))
     private Set<ProductProgram> productPrograms = new HashSet<ProductProgram>();
 
+    @Transient
+    private ProductPrice currentPrice;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Set<ProductPrice> productPrices = new HashSet<ProductPrice>();
 
@@ -59,8 +62,7 @@ public class Product extends AbstractPharmacyObject {
         productId = integer;
     }
 
-    public Product() {
-    }
+    public Product() {}
 
     public Integer getProductId() {
         return productId;
@@ -142,5 +144,27 @@ public class Product extends AbstractPharmacyObject {
         this.productPrices = productPrices;
     }
 
+    public ProductPrice getCurrentPrice() {
+        for (ProductPrice price :
+                productPrices) {
+            if (price.getActive()) {
+                currentPrice =  price;
+            }
+            break;
+        }
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(ProductPrice currentPrice) {
+        this.currentPrice = currentPrice;
+    }
+
+    public String getRetailNameWithCode() {
+        return getCode() + " - " + getRetailName();
+    }
+
+    public String getWholesaleNameWithCode() {
+        return getCode() + " - " + getWholesaleName();
+    }
 
 }

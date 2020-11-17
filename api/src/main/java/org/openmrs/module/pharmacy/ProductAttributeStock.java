@@ -16,7 +16,7 @@ public class ProductAttributeStock extends AbstractPharmacyObject {
     private Integer productAttributeStockId;
 
     @ManyToOne
-    @JoinColumn(name = "product_attirbute_id", nullable = false)
+    @JoinColumn(name = "product_attribute_id", nullable = false)
     private ProductAttribute productAttribute;
 
     @Column(name = "quantity_in_stock", nullable = false)

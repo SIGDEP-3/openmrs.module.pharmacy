@@ -23,6 +23,7 @@ public class ProductAttribute extends AbstractPharmacyObject {
     @Column(name = "batch_number", nullable = false, unique = true)
     private String batchNumber;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "expiry_date", nullable = false)
     private Date expiryDate;
 

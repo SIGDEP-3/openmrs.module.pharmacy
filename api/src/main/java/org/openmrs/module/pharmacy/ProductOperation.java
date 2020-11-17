@@ -36,7 +36,7 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @JoinColumn(nullable = false, name = "location_id")
     private Location location;
 
-    @Column(name = "status")
+    @Column(name = "operation_status")
     private OperationStatus operationStatus;
 
     @Column(name = "incidence", nullable = false)
@@ -45,7 +45,7 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @Column(name = "observation")
     private String observation;
 
-    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductAttributeFlux> productAttributeFluxes;
 
     public ProductOperation() {

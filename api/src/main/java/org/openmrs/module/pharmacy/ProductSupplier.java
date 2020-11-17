@@ -31,7 +31,7 @@ public class ProductSupplier extends AbstractPharmacyObject {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     public ProductSupplier() {

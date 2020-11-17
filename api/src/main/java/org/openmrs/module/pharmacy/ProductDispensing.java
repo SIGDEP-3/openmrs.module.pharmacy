@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy;
 
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 
@@ -22,12 +23,9 @@ public class ProductDispensing extends ProductOperation {
     @Column(name = "treatment_days", nullable = false)
     private Integer treatmentDays;
 
-    @Column(name = "treatment_end_date", nullable = false)
-    private Date treatmentEndDate;
-
     @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+    @JoinColumn(name = "encounter_id")
+    private Encounter encounter;
 
     public ProductDispensing() {
         this.setIncidence(Incidence.NEGATIVE);
@@ -57,20 +55,11 @@ public class ProductDispensing extends ProductOperation {
         this.treatmentDays = treatmentDays;
     }
 
-    public Date getTreatmentEndDate() {
-        return treatmentEndDate;
+    public Encounter getEncounter() {
+        return encounter;
     }
 
-    public void setTreatmentEndDate(Date treatmentEndDate) {
-        this.treatmentEndDate = treatmentEndDate;
+    public void setEncounter(Encounter encounter) {
+        this.encounter = encounter;
     }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
 }
