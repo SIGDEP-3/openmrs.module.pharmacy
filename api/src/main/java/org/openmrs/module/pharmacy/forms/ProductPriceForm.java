@@ -7,6 +7,7 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -15,11 +16,10 @@ public class ProductPriceForm {
     private Integer productPriceId;
     private Double salePrice;
     private Double purchasePrice;
-    private Product product;
-    private ProductProgram productProgram;
+    private Integer productProgramId;
     private String uuid = UUID.randomUUID().toString();
     private Integer productId;
-    private Set<Integer> productProgramIds = new HashSet<Integer>();
+    private Date dateCreated = new Date();
 
     public ProductPriceForm() {
     }
@@ -44,20 +44,16 @@ public class ProductPriceForm {
         return purchasePrice;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public void setPurchasePrice(Double purchasePrice) {
         this.purchasePrice = purchasePrice;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ProductProgram getProductProgram() {
-        return productProgram;
-    }
-
-    public void setProductProgram(ProductProgram productProgram) {
-        this.productProgram = productProgram;
     }
 
     public String getUuid() {
@@ -66,14 +62,6 @@ public class ProductPriceForm {
     public Integer getProductId() {
         return productId;
     }
-    public Set<Integer> getProductProgramIds() {
-        return productProgramIds;
-    }
-
-    public void setProductProgramIds(Set<Integer> productProgramIds) {
-        this.productProgramIds = productProgramIds;
-    }
-
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
@@ -82,6 +70,11 @@ public class ProductPriceForm {
     public ProductPrice getProductPrice() {
         ProductPrice price = new ProductPrice();
         price.setProductPriceId(getProductPriceId());
+        price.setProduct(Context.getService(PharmacyService.class).getOneProductById(getProductId()));
+        price.setProductProgram(Context.getService(PharmacyService.class).getOneProductProgramById(getProductProgramId()));
+        price.setPurchasePrice(getPurchasePrice());
+        price.setSalePrice(getSalePrice());
+        price.setDateCreated(getDateCreated());
         price.setUuid(getUuid());
 
         return price;
@@ -92,24 +85,20 @@ public class ProductPriceForm {
 
     public void setProductPrice(ProductPrice price) {
         this.setProductPriceId(price.getProductPriceId());
+        this.setProductProgramId(price.getProductProgram().getProductProgramId());
+        this.setProductId(price.getProduct().getProductId());
+        this.setSalePrice(price.getSalePrice());
+        this.setPurchasePrice(price.getPurchasePrice());
+        this.setDateCreated(price.getDateCreated());
         this.setUuid(price.getUuid());
     }
-    private Set<ProductProgram> getProgramsByIds(Set<Integer> programIds) {
-        Set<ProductProgram> programs = new HashSet<ProductProgram>();
-        for (Integer id : programIds) {
-            programs.add(Context.getService(PharmacyService.class).getOneProductProgramById(id));
-        }
-        return programs;
-    }
-    public Product getProduct() {
-        Product product = new Product();
-        product.setProductId(getProductId());
-        if (!productProgramIds.isEmpty()) {
-            product.getProductPrograms().addAll(getProgramsByIds(getProductProgramIds()));
-        }
-        product.setUuid(getUuid());
 
-        return product;
+    public Integer getProductProgramId() {
+        return productProgramId;
+    }
+
+    public void setProductProgramId(Integer productProgramId) {
+        this.productProgramId = productProgramId;
     }
 
     @Override

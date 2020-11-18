@@ -38,28 +38,28 @@ import java.util.List;
  */
 public class HibernatePharmacyDAO implements PharmacyDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
-	
+
 	private SessionFactory sessionFactory;
 
 	/**
-     * @param sessionFactory the sessionFactory to set
-     */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-	    this.sessionFactory = sessionFactory;
-    }
-    
+	 * @param sessionFactory the sessionFactory to set
+	 */
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
 	/**
-     * @return the sessionFactory
-     */
-    public SessionFactory getSessionFactory() {
-	    return sessionFactory;
-    }
+	 * @return the sessionFactory
+	 */
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
 
 	/******* PRODUCTS UNITS *******/
 
 	@Override
 	public ProductUnit saveProductUnit(ProductUnit productUnit) {
-    	sessionFactory.getCurrentSession().saveOrUpdate(productUnit);
+		sessionFactory.getCurrentSession().saveOrUpdate(productUnit);
 		return productUnit;
 	}
 
@@ -256,7 +256,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	/******* PRODUCTS PRICES *******/
 
 	@Override
-	public ProductPrice saveProductPrice(ProductPrice productPrice){
+	public ProductPrice saveProductPrice(ProductPrice productPrice) {
 		sessionFactory.getCurrentSession().saveOrUpdate(productPrice);
 		return productPrice;
 	}
@@ -280,6 +280,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	@Override
 	public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
 		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

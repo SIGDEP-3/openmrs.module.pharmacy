@@ -259,6 +259,7 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public List<ProductPrice> getAllProductPrices() {
         return dao.getAllProductPrices();
+    }
 
     @Override
     public List<ProductSupplier> getAllProductSuppliers() {

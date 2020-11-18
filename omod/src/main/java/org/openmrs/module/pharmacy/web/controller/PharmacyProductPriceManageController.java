@@ -2,13 +2,12 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.forms.ProductPriceForm;
-import org.openmrs.module.pharmacy.forms.validations.ProductPriceFormValidation;
+import org.openmrs.module.pharmacy.validators.ProductPriceFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class PharmacyProductPriceManageController {
@@ -36,6 +32,7 @@ public class PharmacyProductPriceManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("prices", service().getAllProductPrices());
+            modelMap.addAttribute("availableProduct", service().getAllProduct());
             modelMap.addAttribute("title", "Liste des prix");
         }
     }
@@ -51,7 +48,7 @@ public class PharmacyProductPriceManageController {
             ProductPrice productPrice = service().getOneProductPriceById(id);
             if (productPrice != null) {
                 service().removeProductPrice(productPrice);
-                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "prix ajouté avec succès");
+                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Prix supprimé avec succès");
             }
         }
         return "redirect:/module/pharmacy/product/prices/list.form";
@@ -60,8 +57,11 @@ public class PharmacyProductPriceManageController {
     @RequestMapping(value = "/module/pharmacy/product/prices/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
                          @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                         @RequestParam(value = "productId") Integer productId,
                      ProductPriceForm productPriceForm ) {
         if (Context.isAuthenticated()) {
+            Product product = service().getOneProductById(productId);
+            productPriceForm.setProductId(product.getProductId());
 
             if (id != 0) {
                 productPriceForm.setProductPrice(service().getOneProductPriceById(id));
@@ -70,8 +70,9 @@ public class PharmacyProductPriceManageController {
             }
 
             modelMap.addAttribute("priceForm", productPriceForm);
-            modelMap.addAttribute("availableProduct", service().getAllProduct());
-            modelMap.addAttribute("availablePrograms", service().getAllProductProgram());
+            modelMap.addAttribute("product", product);
+//            modelMap.addAttribute("availableProduct", service().getAllProduct());
+            modelMap.addAttribute("availablePrograms", product.getProductPrograms());
             modelMap.addAttribute("title", "Formulaire de saisie des prix");
         }
     }

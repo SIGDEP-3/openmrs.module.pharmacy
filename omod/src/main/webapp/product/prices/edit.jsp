@@ -20,24 +20,29 @@
     <form:form modelAttribute="priceForm" method="post" action="" id="form">
         <form:hidden path="productPriceId"/>
         <form:hidden path="uuid"/>
+        <form:hidden path="dateCreated"/>
+        <form:hidden path="productId"/>
         <div class="row mb-2">
             <div class="col-6 mb-2">
                 <labe>Produits<span class="required">*</span></labe>
-                <form:select path="productId" cssClass="form-control s2" >
-                    <form:option value="" label=""/>
-                    <form:options items="${availableProduct}" itemValue="productId" itemLabel="name" />
-                </form:select>
-                <form:errors path="productId" cssClass="error"/>
+                <div class="form-control">
+                    ${product.retailName}
+                </div>
+<%--                <form:select path="productId" cssClass="form-control s2" >--%>
+<%--                    <form:option value="" label=""/>--%>
+<%--                    <form:options items="${availableProduct}" itemValue="productId" itemLabel="product" />--%>
+<%--                </form:select>--%>
+<%--                <form:errors path="productId" cssClass="error"/>--%>
             </div>
         </div>
         <div class="row mb-2">
             <div class="col-4">
                 <label>Programmes <span class="required">*</span></label>
-                <form:select path="productProgramIds" cssClass="form-control s2">
+                <form:select path="productProgramId" cssClass="form-control s2">
                     <form:option value="" label=""/>
                     <form:options items="${availablePrograms}" itemValue="productProgramId" itemLabel="name" />
                 </form:select>
-                <form:errors path="productProgramIds" cssClass="error"/>
+                <form:errors path="productProgramId" cssClass="error"/>
             </div>
         </div>
         <div class="row">

@@ -1,27 +1,31 @@
-package org.openmrs.module.pharmacy.forms.validations;
+package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.forms.ProductPriceForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-@Handler(supports = {ProductProgram.class}, order = 50)
+@Handler(supports = {ProductPriceForm.class}, order = 50)
 public class ProductPriceFormValidation implements Validator {
     @Override
     public boolean supports(Class aClass) {
-        return aClass.equals(ProductPrice.class);
+        return aClass.equals(ProductPriceForm.class);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        ProductPrice price = (ProductPrice) o;
+        ProductPriceForm price = (ProductPriceForm) o;
 
         if (price == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-            ValidationUtils.rejectIfEmpty(errors, "name", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "salePrice", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "productProgramId", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "productId", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "purchasePrice", null, "Ce champ est requis");
 
 //            if (!price.getSalePrice()) {
 //                ProductPrice otherPrice = Context.getService(PharmacyService.class).getOneProductProgramByName(price.getSalePrice());
