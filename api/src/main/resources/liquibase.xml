@@ -785,4 +785,17 @@
 <!--                                 referencedTableName="pharmacy_product_attribute_flux" referencedColumnNames="product_attribute_flux_id"/>-->
     </changeSet>
 
+    <changeSet id="change-pharmacy-price-column-date-created" author="BOGUI SERGE">
+        <modifyColumn tableName="pharmacy_product_price">
+            <column name="date_created" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </modifyColumn>
+        <modifyColumn tableName="pharmacy_product_price">
+            <column name="sale_price" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </modifyColumn>
+    </changeSet>
+
 </databaseChangeLog>
