@@ -798,4 +798,9 @@
         </modifyColumn>
     </changeSet>
 
+    <changeSet id="pharmacy-remove-constraint-sale-price-price" author="BOGUI SERGE">
+        <dropUniqueConstraint tableName="pharmacy_product_price"
+                              constraintName="sale_price"/>
+    </changeSet>
+    
 </databaseChangeLog>

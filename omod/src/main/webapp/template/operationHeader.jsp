@@ -32,54 +32,111 @@
 
 <spring:htmlEscape defaultHtmlEscape="true" />
 
-<div class="container-fluid">
+<div class="container-fluid mb-0 pb-0">
 	<h5>
 		<spring:message code="pharmacy.title" /> :
 		Dispensation & Gestion de Stock
 	</h5>
-	<div class="row bg-light border-top border-bottom border-info">
+	<div class="row bg-info border-top border-bottom border-secondary">
 		<div class="col-12 pl-0">
-			<div class="btn-toolbar m-1 pl-1">
-				<div class="btn-group mr-3">
+			<div class="btn-toolbar m-1 pl-0">
+				<div class="btn-group mr-3 ml-0">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/manage.form'"
-							class="btn btn-outline-info">
+						<c:choose>
+							<c:when test='<%= request.getRequestURI().contains("/manage") %>'>
+								class=" btn btn-secondary"
+							</c:when>
+							<c:otherwise>
+								class="btn btn-outline-secondary text-white"
+							</c:otherwise>
+						</c:choose>
+					>
 						Vue sur le stock
 					</button>
 				</div>
 
 				<div class="btn-group mr-3">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensing/list.form'"
-					   class="btn btn-outline-info">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/dispensing") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Dispensation aux patients
 					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Distribution
 					</button>
 				</div>
 
 				<div class="btn-group mr-3">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/reception/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/reception") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Reception de produits
 					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/movement") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Perte & ajustement
 					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/inventory") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Inventaire
 					</button>
 				</div>
 
 				<div class="btn-group">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/stock") %>'>
+									class="btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Etat du stock
 					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/report/list.form'"
-					   class="btn btn-secondary">
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/report") %>'>
+									class=" btn btn-secondary"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white"
+								</c:otherwise>
+							</c:choose>>
 						Rapport d'activite
 					</button>
 				</div>
@@ -87,81 +144,11 @@
 			</div>
 		</div>
 	</div>
-<%--	<div class="row mb-1 mt-1">--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/dispensing/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-joust-blue">--%>
-<%--					<div class="card-body text-center text-white">Dispensation</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/reception/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-belize-hole">--%>
-<%--					<div class="card-body text-center text-white">Reception</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/movement/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-summer-sky">--%>
-<%--					<div class="card-body text-center text-white">Perte & ajustement</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-emerald">--%>
-<%--					<div class="card-body text-center text-white">Distribution</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-blue-de-france">--%>
-<%--					<div class="card-body text-center text-white">Inventaire</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--		<div class="col-2">--%>
-<%--			<a href="${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form" class="text-decoration-none">--%>
-<%--				<div class="card bg-cyanite">--%>
-<%--					<div class="card-body text-center text-white">Etat du stock</div>--%>
-<%--				</div>--%>
-<%--			</a>--%>
-<%--		</div>--%>
-<%--	</div>--%>
-	<div class="row mt-0 mb-1 border-bottom border-primary">
-		<c:if test='<%= request.getRequestURI().contains("/dispensing") %>'>
-			<div class="col-12 m-0 ">
-				<div class="text-primary"><h6>Dispensation</h6></div>
+	<div class="row mt-0 mb-1 pb-3 pt-3 pl-0 border-bottom border-secondary bg-light">
+		<div class="col-12">
+			<div class="text-uppercase text-secondary font-weight-bold">
+				<h5 class="m-0">${title}</h5>
 			</div>
-		</c:if>
-		<c:if test='<%= request.getRequestURI().contains("/reception") %>'>
-			<div class="col-12 m-0 p-0 pb-1">
-				<div class="text-uppercase text-white"><h6 class="m-0">Reception de produits</h6></div>
-			</div>
-		</c:if>
-		<c:if test='<%= request.getRequestURI().contains("/stock") %>'>
-			<div class="col-12 m-0">
-				<div class="alert bg-summer-sky text-uppercase text-white"><h5>Perte & Ajustement</h5></div>
-			</div>
-		</c:if>
-		<c:if test='<%= request.getRequestURI().contains("/distribution") %>'>
-			<div class="col-12 m-0">
-				<div class="alert bg-emerald text-uppercase text-white"><h5>Distribution</h5></div>
-			</div>
-		</c:if>
-		<c:if test='<%= request.getRequestURI().contains("/inventory") %>'>
-			<div class="col-12 m-0">
-				<div class="alert bg-blue-de-france text-uppercase text-white"><h5>Inventaire</h5></div>
-			</div>
-		</c:if>
-		<c:if test='<%= request.getRequestURI().contains("/stock") %>'>
-			<div class="col-12 m-0">
-				<div class="alert bg-cyanite text-uppercase text-white"><h5>Etat des stock</h5></div>
-			</div>
-		</c:if>
-
+		</div>
 	</div>
 </div>

@@ -27,8 +27,11 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -427,8 +430,8 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						"ppu2.name as wholesaleUnit, " +
 						"ppa.batch_number as batchNumber, " +
 						"ppa.expiry_date as expiryDate, " +
-						"ppaf.quantity as receivedQuantity, " +
-						"ppaof.quantity as deliveredQuantity, " +
+						"ppaf.quantity as quantity, " +
+						"ppaof.quantity as quantityToDeliver, " +
 						"ppaf.observation as observation, " +
 						"ppaf.date_created as dateCreated " +
 						"FROM pharmacy_product_reception ppr " +
@@ -439,7 +442,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu on pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 on pp.product_wholesale_unit = ppu2.product_unit_id " +
-						"WHERE ppr.product_operation_id = :productOperationId " +
+						"WHERE ppr.product_operation_id = :productOperationId AND product_attribute_flux_id IS NOT NULL " +
 						"ORDER BY ppaf.date_created DESC ";
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
@@ -453,14 +456,14 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				.addScalar("wholesaleUnit", StandardBasicTypes.STRING)
 				.addScalar("batchNumber", StandardBasicTypes.STRING)
 				.addScalar("expiryDate", StandardBasicTypes.DATE)
-				.addScalar("deliveredQuantity", StandardBasicTypes.INTEGER)
-				.addScalar("receivedQuantity", StandardBasicTypes.INTEGER)
+				.addScalar("quantityToDeliver", StandardBasicTypes.INTEGER)
+				.addScalar("quantity", StandardBasicTypes.INTEGER)
 				.addScalar("observation", StandardBasicTypes.STRING)
 				.addScalar("dateCreated", StandardBasicTypes.DATE)
 				.setParameter("productOperationId", productReception.getProductOperationId())
 				.setResultTransformer(new AliasToBeanResultTransformer(ProductReceptionFluxDTO.class));
 		try {
-			return (List<ProductReceptionFluxDTO>) query.list();
+			return query.list();
 		} catch (HibernateException e) {
 			System.out.println(e.getMessage());
 		}
@@ -646,6 +649,15 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	}
 
 	@Override
+	public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeStock.class);
+		return (ProductAttributeStock) criteria
+				.add(Restrictions.eq("productAttribute", productAttribute))
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided)).uniqueResult();
+	}
+
+	@Override
 	public ProductAttributeStock getOneProductAttributeStockById(Integer id) {
 		return (ProductAttributeStock) sessionFactory.getCurrentSession().get(ProductAttributeStock.class, id);
 	}
@@ -688,6 +700,14 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				.add(Restrictions.eq("productOperation", productOperation)).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation productOperation, Boolean b) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
+		return criteria
+				.add(Restrictions.eq("productOperation", productOperation)).list();
+	}
+
 	@Override
 	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id) {
 		return (ProductAttributeOtherFlux) sessionFactory.getCurrentSession().get(ProductAttributeOtherFlux.class, id);
@@ -715,5 +735,37 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
 		return (ProductAttributeOtherFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public Boolean validateOperation(ProductOperation operation) {
+		operation.setOperationStatus(OperationStatus.VALIDATED);
+		sessionFactory.getCurrentSession().saveOrUpdate(operation);
+		for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
+			flux.setStatus(OperationStatus.VALIDATED);
+			saveProductAttributeFlux(flux);
+
+			if (!operation.getIncidence().equals(Incidence.NONE)) {
+				List<ProductAttributeStock> productAttributeStocks = getAllProductAttributeStockByAttribute(flux.getProductAttribute(), false);
+				//ProductAttributeStock attributeStock = getOneProductAttributeStockByAttribute(flux.getProductAttribute(), Context.getUserContext().getLocation(), false);
+				ProductAttributeStock attributeStock = getOneProductAttributeStockByAttribute(flux.getProductAttribute(), Context.getLocationService().getDefaultLocation(), false);
+				if (productAttributeStocks != null) {
+					Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+							attributeStock.getQuantityInStock() + flux.getQuantity() :
+							(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
+					attributeStock.setQuantityInStock(quantity);
+				} else {
+					attributeStock = new ProductAttributeStock();
+					attributeStock.setQuantityInStock(flux.getQuantity());
+					attributeStock.setLocation(Context.getLocationService().getDefaultLocation());
+					//attributeStock.setLocation(Context.getUserContext().getLocation());
+					attributeStock.setProductAttribute(flux.getProductAttribute());
+				}
+				attributeStock.setDateCreated(new Date());
+				saveProductAttributeStock(attributeStock);
+			}
+		}
+
+		return true;
 	}
 }

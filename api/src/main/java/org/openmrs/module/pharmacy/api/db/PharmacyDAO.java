@@ -124,6 +124,7 @@ public interface PharmacyDAO {
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
 	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
 	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided);
 	ProductAttributeStock getOneProductAttributeStockById(Integer id);
 	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
@@ -132,9 +133,12 @@ public interface PharmacyDAO {
 
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation reception, Boolean b);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
+
+	Boolean validateOperation(ProductOperation operation);
 }

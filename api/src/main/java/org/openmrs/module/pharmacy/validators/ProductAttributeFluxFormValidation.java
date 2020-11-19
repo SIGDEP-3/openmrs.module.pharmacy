@@ -4,35 +4,33 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.forms.ProductAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
-import org.openmrs.module.pharmacy.forms.ReceptionHeaderForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.util.Date;
-import java.util.List;
 
-@Handler(supports = {ReceptionAttributeFluxForm.class}, order = 50)
+@Handler(supports = {ProductAttributeFluxForm.class}, order = 50)
 public class ProductAttributeFluxFormValidation implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
-        return aClass.equals(ReceptionAttributeFluxForm.class);
+        return aClass.equals(ProductAttributeFluxForm.class);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        ReceptionAttributeFluxForm form = (ReceptionAttributeFluxForm) o;
+        ProductAttributeFluxForm form = (ProductAttributeFluxForm) o;
 
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
             ValidationUtils.rejectIfEmpty(errors, "productId", null, "Le produit est requis");
             ValidationUtils.rejectIfEmpty(errors, "batchNumber", null, "Le numéro de lot est requis");
-            ValidationUtils.rejectIfEmpty(errors, "receptionQuantity", null, "La quantié livrée est requise");
-            ValidationUtils.rejectIfEmpty(errors, "receivedQuantity", null, "la quantité reçue est requise");
+//            ValidationUtils.rejectIfEmpty(errors, "receptionQuantity", null, "La quantié livrée est requise");
+            ValidationUtils.rejectIfEmpty(errors, "quantity", null, "la quantité reçue est requise");
             ValidationUtils.rejectIfEmpty(errors, "expiryDate", null, "La date de péremption est requise");
 
             if (form.getBatchNumber() != null) {
@@ -64,9 +62,9 @@ public class ProductAttributeFluxFormValidation implements Validator {
 //                errors.rejectValue("receivedQuantity", "La quantité reçue ne peut pas être égale à 0");
 //            }
 
-            if (form.getReceptionQuantity() != null && form.getReceptionQuantity() == 0) {
-                errors.rejectValue("receivedQuantity", null, "La quantité livrée ne peut pas être égale à 0");
-            }
+//            if (form.getQuantityToDeliver() != null && form.getQuantityToDeliver() == 0) {
+//                errors.rejectValue("receivedQuantity", null, "La quantité livrée ne peut pas être égale à 0");
+//            }
         }
 
 

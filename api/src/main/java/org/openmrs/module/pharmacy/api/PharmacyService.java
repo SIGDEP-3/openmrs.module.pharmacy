@@ -72,21 +72,9 @@ public interface PharmacyService extends OpenmrsService {
 	void removeProductRegimen(ProductRegimen productRegimen);
 	ProductRegimen getOneProductRegimenById(Integer regimenId);
 	ProductRegimen getOneProductRegimenByUuid(String uuid);
-
-	ProductPrice getOneProductPriceByUuid(String uuid);
-
 	ProductRegimen getOneProductRegimenByConceptName(String name);
 	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
 	List<ProductRegimen> getAllProductRegimen();
-
-	ProductPrice saveProductPrice(ProductPrice productPrice);
-	void removeProductPrice(ProductPrice productPrice);
-	ProductPrice getOneProductPriceById(Integer productPriceId);
-	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
-	ProductPrice getOneProductPriceByProductId(Integer productId);
-	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
-	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
-	List<ProductPrice> getAllProductPrices();
 
     List<ProductSupplier> getAllProductSuppliers();
 	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
