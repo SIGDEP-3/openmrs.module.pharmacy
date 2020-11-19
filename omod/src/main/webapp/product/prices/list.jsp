@@ -15,7 +15,8 @@
                 window.location="${pageContext.request.contextPath}/module/pharmacy/product/prices/edit.form?productId="+selector.value;
             }
             else {
-                selector.classList.add('is-invalid');
+                // selector.classList.add('is-invalid');
+                jQuery('#productId').addClass('is-invalid');
             }
             // if (productId !== null && productId !== undefined) {
             //     window.location="/module/pharmacy/product/prices/edit.form?productId="+productId;
@@ -85,6 +86,10 @@
                     <c:param name="id" value="${price.productPriceId}"/>
                 </c:url>
                 <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
+                <c:url value="/module/pharmacy/product/prices/delete.form" var="deleteUrl">
+                    <c:param name="id" value="${price.productPriceId}"/>
+                </c:url>
+                <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce prix ?')" class="text-danger"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
     </c:forEach>

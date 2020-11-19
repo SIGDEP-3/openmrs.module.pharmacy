@@ -20,6 +20,7 @@ public class ProductPriceForm {
     private String uuid = UUID.randomUUID().toString();
     private Integer productId;
     private Date dateCreated = new Date();
+    private Boolean isActive = true;
 
     public ProductPriceForm() {
     }
@@ -52,6 +53,14 @@ public class ProductPriceForm {
         this.dateCreated = dateCreated;
     }
 
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
     public void setPurchasePrice(Double purchasePrice) {
         this.purchasePrice = purchasePrice;
     }
@@ -75,6 +84,7 @@ public class ProductPriceForm {
         price.setPurchasePrice(getPurchasePrice());
         price.setSalePrice(getSalePrice());
         price.setDateCreated(getDateCreated());
+        price.setActive(getActive());
         price.setUuid(getUuid());
 
         return price;
@@ -90,6 +100,7 @@ public class ProductPriceForm {
         this.setSalePrice(price.getSalePrice());
         this.setPurchasePrice(price.getPurchasePrice());
         this.setDateCreated(price.getDateCreated());
+//        this.setActive(price.getActive());
         this.setUuid(price.getUuid());
     }
 

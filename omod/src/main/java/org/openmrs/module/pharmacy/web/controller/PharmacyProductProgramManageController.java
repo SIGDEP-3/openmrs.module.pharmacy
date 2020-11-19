@@ -45,7 +45,7 @@ public class PharmacyProductProgramManageController {
             ProductProgram productProgram = service().getOneProductProgramById(id);
             if (productProgram != null) {
                 service().removeProductProgram(productProgram);
-                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Programme ajouté avec succès");
+                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Programme supprimé avec succès");
             }
         }
         return "redirect:/module/pharmacy/product/programs/list.form";

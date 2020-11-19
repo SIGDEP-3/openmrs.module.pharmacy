@@ -12,6 +12,7 @@ import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,22 +59,25 @@ public class PharmacyProductPriceManageController {
     public void edit(ModelMap modelMap,
                          @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
                          @RequestParam(value = "productId") Integer productId,
-                     ProductPriceForm productPriceForm ) {
+                     ProductPriceForm productPriceForm ){
         if (Context.isAuthenticated()) {
-            Product product = service().getOneProductById(productId);
-            productPriceForm.setProductId(product.getProductId());
+            if (productId != 0) {
+                Product product = service().getOneProductById(productId);
+                productPriceForm.setProductId(product.getProductId());
 
-            if (id != 0) {
-                productPriceForm.setProductPrice(service().getOneProductPriceById(id));
-            } else {
-                productPriceForm = new ProductPriceForm();
+                modelMap.addAttribute("priceForm", productPriceForm);
+                modelMap.addAttribute("product", product);
+                modelMap.addAttribute("availablePrograms", product.getProductPrograms());
+                modelMap.addAttribute("title", "Formulaire de saisie des prix");
+            }
+            else {
+                if (id != 0) {
+                    productPriceForm.setProductPrice(service().getOneProductPriceById(id));
+                } else {
+                    productPriceForm = new ProductPriceForm();
+                }
             }
 
-            modelMap.addAttribute("priceForm", productPriceForm);
-            modelMap.addAttribute("product", product);
-//            modelMap.addAttribute("availableProduct", service().getAllProduct());
-            modelMap.addAttribute("availablePrograms", product.getProductPrograms());
-            modelMap.addAttribute("title", "Formulaire de saisie des prix");
         }
     }
 

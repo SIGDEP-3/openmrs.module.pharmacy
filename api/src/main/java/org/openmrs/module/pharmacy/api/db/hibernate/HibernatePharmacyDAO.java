@@ -268,7 +268,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 
 	@Override
 	public ProductPrice getOneProductPriceById(Integer productPriceId) {
-		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductUnit.class, productPriceId);
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productPriceId);
 	}
 
 	@Override
@@ -281,6 +281,36 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
 		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
 	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
+		return (List<ProductPrice>) criteria.add(Restrictions.eq("true", status));
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram() {
+		return (ProductPrice) sessionFactory.getCurrentSession();
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByProductId(Integer productId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productId);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPrices() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductPrice.class).list();
+	}
+
+	/******* PRODUCTS SUPPLIER *******/
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -331,34 +361,6 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				add(Restrictions.eq("voided", includeVoided)).list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
-		return (List<ProductPrice>) criteria.add(Restrictions.eq("true", status));
-	}
-
-	@Override
-	public ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId) {
-		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
-	}
-
-	@Override
-	public ProductPrice getOneActiveProductPriceByProductAndProductProgram() {
-		return (ProductPrice) sessionFactory.getCurrentSession();
-	}
-
-	@Override
-	public ProductPrice getOneProductPriceByProductId(Integer productId) {
-		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productId);
-	}
-
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ProductPrice> getAllProductPrices() {
-		return sessionFactory.getCurrentSession().createCriteria(ProductPrice.class).list();
-	}
 
 	public List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReception.class);

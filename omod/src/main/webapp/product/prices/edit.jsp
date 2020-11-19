@@ -21,6 +21,7 @@
         <form:hidden path="productPriceId"/>
         <form:hidden path="uuid"/>
         <form:hidden path="dateCreated"/>
+<%--        <form:hidden path="isActive"/>--%>
         <form:hidden path="productId"/>
         <div class="row mb-2">
             <div class="col-6 mb-2">
