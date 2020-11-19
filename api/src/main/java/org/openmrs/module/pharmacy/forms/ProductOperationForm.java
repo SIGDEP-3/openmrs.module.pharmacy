@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.ProductOperation;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
@@ -10,7 +11,7 @@ import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import java.util.Date;
 import java.util.UUID;
 
-public class ReceptionHeaderForm {
+public abstract class ProductOperationForm {
     private Integer productOperationId;
     private String operationNumber;
     private Integer productProgramId;
@@ -19,12 +20,9 @@ public class ReceptionHeaderForm {
     private OperationStatus operationStatus;
     private Incidence incidence;
     private String observation;
-    private Integer productSupplierId;
-    private ReceptionQuantityMode receptionQuantityMode;
     private String uuid = UUID.randomUUID().toString();
 
-    public ReceptionHeaderForm() {
-        incidence = Incidence.POSITIVE;
+    public ProductOperationForm() {
         operationStatus = OperationStatus.AWAITING_VALIDATION;
     }
 
@@ -92,21 +90,6 @@ public class ReceptionHeaderForm {
         this.observation = observation;
     }
 
-    public Integer getProductSupplierId() {
-        return productSupplierId;
-    }
-
-    public void setProductSupplierId(Integer productSupplierId) {
-        this.productSupplierId = productSupplierId;
-    }
-
-    public ReceptionQuantityMode getReceptionQuantityMode() {
-        return receptionQuantityMode;
-    }
-
-    public void setReceptionQuantityMode(ReceptionQuantityMode receptionQuantityMode) {
-        this.receptionQuantityMode = receptionQuantityMode;
-    }
 
     public String getUuid() {
         return uuid;
@@ -116,35 +99,30 @@ public class ReceptionHeaderForm {
         this.uuid = uuid;
     }
 
-    public void setProductReception(ProductReception productReception) {
-        setProductOperationId(productReception.getProductOperationId());
-        setOperationDate(productReception.getOperationDate());
-        setProductProgramId(productReception.getProductProgram().getProductProgramId());
-        setProductSupplierId(productReception.getProductSupplier().getProductSupplierId());
-        setObservation(productReception.getObservation());
-        setReceptionQuantityMode(productReception.getReceptionQuantityMode());
-        setLocationId(productReception.getLocation().getLocationId());
-        setOperationStatus(productReception.getOperationStatus());
-        if (productReception.getOperationNumber() != null) {
-            setOperationNumber(productReception.getOperationNumber());
+    public void setProductOperation(ProductOperation productOperation) {
+        setProductOperationId(productOperation.getProductOperationId());
+        setOperationDate(productOperation.getOperationDate());
+        setProductProgramId(productOperation.getProductProgram().getProductProgramId());
+        setLocationId(productOperation.getLocation().getLocationId());
+        setOperationStatus(productOperation.getOperationStatus());
+        if (productOperation.getOperationNumber() != null) {
+            setOperationNumber(productOperation.getOperationNumber());
         }
-        setUuid(productReception.getUuid());
+        setUuid(productOperation.getUuid());
     }
 
-    public ProductReception getProductReception() {
-        ProductReception productReception = new ProductReception();
+    public ProductOperation getProductOperation(ProductOperation operation) {
+        ProductOperation productOperation = operation;
         if (getProductOperationId() != null) {
-            productReception.setProductOperationId(getProductOperationId());
-            productReception = Context.getService(PharmacyService.class).getOneProductReceptionById(getProductOperationId());
+            productOperation.setProductOperationId(getProductOperationId());
+            productOperation = Context.getService(PharmacyService.class).getOneProductReceptionById(getProductOperationId());
         }
-        productReception.setOperationDate(getOperationDate());
-        productReception.setProductProgram(Context.getService(PharmacyService.class).getOneProductProgramById(getProductProgramId()));
-        productReception.setProductSupplier(Context.getService(PharmacyService.class).getOneProductSupplierById(getProductSupplierId()));
-        productReception.setReceptionQuantityMode(getReceptionQuantityMode());
-        productReception.setLocation(Context.getLocationService().getLocation(getLocationId()));
-        productReception.setOperationNumber(getOperationNumber());
-        productReception.setOperationStatus(getOperationStatus());
-        productReception.setUuid(getUuid());
-        return productReception;
+        productOperation.setOperationDate(getOperationDate());
+        productOperation.setProductProgram(Context.getService(PharmacyService.class).getOneProductProgramById(getProductProgramId()));
+        productOperation.setLocation(Context.getLocationService().getLocation(getLocationId()));
+        productOperation.setOperationNumber(getOperationNumber());
+        productOperation.setOperationStatus(getOperationStatus());
+        productOperation.setUuid(getUuid());
+        return productOperation;
     }
 }

@@ -425,6 +425,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     }
 
     @Override
+    public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) {
+        return dao.getOneProductAttributeStockByAttribute(productAttribute, location, includeVoided);
+    }
+
+    @Override
     public ProductAttributeStock getOneProductAttributeStockById(Integer id) {
         return dao.getOneProductAttributeStockById(id);
     }
@@ -460,6 +465,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     }
 
     @Override
+    public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation productOperation, Boolean b) {
+        return dao.getAllProductAttributeOtherFluxByOperation(productOperation, b);
+    }
+
+    @Override
     public ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id) {
         return dao.getOneProductAttributeOtherFluxById(id);
     }
@@ -482,6 +492,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid) {
         return dao.getOneProductAttributeOtherFluxByUuid(uuid);
+    }
+
+    @Override
+    public Boolean validateOperation(ProductOperation operation) {
+        return null;
     }
 
 }

@@ -15,8 +15,8 @@ public class ProductReceptionFluxDTO implements Serializable {
     private Double unitConversion;
     private String batchNumber;
     private Date expiryDate;
-    private Integer deliveredQuantity;
-    private Integer receivedQuantity;
+    private Integer quantity;
+    private Integer quantityToDeliver;
     private String observation;
     private Date dateCreated;
 
@@ -111,20 +111,20 @@ public class ProductReceptionFluxDTO implements Serializable {
         this.expiryDate = expiryDate;
     }
 
-    public Integer getDeliveredQuantity() {
-        return deliveredQuantity;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setDeliveredQuantity(Integer deliveredQuantity) {
-        this.deliveredQuantity = deliveredQuantity;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public Integer getReceivedQuantity() {
-        return receivedQuantity;
+    public Integer getQuantityToDeliver() {
+        return quantityToDeliver;
     }
 
-    public void setReceivedQuantity(Integer receivedQuantity) {
-        this.receivedQuantity = receivedQuantity;
+    public void setQuantityToDeliver(Integer quantityToDeliver) {
+        this.quantityToDeliver = quantityToDeliver;
     }
 
     public String getObservation() {

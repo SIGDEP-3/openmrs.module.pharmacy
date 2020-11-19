@@ -23,7 +23,7 @@ public class ProductInventory extends ProductOperation {
     private Date inventoryEndDate;
 
     public ProductInventory() {
-        this.setIncidence(Incidence.NONE);
+        this.setIncidence(Incidence.EQUAL);
     }
 
     public Date getInventoryDate() {

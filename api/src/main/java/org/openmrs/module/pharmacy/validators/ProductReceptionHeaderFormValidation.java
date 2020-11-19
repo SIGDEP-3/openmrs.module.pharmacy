@@ -2,27 +2,25 @@ package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.forms.ProductForm;
-import org.openmrs.module.pharmacy.forms.ReceptionHeaderForm;
+import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.util.List;
 
-@Handler(supports = {ReceptionHeaderForm.class}, order = 50)
+@Handler(supports = {ProductReceptionForm.class}, order = 50)
 public class ProductReceptionHeaderFormValidation implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
-        return aClass.equals(ReceptionHeaderForm.class);
+        return aClass.equals(ProductReceptionForm.class);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        ReceptionHeaderForm form = (ReceptionHeaderForm) o;
+        ProductReceptionForm form = (ProductReceptionForm) o;
 
         if (form == null) {
             errors.reject("pharmacy", "general.error");
