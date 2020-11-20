@@ -5,6 +5,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductService;
+import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -26,8 +28,11 @@ import java.util.List;
         supportedClass = Product.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.11.*", "1.12.*", "2.*"})
 public class ProductResource extends DelegatingCrudResource<Product> {
 
-    PharmacyService getService() {
-        return Context.getService(PharmacyService.class);
+    ProductService getService() {
+        return Context.getService(ProductService.class);
+    }
+    ProductUnitService unitService() {
+        return Context.getService(ProductUnitService.class);
     }
 
     @Override
@@ -122,12 +127,12 @@ public class ProductResource extends DelegatingCrudResource<Product> {
         if (StringUtils.isNotBlank(name)) {
             products = getService().searchProductByNameLike(name);
         } else if (StringUtils.isNotBlank(retailUnitName)) {
-            ProductUnit productUnit = getService().getOneProductUnitByName(retailUnitName);
+            ProductUnit productUnit = unitService().getOneProductUnitByName(retailUnitName);
             if (productUnit != null) {
                 products = getService().getAllProductByRetailUnit(productUnit);
             }
         } else if (StringUtils.isNotBlank(wholesaleUnitName)) {
-            ProductUnit productUnit = getService().getOneProductUnitByName(wholesaleUnitName);
+            ProductUnit productUnit = unitService().getOneProductUnitByName(wholesaleUnitName);
             if (productUnit != null) {
                 products = getService().getAllProductByWholesaleUnit(productUnit);
             }

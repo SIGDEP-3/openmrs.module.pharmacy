@@ -5,6 +5,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
+import org.openmrs.module.pharmacy.api.ProductAttributeService;
+import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.forms.ProductAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.springframework.validation.Errors;
@@ -34,7 +37,7 @@ public class ProductAttributeFluxFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "expiryDate", null, "La date de péremption est requise");
 
             if (form.getBatchNumber() != null) {
-                ProductAttribute productAttribute = Context.getService(PharmacyService.class).getOneProductAttributeByBatchNumber(form.getBatchNumber());
+                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(form.getBatchNumber());
                 if (productAttribute != null) {
                     if (!productAttribute.getProduct().getProductId().equals(form.getProductId())) {
                         if(form.getProductAttributeFluxId() == null ) {
@@ -44,9 +47,9 @@ public class ProductAttributeFluxFormValidation implements Validator {
                     }
                 }
 
-                ProductAttributeFlux productAttributeFlux = Context.getService(PharmacyService.class)
-                        .getOneProductAttributeFluxByAttributeAndOperation(productAttribute,
-                                Context.getService(PharmacyService.class).getOneProductReceptionById(form.getProductOperationId()));
+                ProductAttributeFlux productAttributeFlux =
+                        fluxService().getOneProductAttributeFluxByAttributeAndOperation(productAttribute,
+                                receptionService().getOneProductReceptionById(form.getProductOperationId()));
                 if (productAttributeFlux != null) {
                     if (!productAttributeFlux.getProductAttributeFluxId().equals(form.getProductAttributeFluxId())) {
                         errors.rejectValue("batchNumber", null, "Cette ligne du produit déjà été ajouté !");
@@ -68,5 +71,17 @@ public class ProductAttributeFluxFormValidation implements Validator {
         }
 
 
+    }
+
+    private ProductReceptionService receptionService() {
+        return Context.getService(ProductReceptionService.class);
+    }
+
+    private ProductAttributeFluxService fluxService() {
+        return Context.getService(ProductAttributeFluxService.class);
+    }
+
+    private ProductAttributeService attributeService() {
+        return Context.getService(ProductAttributeService.class);
     }
 }

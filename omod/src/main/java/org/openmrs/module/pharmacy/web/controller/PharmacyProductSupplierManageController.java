@@ -6,6 +6,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductSupplier;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductSupplierService;
 import org.openmrs.module.pharmacy.forms.SupplierForm;
 import org.openmrs.module.pharmacy.validators.ProductProgramFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductSupplierFormValidation;
@@ -25,8 +26,8 @@ public class PharmacyProductSupplierManageController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
-        return Context.getService(PharmacyService.class);
+    private ProductSupplierService service() {
+        return Context.getService(ProductSupplierService.class);
     }
 
     @RequestMapping(value = "/module/pharmacy/product/suppliers/list.form", method = RequestMethod.GET)

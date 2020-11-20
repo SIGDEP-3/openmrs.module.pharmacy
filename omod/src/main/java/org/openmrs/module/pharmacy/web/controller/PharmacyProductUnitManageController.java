@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.validators.ProductUnitFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,8 @@ import javax.servlet.http.HttpSession;
 public class PharmacyProductUnitManageController {
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
-        return Context.getService(PharmacyService.class);
+    private ProductUnitService service() {
+        return Context.getService(ProductUnitService.class);
     }
 
     @RequestMapping(value = "/module/pharmacy/product/units/list.form", method = RequestMethod.GET)
