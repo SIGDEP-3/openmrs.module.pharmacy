@@ -5,6 +5,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -34,7 +35,7 @@ public class ProductFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "productProgramsIds", null, "Ce champ est requis");
 
             if (!form.getCode().isEmpty()) {
-                Product product = Context.getService(PharmacyService.class).getOneProductByCode(form.getCode());
+                Product product = Context.getService(ProductService.class).getOneProductByCode(form.getCode());
                 if (product != null) {
                     if (form.getProductId() == null) {
                         errors.rejectValue("code", "Un produit possédant ce code existe déjà !");

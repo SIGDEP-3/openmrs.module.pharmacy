@@ -6,7 +6,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.forms.ProductForm;
 import org.openmrs.module.pharmacy.validators.ProductFormValidation;
 import org.openmrs.web.WebConstants;
@@ -32,10 +32,26 @@ public class PharmacyProductManageController {
         return Context.getService(PharmacyService.class);
     }
 
+    private ProductService productService() {
+        return Context.getService(ProductService.class);
+    }
+
+    private ProductProgramService programService(){
+        return Context.getService(ProductProgramService.class);
+    }
+
+    private ProductUnitService unitService(){
+        return Context.getService(ProductUnitService.class);
+    }
+
+    private ProductRegimenService regimenService(){
+        return Context.getService(ProductRegimenService.class);
+    }
+
     @RequestMapping(value = "/module/pharmacy/product/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
-            modelMap.addAttribute("products", service().getAllProduct());
+            modelMap.addAttribute("products", productService().getAllProduct());
             modelMap.addAttribute("title", "Liste des Produits");
         }
     }
@@ -47,7 +63,7 @@ public class PharmacyProductManageController {
         if (Context.isAuthenticated()) {
             Product product = new Product();
             if (id != 0) {
-                product = service().getOneProductById(id);
+                product = productService().getOneProductById(id);
                 productForm.setProduct(product);
             } else {
                 productForm = new ProductForm();
@@ -55,10 +71,10 @@ public class PharmacyProductManageController {
 
             modelMap.addAttribute("productForm", productForm);
             modelMap.addAttribute("product", product);
-            modelMap.addAttribute("availablePrograms", service().getAllProductProgram());
-            modelMap.addAttribute("availableRetailUnits", service().getAllProductUnit());
-            modelMap.addAttribute("availableWholesaleUnits", service().getAllProductUnit());
-            modelMap.addAttribute("availableRegimens", service().getAllProductRegimen());
+            modelMap.addAttribute("availablePrograms", programService().getAllProductProgram());
+            modelMap.addAttribute("availableRetailUnits", unitService().getAllProductUnit());
+            modelMap.addAttribute("availableWholesaleUnits", unitService().getAllProductUnit());
+            modelMap.addAttribute("availableRegimens", regimenService().getAllProductRegimen());
             modelMap.addAttribute("title", "Formulaire de saisie des Produits");
         }
     }
@@ -75,7 +91,7 @@ public class PharmacyProductManageController {
 
             if (!result.hasErrors()) {
                 boolean idExist = (productForm.getProductId() != null);
-                service().saveProduct(productForm.getProduct());
+                productService().saveProduct(productForm.getProduct());
                 if (!idExist) {
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit ajouté avec succès");
                 } else {
@@ -85,10 +101,10 @@ public class PharmacyProductManageController {
             }
             modelMap.addAttribute("productForm", productForm);
             modelMap.addAttribute("product", productForm.getProduct());
-            modelMap.addAttribute("availablePrograms", service().getAllProductProgram());
-            modelMap.addAttribute("availableRetailUnits", service().getAllProductUnit());
-            modelMap.addAttribute("availableWholesaleUnits", service().getAllProductUnit());
-            modelMap.addAttribute("availableRegimens", service().getAllProductRegimen());
+            modelMap.addAttribute("availablePrograms", programService().getAllProductProgram());
+            modelMap.addAttribute("availableRetailUnits", unitService().getAllProductUnit());
+            modelMap.addAttribute("availableWholesaleUnits", unitService().getAllProductUnit());
+            modelMap.addAttribute("availableRegimens", regimenService().getAllProductRegimen());
             modelMap.addAttribute("title", "Formulaire de saisie des Programmes");
         }
 

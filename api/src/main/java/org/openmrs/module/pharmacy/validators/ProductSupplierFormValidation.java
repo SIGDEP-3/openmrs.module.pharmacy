@@ -5,6 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductSupplier;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductSupplierService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -26,7 +27,7 @@ public class ProductSupplierFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "name", null, "Ce champ est requis");
 
             if (!supplier.getName().isEmpty()) {
-                ProductSupplier otherSupplier = Context.getService(PharmacyService.class).getOneProductSupplierByName(supplier.getName());
+                ProductSupplier otherSupplier = Context.getService(ProductSupplierService.class).getOneProductSupplierByName(supplier.getName());
                 if (otherSupplier != null) {
                     if (supplier.getProductSupplierId() == null) {
                         errors.rejectValue("name", "Ce fournisseur existe déjà !");

@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity(name = "ProductAttributeStock")
 @Table(name = "pharmacy_product_attribute_stock")
-public class ProductAttributeStock extends AbstractPharmacyObject {
+public class ProductAttributeStock extends AbstractPharmacyData {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -22,9 +22,9 @@ public class ProductAttributeStock extends AbstractPharmacyObject {
     @Column(name = "quantity_in_stock", nullable = false)
     private Integer quantityInStock;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date_created", nullable = false)
-    private Date dateCreated;
+//    @Temporal(TemporalType.DATE)
+//    @Column(name = "stock_date", nullable = false)
+//    private Date stockDate;
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
@@ -57,13 +57,13 @@ public class ProductAttributeStock extends AbstractPharmacyObject {
         this.quantityInStock = quantityInStock;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
+//    public Date getStockDate() {
+//        return stockDate;
+//    }
+//
+//    public void setStockDate(Date dateCreated) {
+//        this.stockDate = dateCreated;
+//    }
 
     public Location getLocation() {
         return location;
