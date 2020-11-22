@@ -4,7 +4,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -26,7 +25,7 @@ public class ProductUnitFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "name", null, "Ce champ est requis");
 
             if (!unit.getName().isEmpty()) {
-                ProductUnit otherUnit = Context.getService(ProductUnitService.class).getOneProductUnitByName(unit.getName());
+                ProductUnit otherUnit = Context.getService(PharmacyService.class).getOneProductUnitByName(unit.getName());
                 if (otherUnit != null) {
                     if (unit.getProductUnitId() == null) {
                         errors.rejectValue("name", "Cette unité existe déjà !");

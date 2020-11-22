@@ -4,7 +4,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -32,7 +31,7 @@ public class ProductReceptionHeaderFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "operationDate", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null) {
-                List<ProductReception> productReceptions =  Context.getService(ProductReceptionService.class).getAllProductReceptions(
+                List<ProductReception> productReceptions =  Context.getService(PharmacyService.class).getAllProductReceptions(
                         Context.getLocationService().getDefaultLocation(), false, form.getOperationDate(), form.getOperationDate()
                 );
                 for (ProductReception reception : productReceptions) {

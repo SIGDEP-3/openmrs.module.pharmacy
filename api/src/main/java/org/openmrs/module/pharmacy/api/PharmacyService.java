@@ -61,7 +61,7 @@ public interface PharmacyService extends OpenmrsService {
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
 	List<Product> searchProductByNameLike(String nameSearch);
 
-	ProductProgram saveProductProgram(ProductProgram programForm);
+	ProductProgram saveProductProgram(ProductProgram productProgram);
 	void removeProductProgram(ProductProgram productProgram);
 	ProductProgram getOneProductProgramById(Integer programId);
 	ProductProgram getOneProductProgramByUuid(String uuid);
@@ -73,10 +73,20 @@ public interface PharmacyService extends OpenmrsService {
 	ProductRegimen getOneProductRegimenById(Integer regimenId);
 	ProductRegimen getOneProductRegimenByUuid(String uuid);
 	ProductRegimen getOneProductRegimenByConceptName(String name);
-	ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
+	public ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
 	List<ProductRegimen> getAllProductRegimen();
 
-	List<ProductSupplier> getAllProductSuppliers();
+	ProductPrice saveProductPrice(ProductPrice productPrice);
+	void removeProductPrice(ProductPrice productPrice);
+	ProductPrice getOneProductPriceById(Integer productPriceId);
+	ProductPrice getOneProductPriceByUuid(String uuid);
+	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+	ProductPrice getOneProductPriceByProductId(Integer productId);
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+	List<ProductPrice> getAllProductPrices();
+
+    List<ProductSupplier> getAllProductSuppliers();
 	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
 	ProductSupplier editProductSupplier(ProductSupplier productSupplier);
 	void removeProductSupplier(ProductSupplier productSupplier);
@@ -84,16 +94,38 @@ public interface PharmacyService extends OpenmrsService {
 	ProductSupplier getOneProductSupplierByUuid(String uuid);
 	ProductSupplier getOneProductSupplierByName(String name);
 
-	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
-	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
-	List<ProductReception> getAllProductReceptions(Location location);
-	List<ProductReception> getAllProductReceptions(Boolean includeVoided);
+    List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
+    List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+    List<ProductReception> getAllProductReceptions(Location location);
+    List<ProductReception> getAllProductReceptions(Boolean includeVoided);
 	ProductReception getOneProductReceptionById(Integer id);
 	ProductReception saveProductReception(ProductReception productReception);
 	ProductReception editProductReception(ProductReception productReception);
 	void removeProductReception(ProductReception productReception);
 	ProductReception getOneProductReceptionByUuid(String uuid);
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
+
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided);
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location);
+	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided);
+	ProductMovementEntry getOneProductMovementEntryById(Integer id);
+	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry);
+	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry);
+	void removeProductMovementEntry(ProductMovementEntry productMovementEntry);
+	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid);
+//	List<ProductMovementEntryFluxDTO> getProductMovementEntryFluxDTOs(ProductReception productReception);
+
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided);
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementOut> getAllProductMovementOut(Location location);
+	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
+	ProductMovementOut getOneProductMovementOutById(Integer id);
+	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut);
+	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut);
+	void removeProductMovementOut(ProductMovementOut productMovementOut);
+	ProductMovementOut getOneProductMovementOutByUuid(String uuid);
+//	List<ProductReceptionFluxDTO> getProductMovementOutFluxDTOs(ProductReception productReception);
 
 	List<ProductAttribute> getAllProductAttributes(Location location, Boolean includeVoided);
 	List<ProductAttribute> getAllProductAttributes(Location location);
@@ -116,22 +148,23 @@ public interface PharmacyService extends OpenmrsService {
 	ProductAttributeFlux saveProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
 	ProductAttributeFlux editProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
 	void removeProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
-	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
 
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location, Boolean includeVoided);
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
 	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
-	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
 	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided);
+	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
 	ProductAttributeStock getOneProductAttributeStockById(Integer id);
 	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
-	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
 
+
+	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
+	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
-	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation reception, Boolean b);
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
@@ -139,4 +172,12 @@ public interface PharmacyService extends OpenmrsService {
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
 
 	Boolean validateOperation(ProductOperation operation);
+
+	List<ProductExchangeEntity> getAllProductExchange();
+	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
+	void removeProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId);
+	ProductExchangeEntity getOneProductExchangeByUuid(String uuid);
+	ProductExchangeEntity getOneProductExchangeByName(String name);
 }

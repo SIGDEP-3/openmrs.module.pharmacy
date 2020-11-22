@@ -7,8 +7,6 @@ import org.openmrs.ConceptAnswer;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductRegimenService;
-import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
 import org.openmrs.module.pharmacy.validators.ProductRegimenFormValidation;
 import org.openmrs.web.WebConstants;
@@ -30,8 +28,8 @@ import java.util.Map;
 public class PharmacyProductRegimenManageController {
     protected final Log log = LogFactory.getLog(getClass());
 
-    private ProductRegimenService service() {
-        return Context.getService(ProductRegimenService.class);
+    private PharmacyService service() {
+        return Context.getService(PharmacyService.class);
     }
 
     @RequestMapping(value = "/module/pharmacy/product/regimens/list.form", method = RequestMethod.GET)

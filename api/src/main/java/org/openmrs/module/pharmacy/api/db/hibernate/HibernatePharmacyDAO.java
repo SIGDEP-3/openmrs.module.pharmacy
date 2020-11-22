@@ -256,6 +256,65 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		return sessionFactory.getCurrentSession().createCriteria(ProductRegimen.class).list();
 	}
 
+	/******* PRODUCTS PRICES *******/
+
+	@Override
+	public ProductPrice saveProductPrice(ProductPrice productPrice) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productPrice);
+		return productPrice;
+	}
+
+	@Override
+	public void removeProductPrice(ProductPrice productPrice) {
+		sessionFactory.getCurrentSession().delete(productPrice);
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceById(Integer productPriceId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productPriceId);
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
+		return (ProductPrice) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
+		return (List<ProductPrice>) criteria.add(Restrictions.eq("true", status));
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram() {
+		return (ProductPrice) sessionFactory.getCurrentSession();
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByProductId(Integer productId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productId);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPrices() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductPrice.class).list();
+	}
+
+	/******* PRODUCTS SUPPLIER *******/
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductSupplier> getAllProductSuppliers() {
@@ -305,8 +364,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				add(Restrictions.eq("voided", includeVoided)).list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+
 	public List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReception.class);
 		return criteria
@@ -679,6 +737,49 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		return (ProductAttributeOtherFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
 
+	/******* PRODUCTS SUPPLIER *******/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductExchangeEntity> getAllProductExchange() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class).list();
+	}
+
+	@Override
+	public ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchange) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productExchange);
+		return productExchange;
+	}
+
+	@Override
+	public ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchange) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productExchange);
+		return productExchange;
+	}
+
+	@Override
+	public void removeProductExchange(ProductExchangeEntity productExchangeEntity) {
+		sessionFactory.getCurrentSession().delete(productExchangeEntity);
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return (ProductExchangeEntity) criteria.add(Restrictions.eq("productExchangeId", productExchangeId)).uniqueResult();
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return (ProductExchangeEntity) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeByName(String name) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return (ProductExchangeEntity) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+	}
+
 	@Override
 	public Boolean validateOperation(ProductOperation operation) {
 		operation.setOperationStatus(OperationStatus.VALIDATED);
@@ -709,5 +810,128 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		}
 
 		return true;
+	}
+
+	/********* PRODUCT MOVEMENT ENTRY ***********/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("location", location)).
+				add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("location", location)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@Override
+	public ProductMovementEntry getOneProductMovementEntryById(Integer id) {
+		return (ProductMovementEntry) sessionFactory.getCurrentSession().get(ProductMovementEntry.class, id);
+	}
+
+	@Override
+	public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementEntry);
+		return productMovementEntry;
+	}
+
+	@Override
+	public ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementEntry);
+		return productMovementEntry;
+	}
+
+	@Override
+	public void removeProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().delete(productMovementEntry);
+	}
+
+	@Override
+	public ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return (ProductMovementEntry) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+
+	/********* PRODUCT MOVEMENT OUT ***********/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("location", location)).
+				add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+
+	public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("location", location)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@Override
+	public ProductMovementOut getOneProductMovementOutById(Integer id) {
+		return (ProductMovementOut) sessionFactory.getCurrentSession().get(ProductMovementOut.class, id);
+	}
+
+	@Override
+	public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementOut);
+		return productMovementOut;
+	}
+
+	@Override
+	public ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementOut);
+		return productMovementOut;
+	}
+
+	@Override
+	public void removeProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().delete(productMovementOut);
+	}
+
+	@Override
+	public ProductMovementOut getOneProductMovementOutByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return (ProductMovementOut) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
 }

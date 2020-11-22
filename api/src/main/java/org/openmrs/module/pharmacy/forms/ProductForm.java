@@ -6,9 +6,6 @@ import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
-import org.openmrs.module.pharmacy.api.ProductRegimenService;
-import org.openmrs.module.pharmacy.api.ProductUnitService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -133,8 +130,8 @@ public class ProductForm {
         product.setUnitConversion(getUnitConversion());
         product.setRetailName(getRetailName());
         product.setWholesaleName(getWholesaleName());
-        product.setProductRetailUnit(Context.getService(ProductUnitService.class).getOneProductUnitById(getProductRetailUnitId()));
-        product.setProductWholesaleUnit(Context.getService(ProductUnitService.class).getOneProductUnitById(getProductWholesaleUnitId()));
+        product.setProductRetailUnit(Context.getService(PharmacyService.class).getOneProductUnitById(getProductRetailUnitId()));
+        product.setProductWholesaleUnit(Context.getService(PharmacyService.class).getOneProductUnitById(getProductWholesaleUnitId()));
         if (!productProgramIds.isEmpty()) {
             product.getProductPrograms().addAll(getProgramsByIds(getProductProgramIds()));
         }
@@ -162,7 +159,7 @@ public class ProductForm {
     private Set<ProductProgram> getProgramsByIds(Set<Integer> programIds) {
         Set<ProductProgram> programs = new HashSet<ProductProgram>();
         for (Integer id : programIds) {
-            programs.add(Context.getService(ProductProgramService.class).getOneProductProgramById(id));
+            programs.add(Context.getService(PharmacyService.class).getOneProductProgramById(id));
         }
         return programs;
     }
@@ -170,7 +167,7 @@ public class ProductForm {
     private Set<ProductRegimen> getRegimensByIds(Set<Integer> programIds) {
         Set<ProductRegimen> regimens = new HashSet<ProductRegimen>();
         for (Integer id : programIds) {
-            regimens.add(Context.getService(ProductRegimenService.class).getOneProductRegimenById(id));
+            regimens.add(Context.getService(PharmacyService.class).getOneProductRegimenById(id));
         }
         return regimens;
     }

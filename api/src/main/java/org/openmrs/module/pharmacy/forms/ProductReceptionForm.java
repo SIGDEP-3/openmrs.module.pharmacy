@@ -3,7 +3,6 @@ package org.openmrs.module.pharmacy.forms;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductSupplierService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 
@@ -39,7 +38,7 @@ public class ProductReceptionForm extends ProductOperationForm {
 
     public ProductReception getProductReception() {
         ProductReception productReception = (ProductReception) getProductOperation(new ProductReception());
-        productReception.setProductSupplier(Context.getService(ProductSupplierService.class).getOneProductSupplierById(getProductSupplierId()));
+        productReception.setProductSupplier(Context.getService(PharmacyService.class).getOneProductSupplierById(getProductSupplierId()));
         productReception.setReceptionQuantityMode(getReceptionQuantityMode());
         return productReception;
     }

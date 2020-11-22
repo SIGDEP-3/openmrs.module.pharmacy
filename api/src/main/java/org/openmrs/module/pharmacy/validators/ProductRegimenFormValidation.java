@@ -4,7 +4,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -27,7 +26,7 @@ public class ProductRegimenFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "conceptId", null, "Ce champ est requis");
 
             if (regimen.getConceptId() != null) {
-                ProductRegimen otherRegimen = Context.getService(ProductRegimenService.class).getOneProductRegimenByConceptId(regimen.getConceptId());
+                ProductRegimen otherRegimen = Context.getService(PharmacyService.class).getOneProductRegimenByConceptId(regimen.getConceptId());
                 if (otherRegimen != null) {
                     if (regimen.getProductRegimenId() == null) {
                         errors.rejectValue("conceptId", "Ce Régime existe déjà !");
