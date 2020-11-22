@@ -12,14 +12,14 @@
 </script>
 <div class="container-fluid mt-2">
 
-    <div class="row mb-2 ml-1 mr-1">
+    <div class="row mb-2">
         <div class="col-6">
             <div class="h5 pt-2"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/reception/edit.form" var="url"/>
+            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>
             <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau">
-                <i class="fa fa-plus"></i> Nouvelle reception
+                <i class="fa fa-plus"></i> Nouvel inventaire
             </button>
         </div>
     </div>
@@ -29,24 +29,12 @@
                 <thead>
                 <tr>
                     <th>
-                        <%--            <spring:message code="pharmacy.supplier"/>--%>
-                        Fournisseur
-                    </th>
-                    <th>
-                        <%--            <spring:message code="pharmacy.receptionDate"/>--%>
-                        Date de reception
-                    </th>
-                    <th>
-                        <%--            <spring:message code="pharmacy.receptionCode"/>--%>
-                        BL
+                        <%--            <spring:message code="pharmacy.inventoryDate"/>--%>
+                        Date de l'inventaire
                     </th>
                     <th>
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Programme
-                    </th>
-                    <th>
-                        <%--            <spring:message code="pharmacy.program"/>--%>
-                        Type de saisie
                     </th>
                     <th>Nombre de produits</th>
                     <th>
@@ -57,17 +45,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="reception" items="${ receptions }">
+                <c:forEach var="inventory" items="${ inventories }">
                     <tr>
-                        <td>${reception.productSupplier.name}</td>
-                        <td><fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
-                        <td>${reception.operationNumber}</td>
-                        <td>${reception.productProgram.name}</td>
-                        <td>${reception.receptionQuantityMode}</td>
+                        <td><fmt:formatDate value="${inventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                        <td>${inventory.productProgram.name}</td>
                         <c:choose>
-                            <c:when test="${fct:length(reception.productAttributeFluxes) == 0}">
-                                <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="addLineUrl">
-                                    <c:param name="receptionId" value="${reception.productOperationId}"/>
+                            <c:when test="${fct:length(inventory.productAttributeFluxes) == 0}">
+                                <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="addLineUrl">
+                                    <c:param name="inventoryId" value="${inventory.productOperationId}"/>
                                 </c:url>
                                 <td class="text-danger">
                                     <a href="${addLineUrl}">Ajouter des produits</a>
@@ -75,17 +60,17 @@
                             </c:when>
                             <c:otherwise>
                                 <td class="text-center">
-                                        ${fct:length(reception.productAttributeFluxes)}
+                                        ${fct:length(inventory.productAttributeFluxes)}
                                 </td>
                             </c:otherwise>
                         </c:choose>
-                        <td>${reception.operationStatus}</td>
+                        <td>${inventory.operationStatus}</td>
                         <td>
-                            <c:url value="/module/pharmacy/operations/reception/edit.form" var="editUrl">
-                                <c:param name="id" value="${reception.productOperationId}"/>
+                            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="editUrl">
+                                <c:param name="id" value="${inventory.productOperationId}"/>
                             </c:url>
-                            <a href="${editUrl}" class="text-${reception.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
-                                <i class="fa fa-${reception.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
+                            <a href="${editUrl}" class="text-${inventory.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
+                                <i class="fa fa-${inventory.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
                         </td>
                     </tr>

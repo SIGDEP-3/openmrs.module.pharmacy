@@ -13,6 +13,13 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
+import org.openmrs.Location;
+import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
+
+import java.util.Date;
+import java.util.List;
+
 /**
  *  Database methods for {@link org.openmrs.module.pharmacy.api.ProductInventoryService}.
  */
@@ -21,5 +28,15 @@ public interface ProductInventoryDAO {
     /*
 	 * Add DAO methods here
 	 */
-
+	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided);
+	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductInventory> getAllProductInventories(Location location);
+	List<ProductInventory> getAllProductInventories(Boolean includeVoided);
+	ProductInventory getOneProductInventoryById(Integer id);
+	ProductInventory saveProductInventory(ProductInventory productInventory);
+	ProductInventory editProductInventory(ProductInventory productInventory);
+	void removeProductInventory(ProductInventory productInventory);
+	ProductInventory getOneProductInventoryByUuid(String uuid);
+	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
+	ProductInventory getLastProductInventory();
 }

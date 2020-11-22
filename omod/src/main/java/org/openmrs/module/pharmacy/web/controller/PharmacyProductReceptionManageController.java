@@ -99,6 +99,7 @@ public class PharmacyProductReceptionManageController {
 
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
             modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("productReception", receptionService().getOneProductReceptionById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie de réception - entête");
         }
@@ -213,7 +214,15 @@ public class PharmacyProductReceptionManageController {
         modelMap.addAttribute("productReception", productReception);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());
         modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
-        modelMap.addAttribute("subTitle", "Saisie de réception - ajout de produits");
+        if (!productReception.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
+            if (productReception.getOperationStatus().equals(OperationStatus.VALIDATED))
+            modelMap.addAttribute("subTitle", "Réception - APPROUVEE");
+            else if (productReception.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
+                modelMap.addAttribute("subTitle", "Réception - EN ATTENTE DE VALIDATION");
+            }
+        } else {
+            modelMap.addAttribute("subTitle", "Saisie de réception - ajout de produits");
+        }
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/complete.form", method = RequestMethod.GET)

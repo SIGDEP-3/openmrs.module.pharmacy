@@ -15,9 +15,16 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.api.ProductInventoryService;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
+import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
+import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * It is a default implementation of {@link ProductInventoryService}.
@@ -25,21 +32,75 @@ import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
 public class ProductInventoryServiceImpl extends BaseOpenmrsService implements ProductInventoryService {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
-	
-	private ProductInventoryDAO dao;
-	
-	/**
+
+    private ProductInventoryDAO dao;
+
+    /**
      * @param dao the dao to set
      */
     public void setDao(ProductInventoryDAO dao) {
-	    this.dao = dao;
+        this.dao = dao;
     }
-    
+
     /**
      * @return the dao
      */
     public ProductInventoryDAO getDao() {
-	    return dao;
+        return dao;
     }
 
+    @Override
+    public List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided) {
+        return dao.getAllProductInventories(location, includeVoided);
+    }
+
+    @Override
+    public List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+        return dao.getAllProductInventories(location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
+    public List<ProductInventory> getAllProductInventories(Location location) {
+        return dao.getAllProductInventories(location);
+    }
+
+    @Override
+    public List<ProductInventory> getAllProductInventories(Boolean includeVoided) {
+        return dao.getAllProductInventories(includeVoided);
+    }
+
+    @Override
+    public ProductInventory getOneProductInventoryById(Integer id) {
+        return dao.getOneProductInventoryById(id);
+    }
+
+    @Override
+    public ProductInventory saveProductInventory(ProductInventory productInventory) {
+        return dao.saveProductInventory(productInventory);
+    }
+
+    @Override
+    public ProductInventory editProductInventory(ProductInventory productInventory) {
+        return dao.editProductInventory(productInventory);
+    }
+
+    @Override
+    public void removeProductInventory(ProductInventory productInventory) {
+        dao.removeProductInventory(productInventory);
+    }
+
+    @Override
+    public ProductInventory getOneProductInventoryByUuid(String uuid) {
+        return dao.getOneProductInventoryByUuid(uuid);
+    }
+
+    @Override
+    public ProductInventory getLastProductInventory() {
+        return dao.getLastProductInventory();
+    }
+
+    @Override
+    public List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory) {
+        return dao.getProductInventoryFluxDTOs(productInventory);
+    }
 }
