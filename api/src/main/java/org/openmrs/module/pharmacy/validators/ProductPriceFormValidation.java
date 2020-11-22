@@ -1,8 +1,6 @@
 package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.pharmacy.ProductPrice;
-import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.forms.ProductPriceForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

@@ -48,6 +48,11 @@
 			<spring:message code="pharmacy.supplierManagement" />
 		</a>
 	</li>
+	<li <c:if test='<%= request.getRequestURI().contains("/exchanges") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/pharmacy/product/exchanges/list.form">
+			<spring:message code="pharmacy.exchangeManagement" />
+		</a>
+	</li>
 	
 	<!-- Add further links here -->
 </ul>

@@ -71,6 +71,9 @@ public class ProductPriceForm {
     public Integer getProductId() {
         return productId;
     }
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
@@ -89,10 +92,6 @@ public class ProductPriceForm {
 
         return price;
     }
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
     public void setProductPrice(ProductPrice price) {
         this.setProductPriceId(price.getProductPriceId());
         this.setProductProgramId(price.getProductProgram().getProductProgramId());
