@@ -23,7 +23,7 @@ public abstract class ProductOperationForm {
     private String uuid = UUID.randomUUID().toString();
 
     public ProductOperationForm() {
-        operationStatus = OperationStatus.AWAITING_VALIDATION;
+        operationStatus = OperationStatus.NOT_COMPLETED;
     }
 
     public Integer getProductOperationId() {

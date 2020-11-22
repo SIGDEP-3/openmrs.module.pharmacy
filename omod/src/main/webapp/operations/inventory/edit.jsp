@@ -53,10 +53,10 @@
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6">
-            <div class="h5"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+            <div class="h5 pt-2"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/reception/list.form" var="url"/>
+            <c:url value="/module/pharmacy/operations/inventory/list.form" var="url"/>
             <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
@@ -64,45 +64,31 @@
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
-            <form:form modelAttribute="productReceptionForm" method="post" action="" id="form">
+            <form:form modelAttribute="productInventoryForm" method="post" action="" id="form">
                 <form:hidden path="productOperationId"/>
                 <form:hidden path="uuid"/>
                 <form:hidden path="locationId"/>
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
-                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">
+                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">
                     <form:hidden path="productProgramId"/>
                 </c:if>
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
-                            <div class="col-10 mb-2">
-                                <labe>Fournisseur <span class="required">*</span></labe>
-                                <form:select path="productSupplierId" cssClass="form-control s2" >
-                                    <form:option value="" label=""/>
-                                    <form:options items="${suppliers}" itemValue="productSupplierId" itemLabel="name" />
-                                </form:select>
-                                <form:errors path="productSupplierId" cssClass="error"/>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-6 mb-2">
                                 <labe>Programme <span class="required">*</span></labe>
-                                <c:if test="${fct:length(productReception.productAttributeFluxes) == 0}">
+                                <c:if test="${fct:length(productInventory.productAttributeFluxes) == 0}">
                                     <form:select path="productProgramId" cssClass="form-control s2" >
                                         <form:option value="" label=""/>
                                         <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />
                                     </form:select>
                                     <form:errors path="productProgramId" cssClass="error"/>
                                 </c:if>
-                                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">
+                                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">
                                     <div class="form-control form-control-sm">
-                                            ${productReception.productProgram.name}
+                                            ${productInventory.productProgram.name}
                                     </div>
-<%--                                    <form:select path="productProgramId" cssClass="form-control s2" disabled="true" title="" >--%>
-<%--                                        <form:option value="" label=""/>--%>
-<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
-<%--                                    </form:select>--%>
                                 </c:if>
                             </div>
                         </div>
@@ -110,33 +96,15 @@
                     <div class="col-6">
                         <div class="row mb-2">
                             <div class="col-4">
-                                <labe>Date de reception <span class="required">*</span></labe>
+                                <labe>Date de inventory <span class="required">*</span></labe>
                                 <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
                                 <form:errors path="operationDate" cssClass="error"/>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4">
-                                <labe>Numero de reception</labe>
-                                <form:input path="operationNumber" cssClass="form-control form-control-sm" />
-                                <form:errors path="operationNumber" cssClass="error"/>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-6">
-                        <div class="row mb-2">
-                            <div class="col-10">
-                                <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="receptionQuantityMode" value="RETAIL" cssClass=""/> Unite de dispensation
-                                <form:radiobutton path="receptionQuantityMode" value="WHOLESALE" cssClass=""/> Unite de conditionnement
-                                <form:errors path="receptionQuantityMode" cssClass="error"/>
-                            </div>
-
-                        </div>
-                    </div>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
@@ -151,20 +119,22 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <c:if test="${not empty productReceptionForm.productOperationId}">
+                        <c:if test="${not empty productInventoryForm.productOperationId}">
                             <button class="btn btn-success" onclick="saveOnly(event)">
                                 <i class="fa fa-save"></i> Modifier
                             </button>
                         </c:if>
-                        <c:if test="${ empty productReceptionForm.productOperationId}">
+                        <c:if test="${ empty productInventoryForm.productOperationId}">
                             <button class="btn btn-success" onclick="saveOnly(event)">
                                 <i class="fa fa-edit"></i> Sauvegarder
                             </button>
                         </c:if>
 
-                        <button class="btn btn-primary" onclick="saveAndAddProducts(event)">Saisie des produits <i class="fa fa-tablets"></i></button>
+                        <button class="btn btn-primary" onclick="saveAndAddProducts(event)">
+                            <i class="fa fa-tablets"></i> Saisie des produits
+                        </button>
 
-                        <c:if test="${productReceptionForm.operationStatus == 'AWAITING_VALIDATION'}">
+                        <c:if test="${productInventoryForm.operationStatus == 'AWAITING_VALIDATION'}">
                             <button class="btn btn-success" name="action" value="add">
                                 <i class="fa fa-edit"></i>
                                 <spring:message code="pharmacy.validate" />
