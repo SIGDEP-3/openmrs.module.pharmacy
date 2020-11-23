@@ -54,15 +54,13 @@ public class PharmacyProductManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                     ProductForm productForm) {
+                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
         if (Context.isAuthenticated()) {
+            ProductForm productForm = new ProductForm();
             Product product = new Product();
             if (id != 0) {
                 product = productService().getOneProductById(id);
                 productForm.setProduct(product);
-            } else {
-                productForm = new ProductForm();
             }
 
             modelMap.addAttribute("productForm", productForm);

@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.validators.ProductProgramFormValidation;
 import org.openmrs.web.WebConstants;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class PharmacyProductProgramManageController {
-
     protected final Log log = LogFactory.getLog(getClass());
 
     private ProductProgramService service() {
@@ -55,14 +53,12 @@ public class PharmacyProductProgramManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/programs/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
-                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                         ProductProgram productProgram) {
+                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
         if (Context.isAuthenticated()) {
 
+            ProductProgram productProgram = new ProductProgram();
             if (id != 0) {
                 productProgram = service().getOneProductProgramById(id);
-            } else {
-                productProgram = new ProductProgram();
             }
 
             modelMap.addAttribute("programForm", productProgram);

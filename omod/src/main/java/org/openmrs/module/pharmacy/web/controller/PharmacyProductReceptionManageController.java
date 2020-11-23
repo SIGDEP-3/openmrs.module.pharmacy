@@ -76,9 +76,9 @@ public class PharmacyProductReceptionManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                     ProductReceptionForm productReceptionForm) {
+                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
         if (Context.isAuthenticated()) {
+            ProductReceptionForm productReceptionForm = new ProductReceptionForm();
             if (id != 0) {
                 ProductReception productReception = receptionService().getOneProductReceptionById(id);
                 if (productReception != null) {
@@ -89,7 +89,6 @@ public class PharmacyProductReceptionManageController {
                     productReceptionForm.setProductReception(productReception);
                 }
             } else {
-                productReceptionForm = new ProductReceptionForm();
                 productReceptionForm.setLocationId(getUserLocation().getLocationId());
             }
 
