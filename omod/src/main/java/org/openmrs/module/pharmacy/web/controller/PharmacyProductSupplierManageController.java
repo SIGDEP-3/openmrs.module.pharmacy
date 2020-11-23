@@ -63,9 +63,6 @@ public class PharmacyProductSupplierManageController {
             if (id != 0) {
                 supplierForm.setProductSupplier(service().getOneProductSupplierById(id));
             }
-//            else {
-//                supplierForm = new SupplierForm();
-//            }
 
             modelMap.addAttribute("supplierForm", supplierForm);
             modelMap.addAttribute("locationList", Context.getLocationService().getAllLocations());
