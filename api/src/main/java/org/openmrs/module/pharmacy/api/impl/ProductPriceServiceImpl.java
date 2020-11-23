@@ -16,8 +16,11 @@ package org.openmrs.module.pharmacy.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.api.ProductPriceService;
 import org.openmrs.module.pharmacy.api.db.ProductPriceDAO;
+
+import java.util.List;
 
 /**
  * It is a default implementation of {@link ProductPriceService}.
@@ -41,5 +44,51 @@ public class ProductPriceServiceImpl extends BaseOpenmrsService implements Produ
     public ProductPriceDAO getDao() {
 	    return dao;
     }
+
+    @Override
+    public ProductPrice saveProductPrice(ProductPrice productPrice) {
+        return dao.saveProductPrice(productPrice);
+    }
+
+    @Override
+    public void removeProductPrice(ProductPrice productPrice) {
+        dao.removeProductPrice(productPrice);
+    }
+
+    @Override
+    public ProductPrice getOneProductPriceByProductId(Integer productId) {
+        return dao.getOneProductPriceByProductId(productId);
+    }
+
+    @Override
+    public ProductPrice getOneProductPriceById(Integer productPriceId) {
+        return dao.getOneProductPriceById(productPriceId);
+    }
+
+    @Override
+    public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
+        return dao.getOneProductPriceByProductProgramId(productProgramId);
+    }
+
+    @Override
+    public ProductPrice getOneProductPriceByUuid(String uuid) {
+        return dao.getOneProductPriceByUuid(uuid);
+    }
+
+    @Override
+    public ProductPrice getOneActiveProductPriceByProductAndProductProgram() {
+        return dao.getOneActiveProductPriceByProductAndProductProgram();
+    }
+
+    @Override
+    public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
+        return dao.getAllProductPriceByStatus(status);
+    }
+
+    @Override
+    public List<ProductPrice> getAllProductPrices() {
+        return dao.getAllProductPrices();
+    }
+
 
 }

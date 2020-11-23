@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.ProductMovementEntryForm;
 import org.openmrs.module.pharmacy.forms.ProductMovementOutForm;
@@ -33,8 +33,29 @@ import java.util.List;
 public class PharmacyProductMovementManageController {
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
+    private ProductMovementService service() {
+        return Context.getService(ProductMovementService.class);
+    }
+    private ProductProgramService programService(){
+        return Context.getService(ProductProgramService.class);
+    }
+    private ProductExchangeEntityService ExchangeService() {
+        return Context.getService(ProductExchangeEntityService.class);
+    }
+    private ProductService ProductService() {
+        return Context.getService(ProductService.class);
+    }
+    private ProductReceptionService receptionService() {
+        return Context.getService(ProductReceptionService.class);
+    }
+    private PharmacyService pharmacyService() {
         return Context.getService(PharmacyService.class);
+    }
+    private ProductAttributeFluxService productAttributeFluxService(){
+        return Context.getService(ProductAttributeFluxService.class);
+    }
+    private ProductAttributeService productAttributeService(){
+        return Context.getService(ProductAttributeService.class);
     }
 
     @ModelAttribute("title")
@@ -76,8 +97,8 @@ public class PharmacyProductMovementManageController {
             }
 
             modelMap.addAttribute("productMovementEntryForm", productMovementEntryForm);
-            modelMap.addAttribute("programs", service().getAllProductProgram());
-            modelMap.addAttribute("exchanges", service().getAllProductExchange());
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("subTitle", "Saisie de movement");
         }
         return null;
@@ -112,8 +133,8 @@ public class PharmacyProductMovementManageController {
             }
             modelMap.addAttribute("productMovementEntryForm", productMovementEntryForm);
 //            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
-            modelMap.addAttribute("programs", service().getAllProductProgram());
-            modelMap.addAttribute("exchanges", service().getAllProductExchange());
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("subTitle", "Saisie  de Mouvements");
         }
 
@@ -126,9 +147,9 @@ public class PharmacyProductMovementManageController {
                          @RequestParam(value = "fluxId", defaultValue = "0", required = false) Integer fluxId,
                          ReceptionAttributeFluxForm receptionAttributeFluxForm) {
         if (Context.isAuthenticated()) {
-            ProductReception productReception = service().getOneProductReceptionById(receptionId);
+            ProductReception productReception = receptionService().getOneProductReceptionById(receptionId);
             if (fluxId != 0) {
-                ProductAttributeFlux productAttributeFlux = service().getOneProductAttributeFluxById(fluxId);
+                ProductAttributeFlux productAttributeFlux = productAttributeFluxService().getOneProductAttributeFluxById(fluxId);
                 if (productAttributeFlux != null) {
                     receptionAttributeFluxForm.setProductAttributeFlux(productAttributeFlux, productReception);
                 } else {
@@ -153,16 +174,16 @@ public class PharmacyProductMovementManageController {
             HttpSession session = request.getSession();
 
             new ProductReceptionAttributeFluxFormValidation().validate(receptionAttributeFluxForm, result);
-            ProductReception productReception = service().getOneProductReceptionById(receptionAttributeFluxForm.getProductOperationId());
+            ProductReception productReception = receptionService().getOneProductReceptionById(receptionAttributeFluxForm.getProductOperationId());
 
             if (!result.hasErrors()) {
-                ProductAttribute productAttribute = service().saveProductAttribute(receptionAttributeFluxForm.getProductAttribute());
+                ProductAttribute productAttribute = productAttributeService().saveProductAttribute(receptionAttributeFluxForm.getProductAttribute());
                 if (productAttribute != null) {
                     ProductAttributeFlux productAttributeFlux = receptionAttributeFluxForm.getProductAttributeFlux(productAttribute);
                     productAttributeFlux.setStatus(productReception.getOperationStatus());
 
-                    if (service().saveProductAttributeFlux(productAttributeFlux) != null) {
-                        service().saveProductAttributeOtherFlux(receptionAttributeFluxForm.getProductAttributeOtherFlux());
+                    if (productAttributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
+                        productAttributeFluxService().saveProductAttributeOtherFlux(receptionAttributeFluxForm.getProductAttributeOtherFlux());
                     }
 
                     if (receptionAttributeFluxForm.getProductOperationId() == null) {
@@ -183,13 +204,13 @@ public class PharmacyProductMovementManageController {
     }
 
     private void modelMappingForView(ModelMap modelMap, ReceptionAttributeFluxForm receptionAttributeFluxForm, ProductReception productReception) {
-        List<ProductReceptionFluxDTO> productAttributeFluxes = service().getProductReceptionFluxDTOs(productReception);
+        List<ProductReceptionFluxDTO> productAttributeFluxes = receptionService().getProductReceptionFluxDTOs(productReception);
 //        if (productAttributeFluxes.size() != 0) {
 //            Collections.sort(productAttributeFluxes, Collections.<ProductReceptionFluxDTO>reverseOrder());
 //        }
         modelMap.addAttribute("receptionAttributeFluxForm", receptionAttributeFluxForm);
         modelMap.addAttribute("productReception", productReception);
-        modelMap.addAttribute("products", service().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());
+        modelMap.addAttribute("products", programService().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());
         modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
         modelMap.addAttribute("subTitle", "Saisie de réception - ajout de produits");
     }
@@ -200,9 +221,9 @@ public class PharmacyProductMovementManageController {
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = service().getOneProductReceptionById(receptionId);
+        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
         reception.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
-        service().saveProductReception(reception);
+        receptionService().saveProductReception(reception);
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été enregistré avec " +
                 "succès et est en attente de validation !");
         return "redirect:/module/pharmacy/operations/reception/list.form";
@@ -214,9 +235,9 @@ public class PharmacyProductMovementManageController {
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = service().getOneProductReceptionById(receptionId);
+        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
         reception.setOperationStatus(OperationStatus.NOT_COMPLETED);
-        service().saveProductReception(reception);
+        receptionService().saveProductReception(reception);
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                 "continuer à modifier la réception !");
         return "redirect:/module/pharmacy/operations/movement/editFlux.form?receptionId=" + receptionId;
@@ -228,14 +249,14 @@ public class PharmacyProductMovementManageController {
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = service().getOneProductReceptionById(receptionId);
-        for (ProductAttributeOtherFlux otherFlux : service().getAllProductAttributeOtherFluxByOperation(reception, false)) {
-            service().removeProductAttributeOtherFlux(otherFlux);
+        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
+        for (ProductAttributeOtherFlux otherFlux : productAttributeFluxService().getAllProductAttributeOtherFluxByOperation(reception, false)) {
+            productAttributeFluxService().removeProductAttributeOtherFlux(otherFlux);
         }
-        for (ProductAttributeFlux flux : service().getAllProductAttributeFluxByOperation(reception, false)){
-            service().removeProductAttributeFlux(flux);
+        for (ProductAttributeFlux flux : productAttributeFluxService().getAllProductAttributeFluxByOperation(reception, false)){
+            productAttributeFluxService().removeProductAttributeFlux(flux);
         }
-        service().removeProductReception(reception);
+        receptionService().removeProductReception(reception);
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été supprimée avec succès !");
         return "redirect:/module/pharmacy/operations/reception/list.form";
     }
@@ -247,13 +268,13 @@ public class PharmacyProductMovementManageController {
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductAttributeFlux flux = service().getOneProductAttributeFluxById(fluxId);
+        ProductAttributeFlux flux = productAttributeFluxService().getOneProductAttributeFluxById(fluxId);
         if (flux != null) {
-            service().removeProductAttributeFlux(flux);
-            ProductAttributeOtherFlux otherFlux = service()
+            productAttributeFluxService().removeProductAttributeFlux(flux);
+            ProductAttributeOtherFlux otherFlux = productAttributeFluxService()
                     .getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), flux.getProductOperation());
             if (otherFlux != null) {
-                service().removeProductAttributeOtherFlux(otherFlux);
+                productAttributeFluxService().removeProductAttributeOtherFlux(otherFlux);
             }
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La ligne du produit a été supprimée avec succès !");
         }
@@ -266,8 +287,8 @@ public class PharmacyProductMovementManageController {
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = service().getOneProductReceptionById(receptionId);
-        if (service().validateOperation(reception)) {
+        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
+        if (pharmacyService().validateOperation(reception)) {
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                     "continuer à modifier la réception !");
             return "redirect:/module/pharmacy/operations/movement/list.form";

@@ -13,13 +13,24 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
+import org.openmrs.module.pharmacy.ProductPrice;
+
+import java.util.List;
+
 /**
  *  Database methods for {@link org.openmrs.module.pharmacy.api.ProductPriceService}.
  */
 public interface ProductPriceDAO {
 
-    /*
-	 * Add DAO methods here
-	 */
+	ProductPrice saveProductPrice(ProductPrice productPrice);
+	void removeProductPrice(ProductPrice productPrice);
+	ProductPrice getOneProductPriceById(Integer productPriceId);
+	ProductPrice getOneProductPriceByUuid(String uuid);
+	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+	ProductPrice getOneProductPriceByProductId(Integer productId);
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+	List<ProductPrice> getAllProductPrices();
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId);
 
 }

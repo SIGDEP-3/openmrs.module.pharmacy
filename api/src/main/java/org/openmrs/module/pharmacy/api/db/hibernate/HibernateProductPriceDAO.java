@@ -15,9 +15,14 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductPriceDAO;
+
+import java.util.List;
 
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
@@ -41,5 +46,58 @@ public class HibernateProductPriceDAO implements ProductPriceDAO {
 		return sessionFactory;
 	}
 
+	@Override
+	public ProductPrice saveProductPrice(ProductPrice productPrice) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productPrice);
+		return productPrice;
+	}
 
+	@Override
+	public void removeProductPrice(ProductPrice productPrice) {
+		sessionFactory.getCurrentSession().delete(productPrice);
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceById(Integer productPriceId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productPriceId);
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
+		return (ProductPrice) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPriceByStatus(Boolean status) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductPrice.class);
+		return (List<ProductPrice>) criteria.add(Restrictions.eq("true", status));
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram(Integer productProgramId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productProgramId);
+	}
+
+	@Override
+	public ProductPrice getOneActiveProductPriceByProductAndProductProgram() {
+		return (ProductPrice) sessionFactory.getCurrentSession();
+	}
+
+	@Override
+	public ProductPrice getOneProductPriceByProductId(Integer productId) {
+		return (ProductPrice) sessionFactory.getCurrentSession().get(ProductPrice.class, productId);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductPrice> getAllProductPrices() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductPrice.class).list();
+	}
 }

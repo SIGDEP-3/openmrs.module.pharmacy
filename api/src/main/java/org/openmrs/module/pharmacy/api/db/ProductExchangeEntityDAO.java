@@ -13,13 +13,21 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
+import org.openmrs.module.pharmacy.ProductExchangeEntity;
+
+import java.util.List;
+
 /**
  *  Database methods for {@link org.openmrs.module.pharmacy.api.ProductExchangeEntityService}.
  */
 public interface ProductExchangeEntityDAO {
 
-    /*
-	 * Add DAO methods here
-	 */
+	List<ProductExchangeEntity> getAllProductExchange();
+	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
+	void removeProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId);
+	ProductExchangeEntity getOneProductExchangeByUuid(String uuid);
+	ProductExchangeEntity getOneProductExchangeByName(String name);
 
 }

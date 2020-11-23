@@ -6,6 +6,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductPriceService;
+import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductPriceForm;
 import org.openmrs.module.pharmacy.validators.ProductPriceFormValidation;
 import org.openmrs.web.WebConstants;
@@ -25,7 +27,10 @@ public class PharmacyProductPriceManageController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
+    private ProductPriceService service() {
+        return Context.getService(ProductPriceService.class);
+    }
+    private PharmacyService pharmacyService(){
         return Context.getService(PharmacyService.class);
     }
 
@@ -33,7 +38,7 @@ public class PharmacyProductPriceManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("prices", service().getAllProductPrices());
-            modelMap.addAttribute("availableProduct", service().getAllProduct());
+            modelMap.addAttribute("availableProduct", pharmacyService().getAllProduct());
             modelMap.addAttribute("title", "Liste des prix");
         }
     }
@@ -62,7 +67,7 @@ public class PharmacyProductPriceManageController {
                      ProductPriceForm productPriceForm ){
         if (Context.isAuthenticated()) {
             if (productId != 0) {
-                Product product = service().getOneProductById(productId);
+                Product product = pharmacyService().getOneProductById(productId);
                 productPriceForm.setProductId(product.getProductId());
 
                 modelMap.addAttribute("priceForm", productPriceForm);
@@ -102,8 +107,8 @@ public class PharmacyProductPriceManageController {
                 return "redirect:/module/pharmacy/product/prices/list.form";
             }
             modelMap.addAttribute("priceForm", priceForm);
-            modelMap.addAttribute("availableProduct", service().getAllProduct());
-            modelMap.addAttribute("availablePrograms", service().getAllProductProgram());
+            modelMap.addAttribute("availableProduct", pharmacyService().getAllProduct());
+            modelMap.addAttribute("availablePrograms", pharmacyService().getAllProductProgram());
             modelMap.addAttribute("title", "Formulaire de saisie des Prix");
         }
 

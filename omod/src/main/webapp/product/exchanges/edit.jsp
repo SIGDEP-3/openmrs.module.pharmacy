@@ -29,8 +29,6 @@
                     <form:options items="${locationList}" itemValue="locationId" itemLabel="name" />
                 </form:select>
                 <form:errors path="locationId" cssClass="error"/>
-                <form:input path="name" cssClass="form-control form-control-sm" />
-                <form:errors path="name" cssClass="error"/>
             </div>
         </div>
         <div class="row mb-2">

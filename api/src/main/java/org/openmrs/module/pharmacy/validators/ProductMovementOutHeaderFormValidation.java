@@ -5,6 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductMovementOut;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductMovementService;
 import org.openmrs.module.pharmacy.forms.ProductMovementOutForm;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.springframework.validation.Errors;
@@ -33,7 +34,7 @@ public class ProductMovementOutHeaderFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "operationDate", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null) {
-                List<ProductMovementOut> productMovementOuts =  Context.getService(PharmacyService.class).getAllProductMovementOut(
+                List<ProductMovementOut> productMovementOuts =  Context.getService(ProductMovementService.class).getAllProductMovementOut(
                         Context.getLocationService().getDefaultLocation(), false, form.getOperationDate(), form.getOperationDate()
                 );
                 for (ProductMovementOut movementOut : productMovementOuts) {

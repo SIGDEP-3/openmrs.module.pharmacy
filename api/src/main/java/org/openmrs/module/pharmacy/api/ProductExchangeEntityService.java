@@ -14,7 +14,10 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
@@ -28,10 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface ProductExchangeEntityService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
+
+	List<ProductExchangeEntity> getAllProductExchange();
+	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
+	void removeProductExchange(ProductExchangeEntity productExchangeEntity);
+	ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId);
+	ProductExchangeEntity getOneProductExchangeByUuid(String uuid);
+	ProductExchangeEntity getOneProductExchangeByName(String name);
 
 }

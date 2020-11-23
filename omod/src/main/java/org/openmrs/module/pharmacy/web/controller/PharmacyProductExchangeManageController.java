@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
-import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductExchangeEntityService;
 import org.openmrs.module.pharmacy.forms.ExchangeEntityForm;
 import org.openmrs.module.pharmacy.validators.ProductExchangeFormValidation;
 import org.openmrs.web.WebConstants;
@@ -23,8 +23,8 @@ public class PharmacyProductExchangeManageController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
-        return Context.getService(PharmacyService.class);
+    private ProductExchangeEntityService service() {
+        return Context.getService(ProductExchangeEntityService.class);
     }
 
     @RequestMapping(value = "/module/pharmacy/product/exchanges/list.form", method = RequestMethod.GET)
@@ -55,14 +55,14 @@ public class PharmacyProductExchangeManageController {
     @RequestMapping(value = "/module/pharmacy/product/exchanges/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
                          @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                         ProductExchangeEntity exchangeEntityForm) {
+                         ExchangeEntityForm exchangeEntityForm) {
         if (Context.isAuthenticated()) {
 
             if (id != 0) {
 //                exchangeEntityForm.setProductExchangeEntity(service().getOneProductExchangeById(id));
-                exchangeEntityForm = service().getOneProductExchangeById(id);
+                exchangeEntityForm.setProductExchangeEntity(service().getOneProductExchangeById(id));
             } else {
-                exchangeEntityForm = new ProductExchangeEntity();
+                exchangeEntityForm = new ExchangeEntityForm();
             }
 
             modelMap.addAttribute("exchangeEntityForm", exchangeEntityForm);
