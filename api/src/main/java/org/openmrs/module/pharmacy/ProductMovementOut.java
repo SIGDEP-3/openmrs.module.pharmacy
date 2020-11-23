@@ -1,10 +1,12 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.StockOutType;
 
 import javax.persistence.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductMovementOut")
 @Table(name = "pharmacy_product_movement_out")
 public class ProductMovementOut extends ProductOperation {

@@ -1,11 +1,13 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductAttributeFlux")
 @Table(name = "pharmacy_product_attribute_flux")
 public class ProductAttributeFlux extends AbstractPharmacyData implements Comparable<ProductAttributeFlux> {

@@ -15,6 +15,7 @@ package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
 
 import java.util.Date;
@@ -38,5 +39,5 @@ public interface ProductInventoryDAO {
 	void removeProductInventory(ProductInventory productInventory);
 	ProductInventory getOneProductInventoryByUuid(String uuid);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
-	ProductInventory getLastProductInventory();
+	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
 }

@@ -17,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttribute;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,4 +39,5 @@ public interface ProductAttributeDAO {
 	void removeProductAttribute(ProductAttribute productAttribute);
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
+    ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
 }

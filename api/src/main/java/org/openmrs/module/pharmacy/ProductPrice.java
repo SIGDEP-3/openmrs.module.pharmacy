@@ -1,9 +1,12 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(name = "ProductPrice")
 @Table(name = "pharmacy_product_price")
 public class ProductPrice extends AbstractPharmacyObject {
     private static final long serialVersionUID = 1L;

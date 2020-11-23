@@ -24,6 +24,7 @@ import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeDAO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,4 +116,10 @@ public class HibernateProductAttributeDAO implements ProductAttributeDAO {
 		return (ProductAttribute) criteria.add(Restrictions.eq("batchNumber", batchNumber)).uniqueResult();
 	}
 
+	@Override
+	public ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttribute.class);
+		return (ProductAttribute) criteria.add(Restrictions.eq("batchNumber", batchNumber))
+				.add(Restrictions.eq("expiryDate", expiryDate)).uniqueResult();
+	}
 }

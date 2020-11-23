@@ -34,11 +34,6 @@ import java.util.List;
  */
 @Transactional
 public interface ProductAttributeService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
 
 	List<ProductAttribute> getAllProductAttributes(Location location, Boolean includeVoided);
 	List<ProductAttribute> getAllProductAttributes(Location location);
@@ -50,5 +45,5 @@ public interface ProductAttributeService extends OpenmrsService {
 	void removeProductAttribute(ProductAttribute productAttribute);
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
-
+    ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
 }

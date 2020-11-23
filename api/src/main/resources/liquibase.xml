@@ -802,5 +802,10 @@
         <dropUniqueConstraint tableName="pharmacy_product_price"
                               constraintName="sale_price"/>
     </changeSet>
+
+    <changeSet id="pharmacy-inventory-drop-end-inventory-date" author="BOGUI SERGE">
+        <dropColumn tableName="pharmacy_product_inventory" columnName="inventory_date"/>
+        <dropColumn tableName="pharmacy_product_inventory" columnName="inventory_end_date"/>
+    </changeSet>
     
 </databaseChangeLog>

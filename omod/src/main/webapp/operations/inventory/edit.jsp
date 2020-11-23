@@ -25,7 +25,7 @@
                 if (form.getAttribute('action').includes('?id=')) {
                     form.setAttribute('action', form.getAttribute('action') + '&action=save');
                 } else {
-                    form.setAttribute('action', form.getAttribute('action') + '&action=save');
+                    form.setAttribute('action', form.getAttribute('action') + '?action=save');
                 }
             }
 
@@ -42,7 +42,7 @@
                 if (form.getAttribute('action').includes('?id=')) {
                     form.setAttribute('action', form.getAttribute('action') + '&action=addLine');
                 } else {
-                    form.setAttribute('action', form.getAttribute('action') + '&action=addLine');
+                    form.setAttribute('action', form.getAttribute('action') + '?action=addLine');
                 }
             }
             form.submit();
@@ -70,6 +70,7 @@
                 <form:hidden path="locationId"/>
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
+                <form:hidden path="inventoryStartDate"/>
                 <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">
                     <form:hidden path="productProgramId"/>
                 </c:if>
