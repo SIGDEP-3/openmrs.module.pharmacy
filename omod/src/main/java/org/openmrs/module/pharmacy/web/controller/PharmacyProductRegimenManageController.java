@@ -56,6 +56,7 @@ public class PharmacyProductRegimenManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Regime supprimé avec succès");
             }
         }
+
         return "redirect:/module/pharmacy/product/regimens/list.form";
     }
 

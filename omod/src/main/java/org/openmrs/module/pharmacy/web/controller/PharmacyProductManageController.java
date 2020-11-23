@@ -28,10 +28,6 @@ import java.util.Set;
 public class PharmacyProductManageController {
     protected final Log log = LogFactory.getLog(getClass());
 
-    private PharmacyService service() {
-        return Context.getService(PharmacyService.class);
-    }
-
     private ProductService productService() {
         return Context.getService(ProductService.class);
     }

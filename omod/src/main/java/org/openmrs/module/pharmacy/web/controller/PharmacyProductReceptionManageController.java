@@ -36,10 +36,6 @@ public class PharmacyProductReceptionManageController {
         return Context.getService(PharmacyService.class);
     }
 
-    private ProductService productService() {
-        return Context.getService(ProductService.class);
-    }
-
     private ProductReceptionService receptionService() {
         return Context.getService(ProductReceptionService.class);
     }

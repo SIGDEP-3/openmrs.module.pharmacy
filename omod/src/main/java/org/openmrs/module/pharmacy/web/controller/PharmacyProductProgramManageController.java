@@ -49,6 +49,7 @@ public class PharmacyProductProgramManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Programme ajouté avec succès");
             }
         }
+
         return "redirect:/module/pharmacy/product/programs/list.form";
     }
 
