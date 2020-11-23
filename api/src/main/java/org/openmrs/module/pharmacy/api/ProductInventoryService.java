@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,6 @@ public interface ProductInventoryService extends OpenmrsService {
 	ProductInventory editProductInventory(ProductInventory productInventory);
 	void removeProductInventory(ProductInventory productInventory);
 	ProductInventory getOneProductInventoryByUuid(String uuid);
-	ProductInventory getLastProductInventory();
+	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 }

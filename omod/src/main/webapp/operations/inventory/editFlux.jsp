@@ -138,20 +138,14 @@
                     </tr>
                     <c:forEach var="productFlux" items="${productAttributeFluxes}">
                         <tr>
-                            <td>${productFlux.code}</td>
-                            <td>
-                                    ${ productFlux.retailName}
-                            </td>
-                            <td>
-                                    ${productFlux.retailUnit}
-                            </td>
-                            <td class="text-center">${productFlux.batchNumber}</td>
+                            <td>${productFlux.productAttribute.product.code}</td>
+                            <td>${ productFlux.productAttribute.product.retailName}</td>
+                            <td>${productFlux.productAttribute.product.productRetailUnit.name}</td>
+                            <td class="text-center">${productFlux.productAttribute.batchNumber}</td>
                             <td class="text-center">
-                                <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                <fmt:formatDate value="${productFlux.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                             </td>
-                            <td class="text-center">
-                                    ${productFlux.quantity}
-                            </td>
+                            <td class="text-center">${productFlux.quantity}</td>
                             <td>${productFlux.observation}</td>
                             <td>
                                 <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED'}">
@@ -189,20 +183,14 @@
                 </thead>
                 <c:forEach var="productFlux" items="${productAttributeFluxes}">
                     <tr>
-                        <td>${productFlux.code}</td>
-                        <td>
-                                ${productFlux.retailName}
-                        </td>
-                        <td>
-                                ${productFlux.retailUnit}
-                        </td>
-                        <td class="text-center">${productFlux.batchNumber}</td>
+                        <td>${productFlux.productAttribute.product.code}</td>
+                        <td>${productFlux.productAttribute.product.productRetailUnit.name}</td>
+                        <td>${productFlux.productAttribute.product.productRetailUnitId.name}</td>
+                        <td class="text-center">${productFlux.productAttribute.batchNumber}</td>
                         <td class="text-center">
-                            <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                            <fmt:formatDate value="${productFlux.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                         </td>
-                        <td class="text-center">
-                                ${productFlux.quantity}
-                        </td>
+                        <td class="text-center">${productFlux.quantity}</td>
                         <td>${productFlux.observation}</td>
                     </tr>
                 </c:forEach>

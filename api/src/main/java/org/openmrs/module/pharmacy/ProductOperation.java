@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductOperation")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "pharmacy_product_operation")

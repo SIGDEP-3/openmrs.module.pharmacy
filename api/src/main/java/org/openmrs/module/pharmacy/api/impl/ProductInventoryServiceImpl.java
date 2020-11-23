@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductInventoryService;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
@@ -95,8 +96,8 @@ public class ProductInventoryServiceImpl extends BaseOpenmrsService implements P
     }
 
     @Override
-    public ProductInventory getLastProductInventory() {
-        return dao.getLastProductInventory();
+    public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram) {
+        return dao.getLastProductInventory(location, productProgram);
     }
 
     @Override

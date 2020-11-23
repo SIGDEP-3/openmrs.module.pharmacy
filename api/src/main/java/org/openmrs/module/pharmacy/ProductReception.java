@@ -1,10 +1,12 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 
 import javax.persistence.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductReception")
 @Table(name = "pharmacy_product_reception")
 public class ProductReception extends ProductOperation {

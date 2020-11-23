@@ -1,10 +1,12 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 
 import javax.persistence.*;
 import java.util.Set;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "MobilePatient")
 @Table(name = "pharmacy_mobile_patient")
 public class MobilePatient extends AbstractPharmacyObject {

@@ -1,8 +1,6 @@
 package org.openmrs.module.pharmacy;
 
-import org.openmrs.Auditable;
-import org.openmrs.BaseOpenmrsData;
-import org.openmrs.User;
+import org.openmrs.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @MappedSuperclass
-public abstract class AbstractPharmacyData extends BaseOpenmrsData implements Serializable, Auditable {
+public abstract class AbstractPharmacyData extends BaseOpenmrsData implements Serializable, Auditable, Voidable {
     public AbstractPharmacyData() {
         setUuid(UUID.randomUUID().toString());
         setDateCreated(new Date());

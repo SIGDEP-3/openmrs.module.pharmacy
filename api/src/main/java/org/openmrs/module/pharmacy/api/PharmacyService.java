@@ -41,4 +41,5 @@ public interface PharmacyService extends OpenmrsService {
 	 */
 
 	Boolean validateOperation(ProductOperation operation);
+	ProductOperation getOneProductOperationById(Integer productOperationId);
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
@@ -7,6 +8,7 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import javax.persistence.*;
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductDispensing")
 @Table(name = "pharmacy_product_dispensing")
 public class ProductDispensing extends ProductOperation {

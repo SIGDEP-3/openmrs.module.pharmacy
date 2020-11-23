@@ -107,4 +107,9 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 
 		return true;
 	}
+
+	@Override
+	public ProductOperation getOneProductOperationById(Integer productOperationId) {
+		return (ProductOperation) sessionFactory.getCurrentSession().get(ProductOperation.class, productOperationId);
+	}
 }

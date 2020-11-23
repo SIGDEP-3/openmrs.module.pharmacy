@@ -1,10 +1,12 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductAttributeStock")
 @Table(name = "pharmacy_product_attribute_stock")
 public class ProductAttributeStock extends AbstractPharmacyData {

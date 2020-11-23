@@ -1,10 +1,13 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(name = "ProductProgram")
 @Table(name = "pharmacy_product_program")
 public class ProductProgram extends AbstractPharmacyObject {
 

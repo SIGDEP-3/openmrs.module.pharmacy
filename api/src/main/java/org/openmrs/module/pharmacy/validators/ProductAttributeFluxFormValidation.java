@@ -37,12 +37,12 @@ public class ProductAttributeFluxFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "expiryDate", null, "La date de péremption est requise");
 
             if (form.getBatchNumber() != null) {
-                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(form.getBatchNumber());
+                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumberAndExpiryDate(form.getBatchNumber(), form.getExpiryDate());
                 if (productAttribute != null) {
                     if (!productAttribute.getProduct().getProductId().equals(form.getProductId())) {
                         if(form.getProductAttributeFluxId() == null ) {
-                            errors.rejectValue("batchNumber", null, "Ce produit <<" +
-                                    productAttribute.getProduct().getRetailName() + ">> déjà été ajouté avec ce numéro de lot !");
+                            errors.rejectValue("batchNumber", null, "Le produit <<" +
+                                    productAttribute.getProduct().getRetailName() + ">> a déjà été ajouté avec ce numéro de lot !");
                         }
                     }
                 }
@@ -55,6 +55,7 @@ public class ProductAttributeFluxFormValidation implements Validator {
                         errors.rejectValue("batchNumber", null, "Cette ligne du produit déjà été ajouté !");
                     }
                 }
+
             }
 
             if (form.getExpiryDate() != null && form.getExpiryDate().before(new Date())) {
@@ -83,5 +84,9 @@ public class ProductAttributeFluxFormValidation implements Validator {
 
     private ProductAttributeService attributeService() {
         return Context.getService(ProductAttributeService.class);
+    }
+
+    private PharmacyService service() {
+        return Context.getService(PharmacyService.class);
     }
 }

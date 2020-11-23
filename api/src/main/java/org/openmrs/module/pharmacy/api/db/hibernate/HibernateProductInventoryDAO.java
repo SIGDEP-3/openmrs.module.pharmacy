@@ -21,6 +21,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
 
 import java.util.Date;
@@ -166,9 +167,12 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 	}
 
 	@Override
-	public ProductInventory getLastProductInventory() {
+	public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductInventory.class);
-		return (ProductInventory) criteria.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+		return (ProductInventory) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
 }

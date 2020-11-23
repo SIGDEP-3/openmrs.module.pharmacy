@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -183,10 +184,10 @@ public class PharmacyProductInventoryManageController {
                 if (productAttribute != null) {
                     ProductAttributeFlux productAttributeFlux = inventoryAttributeFluxForm.getProductAttributeFlux(productAttribute);
                     productAttributeFlux.setStatus(productInventory.getOperationStatus());
-
-                    if (attributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
-                        attributeFluxService().saveProductAttributeOtherFlux(inventoryAttributeFluxForm.getProductAttributeOtherFlux());
-                    }
+                    attributeFluxService().saveProductAttributeFlux(productAttributeFlux);
+//                    if (attributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
+//                        //attributeFluxService().saveProductAttributeOtherFlux(inventoryAttributeFluxForm.getProductAttributeOtherFlux());
+//                    }
 
                     if (inventoryAttributeFluxForm.getProductOperationId() == null) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit insérés avec succès !");
@@ -206,22 +207,24 @@ public class PharmacyProductInventoryManageController {
     }
 
     private void modelMappingForView(ModelMap modelMap, InventoryAttributeFluxForm inventoryAttributeFluxForm, ProductInventory productInventory) {
-        List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxDTOs(productInventory);
-//        if (productAttributeFluxes.size() != 0) {
-//            Collections.sort(productAttributeFluxes, Collections.<ProductInventoryFluxDTO>reverseOrder());
-//        }
+        List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
+        if (productAttributeFluxes.size() != 0) {
+            Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
+        }
+
+//        List<ProductAttributeFlux> productAttributeFluxList = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
         modelMap.addAttribute("inventoryAttributeFluxForm", inventoryAttributeFluxForm);
         modelMap.addAttribute("productInventory", productInventory);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productInventory.getProductProgram().getProductProgramId()).getProducts());
         modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
         if (!productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
             if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED))
-            modelMap.addAttribute("subTitle", "Réception - APPROUVEE");
+            modelMap.addAttribute("subTitle", "Inventaire - APPROUVEE");
             else if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", "Réception - EN ATTENTE DE VALIDATION");
+                modelMap.addAttribute("subTitle", "Inventaire - EN ATTENTE DE VALIDATION");
             }
         } else {
-            modelMap.addAttribute("subTitle", "Saisie de réception - ajout de produits");
+            modelMap.addAttribute("subTitle", "Saisie de l'Inventaire - ajout de produits");
         }
     }
 
@@ -234,7 +237,7 @@ public class PharmacyProductInventoryManageController {
         ProductInventory inventory = inventoryService().getOneProductInventoryById(inventoryId);
         inventory.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
         inventoryService().saveProductInventory(inventory);
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été enregistré avec " +
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été enregistré avec " +
                 "succès et est en attente de validation !");
         return "redirect:/module/pharmacy/operations/inventory/list.form";
     }
@@ -249,7 +252,7 @@ public class PharmacyProductInventoryManageController {
         inventory.setOperationStatus(OperationStatus.NOT_COMPLETED);
         inventoryService().saveProductInventory(inventory);
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
-                "continuer à modifier la réception !");
+                "continuer à modifier l'inventaire !");
         return "redirect:/module/pharmacy/operations/inventory/editFlux.form?inventoryId=" + inventoryId;
     }
 
@@ -267,7 +270,7 @@ public class PharmacyProductInventoryManageController {
             attributeFluxService().removeProductAttributeFlux(flux);
         }
         inventoryService().removeProductInventory(inventory);
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été supprimée avec succès !");
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été supprimé avec succès !");
         return "redirect:/module/pharmacy/operations/inventory/list.form";
     }
 

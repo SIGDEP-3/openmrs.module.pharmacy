@@ -1,9 +1,11 @@
 package org.openmrs.module.pharmacy;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 
 import javax.persistence.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductAttributeOtherFlux")
 @Table(name = "pharmacy_product_attribute_other_flux")
 public class ProductAttributeOtherFlux extends AbstractPharmacyObject {

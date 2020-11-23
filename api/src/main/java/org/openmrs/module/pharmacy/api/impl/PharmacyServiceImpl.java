@@ -50,4 +50,9 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
         return null;
     }
 
+    @Override
+    public ProductOperation getOneProductOperationById(Integer productOperationId) {
+        return dao.getOneProductOperationById(productOperationId);
+    }
+
 }

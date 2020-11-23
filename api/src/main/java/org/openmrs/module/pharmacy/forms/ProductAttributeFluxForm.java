@@ -115,10 +115,10 @@ public abstract class ProductAttributeFluxForm {
         productAttributeFlux.setQuantity(getQuantity());
         productAttributeFlux.setStatus(OperationStatus.NOT_COMPLETED);
         productAttributeFlux.setObservation(getObservation());
-        productAttributeFlux.setProductOperation(receptionService().getOneProductReceptionById(getProductOperationId()));
+        productAttributeFlux.setProductOperation(service().getOneProductOperationById(getProductOperationId()));
         productAttributeFlux.setLocation(Context.getLocationService().getDefaultLocation());
-        productAttributeFlux.setOperationDate(receptionService()
-                .getOneProductReceptionById(getProductOperationId()).getOperationDate());
+        productAttributeFlux.setOperationDate(service()
+                .getOneProductOperationById(getProductOperationId()).getOperationDate());
         return productAttributeFlux;
     }
 
@@ -134,8 +134,8 @@ public abstract class ProductAttributeFluxForm {
         setLocationId(productAttributeFlux.getLocation().getLocationId());
     }
 
-    private ProductReceptionService receptionService() {
-        return Context.getService(ProductReceptionService.class);
+    private PharmacyService service() {
+        return Context.getService(PharmacyService.class);
     }
 
     private ProductAttributeFluxService fluxService() {
