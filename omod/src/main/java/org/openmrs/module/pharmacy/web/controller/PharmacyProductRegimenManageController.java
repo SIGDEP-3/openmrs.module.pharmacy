@@ -68,9 +68,6 @@ public class PharmacyProductRegimenManageController {
             if (id != 0) {
                 productRegimenForm.setProductRegimen(service().getOneProductRegimenById(id));
             }
-//            else {
-//                productRegimenForm = new ProductRegimenForm();
-//            }
 
             modelMap.addAttribute("regimenForm", productRegimenForm);
             modelMap.addAttribute("conceptList", getConceptMapList());

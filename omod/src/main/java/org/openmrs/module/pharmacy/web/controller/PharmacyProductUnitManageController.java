@@ -41,9 +41,6 @@ public class PharmacyProductUnitManageController {
             if (id != 0) {
                 unitForm = service().getOneProductUnitById(id);
             }
-//            else {
-//                unitForm = new ProductUnit();
-//            }
 
             modelMap.addAttribute("unitForm", unitForm);
             modelMap.addAttribute("title", "Formulaire de saisie des Unités");
