@@ -7,6 +7,7 @@ import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductPriceService;
+import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductPriceForm;
 import org.openmrs.module.pharmacy.validators.ProductPriceFormValidation;
@@ -30,15 +31,18 @@ public class PharmacyProductPriceManageController {
     private ProductPriceService service() {
         return Context.getService(ProductPriceService.class);
     }
-    private PharmacyService pharmacyService(){
-        return Context.getService(PharmacyService.class);
+    private ProductService productService(){
+        return Context.getService(ProductService.class);
+    }
+    private ProductProgramService programService(){
+        return Context.getService(ProductProgramService.class);
     }
 
     @RequestMapping(value = "/module/pharmacy/product/prices/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("prices", service().getAllProductPrices());
-            modelMap.addAttribute("availableProduct", pharmacyService().getAllProduct());
+            modelMap.addAttribute("availableProduct", productService().getAllProduct());
             modelMap.addAttribute("title", "Liste des prix");
         }
     }
@@ -67,7 +71,7 @@ public class PharmacyProductPriceManageController {
                      ProductPriceForm productPriceForm ){
         if (Context.isAuthenticated()) {
             if (productId != 0) {
-                Product product = pharmacyService().getOneProductById(productId);
+                Product product = productService().getOneProductById(productId);
                 productPriceForm.setProductId(product.getProductId());
 
                 modelMap.addAttribute("priceForm", productPriceForm);
@@ -107,8 +111,8 @@ public class PharmacyProductPriceManageController {
                 return "redirect:/module/pharmacy/product/prices/list.form";
             }
             modelMap.addAttribute("priceForm", priceForm);
-            modelMap.addAttribute("availableProduct", pharmacyService().getAllProduct());
-            modelMap.addAttribute("availablePrograms", pharmacyService().getAllProductProgram());
+            modelMap.addAttribute("availableProduct", productService().getAllProduct());
+            modelMap.addAttribute("availablePrograms", programService().getAllProductProgram());
             modelMap.addAttribute("title", "Formulaire de saisie des Prix");
         }
 
