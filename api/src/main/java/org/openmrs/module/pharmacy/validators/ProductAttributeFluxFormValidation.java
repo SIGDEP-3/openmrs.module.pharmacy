@@ -49,7 +49,7 @@ public class ProductAttributeFluxFormValidation implements Validator {
 
                 ProductAttributeFlux productAttributeFlux =
                         fluxService().getOneProductAttributeFluxByAttributeAndOperation(productAttribute,
-                                receptionService().getOneProductReceptionById(form.getProductOperationId()));
+                                service().getOneProductOperationById(form.getProductOperationId()));
                 if (productAttributeFlux != null) {
                     if (!productAttributeFlux.getProductAttributeFluxId().equals(form.getProductAttributeFluxId())) {
                         errors.rejectValue("batchNumber", null, "Cette ligne du produit déjà été ajouté !");
@@ -72,10 +72,6 @@ public class ProductAttributeFluxFormValidation implements Validator {
         }
 
 
-    }
-
-    private ProductReceptionService receptionService() {
-        return Context.getService(ProductReceptionService.class);
     }
 
     private ProductAttributeFluxService fluxService() {
