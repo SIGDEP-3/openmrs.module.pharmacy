@@ -48,6 +48,7 @@ public class PharmacyProductProgramManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Programme supprimé avec succès");
             }
         }
+
         return "redirect:/module/pharmacy/product/programs/list.form";
     }
 

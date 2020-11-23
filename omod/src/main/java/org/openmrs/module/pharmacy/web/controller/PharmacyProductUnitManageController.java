@@ -42,6 +42,7 @@ public class PharmacyProductUnitManageController {
                 service().removeProductUnit(unit);
             }
         }
+
         return "redirect:/module/pharmacy/product/units/list.form";
     }
 

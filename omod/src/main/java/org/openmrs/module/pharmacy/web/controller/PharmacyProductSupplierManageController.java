@@ -51,6 +51,7 @@ public class PharmacyProductSupplierManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Fournisseur ajouté avec succès");
             }
         }
+
         return "redirect:/module/pharmacy/product/suppliers/list.form";
     }
 
