@@ -31,6 +31,24 @@ public class PharmacyProductUnitManageController {
         }
     }
 
+    @RequestMapping(value = "/module/pharmacy/product/units/edit.form", method = RequestMethod.GET)
+    public void unitForm(ModelMap modelMap,
+                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
+        if (Context.isAuthenticated()) {
+            //HttpSession session = request.getSession();
+            ProductUnit unitForm = new ProductUnit();
+            if (id != 0) {
+                unitForm = service().getOneProductUnitById(id);
+            }
+//            else {
+//                unitForm = new ProductUnit();
+//            }
+
+            modelMap.addAttribute("unitForm", unitForm);
+            modelMap.addAttribute("title", "Formulaire de saisie des Unités");
+        }
+    }
+
     @RequestMapping(value = "/module/pharmacy/product/units/delete.form", method = RequestMethod.GET)
     public String delete(@RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
         if (!Context.isAuthenticated())
@@ -44,25 +62,6 @@ public class PharmacyProductUnitManageController {
         }
 
         return "redirect:/module/pharmacy/product/units/list.form";
-    }
-
-    @RequestMapping(value = "/module/pharmacy/product/units/edit.form", method = RequestMethod.GET)
-    public void unitForm(ModelMap modelMap,
-                         HttpServletRequest request,
-                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                         ProductUnit unitForm) {
-        if (Context.isAuthenticated()) {
-            HttpSession session = request.getSession();
-
-            if (id != 0) {
-                unitForm = service().getOneProductUnitById(id);
-            } else {
-                unitForm = new ProductUnit();
-            }
-
-            modelMap.addAttribute("unitForm", unitForm);
-            modelMap.addAttribute("title", "Formulaire de saisie des Unités");
-        }
     }
 
     @RequestMapping(value = "/module/pharmacy/product/units/edit.form", method = RequestMethod.POST)

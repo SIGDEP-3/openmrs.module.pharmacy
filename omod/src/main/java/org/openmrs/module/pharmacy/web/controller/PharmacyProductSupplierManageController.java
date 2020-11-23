@@ -57,15 +57,15 @@ public class PharmacyProductSupplierManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/suppliers/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
-                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                         SupplierForm supplierForm) {
+                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
         if (Context.isAuthenticated()) {
-
+            SupplierForm supplierForm = new SupplierForm();
             if (id != 0) {
                 supplierForm.setProductSupplier(service().getOneProductSupplierById(id));
-            } else {
-                supplierForm = new SupplierForm();
             }
+//            else {
+//                supplierForm = new SupplierForm();
+//            }
 
             modelMap.addAttribute("supplierForm", supplierForm);
             modelMap.addAttribute("locationList", Context.getLocationService().getAllLocations());
