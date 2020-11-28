@@ -6,6 +6,13 @@ body {
     font-size: 12px;
     margin: 0;
     padding: 0;
+    position: fixed;
+    overflow-y: hidden;
+}
+
+#pageBody {
+    overflow-y: auto;
+    height: 100%;
 }
 
 input[type=text].form-control {
@@ -65,5 +72,6 @@ a.text-decoration-none {
     text-decoration: none;
 }
 
+.bg-gray { background-color: lightgray;}
 
 

@@ -15,10 +15,14 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.ProductOperation;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+
+import java.util.Date;
 
 /**
  * It is a default implementation of {@link PharmacyService}.
@@ -42,17 +46,30 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     public PharmacyDAO getDao() {
 	    return dao;
     }
-
-    /******* PRODUCTS UNITS ******/
-
-    @Override
-    public Boolean validateOperation(ProductOperation operation) {
-        return null;
-    }
+//
+//    @Override
+//    public Boolean validateOperation(ProductOperation operation) {
+//        return null;
+//    }
 
     @Override
     public ProductOperation getOneProductOperationById(Integer productOperationId) {
         return dao.getOneProductOperationById(productOperationId);
+    }
+
+    @Override
+    public ProductOperation getOneProductOperationByOperationNumber(String operationNumber) {
+        return dao.getOneProductOperationByOperationNumber(operationNumber);
+    }
+
+    @Override
+    public ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided) {
+        return dao.getOneProductOperationByOperationDateAndProductProgram(operationDate, productProgram, location, includeVoided);
+    }
+
+    @Override
+    public ProductOperation saveProductOperation(ProductOperation productOperation) {
+        return dao.saveProductOperation(productOperation);
     }
 
 }

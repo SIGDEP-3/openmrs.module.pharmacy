@@ -25,7 +25,7 @@
                 if (form.getAttribute('action').includes('?id=')) {
                     form.setAttribute('action', form.getAttribute('action') + '&action=save');
                 } else {
-                    form.setAttribute('action', form.getAttribute('action') + '&action=save');
+                    form.setAttribute('action', form.getAttribute('action') + '?action=save');
                 }
             }
 
@@ -57,7 +57,7 @@
         </div>
         <div class="col-6 text-right">
             <c:url value="/module/pharmacy/operations/reception/list.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
+            <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
         </div>
@@ -70,14 +70,15 @@
                 <form:hidden path="locationId"/>
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
-                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">
-                    <form:hidden path="productProgramId"/>
-                </c:if>
+                <form:hidden path="productProgramId"/>
+<%--                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">--%>
+<%--                </c:if>--%>
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-10 mb-2">
                                 <labe>Fournisseur <span class="required">*</span></labe>
+                                <br>
                                 <form:select path="productSupplierId" cssClass="form-control s2" >
                                     <form:option value="" label=""/>
                                     <form:options items="${suppliers}" itemValue="productSupplierId" itemLabel="name" />
@@ -88,22 +89,22 @@
                         <div class="row">
                             <div class="col-6 mb-2">
                                 <labe>Programme <span class="required">*</span></labe>
-                                <c:if test="${fct:length(productReception.productAttributeFluxes) == 0}">
-                                    <form:select path="productProgramId" cssClass="form-control s2" >
-                                        <form:option value="" label=""/>
-                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />
-                                    </form:select>
-                                    <form:errors path="productProgramId" cssClass="error"/>
-                                </c:if>
-                                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">
-                                    <div class="form-control form-control-sm">
-                                            ${productReception.productProgram.name}
-                                    </div>
+                                <div class="form-control form-control-sm">
+                                        ${program.name}
+                                </div>
+<%--                                <c:if test="${fct:length(productReception.productAttributeFluxes) == 0}">--%>
+<%--                                    <form:select path="productProgramId" cssClass="form-control s2" >--%>
+<%--                                        <form:option value="" label=""/>--%>
+<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
+<%--                                    </form:select>--%>
+<%--                                    <form:errors path="productProgramId" cssClass="error"/>--%>
+<%--                                </c:if>--%>
+<%--                                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">--%>
 <%--                                    <form:select path="productProgramId" cssClass="form-control s2" disabled="true" title="" >--%>
 <%--                                        <form:option value="" label=""/>--%>
 <%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
 <%--                                    </form:select>--%>
-                                </c:if>
+<%--                                </c:if>--%>
                             </div>
                         </div>
                     </div>

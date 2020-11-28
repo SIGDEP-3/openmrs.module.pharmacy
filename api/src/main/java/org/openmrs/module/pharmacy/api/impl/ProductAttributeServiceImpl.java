@@ -103,4 +103,9 @@ public class ProductAttributeServiceImpl extends BaseOpenmrsService implements P
         return dao.getOneProductAttributeByBatchNumberAndExpiryDate(batchNumber, expiryDate);
     }
 
+    @Override
+    public Integer purgeUnusedAttributes() {
+        return dao.purgeUnusedAttributes();
+    }
+
 }

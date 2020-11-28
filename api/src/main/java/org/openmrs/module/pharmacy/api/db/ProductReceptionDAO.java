@@ -25,10 +25,6 @@ import java.util.List;
  */
 public interface ProductReceptionDAO {
 
-    /*
-	 * Add DAO methods here
-	 */
-
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	List<ProductReception> getAllProductReceptions(Location location);

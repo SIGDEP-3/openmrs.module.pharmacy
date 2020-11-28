@@ -46,4 +46,5 @@ public interface ProductAttributeService extends OpenmrsService {
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
+    Integer purgeUnusedAttributes();
 }

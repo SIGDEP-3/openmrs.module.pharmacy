@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
+import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
 
@@ -38,5 +39,6 @@ public interface ProductAttributeStockDAO {
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
+	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product);
 
 }

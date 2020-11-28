@@ -29,7 +29,11 @@ public interface PharmacyDAO {
     /*
 	 * Add DAO methods here
 	 */
-	Boolean validateOperation(ProductOperation operation);
-
+//	Boolean validateOperation(ProductOperation operation);
     ProductOperation getOneProductOperationById(Integer productOperationId);
+	ProductOperation getOneProductOperationByOperationNumber(String operationNumber);
+
+	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
+
+    ProductOperation saveProductOperation(ProductOperation productOperation);
 }

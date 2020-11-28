@@ -122,4 +122,15 @@ public class HibernateProductAttributeDAO implements ProductAttributeDAO {
 		return (ProductAttribute) criteria.add(Restrictions.eq("batchNumber", batchNumber))
 				.add(Restrictions.eq("expiryDate", expiryDate)).uniqueResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Integer purgeUnusedAttributes() {
+		List<ProductAttribute> productAttributes = sessionFactory.getCurrentSession().createQuery("" +
+				"FROM ProductAttribute p WHERE p.productAttributeId NOT IN (SELECT pf.productAttribute.productAttributeId FROM ProductAttributeFlux pf)").list();
+		for (ProductAttribute attribute : productAttributes) {
+			removeProductAttribute(attribute);
+		}
+		return productAttributes.size();
+	}
 }

@@ -53,10 +53,9 @@ public class PharmacyProductProgramManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/programs/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
+                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                     ProductProgram productProgram) {
         if (Context.isAuthenticated()) {
-
-            ProductProgram productProgram = new ProductProgram();
             if (id != 0) {
                 productProgram = service().getOneProductProgramById(id);
             }

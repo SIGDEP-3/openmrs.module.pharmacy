@@ -62,11 +62,13 @@ public class PharmacyProductRegimenManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/regimens/edit.form", method = RequestMethod.GET)
     public void edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
+                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                     ProductRegimenForm productRegimenForm) {
         if (Context.isAuthenticated()) {
-            ProductRegimenForm productRegimenForm = new ProductRegimenForm();
             if (id != 0) {
                 productRegimenForm.setProductRegimen(service().getOneProductRegimenById(id));
+            } else {
+                productRegimenForm = new ProductRegimenForm();
             }
 
             modelMap.addAttribute("regimenForm", productRegimenForm);

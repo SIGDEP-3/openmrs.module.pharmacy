@@ -1,0 +1,329 @@
+package org.openmrs.module.pharmacy.forms;
+
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.MobilePatient;
+import org.openmrs.module.pharmacy.MobilePatientDispensationInfo;
+import org.openmrs.module.pharmacy.ProductDispensation;
+import org.openmrs.module.pharmacy.api.ProductDispensationService;
+import org.openmrs.module.pharmacy.api.ProductRegimenService;
+import org.openmrs.module.pharmacy.enumerations.Goal;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+public class ProductDispensationForm extends ProductOperationForm {
+    private Integer productRegimenId;
+    private Goal goal;
+    private Integer encounterId;
+    private Date prescriptionDate;
+    private Integer mobilePatientId;
+    private Integer patientId;
+    private Integer mobileDispensationInfoId;
+    private Integer providerId;
+    private String patientIdentifier;
+    private Integer treatmentDays;
+    private Date treatmentEndDate;
+    private Integer age;
+    private String gender;
+
+    public ProductDispensationForm() {
+        super();
+        setIncidence(Incidence.NEGATIVE);
+    }
+
+    public Goal getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Goal goal) {
+        this.goal = goal;
+    }
+
+    public Integer getEncounterId() {
+        return encounterId;
+    }
+
+    public void setEncounterId(Integer encounterId) {
+        this.encounterId = encounterId;
+    }
+
+    public Date getPrescriptionDate() {
+        return prescriptionDate;
+    }
+
+    public void setPrescriptionDate(Date prescriptionDate) {
+        this.prescriptionDate = prescriptionDate;
+    }
+
+    public Integer getMobilePatientId() {
+        return mobilePatientId;
+    }
+
+    public void setMobilePatientId(Integer mobilePatientId) {
+        this.mobilePatientId = mobilePatientId;
+    }
+
+    public Integer getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Integer patientId) {
+        this.patientId = patientId;
+    }
+
+    public Integer getMobileDispensationInfoId() {
+        return mobileDispensationInfoId;
+    }
+
+    public void setMobileDispensationInfoId(Integer mobileDispensationInfoId) {
+        this.mobileDispensationInfoId = mobileDispensationInfoId;
+    }
+
+    public Integer getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Integer providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getPatientIdentifier() {
+        return patientIdentifier;
+    }
+
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
+    }
+
+    public Integer getTreatmentDays() {
+        return treatmentDays;
+    }
+
+    public void setTreatmentDays(Integer treatmentDays) {
+        this.treatmentDays = treatmentDays;
+    }
+
+    public Date getTreatmentEndDate() {
+        return treatmentEndDate;
+    }
+
+    public void setTreatmentEndDate(Date treatmentEndDate) {
+        this.treatmentEndDate = treatmentEndDate;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getProductRegimenId() {
+        return productRegimenId;
+    }
+
+    public void setProductRegimenId(Integer productRegimenId) {
+        this.productRegimenId = productRegimenId;
+    }
+
+    public void setProductDispensation(ProductDispensation productDispensation) {
+        super.setProductOperation(productDispensation);
+        setPrescriptionDate(productDispensation.getPrescriptionDate());
+        if (productDispensation.getEncounter() != null) {
+            Encounter encounter = productDispensation.getEncounter();
+            setEncounterId(encounter.getEncounterId());
+            setAge(encounter.getPatient().getAge());
+            setPatientIdentifier(encounter.getPatient().getPatientIdentifier().getIdentifier());
+            setGender(encounter.getPatient().getGender());
+            setPatientId(encounter.getPatient().getPatientId());
+
+            for (Obs obs : encounter.getAllObs()) {
+                if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Regimen"))) {
+                    // Dispensation regimen
+                    setProductRegimenId(regimenService().getOneProductRegimenByConceptId(obs.getConcept().getConceptId()).getProductRegimenId());
+                } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Goal"))) {
+                    // Goal
+                    setGoal(Goal.valueOf(obs.getValueText()));
+                } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentDays"))) {
+                    // treatmentDays
+                    setTreatmentDays(obs.getValueNumeric().intValue());
+                } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentEndDate"))) {
+                    // treatmentEndDate
+                     setTreatmentEndDate(obs.getValueDate());
+                }
+            }
+        }
+    }
+
+    public void setMobilePatient(MobilePatient patient) {
+        setPatientIdentifier(patient.getIdentifier());
+        setAge(patient.getAge());
+        setGender(patient.getGender());
+        setMobilePatientId(patient.getMobilePatientId());
+    }
+
+    public void setMobileDispensationInfo(MobilePatientDispensationInfo mobileDispensationInfo) {
+        setMobileDispensationInfoId(mobileDispensationInfo.getMobileDispensationInfoId());
+        setGoal(mobileDispensationInfo.getGoal());
+        setProductRegimenId(mobileDispensationInfo.getProductRegimen().getProductRegimenId());
+        setProviderId(mobileDispensationInfo.getProvider().getProviderId());
+
+        setMobilePatientId(mobileDispensationInfo.getMobilePatient().getMobilePatientId());
+        setPatientIdentifier(mobileDispensationInfo.getMobilePatient().getIdentifier());
+        setAge(mobileDispensationInfo.getMobilePatient().getAge());
+        setGender(mobileDispensationInfo.getMobilePatient().getGender());
+
+        setProductDispensation(mobileDispensationInfo.getDispensation());
+    }
+
+    public ProductDispensation getProductDispensation() {
+        ProductDispensation productDispensation = (ProductDispensation) super.getProductOperation(new ProductDispensation());
+        productDispensation.setPrescriptionDate(getPrescriptionDate());
+        if (getPatientId() != null) {
+            Encounter encounter = new Encounter();
+            if (getEncounterId() == null) {
+                encounter.setEncounterDatetime(getOperationDate());
+                encounter.setPatient(Context.getPatientService().getPatient(getPatientId()));
+                encounter.setLocation(OperationUtils.getUserLocation());
+                encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
+                encounter.addProvider(null, Context.getProviderService().getProvider(getProviderId()));
+
+                encounter.addObs(getDispensationDateObs());
+                encounter.addObs(getDispensationGoalObs());
+                encounter.addObs(getDispensationRegimenObs());
+                encounter.addObs(getDispensationTreatmentDaysObs());
+                encounter.addObs(getDispensationTreatmentEndDateObs());
+
+            } else {
+                encounter = Context.getEncounterService().getEncounter(getEncounterId());
+                if (encounter != null) {
+                    encounter.addProvider(null, Context.getProviderService().getProvider(getProviderId()));
+                    Set<Obs> obsSet = new HashSet<Obs>();
+                    for (Obs obs : encounter.getAllObs()) {
+                        if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Regimen"))) {
+                            // Dispensation regimen
+                            obs.setValueCoded(regimenService().getOneProductRegimenById(getProductRegimenId()).getConcept());
+                            obsSet.add(obs);
+                        } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Goal"))) {
+                            // Goal
+                            obs.setValueText(getGoal().name());
+                            obsSet.add(obs);
+                            // setGoal(Goal.valueOf(obs.getValueText()));
+                        } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentDays"))) {
+                            // treatmentDays
+                            obs.setValueNumeric(getTreatmentDays().doubleValue());
+                            obsSet.add(obs);
+                            //setTreatmentDays(obs.getValueNumeric().intValue());
+                        } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentEndDate"))) {
+                            // treatmentEndDate
+                            obs.setValueDate(getTreatmentEndDate());
+                            obsSet.add(obs);
+                            // setTreatmentEndDate(obs.getValueDate());
+                        }
+                    }
+                    encounter.setObs(obsSet);
+                }
+            }
+            productDispensation.setEncounter(encounter);
+        }
+        return productDispensation;
+    }
+
+    public MobilePatientDispensationInfo getMobileDispensationInfo() {
+        MobilePatientDispensationInfo info = new MobilePatientDispensationInfo();
+        if (getMobileDispensationInfoId() != null) {
+            info = dispensationService().getOneMobilePatientDispensationInfoId(getMobileDispensationInfoId());
+        }
+        info.setGoal(getGoal());
+        info.setLocation(OperationUtils.getUserLocation());
+        info.setProductRegimen(regimenService().getOneProductRegimenByConceptId(getProductRegimenId()));
+        info.setProvider(Context.getProviderService().getProvider(getProviderId()));
+        return info;
+    }
+
+    public MobilePatient getMobilePatient() {
+        MobilePatient patient = dispensationService().getOneMobilePatientById(getMobilePatientId());
+        if (patient != null) {
+            patient.setAge(getAge());
+            patient.setGender(getGender());
+            patient.setIdentifier(getPatientIdentifier());
+            patient.setLocation(OperationUtils.getUserLocation());
+        }
+        return patient;
+    }
+
+    private Obs getDispensationRegimenObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(getConceptIdInGlobalProperties("Regimen")));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        obs.setValueCoded(Context.getService(ProductRegimenService.class).getOneProductRegimenById(getProductRegimenId()).getConcept());
+        return obs;
+    }
+
+    private Obs getDispensationTreatmentDaysObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(getConceptIdInGlobalProperties("TreatmentDays")));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        obs.setValueNumeric(getTreatmentDays().doubleValue());
+        return obs;
+    }
+
+    private Obs getDispensationTreatmentEndDateObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(getConceptIdInGlobalProperties("TreatmentEndDate")));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        obs.setValueDate(getTreatmentEndDate());
+        return obs;
+    }
+
+    private Obs getDispensationGoalObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(getConceptIdInGlobalProperties("Goal")));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        obs.setValueText(getGoal().name());
+        return obs;
+    }
+
+    private Obs getDispensationDateObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(165010));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        obs.setValueDate(getOperationDate());
+        return obs;
+    }
+
+    private ProductRegimenService regimenService() {
+        return Context.getService(ProductRegimenService.class);
+    }
+
+    private ProductDispensationService dispensationService() {
+        return Context.getService(ProductDispensationService.class);
+    }
+
+    private Integer getConceptIdInGlobalProperties(String property) {
+            String value = Context.getAdministrationService().getGlobalProperty("pharmacy.dispensation"+ property + "Concept");
+            if (!value.isEmpty()) {
+                return Integer.parseInt(value);
+            }
+        return null;
+    }
+}

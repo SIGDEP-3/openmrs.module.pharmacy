@@ -4,6 +4,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.Date;
 
@@ -19,6 +20,7 @@ public abstract class ProductAttributeFluxForm {
     private String uuid;
 
     public ProductAttributeFluxForm() {
+        setLocationId(OperationUtils.getUserLocation().getLocationId());
     }
 
     public Integer getProductAttributeFluxId() {
@@ -102,7 +104,7 @@ public abstract class ProductAttributeFluxForm {
         productAttribute.setBatchNumber(getBatchNumber());
         productAttribute.setExpiryDate(getExpiryDate());
         productAttribute.setProduct(productService().getOneProductById(getProductId()));
-        productAttribute.setLocation(Context.getLocationService().getDefaultLocation());
+        productAttribute.setLocation(OperationUtils.getUserLocation());
         return productAttribute;
     }
 
@@ -116,7 +118,7 @@ public abstract class ProductAttributeFluxForm {
         productAttributeFlux.setStatus(OperationStatus.NOT_COMPLETED);
         productAttributeFlux.setObservation(getObservation());
         productAttributeFlux.setProductOperation(service().getOneProductOperationById(getProductOperationId()));
-        productAttributeFlux.setLocation(Context.getLocationService().getDefaultLocation());
+        productAttributeFlux.setLocation(OperationUtils.getUserLocation());
         productAttributeFlux.setOperationDate(service()
                 .getOneProductOperationById(getProductOperationId()).getOperationDate());
         return productAttributeFlux;

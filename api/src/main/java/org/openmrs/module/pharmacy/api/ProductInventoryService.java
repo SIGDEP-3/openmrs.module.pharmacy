@@ -50,5 +50,6 @@ public interface ProductInventoryService extends OpenmrsService {
 	void removeProductInventory(ProductInventory productInventory);
 	ProductInventory getOneProductInventoryByUuid(String uuid);
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
+	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 }

@@ -7,19 +7,43 @@
     if (jQuery) {
         jQuery(document).ready(function (){
             jQuery('.table').DataTable();
+            jQuery("#program").change(function () {
+                if (jQuery(this).val()){
+                    jQuery('#selectMe').text('');
+                } else {
+                    jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+                }
+            })
         });
+
+        function create() {
+            const selection = jQuery("#program");
+            const programId = selection.val();
+            if (programId === undefined || programId === null || programId === '') {
+                jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+            } else {
+                location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/reception/edit.form?programId="+ programId
+            }
+        }
     }
 </script>
 <div class="container-fluid mt-2">
 
-    <div class="row mb-2 ml-1 mr-1">
+    <div class="row mb-2">
         <div class="col-6">
-            <div class="h5 pt-2"><i class="fa fa-list"></i> ${subTitle}</div>
+            <div class="h5"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/reception/edit.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau">
-                <i class="fa fa-plus"></i> Nouvelle reception
+            <span id="selectMe"></span>
+            <label for="program">Programme : </label>
+            <select name="program" class="s2 form-control-sm" id="program">
+                <option value=""></option>
+                <c:forEach var="program" items="${programs}">
+                    <option value="${program.productProgramId}">${program.name}</option>
+                </c:forEach>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="create()">
+                <i class="fa fa-plus"></i> Nouvelle r&eacute;ception
             </button>
         </div>
     </div>

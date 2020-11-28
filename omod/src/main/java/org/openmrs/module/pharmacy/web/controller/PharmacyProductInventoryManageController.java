@@ -4,17 +4,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
 import org.openmrs.module.pharmacy.forms.InventoryAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductInventoryAttributeFluxFormValidation;
-import org.openmrs.module.pharmacy.validators.ProductInventoryHeaderFormValidation;
+import org.openmrs.module.pharmacy.validators.ProductInventoryFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -66,23 +64,22 @@ public class PharmacyProductInventoryManageController {
         return "Inventaire de produits";
     }
 
-    public Location getUserLocation() {
-        return Context.getLocationService().getDefaultLocation();
-//        return Context.getUserContext().getLocation();
-    }
 
     @RequestMapping(value = "/module/pharmacy/operations/inventory/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
-            modelMap.addAttribute("inventories", inventoryService().getAllProductInventories(getUserLocation(), false));
+            modelMap.addAttribute("inventories", inventoryService().getAllProductInventories(OperationUtils.getUserLocation(), false));
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("subTitle", "Liste des Inventaires");
         }
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/inventory/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                     ProductInventoryForm productInventoryForm) {
+                       HttpServletRequest request,
+                       @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                       @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+                       ProductInventoryForm productInventoryForm) {
         if (Context.isAuthenticated()) {
             if (id != 0) {
                 ProductInventory productInventory = inventoryService().getOneProductInventoryById(id);
@@ -92,14 +89,24 @@ public class PharmacyProductInventoryManageController {
                             productInventory.getProductOperationId();
                     }
                     productInventoryForm.setProductInventory(productInventory);
+                    modelMap.addAttribute("program", productInventory.getProductProgram());
                 }
             } else {
+                ProductProgram program = programService().getOneProductProgramById(programId);
+                if (program == null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
+                    return "redirect:/module/pharmacy/operations/inventory/list.form";
+                }
                 productInventoryForm = new ProductInventoryForm();
-                productInventoryForm.setLocationId(getUserLocation().getLocationId());
+                productInventoryForm.setProductProgramId(program.getProductProgramId());
+                productInventoryForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
+
+                modelMap.addAttribute("program", program);
             }
 
-            modelMap.addAttribute("inventoryHeaderForm", productInventoryForm);
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("productInventoryForm", productInventoryForm);
+            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("productInventory", inventoryService().getOneProductInventoryById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie d'inventaire - Entête");
@@ -116,7 +123,7 @@ public class PharmacyProductInventoryManageController {
         if (Context.isAuthenticated()) {
             HttpSession session = request.getSession();
 
-            new ProductInventoryHeaderFormValidation().validate(productInventoryForm, result);
+            new ProductInventoryFormValidation().validate(productInventoryForm, result);
 
             if (!result.hasErrors()) {
 //                boolean idExist = (inventoryHeaderForm.getProductOperationId() != null);
@@ -135,8 +142,9 @@ public class PharmacyProductInventoryManageController {
                 }
             }
             modelMap.addAttribute("inventoryHeaderForm", productInventoryForm);
+            modelMap.addAttribute("latestInventory", getLatestInventory(productInventoryForm.getProductInventory()));
 //            modelMap.addAttribute("product", inventoryHeaderForm.getProduct());
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("program", programService().getOneProductProgramById(productInventoryForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie  de l'inventaire - entête");
         }
@@ -207,23 +215,39 @@ public class PharmacyProductInventoryManageController {
     }
 
     private void modelMappingForView(ModelMap modelMap, InventoryAttributeFluxForm inventoryAttributeFluxForm, ProductInventory productInventory) {
-        List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
-        if (productAttributeFluxes.size() != 0) {
-            Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
-        }
+//        ProductInventory lastProductInventory = inventoryService().getLastProductInventory(Context.getLocationService().getDefaultLocation(), productInventory.getProductProgram());
+//        if (lastProductInventory != null) {
+//            if (lastProductInventory.getProductOperationId().equals(productInventory.getProductOperationId())) {
+//                modelMap.addAttribute("lastInventory", "C'est votre premier inventaire");
+//            } else {
+//                String pattern = "dd/MM/yyyy";
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//                modelMap.addAttribute("lastInventory", simpleDateFormat.format(lastProductInventory.getOperationDate()));
+//            }
+//        } else {
+//            modelMap.addAttribute("lastInventory", "C'est votre premier inventaire");
+//        }
+
+        modelMap.addAttribute("latestInventory", getLatestInventory(productInventory));
 
 //        List<ProductAttributeFlux> productAttributeFluxList = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
         modelMap.addAttribute("inventoryAttributeFluxForm", inventoryAttributeFluxForm);
         modelMap.addAttribute("productInventory", productInventory);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productInventory.getProductProgram().getProductProgramId()).getProducts());
-        modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
         if (!productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
+            List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxDTOs(productInventory);
+            modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED))
             modelMap.addAttribute("subTitle", "Inventaire - APPROUVEE");
             else if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
                 modelMap.addAttribute("subTitle", "Inventaire - EN ATTENTE DE VALIDATION");
             }
         } else {
+            List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
+            if (productAttributeFluxes.size() != 0) {
+                Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
+            }
+            modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             modelMap.addAttribute("subTitle", "Saisie de l'Inventaire - ajout de produits");
         }
     }
@@ -237,6 +261,7 @@ public class PharmacyProductInventoryManageController {
         ProductInventory inventory = inventoryService().getOneProductInventoryById(inventoryId);
         inventory.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
         inventoryService().saveProductInventory(inventory);
+        attributeService().purgeUnusedAttributes();
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été enregistré avec " +
                 "succès et est en attente de validation !");
         return "redirect:/module/pharmacy/operations/inventory/list.form";
@@ -301,10 +326,36 @@ public class PharmacyProductInventoryManageController {
             return null;
         HttpSession session = request.getSession();
         ProductInventory inventory = inventoryService().getOneProductInventoryById(inventoryId);
-        if (service().validateOperation(inventory)) {
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
-                    "continuer à modifier l'inventaire !");
-            return "redirect:/module/pharmacy/operations/inventory/list.form";
+        if (inventory != null) {
+            if (OperationUtils.validateOperation(inventory)) {
+                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Votre inventaire a été validé avec succès !");
+                return "redirect:/module/pharmacy/operations/inventory/list.form";
+            }
+        }
+        return null;
+    }
+
+    ProductInventory getLatestInventory(ProductInventory productInventory) {
+        ProductInventory lastProductInventory;
+        if (productInventory.getProductOperationId() == null) {
+            lastProductInventory = inventoryService().getLastProductInventory(
+                    Context.getLocationService().getDefaultLocation(),
+                    productInventory.getProductProgram());
+        } else {
+            lastProductInventory = inventoryService().getLastProductInventoryByDate(
+                    OperationUtils.getUserLocation(),
+                    productInventory.getProductProgram(),
+                    productInventory.getOperationDate());
+        }
+        if (lastProductInventory != null) {
+            if (lastProductInventory.getProductOperationId().equals(productInventory.getProductOperationId())) {
+                return null;
+            } else {
+                return lastProductInventory;
+//                String pattern = "dd/MM/yyyy";
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//                result = simpleDateFormat.format(lastProductInventory.getOperationDate());
+            }
         }
         return null;
     }

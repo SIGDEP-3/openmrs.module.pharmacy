@@ -9,36 +9,21 @@ import javax.persistence.*;
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(name = "ProductDispensing")
-@Table(name = "pharmacy_product_dispensing")
-public class ProductDispensing extends ProductOperation {
+@Entity(name = "ProductDispensation")
+@Table(name = "pharmacy_product_dispensation")
+public class ProductDispensation extends ProductOperation {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "regimen_id")
-    private ProductRegimen productRegimen;
-
-    @Column(name = "prescription_date", nullable = false)
+    @Column(name = "prescription_date")
     private Date prescriptionDate;
-
-    @Column(name = "treatment_days", nullable = false)
-    private Integer treatmentDays;
 
     @ManyToOne
     @JoinColumn(name = "encounter_id")
     private Encounter encounter;
 
-    public ProductDispensing() {
+    public ProductDispensation() {
         this.setIncidence(Incidence.NEGATIVE);
-    }
-
-    public ProductRegimen getProductRegimen() {
-        return productRegimen;
-    }
-
-    public void setProductRegimen(ProductRegimen productRegimen) {
-        this.productRegimen = productRegimen;
     }
 
     public Date getPrescriptionDate() {
@@ -47,14 +32,6 @@ public class ProductDispensing extends ProductOperation {
 
     public void setPrescriptionDate(Date orderDate) {
         this.prescriptionDate = orderDate;
-    }
-
-    public Integer getTreatmentDays() {
-        return treatmentDays;
-    }
-
-    public void setTreatmentDays(Integer treatmentDays) {
-        this.treatmentDays = treatmentDays;
     }
 
     public Encounter getEncounter() {

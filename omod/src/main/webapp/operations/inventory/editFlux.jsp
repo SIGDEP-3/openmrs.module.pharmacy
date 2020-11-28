@@ -18,7 +18,7 @@
                     <c:url value="/module/pharmacy/operations/inventory/complete.form" var="completeUrl">
                         <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
                     </c:url>
-                    <button class="btn btn-success mr-2" onclick="window.location='${completeUrl}'">
+                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${completeUrl}'">
                         <i class="fa fa-save"></i> Terminer
                     </button>
                 </c:if>
@@ -26,14 +26,14 @@
                     <c:url value="/module/pharmacy/operations/inventory/incomplete.form" var="incompleteUrl">
                         <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
                     </c:url>
-                    <button class="btn btn-primary mr-2" onclick="window.location='${incompleteUrl}'">
-                        <i class="fa fa-pen"></i> Editer la r&eacute;ception
+                    <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
+                        <i class="fa fa-pen"></i> Editer l'inventaire
                     </button>
                     <c:url value="/module/pharmacy/operations/inventory/validate.form" var="validationUrl">
                         <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
                     </c:url>
-                    <button class="btn btn-success mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider la r&eacute;ception
+                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
+                        <i class="fa fa-pen"></i> Valider
                     </button>
                 </c:if>
             </c:if>
@@ -41,12 +41,12 @@
                 <c:url value="/module/pharmacy/operations/inventory/edit.form" var="editUrl">
                     <c:param name="id" value="${productInventory.productOperationId}"/>
                 </c:url>
-                <button class="btn btn-primary" onclick="window.location='${editUrl}'" title="Voir la liste">
+                <button class="btn btn-primary btn-sm" onclick="window.location='${editUrl}'" title="Voir la liste">
                     <i class="fa fa-edit"></i> Editer l'ent&ecirc;te
                 </button>
             </c:if>
             <c:url value="/module/pharmacy/operations/inventory/list.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
+            <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
         </div>
@@ -55,14 +55,30 @@
         <table class="bg-light table table-borderless table-light border">
             <thead class="thead-light">
             <tr>
-                <td>Programme :</td>
+                <td>Programme </td>
                 <td class="font-weight-bold text-info">${productInventory.productProgram.name}</td>
-                <td>Date de inventory</td>
+                <td>Date dernier inventaire</td>
                 <td class="font-weight-bold text-info">
-                    <fmt:formatDate value="${productInventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                    <c:if test="${latestInventory != null}">
+                        <fmt:formatDate value="${lastInventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                    </c:if>
+                    <c:if test="${latestInventory == null}">
+                        C'est votre premier inventaire
+                    </c:if>
+
                 </td>
             </tr>
             <tr>
+                <td>Date d'inventaire</td>
+                <td class="font-weight-bold text-info">
+                    <fmt:formatDate value="${productInventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                </td>
+                <td>Num&eacute;ro de la pi&egrave;ce</td>
+                <td class="font-weight-bold text-info">${productInventory.operationNumber}</td>
+            </tr>
+            <tr>
+                <td>Type d'inventaire</td>
+                <td class="font-weight-bold text-info">${productInventory.inventoryType == 'PARTIAL' ? 'PARTIEL' : 'COMPLET'}</td>
                 <td>Observation</td>
                 <td class="font-weight-bold text-info">${productInventory.observation}</td>
             </tr>
@@ -178,22 +194,84 @@
                     <th style="width: 200px">Num&eacute;ro de lot </th>
                     <th style="width: 150px">Date de p&eacute;remption </th>
                     <th style="width: 60px">Quantit&eacute; physique</th>
-                    <th style="width: 250px">observation</th>
+                    <th style="width: 60px">Quantit&eacute; th&eacute;orique</th>
+                    <th style="width: 100px">info / &eacute;cart</th>
+                    <th style="width: 100px">observation</th>
                 </tr>
                 </thead>
+                <tbody>
                 <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                    <tr>
-                        <td>${productFlux.productAttribute.product.code}</td>
-                        <td>${productFlux.productAttribute.product.productRetailUnit.name}</td>
-                        <td>${productFlux.productAttribute.product.productRetailUnitId.name}</td>
-                        <td class="text-center">${productFlux.productAttribute.batchNumber}</td>
-                        <td class="text-center">
-                            <fmt:formatDate value="${productFlux.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                        </td>
-                        <td class="text-center">${productFlux.quantity}</td>
-                        <td>${productFlux.observation}</td>
-                    </tr>
+                    <c:if test="${productInventory.inventoryType == 'FULL' || (productInventory.inventoryType == 'PARTIAL' && productFlux.physicalQuantity != null)}">
+
+                        <tr
+                                <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">
+                                    <c:if test="${ productFlux.physicalQuantity != productFlux.theoreticalQuantity}">
+                                        class="bg-danger text-white"
+                                    </c:if>
+                                </c:if>
+                                <c:if test="${productFlux.physicalQuantity == null || productFlux.theoreticalQuantity == null}">
+                                    <c:if test="${productFlux.physicalQuantity == null}">
+                                        class="bg-warning"
+                                    </c:if>
+
+                                    <c:if test="${productFlux.theoreticalQuantity == null}">
+                                        <c:if test="${latestInventory != null}">
+                                            class="bg-info"
+                                        </c:if>
+
+                                    </c:if>
+                                </c:if>
+                        >
+                            <td>${productFlux.code}</td>
+                            <td>${productFlux.retailName}</td>
+                            <td>${productFlux.retailUnit}</td>
+                            <td class="text-center">${productFlux.batchNumber}</td>
+                            <td class="text-center">
+                                <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy"
+                                                type="DATE"/>
+                            </td>
+                            <td class="text-center">${productFlux.physicalQuantity}</td>
+                            <td class="text-center">${productFlux.theoreticalQuantity}</td>
+                            <td class="text-center">
+                                <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">
+                                    <c:if test="${ productFlux.physicalQuantity != productFlux.theoreticalQuantity}">
+                                        ${productFlux.theoreticalQuantity - productFlux.physicalQuantity}
+                                    </c:if>
+                                    <c:if test="${ productFlux.physicalQuantity == productFlux.theoreticalQuantity}">
+                                        OK
+                                    </c:if>
+                                </c:if>
+                                <c:if test="${productFlux.physicalQuantity == null || productFlux.theoreticalQuantity == null}">
+                                    <c:if test="${productFlux.physicalQuantity == null}">
+                                        Doit faire partie de l'inventaire
+                                    </c:if>
+
+                                    <c:if test="${productFlux.theoreticalQuantity == null}">
+                                        <c:if test="${latestInventory == null}">
+                                            OK
+                                        </c:if>
+                                        <c:if test="${latestInventory != null}">
+                                            Pas en stock
+                                        </c:if>
+                                    </c:if>
+                                </c:if>
+                                    <%--                            <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">--%>
+                                    <%--                                ${productFlux.theoreticalQuantity - productFlux.physicalQuantity}--%>
+                                    <%--                            </c:if>--%>
+                                    <%--                            <c:if test="${productFlux.physicalQuantity != productFlux.theoreticalQuantity }">--%>
+                                    <%--                                <c:if test="${productFlux.physicalQuantity == null}">--%>
+                                    <%--                                    Ne fait pas partie de l'inventaire--%>
+                                    <%--                                </c:if>--%>
+                                    <%--                                <c:if test="${productFlux.theoreticalQuantity == null }">--%>
+                                    <%--                                    N'existait pas en stock--%>
+                                    <%--                                </c:if>--%>
+                                    <%--                            </c:if>--%>
+                            </td>
+                            <td>${productFlux.observation}</td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
+                </tbody>
             </table>
         </c:if>
     </div>

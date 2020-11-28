@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
+import org.openmrs.module.pharmacy.enumerations.PatientType;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,15 +28,21 @@ public class MobilePatient extends AbstractPharmacyObject {
     @Column(name = "gender")
     private String gender;
 
+    @Column(name = "patient_type", nullable = false)
+    private PatientType patientType;
+
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @ManyToMany
-    @JoinTable(name = "pharmacy_mobile_patient_product_dispensing_members",
-            joinColumns = @JoinColumn(name = "mobile_patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_dispensing_id"))
-    private Set<ProductDispensing> productDispensing;
+//    @ManyToMany
+//    @JoinTable(name = "pharmacy_mobile_patient_product_dispensing_members",
+//            joinColumns = @JoinColumn(name = "mobile_patient_id"),
+//            inverseJoinColumns = @JoinColumn(name = "product_dispensing_id"))
+//    private Set<ProductDispensation> productDispensation;
+
+    @OneToMany(mappedBy = "mobilePatient")
+    private Set<MobilePatientDispensationInfo> mobilePatientDispensationInfos;
 
     public MobilePatient() {
     }
@@ -82,12 +89,20 @@ public class MobilePatient extends AbstractPharmacyObject {
         this.gender = gender;
     }
 
-    public Set<ProductDispensing> getDispensing() {
-        return productDispensing;
+    public Set<MobilePatientDispensationInfo> getMobilePatientDispensationInfos() {
+        return mobilePatientDispensationInfos;
     }
 
-    public void setDispensing(Set<ProductDispensing> orderDeliveries) {
-        this.productDispensing = orderDeliveries;
+    public void setMobilePatientDispensationInfos(Set<MobilePatientDispensationInfo> mobilePatientDispensationInfos) {
+        this.mobilePatientDispensationInfos = mobilePatientDispensationInfos;
+    }
+
+    public PatientType getPatientType() {
+        return patientType;
+    }
+
+    public void setPatientType(PatientType patientType) {
+        this.patientType = patientType;
     }
 
     public Location getLocation() {

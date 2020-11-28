@@ -34,12 +34,10 @@ import java.util.List;
  */
 @Transactional
 public interface PharmacyService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
 
-	Boolean validateOperation(ProductOperation operation);
+//	Boolean validateOperation(ProductOperation operation);
 	ProductOperation getOneProductOperationById(Integer productOperationId);
+	ProductOperation getOneProductOperationByOperationNumber(String operationNumber);
+	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
+	ProductOperation saveProductOperation(ProductOperation productOperation);
 }

@@ -4,17 +4,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.ProductReception;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductReceptionAttributeFluxFormValidation;
-import org.openmrs.module.pharmacy.validators.ProductReceptionHeaderFormValidation;
+import org.openmrs.module.pharmacy.validators.ProductReceptionFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -61,24 +59,24 @@ public class PharmacyProductReceptionManageController {
         return "Réception de produits";
     }
 
-    public Location getUserLocation() {
-        return Context.getLocationService().getDefaultLocation();
-//        return Context.getUserContext().getLocation();
-    }
+
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
-            modelMap.addAttribute("receptions", receptionService().getAllProductReceptions(getUserLocation(), false));
+            modelMap.addAttribute("receptions", receptionService().getAllProductReceptions(OperationUtils.getUserLocation(), false));
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("subTitle", "Liste des Réceptions");
         }
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
-                     @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
+                       HttpServletRequest request,
+                       @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                       @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+                       ProductReceptionForm productReceptionForm) {
         if (Context.isAuthenticated()) {
-            ProductReceptionForm productReceptionForm = new ProductReceptionForm();
             if (id != 0) {
                 ProductReception productReception = receptionService().getOneProductReceptionById(id);
                 if (productReception != null) {
@@ -87,13 +85,23 @@ public class PharmacyProductReceptionManageController {
                             productReception.getProductOperationId();
                     }
                     productReceptionForm.setProductReception(productReception);
+                    modelMap.addAttribute("program", productReception.getProductProgram());
                 }
             } else {
-                productReceptionForm.setLocationId(getUserLocation().getLocationId());
+                ProductProgram program = programService().getOneProductProgramById(programId);
+                if (program == null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
+                    return "redirect:/module/pharmacy/operations/reception/list.form";
+                }
+                productReceptionForm = new ProductReceptionForm();
+                productReceptionForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
+
+                modelMap.addAttribute("program", program);
             }
 
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+//            modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("productReception", receptionService().getOneProductReceptionById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie de réception - entête");
@@ -110,7 +118,7 @@ public class PharmacyProductReceptionManageController {
         if (Context.isAuthenticated()) {
             HttpSession session = request.getSession();
 
-            new ProductReceptionHeaderFormValidation().validate(productReceptionForm, result);
+            new ProductReceptionFormValidation().validate(productReceptionForm, result);
 
             if (!result.hasErrors()) {
 //                boolean idExist = (receptionHeaderForm.getProductOperationId() != null);
@@ -130,7 +138,7 @@ public class PharmacyProductReceptionManageController {
             }
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
 //            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("program", programService().getOneProductProgramById(productReceptionForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie  de réception - entête");
         }
@@ -229,6 +237,7 @@ public class PharmacyProductReceptionManageController {
         ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
         reception.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
         receptionService().saveProductReception(reception);
+        attributeService().purgeUnusedAttributes();
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été enregistré avec " +
                 "succès et est en attente de validation !");
         return "redirect:/module/pharmacy/operations/reception/list.form";
@@ -293,7 +302,7 @@ public class PharmacyProductReceptionManageController {
             return null;
         HttpSession session = request.getSession();
         ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
-        if (service().validateOperation(reception)) {
+        if (OperationUtils.validateOperation(reception)) {
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                     "continuer à modifier la réception !");
             return "redirect:/module/pharmacy/operations/reception/list.form";

@@ -25,7 +25,37 @@
 			
 	</require_modules>
 	<!-- / Required Modules -->
-	
+
+	<!-- Global Properties -->
+	<globalProperty>
+		<property>pharmacy.dispensationTreatmentDaysConcept</property>
+		<defaultValue>165011</defaultValue>
+		<description>Insert here the concept for the treatment days concept for dispensation in pharmacy </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.dispensationGoalConcept</property>
+		<defaultValue>165009</defaultValue>
+		<description>Insert here the concept for the goal concept for dispensation in pharmacy </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.dispensationTreatmentEndDateConcept</property>
+		<defaultValue>165040</defaultValue>
+		<description>Insert here the concept for the treatment end date concept for dispensation in pharmacy </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.dispensationRegimenConcept</property>
+		<defaultValue>165033</defaultValue>
+		<description>Insert here the concept for the regimen concept for dispensation in pharmacy </description>
+	</globalProperty>
+
+	<!-- Privileges  -->
+<!--	<privilege>-->
+<!--		<name>Manage Data Transfer</name>-->
+<!--		<description>Can Manage Data Transfer</description>-->
+<!--	</privilege>-->
+
+	<!-- /Privileges  -->
+
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.PharmacyActivator</activator>
 	

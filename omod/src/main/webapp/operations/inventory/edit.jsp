@@ -9,9 +9,37 @@
         jQuery(document).ready(function (){
             jQuery('#form').on('submit', function (e){
                 e.preventDefault();
+            });
 
-            })
+            jQuery(".periodSelector").monthpicker({
+                //pattern: "mm/yyyy"
+            });
+
+            jQuery('.periodSelector').on('change',function (e) {
+                console.log(e);
+                console.log(jQuery(this).val());
+                jQuery(this).val(getNumber(jQuery(this).val()));
+            });
         });
+
+        function getNumber(period) {
+            const months = {
+                '01': 'Janvier',
+                '02': 'Fevrier',
+                '03': 'Mars',
+                '04': 'Avril',
+                '05': 'Mai',
+                '06': 'Juin',
+                '07': 'Juillet',
+                '08': 'Aout',
+                '09': 'Septembre',
+                '10': 'Octobre',
+                '11': 'Novembre',
+                '12': 'Decembre',
+            };
+            return period.replace(period.split('/')[0] + '/', 'INVC-' + months[period.split('/')[0]] + ' ');
+        }
+
         function saveOnly(e) {
             e.preventDefault();
             const forms = document.getElementsByTagName('form');
@@ -71,35 +99,63 @@
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
                 <form:hidden path="inventoryStartDate"/>
-                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">
-                    <form:hidden path="productProgramId"/>
-                </c:if>
+                <form:hidden path="productProgramId"/>
+<%--                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">--%>
+<%--                    <form:hidden path="productProgramId"/>--%>
+<%--                </c:if>--%>
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-6 mb-2">
                                 <labe>Programme <span class="required">*</span></labe>
-                                <c:if test="${fct:length(productInventory.productAttributeFluxes) == 0}">
-                                    <form:select path="productProgramId" cssClass="form-control s2" >
-                                        <form:option value="" label=""/>
-                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />
-                                    </form:select>
-                                    <form:errors path="productProgramId" cssClass="error"/>
-                                </c:if>
-                                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">
-                                    <div class="form-control form-control-sm">
-                                            ${productInventory.productProgram.name}
-                                    </div>
-                                </c:if>
+                                <div class="form-control form-control-sm">
+                                        ${program.name}
+                                </div>
+<%--                                <c:if test="${fct:length(productInventory.productAttributeFluxes) == 0}">--%>
+<%--                                    <form:select path="productProgramId" cssClass="form-control s2" >--%>
+<%--                                        <form:option value="" label=""/>--%>
+<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
+<%--                                    </form:select>--%>
+<%--                                    <form:errors path="productProgramId" cssClass="error"/>--%>
+<%--                                </c:if>--%>
+<%--                                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">--%>
+<%--                                </c:if>--%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row mb-2">
+                            <div class="col-5">
+                                <label class="mb-1">Date du dernier inventaire</label>
+                                <div class="form-control form-control-sm bg-info">
+                                    <c:if test="${latestInventory != null}">
+                                        ${lastInventory.operationDate}
+                                    </c:if>
+                                    <c:if test="${latestInventory == null}">
+                                        C'est votre premier inventaire
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row mb-2">
+                            <div class="col-4">
+                                <label>Date de l'inventaire <span class="required">*</span></label>
+                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
+                                <form:errors path="operationDate" cssClass="error"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row mb-2">
                             <div class="col-4">
-                                <labe>Date de inventory <span class="required">*</span></labe>
-                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
-                                <form:errors path="operationDate" cssClass="error"/>
+                                <label>Num&eacute;ro d'inventaire <span class="required">*</span></label>
+                                <form:input path="operationNumber" cssClass="form-control form-control-sm periodSelector" />
+                                <form:errors path="operationNumber" cssClass="error"/>
                             </div>
                         </div>
                     </div>
@@ -108,8 +164,19 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
+                            <div class="col-10">
+                                <label class="mb-2">Unite de saisie</label> <br>
+                                <form:radiobutton path="inventoryType" value="PARTIAL" label=" Partiel" cssClass=""/>
+                                <form:radiobutton path="inventoryType" value="FULL" label=" Complet" cssClass=""/>
+                                <form:errors path="inventoryType" cssClass="error"/>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
                             <div class="col-12 mb-2">
-                                <labe>Observations</labe>
+                                <label>Observations</label>
                                 <form:textarea path="observation" cssClass="form-control form-control-sm" />
                                 <form:errors path="observation" cssClass="error"/>
                             </div>

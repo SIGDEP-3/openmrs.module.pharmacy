@@ -40,4 +40,5 @@ public interface ProductInventoryDAO {
 	ProductInventory getOneProductInventoryByUuid(String uuid);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
+    ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
 }

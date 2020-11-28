@@ -34,10 +34,10 @@ public class PharmacyProductUnitManageController {
 
     @RequestMapping(value = "/module/pharmacy/product/units/edit.form", method = RequestMethod.GET)
     public void unitForm(ModelMap modelMap,
-                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id) {
+                         @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                         ProductUnit unitForm) {
         if (Context.isAuthenticated()) {
             //HttpSession session = request.getSession();
-            ProductUnit unitForm = new ProductUnit();
             if (id != 0) {
                 unitForm = service().getOneProductUnitById(id);
             }

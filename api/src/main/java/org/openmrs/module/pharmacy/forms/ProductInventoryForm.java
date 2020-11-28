@@ -2,30 +2,21 @@ package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductInventoryService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 
 import java.util.Date;
 
 public class ProductInventoryForm extends ProductOperationForm {
-//    private Date inventoryDate;
     private Date inventoryStartDate;
-//    private Date inventoryEndDate;
+    private InventoryType inventoryType;
 
     public ProductInventoryForm() {
+        super();
         setIncidence(Incidence.EQUAL);
-        setLocationId(Context.getLocationService().getDefaultLocation().getLocationId());
     }
-
-//    public Date getInventoryDate() {
-//        return inventoryDate;
-//    }
-//
-//    public void setInventoryDate(Date inventoryDate) {
-//        this.inventoryDate = inventoryDate;
-//    }
 
     public Date getInventoryStartDate() {
         return inventoryStartDate;
@@ -35,29 +26,29 @@ public class ProductInventoryForm extends ProductOperationForm {
         this.inventoryStartDate = inventoryStartDate;
     }
 
-//    public Date getInventoryEndDate() {
-//        return inventoryEndDate;
-//    }
-//
-//    public void setInventoryEndDate(Date inventoryEndDate) {
-//        this.inventoryEndDate = inventoryEndDate;
-//    }
+    public InventoryType getInventoryType() {
+        return inventoryType;
+    }
+
+    public void setInventoryType(InventoryType inventoryType) {
+        this.inventoryType = inventoryType;
+    }
 
     public void setProductInventory(ProductInventory productInventory) {
         super.setProductOperation(productInventory);
         if (productInventory.getInventoryStartDate() != null) {
             setInventoryStartDate(productInventory.getInventoryStartDate());
         }
-        setInventoryStartDate(productInventory.getInventoryStartDate());
-//        setInventoryDate(productInventory.getInventoryDate());
-//        setInventoryEndDate(productInventory.getInventoryEndDate());
+        setInventoryType(productInventory.getInventoryType());
     }
 
     public ProductInventory getProductInventory() {
-        ProductInventory productInventory = (ProductInventory) getProductOperation(new ProductInventory());
+        ProductInventory productInventory = (ProductInventory) super.getProductOperation(new ProductInventory());
         if (getInventoryStartDate() == null) {
-            ProductInventory previousInventory = service().getLastProductInventory(Context.getLocationService().getDefaultLocation(),
-                    Context.getService(ProductProgramService.class).getOneProductProgramById(getProductProgramId()));
+            ProductInventory previousInventory = service().getLastProductInventory(
+                    Context.getLocationService().getLocation(getLocationId()),
+                    programService().getOneProductProgramById(getProductProgramId())
+            );
             if (previousInventory != null) {
                 setInventoryStartDate(previousInventory.getOperationDate());
             } else {
@@ -65,10 +56,15 @@ public class ProductInventoryForm extends ProductOperationForm {
             }
         }
         productInventory.setInventoryStartDate(getInventoryStartDate());
+        productInventory.setInventoryType(getInventoryType());
         return productInventory;
     }
 
     public ProductInventoryService service() {
         return Context.getService(ProductInventoryService.class);
+    }
+
+    public ProductProgramService programService() {
+        return Context.getService(ProductProgramService.class);
     }
 }

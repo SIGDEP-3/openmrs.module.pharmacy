@@ -7,6 +7,8 @@ public class ProductInventoryFluxDTO implements Serializable {
     private Integer productAttributeFluxId;
     private Integer productOperationId;
     private Integer productId;
+    private Integer operationId;
+    private Integer inventoryId;
     private String code;
     private String retailName;
     private String wholesaleName;
@@ -15,8 +17,8 @@ public class ProductInventoryFluxDTO implements Serializable {
     private Double unitConversion;
     private String batchNumber;
     private Date expiryDate;
-    private Integer quantity;
-    private Integer quantityToDeliver;
+    private Integer physicalQuantity;
+    private Integer theoreticalQuantity;
     private String observation;
     private Date dateCreated;
 
@@ -45,6 +47,22 @@ public class ProductInventoryFluxDTO implements Serializable {
 
     public void setProductId(Integer productId) {
         this.productId = productId;
+    }
+
+    public Integer getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(Integer operationId) {
+        this.operationId = operationId;
+    }
+
+    public Integer getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(Integer inventoryId) {
+        this.inventoryId = inventoryId;
     }
 
     public String getCode() {
@@ -111,20 +129,20 @@ public class ProductInventoryFluxDTO implements Serializable {
         this.expiryDate = expiryDate;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getPhysicalQuantity() {
+        return physicalQuantity;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setPhysicalQuantity(Integer physicalQuantity) {
+        this.physicalQuantity = physicalQuantity;
     }
 
-    public Integer getQuantityToDeliver() {
-        return quantityToDeliver;
+    public Integer getTheoreticalQuantity() {
+        return theoreticalQuantity;
     }
 
-    public void setQuantityToDeliver(Integer quantityToDeliver) {
-        this.quantityToDeliver = quantityToDeliver;
+    public void setTheoreticalQuantity(Integer theoreticalQuantity) {
+        this.theoreticalQuantity = theoreticalQuantity;
     }
 
     public String getObservation() {

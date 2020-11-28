@@ -40,4 +40,5 @@ public interface ProductAttributeDAO {
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
+	Integer purgeUnusedAttributes();
 }

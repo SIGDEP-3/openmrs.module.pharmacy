@@ -50,5 +50,4 @@ public interface ProductReceptionService extends OpenmrsService {
 	void removeProductReception(ProductReception productReception);
 	ProductReception getOneProductReceptionByUuid(String uuid);
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
-
 }

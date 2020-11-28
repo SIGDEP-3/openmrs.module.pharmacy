@@ -16,9 +16,11 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
+import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
@@ -115,6 +117,15 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	public ProductAttributeStock getOneProductAttributeStockByUuid(String uuid) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeStock.class);
 		return (ProductAttributeStock) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product ORDER BY s.productAttribute.expiryDate DESC ");
+		query.setParameter("product", product);
+
+		return query.list();
 	}
 
 }

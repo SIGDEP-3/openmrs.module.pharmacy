@@ -2,13 +2,11 @@ package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductOperation;
-import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
-import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -26,6 +24,7 @@ public abstract class ProductOperationForm {
 
     public ProductOperationForm() {
         operationStatus = OperationStatus.NOT_COMPLETED;
+        setLocationId(OperationUtils.getUserLocation().getLocationId());
     }
 
     public Integer getProductOperationId() {
@@ -117,7 +116,7 @@ public abstract class ProductOperationForm {
         ProductOperation productOperation = operation;
         if (getProductOperationId() != null) {
             productOperation.setProductOperationId(getProductOperationId());
-            productOperation = Context.getService(ProductReceptionService.class).getOneProductReceptionById(getProductOperationId());
+            productOperation = Context.getService(PharmacyService.class).getOneProductOperationById(getProductOperationId());
         }
         productOperation.setOperationDate(getOperationDate());
         productOperation.setProductProgram(Context.getService(ProductProgramService.class).getOneProductProgramById(getProductProgramId()));

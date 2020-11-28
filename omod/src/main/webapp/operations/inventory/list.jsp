@@ -7,18 +7,43 @@
     if (jQuery) {
         jQuery(document).ready(function (){
             jQuery('.table').DataTable();
+            jQuery("#program").change(function () {
+                if (jQuery(this).val()){
+                    jQuery('#selectMe').text('');
+                } else {
+                    jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+                }
+            })
         });
+
+        function create() {
+            const selection = jQuery("#program");
+            const programId = selection.val();
+            if (programId === undefined || programId === null || programId === '') {
+                jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+            } else {
+                location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/inventory/edit.form?programId="+ programId
+            }
+        }
     }
 </script>
 <div class="container-fluid mt-2">
 
     <div class="row mb-2">
         <div class="col-6">
-            <div class="h5 pt-2"><i class="fa fa-list"></i> ${subTitle}</div>
+            <div class="h5"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau">
+            <span id="selectMe"></span>
+            <label for="program">Programme : </label>
+            <select name="program" class="s2 form-control-sm mr-3" id="program">
+                <option value=""></option>
+                <c:forEach var="program" items="${programs}">
+                    <option value="${program.productProgramId}">${program.name}</option>
+                </c:forEach>
+            </select>
+<%--            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>--%>
+            <button class="btn btn-primary btn-sm" onclick="create()" title="Créer nouveau">
                 <i class="fa fa-plus"></i> Nouvel inventaire
             </button>
         </div>
@@ -33,9 +58,13 @@
                         Date de l'inventaire
                     </th>
                     <th>
+                        Num&eacute;ro de pi&egrave;ce
+                    </th>
+                    <th>
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Programme
                     </th>
+                    <th>Type d'inventaire</th>
                     <th>Nombre de produits</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
@@ -48,7 +77,9 @@
                 <c:forEach var="inventory" items="${ inventories }">
                     <tr>
                         <td><fmt:formatDate value="${inventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                        <td>${inventory.operationNumber}</td>
                         <td>${inventory.productProgram.name}</td>
+                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>
                         <c:choose>
                             <c:when test="${fct:length(inventory.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="addLineUrl">

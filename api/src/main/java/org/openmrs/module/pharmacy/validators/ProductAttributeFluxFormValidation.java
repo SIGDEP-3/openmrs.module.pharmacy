@@ -7,9 +7,7 @@ import org.openmrs.module.pharmacy.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
-import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.forms.ProductAttributeFluxForm;
-import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -37,7 +35,7 @@ public class ProductAttributeFluxFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "expiryDate", null, "La date de péremption est requise");
 
             if (form.getBatchNumber() != null) {
-                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumberAndExpiryDate(form.getBatchNumber(), form.getExpiryDate());
+                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(form.getBatchNumber());
                 if (productAttribute != null) {
                     if (!productAttribute.getProduct().getProductId().equals(form.getProductId())) {
                         if(form.getProductAttributeFluxId() == null ) {
@@ -52,10 +50,9 @@ public class ProductAttributeFluxFormValidation implements Validator {
                                 service().getOneProductOperationById(form.getProductOperationId()));
                 if (productAttributeFlux != null) {
                     if (!productAttributeFlux.getProductAttributeFluxId().equals(form.getProductAttributeFluxId())) {
-                        errors.rejectValue("batchNumber", null, "Cette ligne du produit déjà été ajouté !");
+                        errors.rejectValue("batchNumber", null, "Cette ligne du produit déjà été ajoutée !");
                     }
                 }
-
             }
 
             if (form.getExpiryDate() != null && form.getExpiryDate().before(new Date())) {

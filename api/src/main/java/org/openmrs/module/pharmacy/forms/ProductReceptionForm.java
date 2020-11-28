@@ -12,6 +12,7 @@ public class ProductReceptionForm extends ProductOperationForm {
     private ReceptionQuantityMode receptionQuantityMode;
 
     public ProductReceptionForm() {
+        super();
         setIncidence(Incidence.POSITIVE);
     }
 
@@ -32,13 +33,13 @@ public class ProductReceptionForm extends ProductOperationForm {
     }
 
     public void setProductReception(ProductReception productReception) {
-        setProductOperation(productReception);
+        super.setProductOperation(productReception);
         setProductSupplierId(productReception.getProductSupplier().getProductSupplierId());
         setReceptionQuantityMode(productReception.getReceptionQuantityMode());
     }
 
     public ProductReception getProductReception() {
-        ProductReception productReception = (ProductReception) getProductOperation(new ProductReception());
+        ProductReception productReception = (ProductReception) super.getProductOperation(new ProductReception());
         productReception.setProductSupplier(Context.getService(ProductSupplierService.class).getOneProductSupplierById(getProductSupplierId()));
         productReception.setReceptionQuantityMode(getReceptionQuantityMode());
         return productReception;
