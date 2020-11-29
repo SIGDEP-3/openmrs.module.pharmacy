@@ -3,6 +3,7 @@ package org.openmrs.module.pharmacy.web.resource;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -20,8 +21,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         supportedClass = ProductRegimen.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.11.*", "1.12.*", "2.*"})
 public class ProductRegimenResource extends DelegatingCrudResource<ProductRegimen> {
 
-    PharmacyService getService() {
-        return Context.getService(PharmacyService.class);
+    ProductRegimenService getService() {
+        return Context.getService(ProductRegimenService.class);
     }
 
     @Override

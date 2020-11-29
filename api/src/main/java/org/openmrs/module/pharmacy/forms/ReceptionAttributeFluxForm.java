@@ -6,6 +6,9 @@ import org.openmrs.module.pharmacy.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
+import org.openmrs.module.pharmacy.api.ProductAttributeService;
+import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 import java.util.Date;
@@ -27,14 +30,14 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
 
     public void setProductAttributeFlux(ProductAttributeFlux productAttributeFlux, ProductReception productReception) {
         super.setProductAttributeFlux(productAttributeFlux, productReception);
-        ProductAttributeOtherFlux otherFlux = Context.getService(PharmacyService.class).getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception);
+        ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class).getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception);
         setQuantityToDeliver(otherFlux.getQuantity());
     }
 
     public ProductAttributeOtherFlux getProductAttributeOtherFlux() {
-        ProductAttributeOtherFlux productAttributeOtherFlux = Context.getService(PharmacyService.class).getOneProductAttributeOtherFluxByAttributeAndOperation(
-                Context.getService(PharmacyService.class).getOneProductAttributeByBatchNumber(getBatchNumber()),
-                Context.getService(PharmacyService.class).getOneProductReceptionById(getProductOperationId())
+        ProductAttributeOtherFlux productAttributeOtherFlux = Context.getService(ProductAttributeFluxService.class).getOneProductAttributeOtherFluxByAttributeAndOperation(
+                Context.getService(ProductAttributeService.class).getOneProductAttributeByBatchNumber(getBatchNumber()),
+                Context.getService(ProductReceptionService.class).getOneProductReceptionById(getProductOperationId())
         );
         if (productAttributeOtherFlux != null){
             productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
@@ -44,7 +47,7 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
             productAttributeOtherFlux.setLabel("Quantitié livrée");
             productAttributeOtherFlux.setLocation(Context.getLocationService().getDefaultLocation());
             productAttributeOtherFlux.setProductAttribute(getProductAttribute());
-            productAttributeOtherFlux.setProductOperation(Context.getService(PharmacyService.class).getOneProductReceptionById(getProductOperationId()));
+            productAttributeOtherFlux.setProductOperation(Context.getService(ProductReceptionService.class).getOneProductReceptionById(getProductOperationId()));
         }
 
         return productAttributeOtherFlux;

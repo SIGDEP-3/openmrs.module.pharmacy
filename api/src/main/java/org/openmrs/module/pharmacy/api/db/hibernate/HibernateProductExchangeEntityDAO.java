@@ -71,8 +71,9 @@ public class HibernateProductExchangeEntityDAO implements ProductExchangeEntityD
 
 	@Override
 	public ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
-		return (ProductExchangeEntity) criteria.add(Restrictions.eq("productExchangeId", productExchangeId)).uniqueResult();
+		return (ProductExchangeEntity) sessionFactory.getCurrentSession().get(ProductExchangeEntity.class, productExchangeId);
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+//		return (ProductExchangeEntity) criteria.add(Restrictions.eq("productExchangeId", productExchangeId)).uniqueResult();
 	}
 
 	@Override

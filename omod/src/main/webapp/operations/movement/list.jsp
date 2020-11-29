@@ -8,26 +8,39 @@
         jQuery(document).ready(function (){
             jQuery('.table').DataTable();
         });
+        function addStockEntryType(){
+            const selector = document.querySelector('#stockEntryType')
+            if (selector.value !== null && selector.value !== undefined) {
+                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/edit.form?type="+selector.value;
+            }
+            else {jQuery('#stockEntryType').addClass('is-invalid');}
+        }
+
+        function addStockOutType(){
+            const selector = document.querySelector('#stockOutType')
+            if (selector.value !== null && selector.value !== undefined) {
+                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/edit.form?type="+selector.value;
+            }
+            else {jQuery('#stockOutType').addClass('is-invalid');}
+        }
     }
 </script>
 <div class="container-fluid mt-2">
     <div class="row">
         <div class="col-6">
             <div class="row mb-2 ml-1 mr-1">
-                <div class="col-6">
-                    <div class="h5 pt-2"><i class="fa fa-list"></i> Movement d'entre</div>
+                <div class="col-3">
+                    <div class="h5 pt-2"><i class="fa fa-list"></i> Entre&eacute;</div>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-9 text-right">
                     <select name="stockEntryType" id="stockEntryType" class="s2">
-<%--                        <option value=""></option>--%>
-<%--                        <c:forEach var="product" items="${availableProduct}">--%>
-<%--                            <option value="${product.productId}">${product.retailNameWithCode}</option>--%>
-<%--                        </c:forEach>--%>
-
+                        <option value=""></option>
+                        <c:forEach var="stockEntryType"  items="${stockEntryTypes}">
+                            <option value="${stockEntryType.key}">${stockEntryType.value}</option>
+                        </c:forEach>
                     </select>
-                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="url"/>
-                    <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau">
-                        <i class="fa fa-plus"></i> Nouvelle entré
+                    <button class="btn btn-primary" onclick="addStockEntryType()" title="Créer nouveau">
+                        <i class="fa fa-plus"></i> Nouvelle entre
                     </button>
                 </div>
             </div>
@@ -43,48 +56,21 @@
                                 Date de mouvement
                             </th>
                             <th>
-                                Origine
-                            </th>
-                            <th>
                                 Programme
                             </th>
-                            <th>
-                                Motifs
-                            </th>
-<%--                            <th>Nombre de produits</th>--%>
-<%--                            <th>--%>
-<%--                                Etat--%>
-<%--                            </th>--%>
                             <th style="width: 30px"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:forEach var="entry" items="${ entries }">
                             <tr>
-                                <td>${ entry.productMovementEntry.stockEntryType}</td>
+                                <td>${ entry.stockEntryType}</td>
                                 <td><fmt:formatDate value="${entry.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
-                                <td>${entry.operationNumber}</td>
                                 <td>${entry.productProgram.name}</td>
-                                <td>${entry.receptionQuantityMode}</td>
-<%--                                <c:choose>--%>
-<%--                                    <c:when test="${fct:length(entry.productAttributeFluxes) == 0}">--%>
-<%--                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">--%>
-<%--                                            <c:param name="receptionId" value="${entry.productOperationId}"/>--%>
-<%--                                        </c:url>--%>
-<%--                                        <td class="text-danger">--%>
-<%--                                            <a href="${addLineUrl}">Ajouter des produits</a>--%>
-<%--                                        </td>--%>
-<%--                                    </c:when>--%>
-<%--                                    <c:otherwise>--%>
-<%--                                        <td class="text-center">--%>
-<%--                                                ${fct:length(reception.productAttributeFluxes)}--%>
-<%--                                        </td>--%>
-<%--                                    </c:otherwise>--%>
-<%--                                </c:choose>--%>
-<%--                                <td>${reception.operationStatus}</td>--%>
                                 <td>
                                     <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
                                         <c:param name="id" value="${entry.productOperationId}"/>
+                                        <c:param name="type" value="${entry.stockEntryType}"/>
                                     </c:url>
                                     <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
                                 </td>
@@ -98,12 +84,18 @@
         </div>
         <div class="col-6">
             <div class="row mb-2 ml-1 mr-1">
-                <div class="col-6">
-                    <div class="h5 pt-2"><i class="fa fa-list"></i> Movement de sortir</div>
+                <div class="col-3">
+                    <div class="h5 pt-2"><i class="fa fa-list"></i> Sortie</div>
                 </div>
-                <div class="col-6 text-right">
-                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="url"/>
-                    <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau">
+                <div class="col-9 text-right">
+                    <select name="stockOutType" id="stockOutType" class="s2">
+                        <option value=""></option>
+                        <c:forEach var="stockOutType" items="${stockOutTypes}">
+                            <option value="${stockOutType.key}">${stockOutType.value}</option>
+                        </c:forEach>
+                    </select>
+<%--                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="url"/>--%>
+                    <button class="btn btn-primary" onclick="addStockOutType()" title="Créer nouveau">
                         <i class="fa fa-plus"></i> Nouvelle Sortie
                     </button>
                 </div>
@@ -120,14 +112,7 @@
                                 Date de mouvement
                             </th>
                             <th>
-                                Destinataire
-                            </th>
-                            <th>
                                 Programme
-                            </th>
-<%--                            <th>Nombre de produits</th>--%>
-                            <th>
-                                Motifs
                             </th>
                             <th style="width: 30px"></th>
                         </tr>
@@ -135,30 +120,13 @@
                         <tbody>
                         <c:forEach var="out" items="${ outs }">
                             <tr>
-                                <td>${out.productSupplier.name}</td>
+                                <td>${out.stockOutType}</td>
                                 <td><fmt:formatDate value="${out.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
-                                <td>${out.operationNumber}</td>
                                 <td>${out.productProgram.name}</td>
-                                <td>${out.receptionQuantityMode}</td>
-<%--                                <c:choose>--%>
-<%--                                    <c:when test="${fct:length(out.productAttributeFluxes) == 0}">--%>
-<%--                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">--%>
-<%--                                            <c:param name="receptionId" value="${out.productOperationId}"/>--%>
-<%--                                        </c:url>--%>
-<%--                                        <td class="text-danger">--%>
-<%--                                            <a href="${addLineUrl}">Ajouter des produits</a>--%>
-<%--                                        </td>--%>
-<%--                                    </c:when>--%>
-<%--                                    <c:otherwise>--%>
-<%--                                        <td class="text-center">--%>
-<%--                                                ${fct:length(reception.productAttributeFluxes)}--%>
-<%--                                        </td>--%>
-<%--                                    </c:otherwise>--%>
-<%--                                </c:choose>--%>
-<%--                                <td>${out.operationStatus}</td>--%>
                                 <td>
                                     <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
                                         <c:param name="id" value="${out.productOperationId}"/>
+                                        <c:param name="type" value="${out.stockOutType}"/>
                                     </c:url>
                                     <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
                                 </td>

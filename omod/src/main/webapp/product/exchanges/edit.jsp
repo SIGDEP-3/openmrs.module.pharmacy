@@ -34,7 +34,7 @@
         <div class="row mb-2">
             <div class="col-2">
                 <labe>Nom Partenaire <span class="required">*</span></labe>
-                <form:input path="name" cssClass="form-control form-control-sm" />
+                <form:input path="name" cssClass="form-control-s2" />
                 <form:errors path="name" cssClass="error"/>
             </div>
         </div>

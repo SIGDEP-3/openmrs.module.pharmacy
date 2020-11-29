@@ -6,6 +6,8 @@ import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.api.ProductService;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -82,8 +84,8 @@ public class ProductPriceForm {
     public ProductPrice getProductPrice() {
         ProductPrice price = new ProductPrice();
         price.setProductPriceId(getProductPriceId());
-        price.setProduct(Context.getService(PharmacyService.class).getOneProductById(getProductId()));
-        price.setProductProgram(Context.getService(PharmacyService.class).getOneProductProgramById(getProductProgramId()));
+        price.setProduct(Context.getService(ProductService.class).getOneProductById(getProductId()));
+        price.setProductProgram(Context.getService(ProductProgramService.class).getOneProductProgramById(getProductProgramId()));
         price.setPurchasePrice(getPurchasePrice());
         price.setSalePrice(getSalePrice());
         price.setDateCreated(getDateCreated());

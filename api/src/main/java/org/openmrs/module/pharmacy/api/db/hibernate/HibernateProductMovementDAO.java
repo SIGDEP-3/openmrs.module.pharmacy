@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * It is a default implementation of  {@link PharmacyDAO}.
+ * It is a default implementation of  {@link ProductMovementDAO}.
  */
 public class HibernateProductMovementDAO implements ProductMovementDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
@@ -59,7 +59,7 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 				add(Restrictions.eq("voided", includeVoided)).list();
 	}
 
-
+	@SuppressWarnings("unchecked")
 	public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
 		return criteria
@@ -121,7 +121,7 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 				add(Restrictions.eq("voided", includeVoided)).list();
 	}
 
-
+	@SuppressWarnings("unchecked")
 	public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
 		return criteria
