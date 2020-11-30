@@ -37,6 +37,9 @@ public class ProductPrice extends AbstractPharmacyObject {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    public ProductPrice() {
+    }
+
     @Override
     public Integer getId() {
         return getProductPriceId();

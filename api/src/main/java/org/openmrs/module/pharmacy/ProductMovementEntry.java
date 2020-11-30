@@ -37,4 +37,5 @@ public class ProductMovementEntry extends ProductOperation {
     public void setStockEntryType(StockEntryType stockEntryType) {
         this.stockEntryType = stockEntryType;
     }
+
 }

@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +32,15 @@ import java.util.List;
  */
 @Transactional
 public interface ProductPriceService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
+
+	ProductPrice saveProductPrice(ProductPrice productPrice);
+	void removeProductPrice(ProductPrice productPrice);
+	ProductPrice getOneProductPriceById(Integer productPriceId);
+	ProductPrice getOneProductPriceByUuid(String uuid);
+	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+	ProductPrice getOneProductPriceByProductId(Integer productId);
+	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+	List<ProductPrice> getAllProductPrices();
 
 }

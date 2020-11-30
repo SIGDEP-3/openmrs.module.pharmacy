@@ -4,9 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.api.ProductRegimenService;
+import org.openmrs.module.pharmacy.api.ProductService;
+import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.forms.ProductForm;
 import org.openmrs.module.pharmacy.validators.ProductFormValidation;
 import org.openmrs.web.WebConstants;
@@ -19,10 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Controller
 public class PharmacyProductManageController {

@@ -16,8 +16,11 @@ package org.openmrs.module.pharmacy.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.openmrs.module.pharmacy.api.ProductExchangeEntityService;
 import org.openmrs.module.pharmacy.api.db.ProductExchangeEntityDAO;
+
+import java.util.List;
 
 /**
  * It is a default implementation of {@link ProductExchangeEntityService}.
@@ -40,6 +43,42 @@ public class ProductExchangeEntityServiceImpl extends BaseOpenmrsService impleme
      */
     public ProductExchangeEntityDAO getDao() {
 	    return dao;
+    }
+
+
+    @Override
+    public List<ProductExchangeEntity> getAllProductExchange() {
+        return dao.getAllProductExchange();
+    }
+
+    @Override
+    public ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchange) {
+        return dao.saveProductExchange(productExchange);
+    }
+
+    @Override
+    public ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchange) {
+        return dao.editProductExchange(productExchange);
+    }
+
+    @Override
+    public void removeProductExchange(ProductExchangeEntity productExchange) {
+        dao.removeProductExchange(productExchange);
+    }
+
+    @Override
+    public ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId) {
+        return dao.getOneProductExchangeById(productExchangeId);
+    }
+
+    @Override
+    public ProductExchangeEntity getOneProductExchangeByUuid(String uuid) {
+        return dao.getOneProductExchangeByUuid(uuid);
+    }
+
+    @Override
+    public ProductExchangeEntity getOneProductExchangeByName(String name) {
+        return dao.getOneProductExchangeByName(name);
     }
 
 

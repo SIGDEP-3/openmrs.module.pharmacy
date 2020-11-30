@@ -15,12 +15,20 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
+import org.openmrs.module.pharmacy.ProductMovementEntry;
+import org.openmrs.module.pharmacy.ProductMovementOut;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductMovementDAO;
 
+import java.util.Date;
+import java.util.List;
+
 /**
- * It is a default implementation of  {@link PharmacyDAO}.
+ * It is a default implementation of  {@link ProductMovementDAO}.
  */
 public class HibernateProductMovementDAO implements ProductMovementDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
@@ -39,6 +47,129 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 	 */
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
+	}
+
+	/********* PRODUCT MOVEMENT ENTRY ***********/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("location", location)).
+				add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("location", location)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@Override
+	public ProductMovementEntry getOneProductMovementEntryById(Integer id) {
+		return (ProductMovementEntry) sessionFactory.getCurrentSession().get(ProductMovementEntry.class, id);
+	}
+
+	@Override
+	public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementEntry);
+		return productMovementEntry;
+	}
+
+	@Override
+	public ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementEntry);
+		return productMovementEntry;
+	}
+
+	@Override
+	public void removeProductMovementEntry(ProductMovementEntry productMovementEntry) {
+		sessionFactory.getCurrentSession().delete(productMovementEntry);
+	}
+
+	@Override
+	public ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return (ProductMovementEntry) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+
+	/********* PRODUCT MOVEMENT OUT ***********/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("location", location)).
+				add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("location", location)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@Override
+	public ProductMovementOut getOneProductMovementOutById(Integer id) {
+		return (ProductMovementOut) sessionFactory.getCurrentSession().get(ProductMovementOut.class, id);
+	}
+
+	@Override
+	public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementOut);
+		return productMovementOut;
+	}
+
+	@Override
+	public ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productMovementOut);
+		return productMovementOut;
+	}
+
+	@Override
+	public void removeProductMovementOut(ProductMovementOut productMovementOut) {
+		sessionFactory.getCurrentSession().delete(productMovementOut);
+	}
+
+	@Override
+	public ProductMovementOut getOneProductMovementOutByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return (ProductMovementOut) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
 
 }

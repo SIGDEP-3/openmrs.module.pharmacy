@@ -3,6 +3,7 @@ package org.openmrs.module.pharmacy.web.resource;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductSupplier;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductService;
@@ -31,7 +32,7 @@ public class ProductResource extends DelegatingCrudResource<Product> {
     ProductService getService() {
         return Context.getService(ProductService.class);
     }
-    ProductUnitService unitService() {
+    ProductUnitService productUnitService() {
         return Context.getService(ProductUnitService.class);
     }
 
@@ -127,12 +128,12 @@ public class ProductResource extends DelegatingCrudResource<Product> {
         if (StringUtils.isNotBlank(name)) {
             products = getService().searchProductByNameLike(name);
         } else if (StringUtils.isNotBlank(retailUnitName)) {
-            ProductUnit productUnit = unitService().getOneProductUnitByName(retailUnitName);
+            ProductUnit productUnit = productUnitService().getOneProductUnitByName(retailUnitName);
             if (productUnit != null) {
                 products = getService().getAllProductByRetailUnit(productUnit);
             }
         } else if (StringUtils.isNotBlank(wholesaleUnitName)) {
-            ProductUnit productUnit = unitService().getOneProductUnitByName(wholesaleUnitName);
+            ProductUnit productUnit = productUnitService().getOneProductUnitByName(wholesaleUnitName);
             if (productUnit != null) {
                 products = getService().getAllProductByWholesaleUnit(productUnit);
             }

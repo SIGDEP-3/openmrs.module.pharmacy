@@ -15,9 +15,15 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacy.ProductMovementEntry;
+import org.openmrs.module.pharmacy.ProductMovementOut;
 import org.openmrs.module.pharmacy.api.ProductMovementService;
 import org.openmrs.module.pharmacy.api.db.ProductMovementDAO;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * It is a default implementation of {@link ProductMovementService}.
@@ -40,6 +46,106 @@ public class ProductMovementServiceImpl extends BaseOpenmrsService implements Pr
      */
     public ProductMovementDAO getDao() {
 	    return dao;
+    }
+
+
+    /******** PRODUCT MOVEMENT ENTRY *********/
+
+    @Override
+    public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) {
+        return dao.getAllProductMovementEntry(location, includeVoided);
+    }
+
+    @Override
+    public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+        return dao.getAllProductMovementEntry(location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
+    public List<ProductMovementEntry> getAllProductMovementEntry(Location location) {
+        return dao.getAllProductMovementEntry(location);
+    }
+
+    @Override
+    public List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) {
+        return dao.getAllProductMovementEntry(includeVoided);
+    }
+
+    @Override
+    public ProductMovementEntry getOneProductMovementEntryById(Integer id) {
+        return dao.getOneProductMovementEntryById(id);
+    }
+
+    @Override
+    public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) {
+        return dao.saveProductMovementEntry(productMovementEntry);
+    }
+
+    @Override
+    public ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) {
+        return dao.editProductMovementEntry(productMovementEntry);
+    }
+
+    @Override
+    public void removeProductMovementEntry(ProductMovementEntry productMovementEntry) {
+        dao.removeProductMovementEntry(productMovementEntry);
+    }
+
+    @Override
+    public ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) {
+        return dao.getOneProductMovementEntryByUuid(uuid);
+    }
+
+//    @Override
+//    public List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception) {
+//        return dao.getProductReceptionFluxDTOs(productReception);
+//    }
+
+    /******** PRODUCT MOVEMENT OUT *********/
+
+    @Override
+    public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) {
+        return dao.getAllProductMovementOut(location, includeVoided);
+    }
+
+    @Override
+    public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+        return dao.getAllProductMovementOut(location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
+    public List<ProductMovementOut> getAllProductMovementOut(Location location) {
+        return dao.getAllProductMovementOut(location);
+    }
+
+    @Override
+    public List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided) {
+        return dao.getAllProductMovementOut(includeVoided);
+    }
+
+    @Override
+    public ProductMovementOut getOneProductMovementOutById(Integer id) {
+        return dao.getOneProductMovementOutById(id);
+    }
+
+    @Override
+    public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) {
+        return dao.saveProductMovementOut(productMovementOut);
+    }
+
+    @Override
+    public ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) {
+        return dao.editProductMovementOut(productMovementOut);
+    }
+
+    @Override
+    public void removeProductMovementOut(ProductMovementOut productMovementOut) {
+        dao.removeProductMovementOut(productMovementOut);
+    }
+
+    @Override
+    public ProductMovementOut getOneProductMovementOutByUuid(String uuid) {
+        return dao.getOneProductMovementOutByUuid(uuid);
     }
 
 }

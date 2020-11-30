@@ -15,9 +15,14 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductExchangeEntityDAO;
+
+import java.util.List;
 
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
@@ -40,6 +45,47 @@ public class HibernateProductExchangeEntityDAO implements ProductExchangeEntityD
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductExchangeEntity> getAllProductExchange() {
+		return sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class).list();
+	}
+
+	@Override
+	public ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchange) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productExchange);
+		return productExchange;
+	}
+
+	@Override
+	public ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchange) {
+		sessionFactory.getCurrentSession().saveOrUpdate(productExchange);
+		return productExchange;
+	}
+
+	@Override
+	public void removeProductExchange(ProductExchangeEntity productExchangeEntity) {
+		sessionFactory.getCurrentSession().delete(productExchangeEntity);
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId) {
+		return (ProductExchangeEntity) sessionFactory.getCurrentSession().get(ProductExchangeEntity.class, productExchangeId);
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+//		return (ProductExchangeEntity) criteria.add(Restrictions.eq("productExchangeId", productExchangeId)).uniqueResult();
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return (ProductExchangeEntity) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductExchangeEntity getOneProductExchangeByName(String name) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return (ProductExchangeEntity) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+	}
 
 }

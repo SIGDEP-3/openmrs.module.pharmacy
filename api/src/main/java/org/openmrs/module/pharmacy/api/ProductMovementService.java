@@ -13,8 +13,14 @@
  */
 package org.openmrs.module.pharmacy.api;
 
+import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.pharmacy.ProductMovementEntry;
+import org.openmrs.module.pharmacy.ProductMovementOut;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
@@ -28,10 +34,27 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface ProductMovementService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
+
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided);
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location);
+	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided);
+	ProductMovementEntry getOneProductMovementEntryById(Integer id);
+	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry);
+	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry);
+	void removeProductMovementEntry(ProductMovementEntry productMovementEntry);
+	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid);
+//	List<ProductMovementEntryFluxDTO> getProductMovementEntryFluxDTOs(ProductReception productReception);
+
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided);
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementOut> getAllProductMovementOut(Location location);
+	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
+	ProductMovementOut getOneProductMovementOutById(Integer id);
+	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut);
+	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut);
+	void removeProductMovementOut(ProductMovementOut productMovementOut);
+	ProductMovementOut getOneProductMovementOutByUuid(String uuid);
+//	List<ProductReceptionFluxDTO> getProductMovementOutFluxDTOs(ProductReception productReception);
 
 }

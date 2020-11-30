@@ -3,7 +3,6 @@ package org.openmrs.module.pharmacy.validators;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductUnit;
-import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

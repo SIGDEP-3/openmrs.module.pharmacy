@@ -3,7 +3,6 @@ package org.openmrs.module.pharmacy.web.resource;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.web.RequestContext;

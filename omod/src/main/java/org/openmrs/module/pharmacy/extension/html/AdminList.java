@@ -50,6 +50,7 @@ public class AdminList extends AdministrationSectionExt {
 		map.put("/module/pharmacy/product/prices/list.form", "priceManagement");
 		map.put("/module/pharmacy/product/units/list.form", "unitManagement");
 		map.put("/module/pharmacy/product/suppliers/list.form", "supplierManagement");
+		map.put("/module/pharmacy/product/exchanges/list.form", "exchangeManagement");
 		return map;
 	}
 	
