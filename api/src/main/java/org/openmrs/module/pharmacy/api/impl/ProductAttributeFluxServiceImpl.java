@@ -20,9 +20,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -109,8 +107,8 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation) {
-        return dao.getOneProductAttributeOtherFluxByAttributeAndOperation(productAttribute, productOperation);
+    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation, Location location) {
+        return dao.getOneProductAttributeOtherFluxByAttributeAndOperation(productAttribute, productOperation, location);
     }
 
     @Override
@@ -141,6 +139,31 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
     @Override
     public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid) {
         return dao.getOneProductAttributeOtherFluxByUuid(uuid);
+    }
+
+    @Override
+    public List<ProductAttributeFlux> getAllProductAttributeFluxByOperationAndProduct(ProductOperation operation, Product product) {
+        return dao.getAllProductAttributeFluxByOperationAndProduct(operation, product);
+    }
+
+    @Override
+    public Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product) {
+        return dao.getAllProductAttributeFluxByOperationAndProductCount(operation, product);
+    }
+
+    @Override
+    public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product) {
+        return dao.getAllProductAttributeOtherFluxByOperationAndProduct(operation, product);
+    }
+
+    @Override
+    public Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product) {
+        return dao.getAllProductAttributeOtherFluxByOperationAndProductCount(operation, product);
+    }
+
+    @Override
+    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation) {
+        return dao.getOneProductAttributeOtherFluxByProductAndOperation(product, productOperation);
     }
 
 }

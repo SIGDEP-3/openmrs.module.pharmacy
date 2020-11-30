@@ -19,7 +19,10 @@
                 }
             });
 
+
+            <c:if test="${findPatientForm.dispensationType != 'HIV_PATIENT'}">
             jQuery("#patientIdentifier").attr('disabled', 'disabled');
+            </c:if>
 
             jQuery("#dispensationType1,#dispensationType2,#dispensationType3").on('click', function (e) {
                 if (jQuery(this).val() !== 'HIV_PATIENT') {
@@ -117,6 +120,10 @@
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
             <form:form modelAttribute="findPatientForm" method="post" action="" id="form">
+                <form:errors path="productProgramId" cssClass="error"/>
+                <form:errors path="patientIdentifier" cssClass="error"/>
+                <form:errors path="dispensationType" cssClass="error"/>
+                <form:errors path="patientType" cssClass="error"/>
                 <div class="row align-items-center">
                     <div class="col-11">
                         <div class="form-row">
@@ -153,10 +160,10 @@
                             </div>
                             <div class="col-4 mb-1 align-items-center">
                                 <div class="row">
-                                    <div class="col-6 pt-2">
+                                    <div class="offset-2 col-4 pt-2">
                                         <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2"/>
                                     </div>
-                                    <div class="col-6 pt-2">
+                                    <div class="col-4 pt-2">
                                         <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre vente" cssClass="mr-2"/>
                                     </div>
                                 </div>

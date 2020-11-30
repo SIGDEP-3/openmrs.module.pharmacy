@@ -128,4 +128,42 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate DESC ");
+		query.setParameter("product", product)
+				.setParameter("location", location);
+
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Integer getAllProductAttributeStockByProductCount(Product product, Location location) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate DESC ");
+		query.setParameter("product", product)
+				.setParameter("location", location);
+		List<ProductAttributeStock> stocks = query.list();
+		Integer quantity = 0;
+		for (ProductAttributeStock stock : stocks) {
+			quantity += stock.getQuantityInStock();
+		}
+		return quantity;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Integer getProductAttributeStocksByProductCount(Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product ORDER BY s.productAttribute.expiryDate DESC ");
+		query.setParameter("product", product);
+
+		List<ProductAttributeStock> stocks = query.list();
+		Integer quantity = 0;
+		for (ProductAttributeStock stock : stocks) {
+			quantity += stock.getQuantityInStock();
+		}
+		return quantity;
+	}
+
 }

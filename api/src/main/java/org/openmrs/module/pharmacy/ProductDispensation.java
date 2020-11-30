@@ -22,6 +22,9 @@ public class ProductDispensation extends ProductOperation {
     @JoinColumn(name = "encounter_id")
     private Encounter encounter;
 
+    @OneToOne(mappedBy = "dispensation")
+    private MobilePatientDispensationInfo mobilePatientDispensationInfo;
+
     public ProductDispensation() {
         this.setIncidence(Incidence.NEGATIVE);
     }
@@ -40,5 +43,13 @@ public class ProductDispensation extends ProductOperation {
 
     public void setEncounter(Encounter encounter) {
         this.encounter = encounter;
+    }
+
+    public MobilePatientDispensationInfo getMobilePatientDispensationInfo() {
+        return mobilePatientDispensationInfo;
+    }
+
+    public void setMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo) {
+        this.mobilePatientDispensationInfo = mobilePatientDispensationInfo;
     }
 }

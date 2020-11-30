@@ -50,5 +50,9 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
+	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product);
+	Integer getProductAttributeStocksByProductCount(Product product);
 
+    List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
+    Integer getAllProductAttributeStockByProductCount(Product product, Location location);
 }

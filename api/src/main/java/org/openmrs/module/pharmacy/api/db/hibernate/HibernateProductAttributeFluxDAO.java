@@ -16,13 +16,11 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.ProductOperation;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
 
@@ -135,10 +133,11 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 	}
 
 	@Override
-	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation) {
+	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation, Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
 		return (ProductAttributeOtherFlux) criteria
 				.add(Restrictions.eq("productAttribute", productAttribute))
+				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productOperation", productOperation)).uniqueResult();
 	}
 
@@ -177,6 +176,60 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
 		return (ProductAttributeOtherFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeFlux> getAllProductAttributeFluxByOperationAndProduct(ProductOperation operation, Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeFlux s WHERE s.productAttribute.product = :product AND s.productOperation = :operation");
+		query.setParameter("product", product)
+				.setParameter("operation", operation);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeFlux s WHERE s.productAttribute.product = :product AND s.productOperation = :operation");
+		query.setParameter("product", product)
+				.setParameter("operation", operation);
+		List<ProductAttributeFlux> fluxes = query.list();
+		Integer quantity = 0;
+		for (ProductAttributeFlux flux : fluxes) {
+			quantity += flux.getQuantity();
+		}
+		return quantity;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeFlux s WHERE s.productAttribute.product = :product AND s.productOperation = :operation");
+		query.setParameter("product", product)
+				.setParameter("operation", operation);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.productAttribute.product = :product AND s.productOperation = :operation");
+		query.setParameter("product", product)
+				.setParameter("operation", operation);
+		List<ProductAttributeOtherFlux> fluxes = query.list();
+		Integer quantity = 0;
+		for (ProductAttributeOtherFlux flux : fluxes) {
+			quantity += flux.getQuantity();
+		}
+		return quantity;
+	}
+
+	@Override
+	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation");
+		query.setParameter("product", product)
+				.setParameter("operation", productOperation);
+		return (ProductAttributeOtherFlux) query.setMaxResults(1).uniqueResult();
 	}
 
 }

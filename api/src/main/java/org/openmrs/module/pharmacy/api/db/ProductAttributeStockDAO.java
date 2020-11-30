@@ -41,4 +41,9 @@ public interface ProductAttributeStockDAO {
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
 	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product);
 
+    List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
+
+    Integer getAllProductAttributeStockByProductCount(Product product, Location location);
+
+	Integer getProductAttributeStocksByProductCount(Product product);
 }

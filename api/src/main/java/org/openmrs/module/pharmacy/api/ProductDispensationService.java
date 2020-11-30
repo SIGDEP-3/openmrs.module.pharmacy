@@ -67,4 +67,6 @@ public interface ProductDispensationService extends OpenmrsService {
 
 	MobilePatientDispensationInfo getOneMobilePatientDispensationInfoByDispensation(ProductDispensation productDispensation) throws APIException;
 	MobilePatient getOneMobilePatientById(Integer mobilePatientId);
+
+	MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo);
 }

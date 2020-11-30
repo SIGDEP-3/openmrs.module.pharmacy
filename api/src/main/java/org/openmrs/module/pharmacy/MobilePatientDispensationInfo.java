@@ -6,6 +6,7 @@ import org.openmrs.Provider;
 import org.openmrs.module.pharmacy.enumerations.Goal;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "MobilePatientDispensationInfo")
@@ -14,9 +15,15 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
 
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mobile_dispensation_info_id")
+    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "mobile_dispensation_info_id")
     private Integer mobileDispensationInfoId;
+
+    @MapsId
+    @OneToOne
+    @JoinColumn(name = "mobile_dispensation_info_id", nullable = false)
+    private ProductDispensation dispensation;
 
     @ManyToOne
     @JoinColumn(name = "regimen_id")
@@ -29,12 +36,11 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
     @JoinColumn(name = "mobile_patient_id", nullable = false)
     private MobilePatient mobilePatient;
 
-    @ManyToOne
-    @JoinColumn(name = "product_dispensation_id", nullable = false)
-    private ProductDispensation dispensation;
-
     @Column(name = "goal")
     private Goal goal;
+
+    @Column(name = "treatment_end_date", nullable = false)
+    private Date treatmentEndDate;
 
     @ManyToOne
     @JoinColumn(name = "provider_id")
@@ -101,5 +107,21 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public Integer getTreatmentDays() {
+        return treatmentDays;
+    }
+
+    public void setTreatmentDays(Integer treatmentDays) {
+        this.treatmentDays = treatmentDays;
+    }
+
+    public Date getTreatmentEndDate() {
+        return treatmentEndDate;
+    }
+
+    public void setTreatmentEndDate(Date treatmentEndDate) {
+        this.treatmentEndDate = treatmentEndDate;
     }
 }

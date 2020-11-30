@@ -142,4 +142,9 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     public MobilePatient getOneMobilePatientById(Integer mobilePatientId) {
         return dao.getOneMobilePatientById(mobilePatientId);
     }
+
+    @Override
+    public MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo) {
+        return dao.saveMobilePatientDispensationInfo(mobilePatientDispensationInfo);
+    }
 }

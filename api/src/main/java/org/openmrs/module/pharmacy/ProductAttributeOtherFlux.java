@@ -21,6 +21,10 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     @Column(name = "label", nullable = false)
     private String label;
 
@@ -42,8 +46,8 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
         return productAttributeOtherFluxId;
     }
 
-    public void setProductAttributeOtherFluxId(Integer productAttributeFluxId) {
-        this.productAttributeOtherFluxId = productAttributeFluxId;
+    public void setProductAttributeOtherFluxId(Integer productAttributeOtherFluxId) {
+        this.productAttributeOtherFluxId = productAttributeOtherFluxId;
     }
 
     public ProductAttribute getProductAttribute() {
@@ -52,6 +56,22 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
 
     public void setProductAttribute(ProductAttribute productAttribute) {
         this.productAttribute = productAttribute;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Integer getQuantity() {
@@ -76,13 +96,5 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 }

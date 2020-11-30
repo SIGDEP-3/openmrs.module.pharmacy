@@ -14,10 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.ProductOperation;
+import org.openmrs.module.pharmacy.*;
 
 import java.util.List;
 
@@ -43,11 +40,20 @@ public interface ProductAttributeFluxDAO {
 	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
 
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
-	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation, Location location);
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation reception, Boolean b);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
+
+    List<ProductAttributeFlux> getAllProductAttributeFluxByOperationAndProduct(ProductOperation operation, Product product);
+	Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product);
+
+	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
 }

@@ -1,17 +1,13 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
 import org.openmrs.module.pharmacy.ProductReception;
-import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.ProductReceptionService;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-
-import java.util.Date;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
     private Integer quantityToDeliver;
@@ -30,15 +26,15 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
 
     public void setProductAttributeFlux(ProductAttributeFlux productAttributeFlux, ProductReception productReception) {
         super.setProductAttributeFlux(productAttributeFlux, productReception);
-        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception);
+        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception, OperationUtils.getUserLocation());
         setQuantityToDeliver(otherFlux.getQuantity());
     }
 
     public ProductAttributeOtherFlux getProductAttributeOtherFlux() {
         ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
-                attributeService().getOneProductAttributeByBatchNumber(getBatchNumber()),
-                receptionService().getOneProductReceptionById(getProductOperationId())
-        );
+                attributeService().getOneProductAttributeByBatchNumber(getBatchNumber(), OperationUtils.getUserLocation()),
+                receptionService().getOneProductReceptionById(getProductOperationId()),
+                OperationUtils.getUserLocation());
         if (productAttributeOtherFlux != null){
             productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
         } else {

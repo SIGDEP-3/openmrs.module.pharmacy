@@ -96,7 +96,7 @@ public abstract class ProductAttributeFluxForm {
     }
 
     public ProductAttribute getProductAttribute() {
-        ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(getBatchNumber());
+        ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(getBatchNumber(), OperationUtils.getUserLocation());
         if (productAttribute == null) {
             productAttribute = new ProductAttribute();
         }

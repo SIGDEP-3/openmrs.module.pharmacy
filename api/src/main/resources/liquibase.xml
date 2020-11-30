@@ -956,4 +956,49 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="pharmacy-add-column-treatment-end-date-mobile-ingo" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="treatment_end_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_mobile_patient_dispensation_info">
+            <column name="treatment_end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="pharmacy-add-product-to-attribute-other-flux" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="pharmacy_product_attribute_other_flux" columnName="product_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_attribute_other_flux">
+            <column name="product_id" type="int"/>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_other_flux_product_id"
+                                 baseTableName="pharmacy_product_attribute_other_flux" baseColumnNames="product_id"
+                                 referencedTableName="pharmacy_product" referencedColumnNames="product_id"/>
+
+        <dropNotNullConstraint tableName="pharmacy_product_attribute_other_flux" columnName="product_attribute_id" columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-dispensation-add-one-to-one-mobile-patient-info" author="BOGUI SERGE">
+        <preConditions>
+            <columnExists columnName="product_dispensation_id" tableName="pharmacy_mobile_patient_dispensation_info"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="pharmacy_mobile_patient_dispensation_info" constraintName="pharmacy_mobile_patient_dispensation_info_dispensation"/>
+        <dropColumn tableName="pharmacy_mobile_patient_dispensation_info" columnName="product_dispensation_id" />
+        <sql>
+            ALTER TABLE pharmacy_mobile_patient_dispensation_info CHANGE mobile_dispensation_info_id mobile_dispensation_info_id INT(10) NOT NULL
+        </sql>
+        <addForeignKeyConstraint constraintName="pharmacy_mobile_patient_dispensation_info_product_dispensation"
+                                 baseTableName="pharmacy_mobile_patient_dispensation_info" baseColumnNames="mobile_dispensation_info_id"
+                                 referencedTableName="pharmacy_product_dispensation" referencedColumnNames="product_operation_id"/>
+
+    </changeSet>
 </databaseChangeLog>

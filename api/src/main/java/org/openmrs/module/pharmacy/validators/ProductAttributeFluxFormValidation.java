@@ -8,6 +8,7 @@ import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.forms.ProductAttributeFluxForm;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -35,7 +36,7 @@ public class ProductAttributeFluxFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "expiryDate", null, "La date de péremption est requise");
 
             if (form.getBatchNumber() != null) {
-                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(form.getBatchNumber());
+                ProductAttribute productAttribute = attributeService().getOneProductAttributeByBatchNumber(form.getBatchNumber(), OperationUtils.getUserLocation());
                 if (productAttribute != null) {
                     if (!productAttribute.getProduct().getProductId().equals(form.getProductId())) {
                         if(form.getProductAttributeFluxId() == null ) {

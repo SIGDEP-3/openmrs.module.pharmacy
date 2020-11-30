@@ -2,7 +2,6 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
@@ -286,7 +285,7 @@ public class PharmacyProductReceptionManageController {
         if (flux != null) {
             attributeFluxService().removeProductAttributeFlux(flux);
             ProductAttributeOtherFlux otherFlux = attributeFluxService()
-                    .getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), flux.getProductOperation());
+                    .getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), flux.getProductOperation(), OperationUtils.getUserLocation());
             if (otherFlux != null) {
                 attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
             }

@@ -16,7 +16,6 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -44,7 +43,7 @@ public interface ProductAttributeService extends OpenmrsService {
 	ProductAttribute editProductAttribute(ProductAttribute productAttribute);
 	void removeProductAttribute(ProductAttribute productAttribute);
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
-	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber);
+	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location);
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
     Integer purgeUnusedAttributes();
 }

@@ -183,7 +183,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	public MobilePatient getOneMobilePatientByIdentifier(String patientIdentifier) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
 		return (MobilePatient) criteria
-				.add(Restrictions.eq("patientIdentifier", patientIdentifier)).uniqueResult();
+				.add(Restrictions.eq("identifier", patientIdentifier)).uniqueResult();
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 
 	@Override
 	public MobilePatientDispensationInfo getOneMobilePatientDispensationInfoByDispensation(ProductDispensation productDispensation) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductDispensation.class);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatientDispensationInfo.class);
 		return (MobilePatientDispensationInfo) criteria
 				.add(Restrictions.eq("productDispensation", productDispensation)).uniqueResult();
 	}
@@ -212,6 +212,12 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@Override
 	public MobilePatient getOneMobilePatientById(Integer mobilePatientId) {
 		return (MobilePatient) sessionFactory.getCurrentSession().get(MobilePatient.class, mobilePatientId);
+	}
+
+	@Override
+	public MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo) {
+		sessionFactory.getCurrentSession().saveOrUpdate(mobilePatientDispensationInfo);
+		return mobilePatientDispensationInfo;
 	}
 
 	@Override

@@ -111,9 +111,10 @@ public class HibernateProductAttributeDAO implements ProductAttributeDAO {
 	}
 
 	@Override
-	public ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber) {
+	public ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttribute.class);
-		return (ProductAttribute) criteria.add(Restrictions.eq("batchNumber", batchNumber)).uniqueResult();
+		return (ProductAttribute) criteria.add(Restrictions.eq("batchNumber", batchNumber))
+				.add(Restrictions.eq("location", location)).uniqueResult();
 	}
 
 	@Override

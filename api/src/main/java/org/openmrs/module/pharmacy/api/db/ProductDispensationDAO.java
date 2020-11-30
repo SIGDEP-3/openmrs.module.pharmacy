@@ -56,4 +56,6 @@ public interface ProductDispensationDAO {
 
 	MobilePatientDispensationInfo getOneMobilePatientDispensationInfoByDispensation(ProductDispensation productDispensation);
 	MobilePatient getOneMobilePatientById(Integer mobilePatientId);
+
+    MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo);
 }

@@ -56,7 +56,7 @@
 				</div>
 
 				<div class="btn-group mr-3">
-					<button onclick="window.location='../operations/dispensation/list.form'"
+					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/dispensation") %>'>
 									class=" btn btn-secondary"

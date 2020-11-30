@@ -98,4 +98,24 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
         return dao.getOneProductAttributeStockByUuid(uuid);
     }
 
+    @Override
+    public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product) {
+        return dao.getProductAttributeStocksByProduct(product);
+    }
+
+    @Override
+    public Integer getProductAttributeStocksByProductCount(Product product) {
+        return dao.getProductAttributeStocksByProductCount(product);
+    }
+
+    @Override
+    public List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location) {
+        return dao.getAllProductAttributeStockByProduct(product, location);
+    }
+
+    @Override
+    public Integer getAllProductAttributeStockByProductCount(Product product, Location location) {
+        return dao.getAllProductAttributeStockByProductCount(product, location);
+    }
+
 }

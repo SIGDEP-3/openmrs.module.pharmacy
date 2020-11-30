@@ -20,7 +20,6 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeDAO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -94,8 +93,8 @@ public class ProductAttributeServiceImpl extends BaseOpenmrsService implements P
     }
 
     @Override
-    public ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber) {
-        return dao.getOneProductAttributeByBatchNumber(batchNumber);
+    public ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location) {
+        return dao.getOneProductAttributeByBatchNumber(batchNumber, location);
     }
 
     @Override

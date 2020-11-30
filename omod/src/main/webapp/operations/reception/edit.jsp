@@ -77,7 +77,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-10 mb-2">
-                                <labe>Fournisseur <span class="required">*</span></labe>
+                                <label>Fournisseur <span class="required">*</span></label>
                                 <br>
                                 <form:select path="productSupplierId" cssClass="form-control s2" >
                                     <form:option value="" label=""/>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="row">
                             <div class="col-6 mb-2">
-                                <labe>Programme <span class="required">*</span></labe>
+                                <label>Programme <span class="required">*</span></label>
                                 <div class="form-control form-control-sm">
                                         ${program.name}
                                 </div>
@@ -111,14 +111,14 @@
                     <div class="col-6">
                         <div class="row mb-2">
                             <div class="col-4">
-                                <labe>Date de reception <span class="required">*</span></labe>
+                                <label>Date de reception <span class="required">*</span></label>
                                 <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
                                 <form:errors path="operationDate" cssClass="error"/>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
-                                <labe>Numero de reception</labe>
+                                <label>Numero de reception</label>
                                 <form:input path="operationNumber" cssClass="form-control form-control-sm" />
                                 <form:errors path="operationNumber" cssClass="error"/>
                             </div>
@@ -141,7 +141,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
-                                <labe>Observations</labe>
+                                <label>Observations</label>
                                 <form:textarea path="observation" cssClass="form-control form-control-sm" />
                                 <form:errors path="observation" cssClass="error"/>
                             </div>

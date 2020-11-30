@@ -16,10 +16,8 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,7 +51,7 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
 
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
-	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation, Location location);
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation reception, Boolean b);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
@@ -61,4 +59,11 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
 
+    List<ProductAttributeFlux> getAllProductAttributeFluxByOperationAndProduct(ProductOperation operation, Product product);
+	Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+    List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product);
+	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
 }
