@@ -17,47 +17,6 @@
         <div class="col-6">
             <div class="h5"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
-        <%--<div class="col-6 text-right">
-
-            <c:if test="${productDispensation.operationStatus != 'VALIDATED' &&
-                      productDispensation.operationStatus != 'DISABLED'}">
-
-                <c:if test="${productDispensation.operationStatus == 'NOT_COMPLETED' && fct:length(productAttributeFluxes) != 0}">
-                    <c:url value="/module/pharmacy/operations/dispensation/complete.form" var="completeUrl">
-                        <c:param name="dispensationId" value="${productDispensation.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-success mr-2" onclick="window.location='${completeUrl}'">
-                        <i class="fa fa-save"></i> Terminer
-                    </button>
-                </c:if>
-                <c:if test="${productDispensation.operationStatus != 'NOT_COMPLETED'}">
-                    <c:url value="/module/pharmacy/operations/dispensation/incomplete.form" var="incompleteUrl">
-                        <c:param name="dispensationId" value="${productDispensation.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-primary mr-2" onclick="window.location='${incompleteUrl}'">
-                        <i class="fa fa-pen"></i> Editer la r&eacute;ception
-                    </button>
-                    <c:url value="/module/pharmacy/operations/dispensation/validate.form" var="validationUrl">
-                        <c:param name="dispensationId" value="${productDispensation.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-success mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider la r&eacute;ception
-                    </button>
-                </c:if>
-            </c:if>
-            <c:if test="${productDispensation.operationStatus == 'NOT_COMPLETED'}">
-                <c:url value="/module/pharmacy/operations/dispensation/edit.form" var="editUrl">
-                    <c:param name="id" value="${productDispensation.productOperationId}"/>
-                </c:url>
-                <button class="btn btn-primary" onclick="window.location='${editUrl}'" title="Voir la liste">
-                    <i class="fa fa-edit"></i> Editer l'entete
-                </button>
-            </c:if>
-            <c:url value="/module/pharmacy/operations/dispensation/list.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
-                <i class="fa fa-list"></i> Voir la liste
-            </button>
-        </div>--%>
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">

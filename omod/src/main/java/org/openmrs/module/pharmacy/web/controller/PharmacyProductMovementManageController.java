@@ -16,6 +16,7 @@ import org.openmrs.module.pharmacy.forms.MovementAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ProductMovementForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductMovementAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductMovementFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductReceptionAttributeFluxFormValidation;
@@ -78,6 +79,7 @@ public class PharmacyProductMovementManageController {
             modelMap.addAttribute("outs", service().getAllProductMovementOut(getUserLocation(), false));
             modelMap.addAttribute("stockEntryTypes", getEntryTypeLabels());
             modelMap.addAttribute("stockOutTypes", getOutTypeLabels());
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("subTitle", "Liste des Mouvements");
         }
     }
@@ -85,6 +87,7 @@ public class PharmacyProductMovementManageController {
     @RequestMapping(value = "/module/pharmacy/operations/movement/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
                        @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                       @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
                        @RequestParam(value = "type") String type,
                        ProductMovementForm productMovementForm) {
         if (Context.isAuthenticated()) {
@@ -121,9 +124,10 @@ public class PharmacyProductMovementManageController {
                 modelMap.addAttribute("subTitle", "Mouvement d'entrée ("+ getEntryTypeLabels()
                         .get(entryType.name())+")");
             }
+            productMovementForm.setProductProgramId(programId);
             modelMap.addAttribute("productMovementForm", productMovementForm);
             modelMap.addAttribute("type", type);
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("movementType", movementType);
         }
@@ -379,14 +383,14 @@ public class PharmacyProductMovementManageController {
         HttpSession session = request.getSession();
         if (type.equals("out")){
             ProductMovementOut movementOut = service().getOneProductMovementOutById(movementId);
-            if (pharmacyService().validateOperation(movementOut)) {
+            if (OperationUtils.validateOperation(movementOut)) {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                         "continuer à modifier le movement de sortie !");
             }
         }
         else {
             ProductMovementEntry movementEntry = service().getOneProductMovementEntryById(movementId);
-            if (pharmacyService().validateOperation(movementEntry)) {
+            if (OperationUtils.validateOperation(movementEntry)) {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                         "continuer à modifier le movement d'entrée !");
             }

@@ -100,5 +100,22 @@
 		<description>Regimen in concept that answers are used to map with pharmacy regimens</description>
 	</globalProperty>
 	<!-- Global Properties -->
+
+	<dwr>
+		<allow>
+			<create creator="new" javascript="DWRPharmacyService">
+				<param name="class" value="@MODULE_PACKAGE@.web.DWRPharmacyService"/>
+				<include method="getProductQuantityInStock"/>
+				<include method="authenticate"/>
+			</create>
+		</allow>
+
+		<signatures>
+			<![CDATA[
+				import @MODULE_PACKAGE@.web.DWRPharmacyService;
+				DWRPharmacyService.getProductQuantityInStock(Integer productId);
+			]]>
+		</signatures>
+	</dwr>
 </module>
 
