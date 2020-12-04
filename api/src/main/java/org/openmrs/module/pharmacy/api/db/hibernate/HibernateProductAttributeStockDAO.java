@@ -16,10 +16,12 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
@@ -83,8 +85,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	}
 
 	@Override
-	public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) {
+	public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws HibernateException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeStock.class);
+		System.out.println("--------------------- In hibernate");
+
 		return (ProductAttributeStock) criteria
 				.add(Restrictions.eq("productAttribute", productAttribute))
 				.add(Restrictions.eq("location", location))

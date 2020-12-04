@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
@@ -44,7 +45,7 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
 	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
 	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
-	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided);
+	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws APIException;
 	ProductAttributeStock getOneProductAttributeStockById(Integer id);
 	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);

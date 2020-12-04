@@ -40,7 +40,7 @@
             <select name="program" class="s2 form-control-sm mr-3" id="program">
                 <option value=""></option>
                 <c:forEach var="program" items="${programs}">
-                    <option value="${program.productProgramId}">${program.name}</option>
+                    <option value="${program.productProgramId}" class="text-left">${program.name}</option>
                 </c:forEach>
             </select>
 <%--            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>--%>

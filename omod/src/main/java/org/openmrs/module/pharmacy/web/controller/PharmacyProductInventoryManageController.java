@@ -323,10 +323,12 @@ public class PharmacyProductInventoryManageController {
                            @RequestParam(value = "inventoryId") Integer inventoryId){
         if (!Context.isAuthenticated())
             return null;
-        HttpSession session = request.getSession();
-        ProductInventory inventory = inventoryService().getOneProductInventoryById(inventoryId);
-        if (inventory != null) {
-            if (OperationUtils.validateOperation(inventory)) {
+        ProductOperation operation = service().getOneProductOperationById(inventoryId);
+        if (operation != null) {
+            System.out.println("--------------------- After getting operation by id");
+
+            if (OperationUtils.validateOperation(operation)) {
+                HttpSession session = request.getSession();
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Votre inventaire a été validé avec succès !");
                 return "redirect:/module/pharmacy/operations/inventory/list.form";
             }

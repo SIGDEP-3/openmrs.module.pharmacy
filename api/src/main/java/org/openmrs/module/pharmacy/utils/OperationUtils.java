@@ -1,6 +1,5 @@
 package org.openmrs.module.pharmacy.utils;
 
-import org.hibernate.HibernateException;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductAttributeFlux;
@@ -12,36 +11,42 @@ import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
-import java.util.List;
+import java.util.Set;
 
 public class OperationUtils {
-    public static Boolean validateOperation(ProductOperation operation) throws HibernateException {
-        operation.setOperationStatus(OperationStatus.VALIDATED);
-        service().saveProductOperation(operation);
+    public static Boolean validateOperation(ProductOperation operation) {
 
-        for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
-            flux.setStatus(OperationStatus.VALIDATED);
-            fluxService().saveProductAttributeFlux(flux);
+        if (!operation.getIncidence().equals(Incidence.NONE)) {
+            Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
+            if (fluxes != null && fluxes.size() != 0) {
+                for (ProductAttributeFlux flux : fluxes) {
+                    //List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByAttribute(flux.getProductAttribute(), false);
+                    ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
+                    if (attributeStock != null) {
+                        Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+                                attributeStock.getQuantityInStock() + flux.getQuantity() :
+                                (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
+                        attributeStock.setQuantityInStock(quantity);
+                    } else {
+                        attributeStock = new ProductAttributeStock();
+                        attributeStock.setQuantityInStock(flux.getQuantity());
+                        attributeStock.setLocation(getUserLocation());
+                        attributeStock.setProductAttribute(flux.getProductAttribute());
+                    }
+                    stockService().saveProductAttributeStock(attributeStock);
 
-            if (!operation.getIncidence().equals(Incidence.NONE)) {
-                //List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByAttribute(flux.getProductAttribute(), false);
-                ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
-                if (attributeStock != null) {
-                    Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-                            attributeStock.getQuantityInStock() + flux.getQuantity() :
-                            (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
-                    attributeStock.setQuantityInStock(quantity);
-                } else {
-                    attributeStock = new ProductAttributeStock();
-                    attributeStock.setQuantityInStock(flux.getQuantity());
-                    attributeStock.setLocation(getUserLocation());
-                    attributeStock.setProductAttribute(flux.getProductAttribute());
+                    flux.setStatus(OperationStatus.VALIDATED);
+                    fluxService().saveProductAttributeFlux(flux);
                 }
-                //attributeStock.setDateCreated(new Date());
-                stockService().saveProductAttributeStock(attributeStock);
             }
+            operation.setOperationStatus(OperationStatus.VALIDATED);
+            service().saveProductOperation(operation);
+
+            return true;
         }
-        return true;
+
+
+        return false;
     }
 
     private static PharmacyService service() {
