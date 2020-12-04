@@ -13,44 +13,58 @@
 
 <spring:htmlEscape defaultHtmlEscape="true" />
 <ul id="menu">
-	<li class="first">
-		<a href="${pageContext.request.contextPath}/admin">
-			<spring:message code="admin.title.short" />
-		</a>
-	</li>
-	<li <c:if test='<%= request.getRequestURI().contains("/product/") %>'>class="active"</c:if>>
+	<li <c:if test='<%= request.getRequestURI().contains("/product/list") ||
+						request.getRequestURI().contains("/product/edit") %>'>
+			class="active first"
+		</c:if>
+			<c:if test='<%= !request.getRequestURI().contains("/product/list") &&
+						!request.getRequestURI().contains("/product/edit") %>'>
+				class="first"
+			</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/list.form">
-			<spring:message code="pharmacy.productManagement" />
+<%--			<spring:message code="pharmacy.productManagement" />--%>
+			Produits
 		</a>
 	</li>
 	<li <c:if test='<%= request.getRequestURI().contains("/programs") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/programs/list.form">
-			<spring:message code="pharmacy.programManagement" />
+<%--			<spring:message code="pharmacy.programManagement" />--%>
+			Programmes
 		</a>
 	</li>
 	<li <c:if test='<%= request.getRequestURI().contains("/regimens") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/regimens/list.form">
-			<spring:message code="pharmacy.regimenManagement" />
+<%--			<spring:message code="pharmacy.regimenManagement" />--%>
+			R&eacute;gimes
 		</a>
 	</li>
 	<li <c:if test='<%= request.getRequestURI().contains("/prices") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/prices/list.form">
-			<spring:message code="pharmacy.priceManagement" />
+<%--			<spring:message code="pharmacy.priceManagement" />--%>
+			Prix de produits
 		</a>
 	</li>
 	<li <c:if test='<%= request.getRequestURI().contains("/units") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/units/list.form">
-			<spring:message code="pharmacy.unitManagement" />
+<%--			<spring:message code="pharmacy.unitManagement" />--%>
+			Unit&eacute;s de produits
 		</a>
 	</li>
-	<li <c:if test='<%= request.getRequestURI().contains("/suppliers") %>'>class="active"</c:if>>
+	<li <c:if test='<%= request.getRequestURI().contains("/suppliers/") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/suppliers/list.form">
-			<spring:message code="pharmacy.supplierManagement" />
+<%--			<spring:message code="pharmacy.supplierManagement" />--%>
+			Fournisseurs
 		</a>
 	</li>
 	<li <c:if test='<%= request.getRequestURI().contains("/exchanges") %>'>class="active"</c:if>>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/product/exchanges/list.form">
-			<spring:message code="pharmacy.exchangeManagement" />
+<%--			<spring:message code="pharmacy.exchangeManagement" />--%>
+			Partenaires
+		</a>
+	</li>
+	<li>
+		<a href="${pageContext.request.contextPath}/module/pharmacy/manage.form">
+			Retour &agrave; la pharmacie
 		</a>
 	</li>
 	

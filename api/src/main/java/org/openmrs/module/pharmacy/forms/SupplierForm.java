@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductSupplier;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.UUID;
 
@@ -13,9 +14,11 @@ public class SupplierForm {
     private String phoneNumber;
     private String email;
     private Integer locationId;
+    private String locationName;
     private String uuid = UUID.randomUUID().toString();
 
     public SupplierForm() {
+        setLocationId(OperationUtils.getUserLocation().getLocationId());
     }
 
     public Integer getProductSupplierId() {
@@ -74,6 +77,14 @@ public class SupplierForm {
         this.locationId = locationId;
     }
 
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -99,10 +110,10 @@ public class SupplierForm {
         supplier.setDescription(getDescription());
         supplier.setPhoneNumber(getPhoneNumber());
         supplier.setEmail(getEmail());
-        if (getLocationId() != null) {
-            supplier.setLocation(Context.getLocationService().getLocation(getLocationId()));
-            supplier.setName(Context.getLocationService().getLocation(getLocationId()).getName());
-        }
+//        if (getLocationId() != null) {
+//            supplier.setLocation(Context.getLocationService().getLocation(getLocationId()));
+//            supplier.setName(Context.getLocationService().getLocation(getLocationId()).getName());
+//        }
         supplier.setUuid(getUuid());
 
         return supplier;

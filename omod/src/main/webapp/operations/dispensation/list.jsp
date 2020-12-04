@@ -44,6 +44,7 @@
         }
     }
 </script>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/list.form" />
 <div class="container-fluid mt-2">
     <div class="row mt-3">
         <div class="col-12">

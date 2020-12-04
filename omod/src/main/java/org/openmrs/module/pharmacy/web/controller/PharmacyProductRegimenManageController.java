@@ -7,6 +7,7 @@ import org.openmrs.ConceptAnswer;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.ProductRegimenService;
+import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
 import org.openmrs.module.pharmacy.validators.ProductRegimenFormValidation;
 import org.openmrs.web.WebConstants;
@@ -31,7 +32,7 @@ public class PharmacyProductRegimenManageController {
     private ProductRegimenService service() {
         return Context.getService(ProductRegimenService.class);
     }
-
+    private ProductService productService() { return Context.getService(ProductService.class);}
     @RequestMapping(value = "/module/pharmacy/product/regimens/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
@@ -70,7 +71,8 @@ public class PharmacyProductRegimenManageController {
             }
 
             modelMap.addAttribute("regimenForm", productRegimenForm);
-            modelMap.addAttribute("conceptList", getConceptMapList());
+            modelMap.addAttribute("conceptList", getConcepts());
+            modelMap.addAttribute("products", productService().getAllProduct());
             modelMap.addAttribute("title", "Formulaire de saisie des Regimes");
         }
     }
@@ -96,7 +98,8 @@ public class PharmacyProductRegimenManageController {
                 return "redirect:/module/pharmacy/product/regimens/list.form";
             }
             modelMap.addAttribute("regimenForm", regimenForm);
-            modelMap.addAttribute("conceptList", getConceptMapList());
+            modelMap.addAttribute("products", productService().getAllProduct());
+            modelMap.addAttribute("conceptList", getConcepts());
             modelMap.addAttribute("title", "Formulaire de saisie des Regimes");
         }
 
@@ -115,6 +118,16 @@ public class PharmacyProductRegimenManageController {
             }
         }
         return conceptList;
+    }
+
+    private List<Concept> getConcepts() {
+        String conceptId = Context.getAdministrationService().getGlobalProperty("pharmacy.regimenConcept");
+        List<Concept> concepts = new ArrayList<Concept>();
+        for (ConceptAnswer answer : Context.getConceptService().getConcept(Integer.parseInt(conceptId)).getAnswers()) {
+            concepts.add(answer.getAnswerConcept());
+        }
+        concepts.add(Context.getConceptService().getConcept(105281));
+        return concepts;
     }
 
     List<Concept> getConceptFromRegimen(List<ProductRegimen> regimenList) {

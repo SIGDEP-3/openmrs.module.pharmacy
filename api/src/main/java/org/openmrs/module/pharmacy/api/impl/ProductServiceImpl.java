@@ -23,6 +23,8 @@ import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductDAO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -108,6 +110,11 @@ public class ProductServiceImpl extends BaseOpenmrsService implements ProductSer
     @Override
     public List<Product> searchProductByNameLike(String nameSearch) {
         return dao.searchProductByNameLike(nameSearch);
+    }
+
+    @Override
+    public ProductUploadResumeDTO uploadProducts(MultipartFile file) {
+        return dao.uploadProducts(file);
     }
 
 }

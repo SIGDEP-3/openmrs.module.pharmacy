@@ -48,7 +48,7 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     private String observation;
 
     @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ProductAttributeFlux> productAttributeFluxes;
+    private Set<ProductAttributeFlux> productAttributeFluxes = new HashSet<>();
 
     public ProductOperation() {
     }

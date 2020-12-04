@@ -9,6 +9,8 @@ import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.forms.ProductForm;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.validators.ProductFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -101,6 +104,27 @@ public class PharmacyProductManageController {
             modelMap.addAttribute("title", "Formulaire de saisie des Programmes");
         }
 
+        return null;
+    }
+    @RequestMapping(value = "/module/pharmacy/product/upload.form", method = RequestMethod.POST)
+    public String uploadProduct(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        if (Context.isAuthenticated()) {
+            HttpSession session = request.getSession();
+            String message = "";
+            if (CSVHelper.hasCSVFormat(file)) {
+                try {
+                    ProductUploadResumeDTO resumeDTO = productService().uploadProducts(file);
+                    message = "Produits importés avec succès : " + file.getOriginalFilename();
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message + ". [" + resumeDTO.toString() + "]");
+                } catch (Exception e) {
+                    message = "Could not upload the file : " + file.getOriginalFilename() + "!";
+                    System.out.println("---------------------" + e.getMessage());
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
+                }
+            } else
+                session.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "S'il vous plait importez un fichier CSV !");
+            return "redirect:/module/pharmacy/product/list.form";
+        }
         return null;
     }
 }

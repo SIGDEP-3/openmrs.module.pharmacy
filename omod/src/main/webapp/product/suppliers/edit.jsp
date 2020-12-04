@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/suppliers/edit.form" />
 
 <hr>
 <div class="row">
@@ -19,17 +20,18 @@
 <div class="container">
     <form:form modelAttribute="supplierForm" method="post" action="" id="form">
         <form:hidden path="productSupplierId"/>
+        <form:hidden path="locationId"/>
         <form:hidden path="uuid"/>
 
         <div class="row">
             <div class="col-8 mb-2">
                 <labe><spring:message code="pharmacy.nameOrInLocation"/> <span class="required">*</span></labe>
-                <form:select path="locationId" cssClass="form-control s2" >
+                <form:select path="name" cssClass="form-control s2" >
                     <form:option value="" label=""/>
-                    <form:options items="${locationList}" itemValue="locationId" itemLabel="name" />
+                    <form:options items="${locationList}" itemValue="name" itemLabel="name" />
                 </form:select>
-                <form:errors path="locationId" cssClass="error"/>
-                <form:input path="name" cssClass="form-control form-control-sm" />
+<%--                <form:errors path="locationName" cssClass="error"/>--%>
+<%--                <form:input path="name" cssClass="form-control form-control-sm" />--%>
                 <form:errors path="name" cssClass="error"/>
             </div>
         </div>

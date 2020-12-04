@@ -4,6 +4,7 @@
 
 <%@ include file="../../template/operationHeader.jsp"%>
 
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/inventory/edit.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){
@@ -166,7 +167,7 @@
                         <div class="row">
                             <div class="col-10">
                                 <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="inventoryType" value="PARTIAL" label=" Partiel" cssClass=""/>
+                                <form:radiobutton path="inventoryType" value="PARTIAL" label=" Partiel" cssClass="mr-2"/>
                                 <form:radiobutton path="inventoryType" value="FULL" label=" Complet" cssClass=""/>
                                 <form:errors path="inventoryType" cssClass="error"/>
                             </div>

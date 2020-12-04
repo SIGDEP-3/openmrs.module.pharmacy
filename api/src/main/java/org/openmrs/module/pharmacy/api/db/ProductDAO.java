@@ -15,6 +15,8 @@ package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,4 +42,5 @@ public interface ProductDAO {
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
 	List<Product> searchProductByNameLike(String nameSearch);
 
+	ProductUploadResumeDTO uploadProducts(MultipartFile file);
 }

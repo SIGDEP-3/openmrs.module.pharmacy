@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/regimens/edit.form" />
 
 <hr>
 <div class="row">
@@ -26,9 +27,20 @@
                 <labe>Concept <span class="required">*</span></labe>
                 <form:select path="conceptId" cssClass="form-control s2" >
                     <form:option value="" label=""/>
-                    <form:options items="${conceptList}" />
+                    <form:options items="${conceptList}" itemValue="conceptId" itemLabel="name.name" />
                 </form:select>
                 <form:errors path="conceptId" cssClass="error"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 mb-2">
+                <label>Produits</label>
+                <form:select path="productIds" cssClass="form-control s2" multiple="true" >
+                    <form:option value="" label=""/>
+                    <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
+                </form:select>
+                <form:errors path="productIds" cssClass="error"/>
+
             </div>
         </div>
         <div class="row">

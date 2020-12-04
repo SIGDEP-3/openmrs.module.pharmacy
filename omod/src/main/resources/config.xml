@@ -49,10 +49,10 @@
 	</globalProperty>
 
 	<!-- Privileges  -->
-<!--	<privilege>-->
-<!--		<name>Manage Data Transfer</name>-->
-<!--		<description>Can Manage Data Transfer</description>-->
-<!--	</privilege>-->
+	<privilege>
+		<name>Manage Pharmacy</name>
+		<description>Can Manage Manage Stock</description>
+	</privilege>
 
 	<!-- /Privileges  -->
 
@@ -64,6 +64,12 @@
 	<extension>
 		<point>org.openmrs.admin.list</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
+	</extension>
+	<!-- Adds link to menu bar -->
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PharmacyGutterLink
+		</class>
 	</extension>
 	
 	<!-- Maps hibernate file's, if present -->
@@ -104,7 +110,7 @@
 	<dwr>
 		<allow>
 			<create creator="new" javascript="DWRPharmacyService">
-				<param name="class" value="@MODULE_PACKAGE@.web.DWRPharmacyService"/>
+				<param name="class" value="${project.parent.groupId}.${project.parent.artifactId}.web.DWRPharmacyService"/>
 				<include method="getProductQuantityInStock"/>
 				<include method="authenticate"/>
 			</create>
@@ -112,7 +118,7 @@
 
 		<signatures>
 			<![CDATA[
-				import @MODULE_PACKAGE@.web.DWRPharmacyService;
+				import ${project.parent.groupId}.${project.parent.artifactId}.web.DWRPharmacyService;
 				DWRPharmacyService.getProductQuantityInStock(Integer productId);
 			]]>
 		</signatures>

@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/suppliers/list.form" />
 
 <script>
     if (jQuery) {
@@ -36,19 +37,19 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="Supplier" items="${ Suppliers }">
+    <c:forEach var="supplier" items="${ suppliers }">
         <tr>
-            <td>${Supplier.productSupplierId}</td>
-            <td>${Supplier.name}</td>
-            <td>${Supplier.phoneNumber}</td>
-            <td>${Supplier.email}</td>
+            <td>${supplier.productSupplierId}</td>
+            <td>${supplier.name}</td>
+            <td>${supplier.phoneNumber}</td>
+            <td>${supplier.email}</td>
             <td>
                 <c:url value="/module/pharmacy/product/suppliers/edit.form" var="editUrl">
-                    <c:param name="id" value="${Supplier.productSupplierId}"/>
+                    <c:param name="id" value="${supplier.productSupplierId}"/>
                 </c:url>
                 <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
                 <c:url value="/module/pharmacy/product/suppliers/delete.form" var="deleteUrl">
-                    <c:param name="id" value="${Supplier.productSupplierId}"/>
+                    <c:param name="id" value="${supplier.productSupplierId}"/>
                 </c:url>
                 <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>
             </td>

@@ -170,4 +170,12 @@ public class Product extends AbstractPharmacyObject {
         return getCode() + " - " + getWholesaleName();
     }
 
+    public void addProgram(ProductProgram productProgram) {
+        getProductPrograms().add(productProgram);
+    }
+
+    public void removeProgram(ProductProgram productProgram) {
+        getProductPrograms().remove(productProgram);
+    }
+
 }

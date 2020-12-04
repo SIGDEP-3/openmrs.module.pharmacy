@@ -13,6 +13,7 @@ public class ExchangeEntityForm {
     private String uuid = UUID.randomUUID().toString();
 
     public ExchangeEntityForm() {
+
     }
 
     public Integer getProductExchangeEntityId() {

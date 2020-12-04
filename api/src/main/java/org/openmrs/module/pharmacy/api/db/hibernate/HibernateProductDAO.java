@@ -22,7 +22,11 @@ import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductDAO;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.utils.CSVHelper;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -123,5 +127,29 @@ public class HibernateProductDAO implements ProductDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class);
 		return (List<Product>) criteria.add(Restrictions.or(Restrictions.like("wholesaleName", nameSearch),
 				Restrictions.like("retailName", nameSearch))).list();
+	}
+
+	@Override
+	public ProductUploadResumeDTO uploadProducts(MultipartFile file) {
+		try {
+			ProductUploadResumeDTO resumeDTO = new ProductUploadResumeDTO();
+			List<Product> products = CSVHelper.csvProducts(file.getInputStream());
+			resumeDTO.setTotalToImport(products.size());
+			for (Product product : products) {
+				if (product.getId() != null) {
+					resumeDTO.addOneUpdateImported();
+				} else {
+					resumeDTO.addOneNewImported();
+				}
+				saveProduct(product);
+				resumeDTO.addOneTotalImported();
+			}
+
+			return resumeDTO;
+//			return CSVHelper.csvImportProducts(file.getInputStream());
+
+		} catch (IOException e) {
+			throw new RuntimeException("fail to store csv data: " + e.getMessage());
+		}
 	}
 }
