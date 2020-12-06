@@ -19,6 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
@@ -88,7 +89,7 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 	}
 
 	@Override
-	public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) {
+	public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException {
 		sessionFactory.getCurrentSession().saveOrUpdate(productMovementEntry);
 		return productMovementEntry;
 	}
@@ -150,7 +151,7 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 	}
 
 	@Override
-	public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) {
+	public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException {
 		sessionFactory.getCurrentSession().saveOrUpdate(productMovementOut);
 		return productMovementOut;
 	}

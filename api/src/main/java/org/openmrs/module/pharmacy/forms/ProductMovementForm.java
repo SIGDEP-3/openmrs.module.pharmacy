@@ -52,13 +52,15 @@ public class ProductMovementForm extends ProductOperationForm {
         return productMovementEntry;
     }
     public void setProductMovementOut(ProductMovementOut productMovementOut) {
-        setProductOperation(productMovementOut);
+        super.setProductOperation(productMovementOut);
         this.setStockOutType(productMovementOut.getStockOutType());
+        this.setProductProgramId(productMovementOut.getProductProgram().getProductProgramId());
         this.setEntityId(productMovementOut.getRecipient().getProductExchangeEntityId());
     }
     public void setProductMovementEntry(ProductMovementEntry productMovementEntry) {
-        setProductOperation(productMovementEntry);
+        super.setProductOperation(productMovementEntry);
         this.setEntityId(productMovementEntry.getSender().getProductExchangeEntityId());
+        this.setProductProgramId(productMovementEntry.getProductProgram().getProductProgramId());
         this.setStockEntryType(productMovementEntry.getStockEntryType());
     }
     public ProductMovementOut getProductMovementOut() {

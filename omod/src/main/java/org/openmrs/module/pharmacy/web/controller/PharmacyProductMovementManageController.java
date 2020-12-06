@@ -94,17 +94,21 @@ public class PharmacyProductMovementManageController {
             String movementType = "";
             StockEntryType entryType;
             StockOutType outType;
+            ProductProgram program;
             if (getOutTypeLabels().containsKey(type)){
                 movementType = "out";
                 outType = StockOutType.valueOf(type);
                 if (id != 0) {
                     productMovementForm.setProductMovementOut(service().getOneProductMovementOutById(id));
+                    program = programService().getOneProductProgramById(productMovementForm.getProductProgramId());
                 }
                 else {
                     productMovementForm = new ProductMovementForm();
                     productMovementForm.setIncidence(Incidence.NEGATIVE);
+                    productMovementForm.setProductProgramId(programId);
                     productMovementForm.setLocationId(getUserLocation().getLocationId());
                     productMovementForm.setStockOutType(outType);
+                    program = programService().getOneProductProgramById(programId);
                 }
                 modelMap.addAttribute("subTitle", "Mouvement de sortie ("+ getOutTypeLabels()
                         .get(outType.name())+")");
@@ -114,12 +118,14 @@ public class PharmacyProductMovementManageController {
                 entryType = StockEntryType.valueOf(type);
                 if (id != 0) {
                     productMovementForm.setProductMovementEntry(service().getOneProductMovementEntryById(id));
+                    program = programService().getOneProductProgramById(productMovementForm.getProductProgramId());
                 }
                 else {
                     productMovementForm = new ProductMovementForm();
                     productMovementForm.setIncidence(Incidence.POSITIVE);
                     productMovementForm.setLocationId(getUserLocation().getLocationId());
                     productMovementForm.setStockEntryType(entryType);
+                    program = programService().getOneProductProgramById(programId);
                 }
                 modelMap.addAttribute("subTitle", "Mouvement d'entrée ("+ getEntryTypeLabels()
                         .get(entryType.name())+")");
@@ -127,7 +133,7 @@ public class PharmacyProductMovementManageController {
             productMovementForm.setProductProgramId(programId);
             modelMap.addAttribute("productMovementForm", productMovementForm);
             modelMap.addAttribute("type", type);
-            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
+            modelMap.addAttribute("program", program);
             modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("movementType", movementType);
         }
@@ -138,6 +144,7 @@ public class PharmacyProductMovementManageController {
     public String save(ModelMap modelMap,
                        HttpServletRequest request,
                        @RequestParam(value = "action", defaultValue = "addLine", required = false) String action,
+                       @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
                        @RequestParam(value = "type") String type,
                        ProductMovementForm productMovementEntryForm,
                        BindingResult result) {
@@ -148,16 +155,20 @@ public class PharmacyProductMovementManageController {
             Integer movementId;
             String movementType;
             Set<ProductAttributeFlux> fluxes = new HashSet<ProductAttributeFlux>();
+            System.out.println("_--------------- debut des enregistrements");
 
             if (!result.hasErrors()) {
+                System.out.println("_--------------- si pas d'erreur");
                 if (getOutTypeLabels().containsKey(type)){
                     ProductMovementOut out = productMovementEntryForm.getProductMovementOut();
-//                    out = service().saveProductMovementOut(out);
+                    // out = service().saveProductMovementOut(out);
                     movementId = service().saveProductMovementOut(out).getProductOperationId();
                     movementType = "out";
                     fluxes = out.getProductAttributeFluxes();
+                    System.out.println("_--------------- enregistrement des sorties");
                 }
                 else {
+                    System.out.println("_--------------- enregistrement des entrees");
                     ProductMovementEntry entry = service().saveProductMovementEntry(productMovementEntryForm.getProductMovementEntry());
                     movementId = entry.getProductOperationId();
                     movementType = "entry";
@@ -171,7 +182,8 @@ public class PharmacyProductMovementManageController {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
                     }
 
-                    return "redirect:/module/pharmacy/operations/movement/editFlux.form?type="+ movementType +"&movementId=" + movementId;
+                    return "redirect:/module/pharmacy/operations/movement/editFlux.form?" +
+                            "type="+ movementType +"&movementId=" + movementId +"&programId=" + programId;
                 }
                 else {
                     if (productMovementEntryForm.getProductOperationId() != null){
@@ -185,6 +197,7 @@ public class PharmacyProductMovementManageController {
             modelMap.addAttribute("productMovementEntryForm", productMovementEntryForm);
 //            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
             modelMap.addAttribute("programs", programService().getAllProductProgram());
+//            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("subTitle", "Saisie  de Mouvements");
         }
@@ -407,8 +420,8 @@ public class PharmacyProductMovementManageController {
                     break;
                 case TRANSFER_IN: label = "Transfert Entrant";
                     break;
-                case SITE_PRODUCT_BACK: label = "Retour de produit du site";
-                    break;
+//                case SITE_PRODUCT_BACK: label = "Retour de produit du site";
+//                    break;
                 case POSITIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire positif";
                     break;
             }

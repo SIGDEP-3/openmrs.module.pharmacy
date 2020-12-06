@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
@@ -77,7 +78,7 @@ public class ProductMovementServiceImpl extends BaseOpenmrsService implements Pr
     }
 
     @Override
-    public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) {
+    public ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException {
         return dao.saveProductMovementEntry(productMovementEntry);
     }
 
@@ -129,7 +130,7 @@ public class ProductMovementServiceImpl extends BaseOpenmrsService implements Pr
     }
 
     @Override
-    public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) {
+    public ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException {
         return dao.saveProductMovementOut(productMovementOut);
     }
 

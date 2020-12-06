@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
 
@@ -30,7 +31,7 @@ public interface ProductMovementDAO {
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location);
 	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided);
 	ProductMovementEntry getOneProductMovementEntryById(Integer id);
-	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry);
+	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
 	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry);
 	void removeProductMovementEntry(ProductMovementEntry productMovementEntry);
 	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid);
@@ -41,7 +42,7 @@ public interface ProductMovementDAO {
 	List<ProductMovementOut> getAllProductMovementOut(Location location);
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
 	ProductMovementOut getOneProductMovementOutById(Integer id);
-	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut);
+	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
 	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut);
 	void removeProductMovementOut(ProductMovementOut productMovementOut);
 	ProductMovementOut getOneProductMovementOutByUuid(String uuid);

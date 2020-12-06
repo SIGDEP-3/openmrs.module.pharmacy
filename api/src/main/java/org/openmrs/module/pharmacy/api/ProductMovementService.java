@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
@@ -35,26 +36,26 @@ import java.util.List;
 @Transactional
 public interface ProductMovementService extends OpenmrsService {
 
-	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided);
-	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
-	List<ProductMovementEntry> getAllProductMovementEntry(Location location);
-	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided);
-	ProductMovementEntry getOneProductMovementEntryById(Integer id);
-	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry);
-	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry);
-	void removeProductMovementEntry(ProductMovementEntry productMovementEntry);
-	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid);
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) throws APIException;
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+	List<ProductMovementEntry> getAllProductMovementEntry(Location location) throws APIException;
+	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) throws APIException;
+	ProductMovementEntry getOneProductMovementEntryById(Integer id) throws APIException;
+	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	void removeProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) throws APIException;
 //	List<ProductMovementEntryFluxDTO> getProductMovementEntryFluxDTOs(ProductReception productReception);
 
-	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided);
-	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
-	List<ProductMovementOut> getAllProductMovementOut(Location location);
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) throws APIException;
+	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+	List<ProductMovementOut> getAllProductMovementOut(Location location) throws APIException;
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
 	ProductMovementOut getOneProductMovementOutById(Integer id);
-	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut);
-	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut);
-	void removeProductMovementOut(ProductMovementOut productMovementOut);
-	ProductMovementOut getOneProductMovementOutByUuid(String uuid);
+	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	void removeProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	ProductMovementOut getOneProductMovementOutByUuid(String uuid) throws APIException;
 //	List<ProductReceptionFluxDTO> getProductMovementOutFluxDTOs(ProductReception productReception);
 
 }
