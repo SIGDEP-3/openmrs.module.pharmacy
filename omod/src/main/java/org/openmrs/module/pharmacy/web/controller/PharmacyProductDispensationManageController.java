@@ -214,11 +214,11 @@ public class PharmacyProductDispensationManageController {
                         dispensationService().saveMobilePatientDispensationInfo(info);
                     }
 
-                    if (dispensation.getProductAttributeFluxes().size() == 0) {
-                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
-                    } else {
-                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
-                    }
+//                    if (dispensation.getProductAttributeFluxes().size() == 0) {
+//                    } else {
+//                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
+//                    }
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
                     return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId=" +
                             dispensation.getProductOperationId();
                 }

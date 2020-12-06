@@ -5,10 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
-import org.openmrs.module.pharmacy.api.ProductRegimenService;
-import org.openmrs.module.pharmacy.api.ProductUnitService;
+import org.openmrs.module.pharmacy.api.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -128,7 +125,15 @@ public class ProductForm {
 
     public Product getProduct() {
         Product product = new Product();
-        product.setProductId(getProductId());
+        if (getProductId() != null){
+            product = Context.getService(ProductService.class).getOneProductById(getProductId());
+        }
+        if (product == null) {
+            product = new Product();
+            String uuidWithCode = getCode() + "PPPPPPPPPPPPPPPPPPPPPPPPPPPPP";
+            product.setUuid(uuidWithCode);
+        }
+//        product.setProductId(getProductId());
         product.setCode(getCode());
         product.setUnitConversion(getUnitConversion());
         product.setRetailName(getRetailName());
@@ -141,8 +146,6 @@ public class ProductForm {
         if ((!productRegimenIds.isEmpty())) {
             product.getProductRegimens().addAll(getRegimensByIds(getProductRegimenIds()));
         }
-
-        product.setUuid(getUuid());
 
         return product;
     }

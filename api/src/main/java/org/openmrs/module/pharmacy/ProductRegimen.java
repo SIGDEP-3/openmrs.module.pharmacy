@@ -22,7 +22,7 @@ public class ProductRegimen extends AbstractPharmacyObject {
     @JoinColumn(nullable = false, name = "concept_id", unique = true)
     private Concept concept;
 
-    @ManyToMany(mappedBy="productRegimens", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy="productRegimens", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Product> products;
 
     @Override

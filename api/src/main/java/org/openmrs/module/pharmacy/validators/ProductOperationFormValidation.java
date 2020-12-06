@@ -42,20 +42,20 @@ public class ProductOperationFormValidation implements Validator {
                 if (form.getOperationDate().after(new Date())) {
                     errors.rejectValue("operationDate", null, "Impossible de créer une opération avec une date future !");
                 } else {
-                    ProductOperation operation = service().getOneProductOperationByOperationDateAndProductProgram(
-                            form.getOperationDate(),
-                            programService().getOneProductProgramById(form.getProductProgramId()),
-                            OperationUtils.getUserLocation(), false
-                    );
-
-                    if (operation != null) {
-                        if (!operation.getProductOperationId().equals(form.getProductOperationId())) {
-                            if (operation.getOperationDate().equals(form.getOperationDate()) &&
-                                    operation.getProductProgram().getProductProgramId().equals(form.getProductProgramId())) {
-                                errors.rejectValue("operationDate", null, "Un réception à cette date existe déjà !");
-                            }
-                        }
-                    }
+//                    ProductOperation operation = service().getOneProductOperationByOperationDateAndProductProgram(
+//                            form.getOperationDate(),
+//                            programService().getOneProductProgramById(form.getProductProgramId()),
+//                            OperationUtils.getUserLocation(), false
+//                    );
+//
+//                    if (operation != null) {
+//                        if (!operation.getProductOperationId().equals(form.getProductOperationId())) {
+//                            if (operation.getOperationDate().equals(form.getOperationDate()) &&
+//                                    operation.getProductProgram().getProductProgramId().equals(form.getProductProgramId())) {
+//                                errors.rejectValue("operationDate", null, "Un operatiob à cette date existe déjà !");
+//                            }
+//                        }
+//                    }
 
                     if (form.getProductProgramId()!= null) {
                         ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());

@@ -37,17 +37,17 @@
 		<spring:message code="pharmacy.title" /> :
 		Dispensation & Gestion de Stock
 	</h5>
-	<div class="row bg-info border-top border-bottom border-secondary">
-		<div class="col-12 pl-0">
+	<div class="row bg-info border-top border-bottom border-secondary align-items-center">
+		<div class="col-11 pl-0">
 			<div class="btn-toolbar m-1 pl-0">
 				<div class="btn-group mr-3 ml-0">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/manage.form'"
 						<c:choose>
 							<c:when test='<%= request.getRequestURI().contains("/manage") %>'>
-								class=" btn btn-secondary"
+								class=" btn btn-secondary btn-sm"
 							</c:when>
 							<c:otherwise>
-								class="btn btn-outline-secondary text-white"
+								class="btn btn-outline-secondary text-white btn-sm"
 							</c:otherwise>
 						</c:choose>
 					>
@@ -59,10 +59,10 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/dispensation") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Dispensation aux patients
@@ -70,10 +70,10 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Distribution
@@ -84,10 +84,10 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/reception/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/reception") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Reception de produits
@@ -95,10 +95,10 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/movement") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Perte & ajustement
@@ -106,10 +106,10 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/inventory") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Inventaire
@@ -123,7 +123,7 @@
 									class="btn btn-secondary"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Etat du stock
@@ -131,16 +131,24 @@
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/report/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/report") %>'>
-									class=" btn btn-secondary"
+									class=" btn btn-secondary btn-sm"
 								</c:when>
 								<c:otherwise>
-									class="btn btn-outline-secondary text-white"
+									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
 						Rapport d'activite
 					</button>
 				</div>
 
+			</div>
+		</div>
+		<div class="col-1 text-right">
+			<div class="btn-group">
+				<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/product/list.form'"
+						class="btn btn-outline-secondary text-white btn-sm">
+					<i class="fa fa-cog"></i>
+				</button>
 			</div>
 		</div>
 	</div>

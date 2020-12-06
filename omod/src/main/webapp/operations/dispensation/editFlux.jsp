@@ -3,15 +3,25 @@
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../template/operationHeader.jsp"%>
-<script>
-    if (jQuery) {
-        jQuery(document).ready(function () {
+<%--<script src="<openmrs:contextPath/>/module/pharmacy/web/DWRPharmacyService.js"></script>--%>
+<%--<script>--%>
+<%--    if (jQuery) {--%>
+<%--        jQuery(document).ready(function () {--%>
+<%--            jQuery('#productId').on('change', function (e) {--%>
+<%--                let productId = jQuery(this).val();--%>
+<%--                if (productId) {--%>
+<%--                    DWRPharmacyService.getProductQuantityInStock(productId, function (data) {--%>
+<%--                        alert(data);--%>
+<%--                    });--%>
+<%--                }--%>
+<%--            });--%>
+<%--        });--%>
 
-        });
+<%--        //jQuery.ajax('/')--%>
+<%--    }--%>
+<%--</script>--%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/editFlux.form" />
 
-        //jQuery.ajax('/')
-    }
-</script>
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6">

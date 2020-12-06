@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
-<%@ include file="template/localHeader.jsp"%>
+<%@ include file="template/operationHeader.jsp"%>
 
 <p>Hello ${user.systemId}!</p>
 

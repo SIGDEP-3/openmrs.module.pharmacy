@@ -42,6 +42,23 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 //                }
 //            }
 
+
+
+//            ProductDispensation dispensation = service().getOneProductOperationByOperationDateAndProductProgram(
+//                            form.getOperationDate(),
+//                            programService().getOneProductProgramById(form.getProductProgramId()),
+//                            OperationUtils.getUserLocation(), false
+//                    );
+//
+//                    if (operation != null) {
+//                        if (!operation.getProductOperationId().equals(form.getProductOperationId())) {
+//                            if (operation.getOperationDate().equals(form.getOperationDate()) &&
+//                                    operation.getProductProgram().getProductProgramId().equals(form.getProductProgramId())) {
+//                                errors.rejectValue("operationDate", null, "Un operatiob à cette date existe déjà !");
+//                            }
+//                        }
+//                    }
+
             if (form.getOperationDate() != null) {
                 ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
                 if (productProgram != null) {

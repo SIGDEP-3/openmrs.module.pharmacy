@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/operationHeader.jsp"%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/inventory/list.form" />
 
 <script>
     if (jQuery) {
@@ -95,7 +96,7 @@
                                 </td>
                             </c:otherwise>
                         </c:choose>
-                        <td>${inventory.operationStatus}</td>
+                        <td>${inventory.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (inventory.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                         <td>
                             <c:url value="/module/pharmacy/operations/inventory/edit.form" var="editUrl">
                                 <c:param name="id" value="${inventory.productOperationId}"/>

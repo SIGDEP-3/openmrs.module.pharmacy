@@ -31,7 +31,7 @@ public class PharmacyProductExchangeManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("exchanges", service().getAllProductExchange());
-            modelMap.addAttribute("title", "Liste des Partenaire");
+            modelMap.addAttribute("title", "Liste des Partenaires");
         }
     }
 
@@ -91,6 +91,7 @@ public class PharmacyProductExchangeManageController {
                 }
                 return "redirect:/module/pharmacy/product/exchanges/list.form";
             }
+
             modelMap.addAttribute("ExchangeEntityForm", exchangeEntityForm);
             modelMap.addAttribute("locationList", Context.getLocationService().getAllLocations());
             modelMap.addAttribute("title", "Formulaire de saisie des Partenaires");

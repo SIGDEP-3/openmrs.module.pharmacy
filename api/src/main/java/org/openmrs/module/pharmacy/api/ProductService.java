@@ -16,7 +16,9 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -50,5 +52,6 @@ public interface ProductService extends OpenmrsService {
 	List<Product> getAllProductByRetailUnit(ProductUnit retailUnit);
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
 	List<Product> searchProductByNameLike(String nameSearch);
+	ProductUploadResumeDTO uploadProducts(MultipartFile file);
 
 }
