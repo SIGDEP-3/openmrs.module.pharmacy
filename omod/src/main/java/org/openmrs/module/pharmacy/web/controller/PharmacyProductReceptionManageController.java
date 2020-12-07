@@ -93,14 +93,14 @@ public class PharmacyProductReceptionManageController {
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
                     return "redirect:/module/pharmacy/operations/reception/list.form";
                 }
-                productReceptionForm = new ProductReceptionForm();
+                productReceptionForm = new ProductReceptionForm(programId);
+                productReceptionForm.setProductProgramId(program.getProductProgramId());
                 productReceptionForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
 
                 modelMap.addAttribute("program", program);
             }
 
-            modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
-//            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("productReceptionForm", productReceptionForm);
             modelMap.addAttribute("productReception", receptionService().getOneProductReceptionById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie de réception - entête");
@@ -136,7 +136,6 @@ public class PharmacyProductReceptionManageController {
                 }
             }
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
-//            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
             modelMap.addAttribute("program", programService().getOneProductProgramById(productReceptionForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie  de réception - entête");
@@ -258,11 +257,11 @@ public class PharmacyProductReceptionManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/delete.form", method = RequestMethod.GET)
     public String deleteOperation(HttpServletRequest request,
-                                  @RequestParam(value = "receptionId") Integer receptionId){
+                                  @RequestParam(value = "id") Integer id){
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
+        ProductReception reception = receptionService().getOneProductReceptionById(id);
         for (ProductAttributeOtherFlux otherFlux : attributeFluxService().getAllProductAttributeOtherFluxByOperation(reception, false)) {
             attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
         }
@@ -270,6 +269,7 @@ public class PharmacyProductReceptionManageController {
             attributeFluxService().removeProductAttributeFlux(flux);
         }
         receptionService().removeProductReception(reception);
+        attributeService().purgeUnusedAttributes();
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été supprimée avec succès !");
         return "redirect:/module/pharmacy/operations/reception/list.form";
     }
@@ -308,5 +308,4 @@ public class PharmacyProductReceptionManageController {
         }
         return null;
     }
-
 }

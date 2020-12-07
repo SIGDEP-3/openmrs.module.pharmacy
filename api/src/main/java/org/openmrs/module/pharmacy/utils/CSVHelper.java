@@ -54,8 +54,7 @@ public class CSVHelper {
                     hasChanged = true;
                     // products.add(product);
                     productService().saveProduct(product);
-                }
-                else {
+                } else {
                     if (!product.getProductPrograms().contains(program)) {
                         product.addProgram(program);
                         hasChanged = true;
@@ -84,7 +83,6 @@ public class CSVHelper {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
         }
     }
-
 
     public static List<Product> csvProducts(InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));

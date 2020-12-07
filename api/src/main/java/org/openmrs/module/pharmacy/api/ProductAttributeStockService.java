@@ -17,10 +17,8 @@ import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,7 +49,7 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
-	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product);
+	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation);
 	Integer getProductAttributeStocksByProductCount(Product product);
 
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);

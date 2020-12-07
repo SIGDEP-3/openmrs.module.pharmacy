@@ -6,17 +6,16 @@ import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class DispensationAttributeFluxForm {
     private Integer productId;
+    private Integer selectedProductId;
     private Integer productOperationId;
     private Integer dispensingQuantity;
     private Integer requestedQuantity;
 
     public DispensationAttributeFluxForm() {
-
     }
 
     public Integer getProductId() {
@@ -25,6 +24,14 @@ public class DispensationAttributeFluxForm {
 
     public void setProductId(Integer productId) {
         this.productId = productId;
+    }
+
+    public Integer getSelectedProductId() {
+        return selectedProductId;
+    }
+
+    public void setSelectedProductId(Integer selectedProductId) {
+        this.selectedProductId = selectedProductId;
     }
 
     public Integer getProductOperationId() {
@@ -77,21 +84,22 @@ public class DispensationAttributeFluxForm {
     public List<ProductAttributeFlux> getProductAttributeFluxes() {
         List<ProductAttributeFlux> fluxes = new ArrayList<ProductAttributeFlux>();
         if (getDispensingQuantity()!= null) {
-            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(getProductId()), OperationUtils.getUserLocation());
+            Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
+            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
             Integer quantity = getDispensingQuantity();
             for (ProductAttributeStock stock : productAttributeStocks) {
                 ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
                         stock.getProductAttribute(),
-                        receptionService().getOneProductDispensationById(getProductOperationId())
+                        dispensationService().getOneProductDispensationById(getProductOperationId())
                 );
                 if (productAttributeFlux != null){
                     productAttributeFlux.setQuantity(getDispensingQuantity());
                 } else {
                     productAttributeFlux = new ProductAttributeFlux();
                     productAttributeFlux.setQuantity(getDispensingQuantity());
-                    productAttributeFlux.setLocation(Context.getLocationService().getDefaultLocation());
+                    productAttributeFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeFlux.setProductAttribute(stock.getProductAttribute());
-                    productAttributeFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+                    productAttributeFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
                 }
 
                 if (getDispensingQuantity() <= stock.getQuantityInStock()){
@@ -116,12 +124,13 @@ public class DispensationAttributeFluxForm {
     public List<ProductAttributeOtherFlux> getProductAttributeOtherFluxes() {
         List<ProductAttributeOtherFlux> otherFluxes = new ArrayList<ProductAttributeOtherFlux>();
         if (getRequestedQuantity()!= null) {
-            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(getProductId()), OperationUtils.getUserLocation());
+            Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
+            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
             Integer quantity = getRequestedQuantity();
             for (ProductAttributeStock stock : productAttributeStocks) {
                 ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
                         stock.getProductAttribute(),
-                        receptionService().getOneProductDispensationById(getProductOperationId()),
+                        dispensationService().getOneProductDispensationById(getProductOperationId()),
                         OperationUtils.getUserLocation()
                 );
                 if (productAttributeOtherFlux != null){
@@ -132,7 +141,7 @@ public class DispensationAttributeFluxForm {
                     productAttributeOtherFlux.setLabel("Quantitié demandée");
                     productAttributeOtherFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeOtherFlux.setProductAttribute(stock.getProductAttribute());
-                    productAttributeOtherFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+                    productAttributeOtherFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
                 }
 
                 if (getRequestedQuantity() <= stock.getQuantityInStock()){
@@ -154,9 +163,10 @@ public class DispensationAttributeFluxForm {
     }
 
     public ProductAttributeOtherFlux getProductAttributeOtherFlux() {
+        Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
         ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperation(
-                productService().getOneProductById(getProductId()),
-                receptionService().getOneProductDispensationById(getProductOperationId())
+                productService().getOneProductById(productId),
+                dispensationService().getOneProductDispensationById(getProductOperationId())
         );
         if (otherFlux != null){
             otherFlux.setQuantity(getRequestedQuantity());
@@ -166,7 +176,7 @@ public class DispensationAttributeFluxForm {
             otherFlux.setLabel("Quantitié demandée");
             otherFlux.setLocation(OperationUtils.getUserLocation());
             otherFlux.setProduct(productService().getOneProductById(getProductId()));
-            otherFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+            otherFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
         }
         return otherFlux;
     }
@@ -178,7 +188,7 @@ public class DispensationAttributeFluxForm {
         setRequestedQuantity(fluxService().getAllProductAttributeOtherFluxByOperationAndProductCount(productDispensation, product));
     }
 
-    private ProductDispensationService receptionService() {
+    private ProductDispensationService dispensationService() {
         return Context.getService(ProductDispensationService.class);
     }
 

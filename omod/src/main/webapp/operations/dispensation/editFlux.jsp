@@ -2,26 +2,51 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
-<%@ include file="../../template/operationHeader.jsp"%>
-<%--<script src="<openmrs:contextPath/>/module/pharmacy/web/DWRPharmacyService.js"></script>--%>
-<%--<script>--%>
-<%--    if (jQuery) {--%>
-<%--        jQuery(document).ready(function () {--%>
-<%--            jQuery('#productId').on('change', function (e) {--%>
-<%--                let productId = jQuery(this).val();--%>
-<%--                if (productId) {--%>
-<%--                    DWRPharmacyService.getProductQuantityInStock(productId, function (data) {--%>
-<%--                        alert(data);--%>
-<%--                    });--%>
-<%--                }--%>
-<%--            });--%>
-<%--        });--%>
-
-<%--        //jQuery.ajax('/')--%>
-<%--    }--%>
-<%--</script>--%>
 <openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/editFlux.form" />
 
+<%@ include file="../../template/operationHeader.jsp"%>
+<%--<script src="<openmrs:contextPath/>/module/pharmacy/web/DWRPharmacyService.js"></script>--%>
+<script>
+    if (jQuery) {
+        jQuery(document).ready(function () {
+            // jQuery('#productId').on('change', function (e) {
+            //     let productId = jQuery(this).val();
+            //     if (productId) {
+            //         DWRPharmacyService.getProductQuantityInStock(productId, function (data) {
+            //             alert(data);
+            //         });
+            //     }
+            // });
+            jQuery('#quantityRemaining').text(jQuery('#quantityInStock').text());
+
+            jQuery('#dispensingQuantity').on('change', function (e) {
+                let dispensingQuantity = jQuery(this).val();
+                if (dispensingQuantity != null) {
+                    let quantityInStock = jQuery('#quantityInStock').text();
+
+                    jQuery('#quantityRemaining').text(quantityInStock - dispensingQuantity);
+                }
+
+
+            });
+
+
+        });
+
+        function goToSelectedProduct() {
+            let productId = jQuery('#selectedProductId').val();
+            if (productId) {
+                location.href = '${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/editFlux.form?' +
+                    'dispensationId=' + ${dispensationId} + '&selectedProductId=' + productId
+            }
+        }
+        //jQuery.ajax('/')
+    }
+</script>
+
+<script>
+
+</script>
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6">
@@ -38,7 +63,7 @@
                                 <div class="col-8">
                                     Programme : <span class="text-success text-lg-left font-italic">${headerDTO.productProgram.name}</span> |
                                     Patient (<span class="text-info font-italic">${headerDTO.patientType == 'ON_SITE' ?
-                                        'PEC SUR LE SITE' : 'MOBILE'}</span>)
+                                        'PEC SUR LE SITE' : (headerDTO.patientType == 'MOBILE' ? 'MOBILE' : 'PREVENTION')}</span>)
                                 </div>
                                 <div class="col-4 text-right">
                                     <button class="btn btn-primary btn-sm" tabindex="-1">
@@ -98,38 +123,53 @@
                                         <h6 class="font-italic text-warning">Derni&egrave;re Dispensation</h6>
                                         <div class="card bg-light text-info border border-info">
                                             <div class="card-body p-2">
-                                                <div class="row mb-1">
-                                                    <div class="col-12">
-                                                        <label>Date</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                        </div>
+                                                <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
+                                                    <div class="row align-items-center">
+                                                        <div class="h4 text-warning font-italic font-weight-bold">Non Applicable</div>
                                                     </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-6">
-                                                        <label>R&eacute;gime</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label>Nb jours perdus</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-5">
-                                                        <label>Nb jours TTT</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label>Date de fin de TTT</label>
-                                                        <div id="lastTreatmentEndDate" class="form-control form-control-sm bg-info text-white">
+                                                </c:if>
+                                                <c:if test="${headerDTO.patientType == 'MOBILE'}">
+                                                    <div class="row align-items-center">
+                                                        Ce patient a d&eacute;j&agrave; effectu&eacute;
+                                                        <span class="font-weight-bold text-primary">${fct:length(mobilePatient.mobilePatientDispensationInfos)}</span>
+                                                        visite(s)
 
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="${headerDTO.patientType == 'ON_SITE'}">
+                                                    <div class="row mb-1">
+                                                        <div class="col-12">
+                                                            <label>Date</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-6">
+                                                            <label>R&eacute;gime</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label>Nb jours perdus</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-5">
+                                                            <label>Nb jours TTT</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label>Date de fin de TTT</label>
+                                                            <div id="lastTreatmentEndDate" class="form-control form-control-sm bg-info text-white">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
                                             </div>
                                         </div>
 
@@ -142,49 +182,74 @@
                                                     <div class="col-12">
                                                         <label class="mb-1">But</label>
                                                         <br>
+                                                        <c:if test="${headerDTO.patientType == 'ON_SITE' || headerDTO.patientType == 'MOBILE'}">
                                                         <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'NOT_APPLICABLE' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;Non Applicable </span>
-                                                        <span class="mr-3 text-info">
+                                                            <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'PEC' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PEC </span>
-                                                        <span class="mr-3 text-info">
+                                                            <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'PTME' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PTME </span>
+                                                        </c:if>
+                                                        <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
                                                         <span class="text-info">
                                                             ${headerDTO.goal == 'AES' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;AES</span>
+                                                        <span class="text-info">
+                                                            ${headerDTO.goal == 'PREP' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;PREP</span>
+                                                        </c:if>
                                                     </div>
                                                 </div>
                                                 <div class="row mb-2">
-                                                    <div class="col-5">
-                                                        <label class="">Date de dispensation</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                            <fmt:formatDate value="${headerDTO.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                    <c:if test="${headerDTO.patientType == 'ON_SITE'}">
+                                                        <div class="col-5">
+                                                            <label class="">Date de dispensation</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                <fmt:formatDate value="${headerDTO.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <label class="">Nb Jours TTT </label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                            ${headerDTO.treatmentDays}
+                                                        <div class="col-3">
+                                                            <label class="">Nb Jours TTT </label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                    ${headerDTO.treatmentDays}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <label class="">Date de fin de TTT </label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                            <fmt:formatDate value="${headerDTO.treatmentEndDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                        <div class="col-4">
+                                                            <label class="">Date de fin de TTT </label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                <fmt:formatDate value="${headerDTO.treatmentEndDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    </c:if>
+                                                    <c:if test="${headerDTO.patientType == 'OTHER_HIV' || headerDTO.patientType == 'MOBILE'}">
+                                                        <div class="col-5">
+                                                            <label class="">Date de dispensation</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                <fmt:formatDate value="${headerDTO.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <label class="">Nb Jours TTT </label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                    ${headerDTO.treatmentDays}
+                                                            </div>
+                                                        </div>
+                                                    </c:if>
+</div>
                                                 <div class="row mb-2">
-                                                    <div class="col-8">
-                                                        <label class="pt-1">Prescripteur : </label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                            ${headerDTO.provider.name}
+                                                    <c:if test="${headerDTO.patientType == 'ON_SITE'}">
+                                                        <div class="col-8">
+                                                            <label class="pt-1">Prescripteur : </label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                    ${headerDTO.provider.name}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <label class="">Date de prescription</label>
-                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                            <fmt:formatDate value="${headerDTO.prescriptionDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                        <div class="col-4">
+                                                            <label class="">Date de prescription</label>
+                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                                <fmt:formatDate value="${headerDTO.prescriptionDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                            </div>
                                                         </div>
-                                                    </div>
+
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
@@ -197,56 +262,67 @@
             </div>
             <c:if test="${headerDTO.operationStatus == 'NOT_COMPLETED'}">
                 <form:form modelAttribute="dispensationAttributeFluxForm" method="post" action="" id="form">
-                    <%--                <form:hidden path="productAttributeFluxId"/>--%>
                     <form:hidden path="productOperationId"/>
                     <div>
                         <form:errors path="productId" cssClass="error"/>
-                            <%--                    <form:errors path="batchNumber" cssClass="error"/>--%>
-                            <%--                    <form:errors path="expiryDate" cssClass="error"/> <br>--%>
                         <form:errors path="requestedQuantity" cssClass="error"/>
                         <form:errors path="dispensingQuantity" cssClass="error"/>
-                            <%--                    <form:errors path="observation" cssClass="error"/>--%>
                     </div>
                     <table class="table table-condensed table-striped table-sm table-bordered">
                         <thead class="thead-light">
+                        <c:if test="${selectedProductId != null || (selectedProductId == null && dispensationAttributeFluxForm.productId == null) }">
+                            <tr>
+                                <td colspan="3">
+                                    <table class="table table-borderless table-sm mb-1">
+                                        <tr>
+                                            <td>
+                                                <form:select path="selectedProductId" cssClass="form-control s2">
+                                                    <form:option value="" label=""/>
+                                                    <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
+                                                </form:select>
+                                            </td>
+                                            <td style="width: 10px">
+                                                <button class="btn btn-primary" type="button" onclick="goToSelectedProduct()"><i class="fa fa-arrow-circle-down"></i></button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td colspan="5" class="align-items-lg-center">
+                                    <span class="text-danger text-lg-left font-italic font-weight-bold">${productMessage}</span>
+                                </td>
+                            </tr>
+                        </c:if>
+
                         <tr class="bg-belize-hole">
                             <th colspan="3" style="width: 250px">Produit <span class="required">*</span></th>
                             <th style="width: 150px">Quantit&eacute; en stock</th>
                             <th style="width: 150px">Quantit&eacute; <br>demand&eacute;e <span class="required">*</span></th>
                             <th style="width: 150px">Quantit&eacute; <br>dispens&eacute;e <span class="required">*</span></th>
+                            <th style="width: 150px">Quantit&eacute; restant</th>
                             <th style="width: 50px"></th>
                         </tr>
                         </thead>
-                        <c:if test="${headerDTO.operationStatus == 'NOT_COMPLETED'}">
+                        <c:if test="${selectedProduct != null && productMessage == null}">
                             <tr>
-                                <td colspan="3">
-                                    <form:select path="productId" cssClass="form-control s2" >
-                                        <form:option value="" label=""/>
-                                        <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
-                                    </form:select>
-                                </td>
-                                    <%--                            <td>--%>
-                                    <%--                                <c:if test="${empty dispensationAttributeFluxForm.productAttributeFluxId}">--%>
-                                    <%--                                    <form:input path="batchNumber" cssClass="form-control form-control-sm"  />--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                                <c:if test="${not empty dispensationAttributeFluxForm.productAttributeFluxId}">--%>
-                                    <%--                                    <form:input path="batchNumber" cssClass="form-control form-control-sm" readonly="true"  />--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                            </td>--%>
-                                    <%--                            <td>--%>
-                                    <%--                                <c:if test="${empty dispensationAttributeFluxForm.productAttributeFluxId}">--%>
-                                    <%--                                    <form:input path="expiryDate" cssClass="form-control form-control-sm picker" />--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                                <c:if test="${not empty dispensationAttributeFluxForm.productAttributeFluxId}">--%>
-                                    <%--                                    <form:input path="expiryDate" cssClass="form-control form-control-sm picker" readonly="true"  />--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                            </td>--%>
-                                <td id="quantityInStock" class="text-info"></td>
-                                <td>
+                                <td>${selectedProduct.code}</td>
+                                <td>${selectedProduct.retailName}</td>
+                                <td>${selectedProduct.productRetailUnit.name}</td>
+                                <td class="text-center text-primary font-weight-bold" id="quantityInStock">${selectedProductQuantityInStock}</td>
+<%--                                <td colspan="3">--%>
+<%--                                    --%>
+<%--                                    <form:select path="productId" cssClass="form-control s2" >--%>
+<%--                                        <form:option value="" label=""/>--%>
+<%--                                        <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />--%>
+<%--                                    </form:select>--%>
+<%--                                </td>--%>
+                                <td class="text-center ">
                                     <form:input path="requestedQuantity" cssClass="form-control form-control-sm" />
                                 </td>
-                                <td>
+                                <td class="text-center ">
                                     <form:input path="dispensingQuantity" cssClass="form-control form-control-sm" />
+                                </td>
+                                <td class="text-info text-center font-weight-bold">
+                                    <span class="text-warning" id="quantityRemaining">0</span>
                                 </td>
                                 <td>
                                     <button class="btn btn-success">

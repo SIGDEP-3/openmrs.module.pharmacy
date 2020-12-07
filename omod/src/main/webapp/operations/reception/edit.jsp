@@ -132,8 +132,8 @@
                         <div class="row mb-2">
                             <div class="col-10">
                                 <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="receptionQuantityMode" value="RETAIL" cssClass=""/> Unite de dispensation
-                                <form:radiobutton path="receptionQuantityMode" value="WHOLESALE" cssClass=""/> Unite de conditionnement
+                                <form:radiobutton path="receptionQuantityMode" value="RETAIL" label="Dispensation" cssClass="mr-2"/>
+                                <form:radiobutton path="receptionQuantityMode" value="WHOLESALE"  label="Conditionnement" cssClass="mr-2"/>
                                 <form:errors path="receptionQuantityMode" cssClass="error"/>
                             </div>
 

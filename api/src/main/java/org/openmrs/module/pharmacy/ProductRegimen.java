@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Concept;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -23,7 +24,7 @@ public class ProductRegimen extends AbstractPharmacyObject {
     private Concept concept;
 
     @ManyToMany(mappedBy="productRegimens", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<Product>();
 
     @Override
     public Integer getId() {

@@ -117,7 +117,7 @@ public class PharmacyProductManageController {
                     message = "Produits importés avec succès : " + file.getOriginalFilename();
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message + ". [" + resumeDTO.toString() + "]");
                 } catch (Exception e) {
-                    message = "Could not upload the file : " + file.getOriginalFilename() + "!";
+                    message = "Could not upload the file : " + file.getOriginalFilename() + " : "  + e.getMessage();
                     System.out.println("---------------------" + e.getMessage());
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
                 }

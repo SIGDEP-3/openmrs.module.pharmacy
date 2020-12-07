@@ -21,7 +21,6 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
@@ -125,9 +124,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product ORDER BY s.productAttribute.expiryDate DESC ");
+	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate DESC ");
 		query.setParameter("product", product);
+		query.setParameter("location", userLocation);
 
 		return query.list();
 	}

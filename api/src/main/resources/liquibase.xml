@@ -650,14 +650,9 @@
         </sql>
     </changeSet>
 
-    <changeSet id="insert-pharmacy-program-data-plus" author="BOGUI SERGE">
+    <changeSet id="insert-pharmacy-program-data-plus-1" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
-            <or>
-                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_program</sqlCheck>
-            </or>
-            <or>
-                <sqlCheck expectedResult="9">SELECT COUNT(*) FROM pharmacy_product_program</sqlCheck>
-            </or>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_program</sqlCheck>
         </preConditions>
         <sql>
             REPLACE INTO pharmacy_product_program (product_program_id, name, description, uuid) VALUES (1, 'PNLSARVIO', null, '44ac1b52-2691-11eb-ae9e-0242ac1a0002');
@@ -674,14 +669,9 @@
         </sql>
     </changeSet>
 
-    <changeSet id="insert-pharmacy-unit-data-plus" author="BOGUI SERGE">
+    <changeSet id="insert-pharmacy-unit-data-plus-1" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
-            <or>
-                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_unit</sqlCheck>
-            </or>
-            <or>
-                <sqlCheck expectedResult="43">SELECT COUNT(*) FROM pharmacy_product_unit</sqlCheck>
-            </or>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM pharmacy_product_unit</sqlCheck>
         </preConditions>
         <sql>
             REPLACE INTO pharmacy_product_unit (product_unit_id, name, description, uuid) VALUES (1, 'AIGUILLE', null, '5764bf2b-2693-11eb-ae9e-0242ac1a0002');
@@ -1138,4 +1128,36 @@
             REPLACE INTO pharmacy_product_regimen (product_regimen_id, concept_id, uuid) VALUES (104, 105281, '105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
         </sql>
     </changeSet>
+    
+    <changeSet id="pharmacy-attribute-stock-audit-info" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="pharmacy_product_attribute_stock" columnName="creator"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_attribute_stock">
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_creator"
+                                 baseTableName="pharmacy_product_attribute_stock" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_changed_by"
+                                 baseTableName="pharmacy_product_attribute_stock" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_voided_by"
+                                 baseTableName="pharmacy_product_attribute_stock" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addNotNullConstraint tableName="pharmacy_product_attribute_stock" columnName="date_created"/>
+    </changeSet>
+
 </databaseChangeLog>

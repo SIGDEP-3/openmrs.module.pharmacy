@@ -16,6 +16,10 @@ public class ProductReceptionForm extends ProductOperationForm {
         setIncidence(Incidence.POSITIVE);
     }
 
+    public ProductReceptionForm(Integer productProgramId) {
+        super(productProgramId);
+    }
+
     public Integer getProductSupplierId() {
         return productSupplierId;
     }

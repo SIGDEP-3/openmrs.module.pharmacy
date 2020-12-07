@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,14 @@ public class PharmacyProductDispensationManageController {
 
     private ProductDispensationService dispensationService() {
         return Context.getService(ProductDispensationService.class);
+    }
+
+    private ProductAttributeStockService stockService() {
+        return Context.getService(ProductAttributeStockService.class);
+    }
+
+    private ProductService productService() {
+        return Context.getService(ProductService.class);
     }
 
     private ProductRegimenService regimenService() {
@@ -94,7 +103,7 @@ public class PharmacyProductDispensationManageController {
                 String regimen = "0";
                 String patientId = "0";
                 if (findPatientForm.getPatientIdentifier() != null) {
-                    if (!findPatientForm.getPatientType().equals(PatientType.MOBILE)) {
+                    if (findPatientForm.getPatientType().equals(PatientType.ON_SITE)) {
                         regimen = "1";
                         Patient patient = dispensationService().getPatientByIdentifier(findPatientForm.getPatientIdentifier());
                         if (patient != null) {
@@ -104,8 +113,12 @@ public class PharmacyProductDispensationManageController {
                             mobile = "1";
                         }
                     } else {
+                        if (findPatientForm.getPatientType().equals(PatientType.MOBILE)) {
+                            mobile = "1";
+                        } else {
+                            mobile = "2";
+                        }
                         patientId = getPatientInfo(findPatientForm);
-                        mobile = "1";
                     }
                 }
 
@@ -173,6 +186,9 @@ public class PharmacyProductDispensationManageController {
 
             if (reg != 0) {
                 modelMap.addAttribute("regimens", regimenService().getAllProductRegimen());
+            }
+            if (mob == 1) {
+                modelMap.addAttribute("mobilePatient", dispensationService().getOneMobilePatientById(patientId));
             }
             modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("productDispensationForm", productDispensationForm);
@@ -259,13 +275,14 @@ public class PharmacyProductDispensationManageController {
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/editFlux.form", method = RequestMethod.GET)
     public String editFlux(ModelMap modelMap,
                          @RequestParam(value = "dispensationId") Integer dispensationId,
-                         @RequestParam(value = "productId", defaultValue = "0", required = false) Integer fluxId,
+                         @RequestParam(value = "productId", defaultValue = "0", required = false) Integer productId,
+                         @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
                          DispensationAttributeFluxForm dispensationAttributeFluxForm) {
         if (Context.isAuthenticated()) {
             ProductDispensation productDispensation = dispensationService().getOneProductDispensationById(dispensationId);
             if (productDispensation != null) {
-                if (fluxId != 0) {
-                    ProductAttributeFlux productAttributeFlux = attributeFluxService().getOneProductAttributeFluxById(fluxId);
+                if (productId != 0) {
+                    ProductAttributeFlux productAttributeFlux = attributeFluxService().getOneProductAttributeFluxById(productId);
                     if (productAttributeFlux != null) {
                         dispensationAttributeFluxForm.setProductAttributeFlux(productAttributeFlux, productDispensation);
                     } else {
@@ -277,9 +294,24 @@ public class PharmacyProductDispensationManageController {
                     dispensationAttributeFluxForm.setProductOperationId(productDispensation.getProductOperationId());
                 }
 
-                System.out.println(" ========================================> Here is the place where we will begin entering in maps ");
+                if (selectedProductId != 0) {
+                    Product product =  productService().getOneProductById(selectedProductId);
+                    modelMap.addAttribute("selectedProduct", product);
+                    List<ProductAttributeStock> stocks = stockService().getProductAttributeStocksByProduct(product, OperationUtils.getUserLocation());
+                    Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation());
+
+                    modelMap.addAttribute("selectedProductQuantityInStock", quantity);
+                    if (stocks.size() == 0) {
+                        modelMap.addAttribute("productMessage", "Ce produit n'existe pas en stock");
+                    } else if (quantity == 0) {
+                        modelMap.addAttribute("productMessage", "Ce produit est en rupture de stock");
+                    } else {
+                        dispensationAttributeFluxForm.setSelectedProductId(selectedProductId);
+                    }
+                }
 
                 modelMappingForView(modelMap, dispensationAttributeFluxForm, productDispensation);
+
             }
 
         }
@@ -297,26 +329,26 @@ public class PharmacyProductDispensationManageController {
             new ProductDispensationAttributeFluxFormValidation().validate(dispensationAttributeFluxForm, result);
             ProductDispensation productDispensation = dispensationService().getOneProductDispensationById(dispensationAttributeFluxForm.getProductOperationId());
 
-//            if (!result.hasErrors()) {
-//                ProductAttribute productAttribute = attributeService().saveProductAttribute(dispensationAttributeFluxForm.getProductAttribute());
-//                if (productAttribute != null) {
-//                    ProductAttributeFlux productAttributeFlux = dispensationAttributeFluxForm.getProductAttributeFlux(productAttribute);
-//                    productAttributeFlux.setStatus(productDispensation.getOperationStatus());
-//
-//                    if (attributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
-//                        attributeFluxService().saveProductAttributeOtherFlux(dispensationAttributeFluxForm.getProductAttributeOtherFlux());
-//                    }
-//
-//                    if (dispensationAttributeFluxForm.getProductOperationId() == null) {
-//                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit insérés avec succès !");
-//                    } else {
-//                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
-//                    }
-//
-//                    return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId="
-//                            + dispensationAttributeFluxForm.getProductOperationId();
-//                }
-//            }
+            if (!result.hasErrors()) {
+                List<ProductAttributeFlux> fluxes = dispensationAttributeFluxForm.getProductAttributeFluxes();
+                if (fluxes != null) {
+                    for (ProductAttributeFlux flux : fluxes) {
+                        flux.setStatus(productDispensation.getOperationStatus());
+                        attributeFluxService().saveProductAttributeFlux(flux);
+                    }
+                    attributeFluxService().saveProductAttributeOtherFlux(dispensationAttributeFluxForm.getProductAttributeOtherFlux());
+
+                    if (dispensationAttributeFluxForm.getProductId() == null) {
+                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit insérés avec succès !");
+                    } else {
+                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
+                    }
+
+                    return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId="
+                            + dispensationAttributeFluxForm.getProductOperationId();
+                }
+                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit indisponible en stock !");
+            }
 
             modelMappingForView(modelMap, dispensationAttributeFluxForm, productDispensation);
         }
@@ -328,9 +360,10 @@ public class PharmacyProductDispensationManageController {
                                      DispensationAttributeFluxForm dispensationAttributeFluxForm,
                                      ProductDispensation productDispensation) {
         List<ProductDispensationFluxDTO> productAttributeFluxes = dispensationService().getProductDispensationFluxDTOs(productDispensation);
-//        if (productAttributeFluxes.size() != 0) {
+        if (productAttributeFluxes == null /*&& productAttributeFluxes.size() != 0*/) {
 //            Collections.sort(productAttributeFluxes, Collections.<ProductDispensationFluxDTO>reverseOrder());
-//        }
+            productAttributeFluxes = new ArrayList<ProductDispensationFluxDTO>();
+        }
 
         ProductRegimen regimen = new ProductRegimen();
 
@@ -351,7 +384,9 @@ public class PharmacyProductDispensationManageController {
                     headerDTO.setGender(info.getMobilePatient().getGender());
                     headerDTO.setPatientIdentifier(info.getMobilePatient().getIdentifier());
                     headerDTO.setPatientType(info.getMobilePatient().getPatientType());
+                    modelMap.addAttribute("mobilePatient", info.getMobilePatient());
                 }
+
                 headerDTO.setProvider(info.getProvider());
                 headerDTO.setTreatmentDays(info.getTreatmentDays());
                 headerDTO.setGoal(info.getGoal());
@@ -360,6 +395,7 @@ public class PharmacyProductDispensationManageController {
                 regimen = info.getProductRegimen();
             }
         } else {
+
             Encounter encounter = productDispensation.getEncounter();
             headerDTO.setAge(encounter.getPatient().getAge());
             headerDTO.setGender(encounter.getPatient().getGender());
@@ -388,15 +424,18 @@ public class PharmacyProductDispensationManageController {
             }
             headerDTO.setPatientType(PatientType.ON_SITE);
         }
+
         modelMap.addAttribute("dispensationAttributeFluxForm", dispensationAttributeFluxForm);
         modelMap.addAttribute("headerDTO", headerDTO);
         modelMap.addAttribute("products", regimen.getProducts());
         modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
+        modelMap.addAttribute("dispensationId", productDispensation.getProductOperationId());
         if (productDispensation.getOperationStatus().equals(OperationStatus.VALIDATED))
             modelMap.addAttribute("subTitle", "Dispensation - APPROUVEE");
         else {
             modelMap.addAttribute("subTitle", "Saisie de dispensation");
         }
+
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/complete.form", method = RequestMethod.GET)
@@ -474,8 +513,7 @@ public class PharmacyProductDispensationManageController {
         HttpSession session = request.getSession();
         ProductDispensation dispensation = dispensationService().getOneProductDispensationById(dispensationId);
         if (OperationUtils.validateOperation(dispensation)) {
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
-                    "continuer à modifier la réception !");
+            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La dispensation a été enregistrée avec succès !");
             return "redirect:/module/pharmacy/operations/dispensation/list.form";
         }
         return null;

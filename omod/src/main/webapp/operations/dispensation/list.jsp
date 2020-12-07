@@ -128,9 +128,9 @@
                 <div class="row align-items-center">
                     <div class="col-11">
                         <div class="form-row">
-                            <div class="col-7">
+                            <div class="col-8">
                                 <div class="row">
-                                    <label class="col-3 pt-1">Programme : </label>
+                                    <label class="col-2 pt-1">Programme : </label>
                                     <div class="col-4">
                                         <form:select path="productProgramId" cssClass="form-control s2">
                                             <form:option value="" label=""/>
@@ -142,9 +142,9 @@
                             </div>
                         </div>
                         <div class="form-row mt-2">
-                            <div class="col-7 pt-1 pb-1 bg-gray">
+                            <div class="col-8 pt-1 pb-1 bg-gray">
                                 <div class="row">
-                                    <div class="col-3 pt-1">
+                                    <div class="col-2 pt-1">
                                         <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="Patient VIH" cssClass="mr-2"/>
                                     </div>
                                     <div class="col-4">
@@ -155,6 +155,9 @@
                                     </div>
                                     <div class="col-2 pt-1">
                                         <form:radiobutton path="patientType" value="MOBILE" label="Mobile" cssClass="mr-2"/>
+                                    </div>
+                                    <div class="col-2 pt-1">
+                                        <form:radiobutton path="patientType" value="OTHER_HIV" label="Autre VIH" cssClass="mr-2"/>
                                     </div>
 
                                 </div>
@@ -177,7 +180,6 @@
                         </button>
                     </div>
                 </div>
-
             </form:form>
         </div>
     </div>

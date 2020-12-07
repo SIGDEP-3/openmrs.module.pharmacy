@@ -45,7 +45,6 @@ public class OperationUtils {
             return true;
         }
 
-
         return false;
     }
 

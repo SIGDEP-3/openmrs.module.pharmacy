@@ -33,6 +33,7 @@ import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -171,7 +172,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 //		} catch (HibernateException e) {
 //			System.out.println(e.getMessage());
 //		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override

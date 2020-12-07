@@ -199,7 +199,7 @@
                             <legend>
                                 Programme : <span class="text-success text-lg-left font-italic">${program.name}</span> |
                                 Patient (<span class="text-info font-italic">${productDispensationForm.patientType == 'ON_SITE' ?
-                                    'PEC SUR LE SITE' : 'MOBILE'}</span>)
+                                    'PEC SUR LE SITE' : (productDispensationForm.patientType == 'MOBILE' ? 'MOBILE' : 'PREVENTION')}</span>)
                             </legend>
                             <div class="card">
                                 <div class="card-body p-2 border border-info">
@@ -247,41 +247,56 @@
                                             <h6 class="font-italic text-warning">Derni&egrave;re Dispensation</h6>
                                             <div class="card bg-light text-info border border-info">
                                                 <div class="card-body p-2">
-                                                    <div class="row mb-1">
-                                                        <div class="col-12">
-                                                            <label>Date</label>
-                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                    <c:if test="${productDispensationForm.patientType == 'OTHER_HIV'}">
+                                                        <div class="row align-items-center">
+                                                            <div class="h4 text-warning font-italic font-weight-bold">Non Applicable</div>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${productDispensationForm.patientType == 'MOBILE'}">
+                                                        <div class="row align-items-center">
+                                                            Ce patient a d&eacute;j&agrave; effectu&eacute;
+                                                            <span class="font-weight-bold text-primary">${fct:length(mobilePatient.mobilePatientDispensationInfos)}</span>
+                                                            visite(s)
 
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-6">
-                                                            <label>R&eacute;gime</label>
-                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                    </c:if>
+                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                        <div class="row mb-1">
+                                                            <div class="col-12">
+                                                                <label>Date</label>
+                                                                <div class="form-control form-control-sm bg-info text-white">
 
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-6">
-                                                            <label>Nb jours TTT perdus</label>
-                                                            <form:input path="treatmentDaysLost" cssClass="form-control form-control-sm" onchange="getTreatmentEndDate()" />
-                                                            <form:errors path="treatmentDaysLost" cssClass="error"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-5">
-                                                            <label>Nb jours TTT</label>
-                                                            <div class="form-control form-control-sm bg-info text-white">
+                                                        <div class="row mb-2">
+                                                            <div class="col-6">
+                                                                <label>R&eacute;gime</label>
+                                                                <div class="form-control form-control-sm bg-info text-white">
 
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label>Nb jours TTT perdus</label>
+                                                                <form:input path="treatmentDaysLost" cssClass="form-control form-control-sm" onchange="getTreatmentEndDate()" />
+                                                                <form:errors path="treatmentDaysLost" cssClass="error"/>
                                                             </div>
                                                         </div>
-                                                        <div class="col-6">
-                                                            <label>Date de fin de TTT</label>
-                                                            <div id="lastTreatmentEndDate" class="form-control form-control-sm bg-info text-white">
-                                                                12/12/2020
+                                                        <div class="row mb-2">
+                                                            <div class="col-5">
+                                                                <label>Nb jours TTT</label>
+                                                                <div class="form-control form-control-sm bg-info text-white">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label>Date de fin de TTT</label>
+                                                                <div id="lastTreatmentEndDate" class="form-control form-control-sm bg-info text-white">
+
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </c:if>
                                                 </div>
                                             </div>
 
@@ -319,45 +334,66 @@
                                                         <div class="col-12">
                                                             <label class="mb-1">But <span class="required">*</span></label>
                                                             <br>
-                                                            <form:radiobutton path="goal" tabindex="true" value="NOT_APPLICABLE" label=" Non Applicable" cssClass="mr-2"/>
-                                                            <form:radiobutton path="goal" value="PEC" label=" PEC" cssClass="ml-1 mr-2"/>
-                                                            <form:radiobutton path="goal" value="PTME" label="PTME" cssClass="mr-2"/>
-                                                            <form:radiobutton path="goal" value="AES" label=" AES" cssClass="ml-1 mr-2"/>
+                                                            <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
+                                                                <form:radiobutton path="goal" tabindex="true" value="NOT_APPLICABLE" label=" Non Applicable" cssClass="mr-2"/>
+                                                                <form:radiobutton path="goal" value="PEC" label=" PEC" cssClass="ml-1 mr-2"/>
+                                                                <form:radiobutton path="goal" value="PTME" label="PTME" cssClass="mr-2"/>
+                                                            </c:if>
+                                                            <c:if test="${productDispensationForm.patientType == 'OTHER_HIV'}">
+                                                                <form:radiobutton path="goal" value="AES" label=" AES" cssClass="ml-1 mr-2"/>
+                                                                <form:radiobutton path="goal" value="PREP" label=" AES" cssClass="ml-1 mr-2"/>
+                                                            </c:if>
                                                             <form:errors path="goal" cssClass="error"/>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-2">
-                                                        <div class="col-5">
-                                                            <label class="">Date de dispensation <span class="required">*</span> </label>
-                                                            <form:input path="operationDate" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm picker"/>
-                                                            <form:errors path="operationDate" cssClass="error"/>
-                                                        </div>
-                                                        <div class="col-3">
-                                                            <label class="">Nb Jours TTT<span class="required">*</span> </label>
-                                                            <form:input path="treatmentDays" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm"/>
-                                                            <form:errors path="treatmentDays" cssClass="error"/>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <label class="">Date de fin de TTT <span class="required">*</span> </label>
-                                                            <form:input path="treatmentEndDate" tabindex="-1" cssClass="form-control form-control-sm" readonly="true"/>
-                                                            <form:errors path="treatmentEndDate" cssClass="error"/>
-                                                        </div>
+                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                            <div class="col-5">
+                                                                <label class="">Date de dispensation <span class="required">*</span> </label>
+                                                                <form:input path="operationDate" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm picker"/>
+                                                                <form:errors path="operationDate" cssClass="error"/>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <label class="">Nb Jours TTT<span class="required">*</span> </label>
+                                                                <form:input path="treatmentDays" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm"/>
+                                                                <form:errors path="treatmentDays" cssClass="error"/>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="">Date de fin de TTT <span class="required">*</span> </label>
+                                                                <form:input path="treatmentEndDate" tabindex="-1" cssClass="form-control form-control-sm" readonly="true"/>
+                                                                <form:errors path="treatmentEndDate" cssClass="error"/>
+                                                            </div>
+                                                        </c:if>
+                                                        <c:if test="${productDispensationForm.patientType == 'OTHER_HIV' || productDispensationForm.patientType == 'MOBILE'}">
+                                                            <div class="col-5">
+                                                                <label class="">Date de dispensation <span class="required">*</span> </label>
+                                                                <form:input path="operationDate" cssClass="form-control form-control-sm picker"/>
+                                                                <form:errors path="operationDate" cssClass="error"/>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <label class="">Nb Jours TTT<span class="required">*</span> </label>
+                                                                <form:input path="treatmentDays" cssClass="form-control form-control-sm"/>
+                                                                <form:errors path="treatmentDays" cssClass="error"/>
+                                                            </div>
+                                                        </c:if>
+
                                                     </div>
                                                     <div class="row mb-2">
-                                                        <div class="col-8">
-                                                            <label class="pt-1">Prescripteur : </label>
-                                                            <form:select path="providerId" cssClass="form-control s2">
-                                                                <form:option value="" label=""/>
-                                                                <form:options items="${providers}" itemValue="providerId"
-                                                                              itemLabel="name"/>
-                                                            </form:select>
-                                                            <form:errors path="providerId" cssClass="error"/>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <label class="">Date de prescription</label>
-                                                            <form:input path="prescriptionDate" tabindex="true" cssClass="form-control form-control-sm picker"/>
-                                                            <form:errors path="prescriptionDate" cssClass="error"/>
-                                                        </div>
+                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                            <div class="col-8">
+                                                                <label class="pt-1">Prescripteur : </label>
+                                                                <form:select path="providerId" cssClass="form-control s2">
+                                                                    <form:option value="" label=""/>
+                                                                    <form:options items="${providers}" itemValue="providerId" itemLabel="name"/>
+                                                                </form:select>
+                                                                <form:errors path="providerId" cssClass="error"/>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="">Date de prescription</label>
+                                                                <form:input path="prescriptionDate" tabindex="true" cssClass="form-control form-control-sm picker"/>
+                                                                <form:errors path="prescriptionDate" cssClass="error"/>
+                                                            </div>
+                                                        </c:if>
                                                     </div>
                                                 </div>
                                             </div>

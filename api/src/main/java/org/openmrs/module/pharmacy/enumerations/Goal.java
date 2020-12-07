@@ -4,5 +4,6 @@ public enum Goal {
     NOT_APPLICABLE,
     PEC,
     PTME,
-    AES
+    AES,
+    PREP
 }
