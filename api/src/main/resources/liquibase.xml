@@ -1157,7 +1157,7 @@
         <addForeignKeyConstraint constraintName="pharmacy_product_attribute_stock_voided_by"
                                  baseTableName="pharmacy_product_attribute_stock" baseColumnNames="voided_by"
                                  referencedTableName="users" referencedColumnNames="user_id"/>
-        <addNotNullConstraint tableName="pharmacy_product_attribute_stock" columnName="date_created"/>
+        <addNotNullConstraint tableName="pharmacy_product_attribute_stock" columnName="date_created" columnDataType="datetime"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -20,7 +20,7 @@ public class ProductDispensationAttributeFluxFormValidation implements Validator
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-            ValidationUtils.rejectIfEmpty(errors, "productId", null, "Le produit doit être sélectionné SVP");
+            ValidationUtils.rejectIfEmpty(errors, "selectedProductId", null, "Le produit doit être sélectionné SVP");
             ValidationUtils.rejectIfEmpty(errors, "dispensingQuantity", null, "La quantité dispensée est requise");
             ValidationUtils.rejectIfEmpty(errors, "requestedQuantity", null, "La quantité demandée est requise");
 

@@ -99,6 +99,7 @@ public class DispensationAttributeFluxForm {
                     productAttributeFlux.setQuantity(getDispensingQuantity());
                     productAttributeFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeFlux.setProductAttribute(stock.getProductAttribute());
+                    productAttributeFlux.setOperationDate(dispensationService().getOneProductDispensationById(getProductOperationId()).getOperationDate());
                     productAttributeFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
                 }
 
@@ -175,7 +176,7 @@ public class DispensationAttributeFluxForm {
             otherFlux.setQuantity(getDispensingQuantity());
             otherFlux.setLabel("Quantitié demandée");
             otherFlux.setLocation(OperationUtils.getUserLocation());
-            otherFlux.setProduct(productService().getOneProductById(getProductId()));
+            otherFlux.setProduct(productService().getOneProductById(productId));
             otherFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
         }
         return otherFlux;

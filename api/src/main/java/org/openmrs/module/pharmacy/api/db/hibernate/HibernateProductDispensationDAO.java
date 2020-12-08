@@ -122,56 +122,45 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductDispensationFluxDTO> getProductDispensationFluxDTOs(ProductDispensation productDispensation) {
-//		String sqlQuery =
-//				"SELECT " +
-//						"    ppaf.product_attribute_flux_id as productAttributeFluxId, " +
-//						"    pp.code as code, " +
-//						"    pp.retail_name as retailName, " +
-//						"    pp.wholesale_name as wholesaleName, " +
-//						"    ppu.name as retailUnit, " +
-//						"    ppu2.name as wholesaleUnit, " +
-//						"    ppa.batch_number as batchNumber, " +
-//						"    ppa.expiry_date as expiryDate, " +
-//						"    ppaf.quantity as physicalQuantity, " +
-//						"    ppo.product_operation_id as operationId, " +
-//						"    ppas.quantity_in_stock as theoreticalQuantity, " +
-//						"    ppaf.observation as observation, " +
-//						"    IF(ppaf.date_created IS NOT NULL, ppaf.date_created, ppas.date_created) as dateCreated, " +
-//						"    ppaf.status " +
-//						" " +
-//						"FROM (SELECT product_attribute_id, product_id, batch_number, expiry_date FROM pharmacy_product_attribute) ppa " +
-//						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_flux WHERE operation_id = :productOperationId) ppaf ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-//						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_status = 2 AND product_operation_id = :productOperationId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
-//						"LEFT JOIN pharmacy_product_attribute_stock ppas ON ppas.product_attribute_id = ppa.product_attribute_id " +
-//						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
-//						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
-//						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
-//						"WHERE NOT (ppaf.uuid IS NULL AND ppas.uuid IS NULL) " +
-//						"ORDER BY ppaf.date_created, ppas.date_created DESC";
-//
-//		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
-//				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
-////				.addScalar("operationId", StandardBasicTypes.INTEGER)
-////				.addScalar("inventoryId", StandardBasicTypes.INTEGER)
-////				.addScalar("productId", StandardBasicTypes.INTEGER)
-//				.addScalar("code", StandardBasicTypes.STRING)
-//				.addScalar("retailName", StandardBasicTypes.STRING)
-//				.addScalar("wholesaleName", StandardBasicTypes.STRING)
-//				.addScalar("retailUnit", StandardBasicTypes.STRING)
-//				.addScalar("wholesaleUnit", StandardBasicTypes.STRING)
-//				.addScalar("batchNumber", StandardBasicTypes.STRING)
-//				.addScalar("expiryDate", StandardBasicTypes.DATE)
-//				.addScalar("physicalQuantity", StandardBasicTypes.INTEGER)
-//				.addScalar("theoreticalQuantity", StandardBasicTypes.INTEGER)
-//				.addScalar("observation", StandardBasicTypes.STRING)
-//				.addScalar("dateCreated", StandardBasicTypes.DATE)
-//				.setParameter("productOperationId", productDispensation.getProductOperationId())
-//				.setResultTransformer(new AliasToBeanResultTransformer(ProductDispensationFluxDTO.class));
-//		try {
-//			return query.list();
-//		} catch (HibernateException e) {
-//			System.out.println(e.getMessage());
-//		}
+		String sqlQuery =
+				"SELECT " +
+						"pp.product_id productId, " +
+						"pp.code, " +
+						"pp.retail_name retailName, " +
+						"ppu.name retailUnit, " +
+						"pf.dispensingQuantity, " +
+						"ppaof.quantity requestedQuantity, " +
+						"ps.quantityInStock, " +
+						"ppo.date_created dateCreated" +
+						"FROM pharmacy_product_dispensation ppd " +
+						"LEFT JOIN pharmacy_product_operation ppo ON ppo.product_operation_id = ppd.product_operation_id " +
+						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof ON ppo.product_operation_id = ppaof.operation_id " +
+						"LEFT JOIN ( " +
+						"    SELECT pa.product_attribute_id, operation_id, pa.product_id, SUM(ppaf.quantity) dispensingQuantity, date_created FROM pharmacy_product_attribute_flux ppaf LEFT JOIN pharmacy_product_attribute pa ON ppaf.product_attribute_id = pa.product_attribute_id WHERE operation_id = :productOperationId GROUP BY pa.product_id " +
+						") pf on ppo.product_operation_id = pf.operation_id AND pf.product_id = ppaof.product_id " +
+						"LEFT JOIN pharmacy_product pp on pp.product_id = ppaof.product_id " +
+						"LEFT JOIN pharmacy_product_unit ppu on ppu.product_unit_id = pp.product_retail_unit and ppu.product_unit_id = pp.product_wholesale_unit " +
+						"LEFT JOIN ( " +
+						"    SELECT pa.product_attribute_id, pa.product_id, SUM(ppas.quantity_in_stock) quantityInStock FROM pharmacy_product_attribute_stock ppas LEFT JOIN pharmacy_product_attribute pa ON ppas.product_attribute_id = pa.product_attribute_id  GROUP BY pa.product_id " +
+						"    ) ps ON ps.product_id = ppaof.product_id " +
+						"WHERE ppd.product_operation_id = :productOperationId ORDER BY date_created DESC ";
+
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+				.addScalar("productId", StandardBasicTypes.INTEGER)
+				.addScalar("code", StandardBasicTypes.STRING)
+				.addScalar("retailName", StandardBasicTypes.STRING)
+				.addScalar("retailUnit", StandardBasicTypes.STRING)
+				.addScalar("requestedQuantity", StandardBasicTypes.INTEGER)
+				.addScalar("dispensingQuantity", StandardBasicTypes.INTEGER)
+				.addScalar("quantityInStock", StandardBasicTypes.INTEGER)
+				.addScalar("dateCreated", StandardBasicTypes.DATE)
+				.setParameter("productOperationId", productDispensation.getProductOperationId())
+				.setResultTransformer(new AliasToBeanResultTransformer(ProductDispensationFluxDTO.class));
+		try {
+			return query.list();
+		} catch (HibernateException e) {
+			System.out.println(e.getMessage());
+		}
 		return new ArrayList<>();
 	}
 

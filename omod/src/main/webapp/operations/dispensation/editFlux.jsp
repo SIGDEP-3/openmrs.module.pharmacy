@@ -17,21 +17,38 @@
             //         });
             //     }
             // });
-            jQuery('#quantityRemaining').text(jQuery('#quantityInStock').text());
+           getRemainingQuantity();
 
             jQuery('#dispensingQuantity').on('change', function (e) {
-                let dispensingQuantity = jQuery(this).val();
-                if (dispensingQuantity != null) {
-                    let quantityInStock = jQuery('#quantityInStock').text();
-
-                    jQuery('#quantityRemaining').text(quantityInStock - dispensingQuantity);
-                }
-
-
+                getRemainingQuantity();
             });
 
 
         });
+
+        function getRemainingQuantity() {
+            let dispensingQuantity = jQuery('#dispensingQuantity').val();
+            let quantityRemaining = jQuery('#quantityRemaining');
+            let quantityInStock = jQuery('#quantityInStock').text();
+            if (dispensingQuantity != null) {
+                let quantity = quantityInStock - dispensingQuantity;
+                quantityRemaining.removeClass('text-danger');
+                quantityRemaining.removeClass('text-warning');
+                quantityRemaining.addClass('text-success');
+                jQuery('#button-submit').show();
+                quantityRemaining.text(quantity)
+                if (quantity === 0) {
+                    quantityRemaining.removeClass('text-success');
+                    quantityRemaining.addClass('text-warning');
+                } else if (quantity < 0) {
+                    quantityRemaining.removeClass('text-success');
+                    quantityRemaining.addClass('text-danger');
+                    jQuery('#button-submit').hide()
+                }
+            } else {
+                quantityRemaining.text(quantityInStock);
+            }
+        }
 
         function goToSelectedProduct() {
             let productId = jQuery('#selectedProductId').val();
@@ -322,10 +339,10 @@
                                     <form:input path="dispensingQuantity" cssClass="form-control form-control-sm" />
                                 </td>
                                 <td class="text-info text-center font-weight-bold">
-                                    <span class="text-warning" id="quantityRemaining">0</span>
+                                    <span class="text-success" id="quantityRemaining">0</span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-success">
+                                    <button class="btn btn-success" id="button-submit">
                                         <c:if test="${not empty dispensationAttributeFluxForm.productId}">
                                             <i class="fa fa-edit"></i>
                                         </c:if>
@@ -341,40 +358,39 @@
                             </td>
                         </tr>
                         <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                            <%--                        <tr>--%>
-                            <%--                            <td>${productFlux.code}</td>--%>
-                            <%--                            <td>--%>
-                            <%--                                    ${productFlux.retailName}--%>
-                            <%--                            </td>--%>
-                            <%--                            <td>--%>
-                            <%--                                    ${productFlux.retailUnit}--%>
-                            <%--                            </td>--%>
-                            <%--&lt;%&ndash;                            <td class="text-center">${productFlux.batchNumber}</td>&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;                            <td class="text-center">&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;&lt;%&ndash;                                <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>&ndash;%&gt;&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;                            </td>&ndash;%&gt;--%>
-                            <%--                            <td class="text-center">--%>
-                            <%--                                    ${productDispensation.dispensationQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}--%>
-                            <%--                            </td>--%>
-                            <%--                            <td class="text-center">--%>
-                            <%--                                    ${productDispensation.dispensationQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}--%>
-                            <%--                            </td>--%>
-                            <%--                            <td>${productFlux.observation}</td>--%>
-                            <%--                            <td>--%>
-                            <%--                                <c:if test="${productDispensation.operationStatus == 'NOT_COMPLETED'}">--%>
-                            <%--                                    <c:url value="/module/pharmacy/operations/dispensation/editFlux.form" var="editUrl">--%>
-                            <%--                                        <c:param name="dispensationId" value="${productDispensation.productOperationId}"/>--%>
-                            <%--                                        <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>--%>
-                            <%--                                    </c:url>--%>
-                            <%--                                    <a href="${editUrl}" class="text-info"><i class="fa fa-edit"></i></a>--%>
-                            <%--                                    <c:url value="/module/pharmacy/operations/dispensation/deleteFlux.form" var="deleteUrl">--%>
-                            <%--                                        <c:param name="dispensationId" value="${productDispensation.productOperationId}"/>--%>
-                            <%--                                        <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>--%>
-                            <%--                                    </c:url>--%>
-                            <%--                                    <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>--%>
-                            <%--                                </c:if>--%>
-                            <%--                            </td>--%>
-                            <%--                        </tr>--%>
+                                                    <tr>
+                                                        <td>${productFlux.code}</td>
+                                                        <td>
+                                                                ${productFlux.retailName}
+                                                        </td>
+                                                        <td>
+                                                                ${productFlux.retailUnit}
+                                                        </td>
+                                                        <td class="text-center">${productFlux.quantityInStock}</td>
+                                                        <td class="text-center">
+                                                                ${productFlux.requestedQuantity}
+                                                        </td>
+                                                        <td class="text-center">
+                                                                ${productFlux.dispensingQuantity}
+                                                        </td>
+                                                        <td class="text-center">
+                                                                ${productFlux.quantityInStock - productFlux.dispensingQuantity}
+                                                        </td>
+                                                        <td>
+                                                            <c:if test="${headerDTO.operationStatus == 'NOT_COMPLETED'}">
+                                                                <c:url value="/module/pharmacy/operations/dispensation/editFlux.form" var="editUrl">
+                                                                    <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
+                                                                    <c:param name="dispensationId" value="${productFlux.productId}"/>
+                                                                </c:url>
+                                                                <a href="${editUrl}" class="text-info"><i class="fa fa-edit"></i></a>
+                                                                <c:url value="/module/pharmacy/operations/dispensation/deleteFlux.form" var="deleteUrl">
+                                                                    <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
+                                                                    <c:param name="productId" value="${productFlux.productId}"/>
+                                                                </c:url>
+                                                                <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                                                            </c:if>
+                                                        </td>
+                                                    </tr>
                         </c:forEach>
 
                         <c:if test="${fct:length(productAttributeFluxes) == 0}">

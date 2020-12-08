@@ -177,7 +177,6 @@ public class PharmacyProductDispensationManageController {
                     modelMap.addAttribute("program", productDispensation.getProductProgram());
                 }
             } else {
-
                 productDispensationForm = new ProductDispensationForm();
 
                 setPatient(mob, patientId, productDispensationForm);
@@ -294,23 +293,7 @@ public class PharmacyProductDispensationManageController {
                     dispensationAttributeFluxForm.setProductOperationId(productDispensation.getProductOperationId());
                 }
 
-                if (selectedProductId != 0) {
-                    Product product =  productService().getOneProductById(selectedProductId);
-                    modelMap.addAttribute("selectedProduct", product);
-                    List<ProductAttributeStock> stocks = stockService().getProductAttributeStocksByProduct(product, OperationUtils.getUserLocation());
-                    Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation());
-
-                    modelMap.addAttribute("selectedProductQuantityInStock", quantity);
-                    if (stocks.size() == 0) {
-                        modelMap.addAttribute("productMessage", "Ce produit n'existe pas en stock");
-                    } else if (quantity == 0) {
-                        modelMap.addAttribute("productMessage", "Ce produit est en rupture de stock");
-                    } else {
-                        dispensationAttributeFluxForm.setSelectedProductId(selectedProductId);
-                    }
-                }
-
-                modelMappingForView(modelMap, dispensationAttributeFluxForm, productDispensation);
+                selectProduct(modelMap, (productId == 0 ? selectedProductId : productId), dispensationAttributeFluxForm, productDispensation);
 
             }
 
@@ -321,6 +304,8 @@ public class PharmacyProductDispensationManageController {
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/editFlux.form", method = RequestMethod.POST)
     public String saveFlux(ModelMap modelMap,
                            HttpServletRequest request,
+                           @RequestParam(value = "productId", defaultValue = "0", required = false) Integer productId,
+                           @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
                            DispensationAttributeFluxForm dispensationAttributeFluxForm,
                            BindingResult result) {
         if (Context.isAuthenticated()) {
@@ -350,10 +335,30 @@ public class PharmacyProductDispensationManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit indisponible en stock !");
             }
 
-            modelMappingForView(modelMap, dispensationAttributeFluxForm, productDispensation);
+            selectProduct(modelMap, (productId == 0 ? selectedProductId : productId), dispensationAttributeFluxForm, productDispensation);
         }
 
         return null;
+    }
+
+    private void selectProduct(ModelMap modelMap, @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId, DispensationAttributeFluxForm dispensationAttributeFluxForm, ProductDispensation productDispensation) {
+        if (selectedProductId != 0) {
+            Product product =  productService().getOneProductById(selectedProductId);
+            modelMap.addAttribute("selectedProduct", product);
+            List<ProductAttributeStock> stocks = stockService().getProductAttributeStocksByProduct(product, OperationUtils.getUserLocation());
+            Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation());
+
+            modelMap.addAttribute("selectedProductQuantityInStock", quantity);
+            if (stocks.size() == 0) {
+                modelMap.addAttribute("productMessage", "Ce produit n'existe pas en stock");
+            } else if (quantity == 0) {
+                modelMap.addAttribute("productMessage", "Ce produit est en rupture de stock");
+            } else {
+                dispensationAttributeFluxForm.setSelectedProductId(selectedProductId);
+            }
+        }
+
+        modelMappingForView(modelMap, dispensationAttributeFluxForm, productDispensation);
     }
 
     private void modelMappingForView(ModelMap modelMap,
