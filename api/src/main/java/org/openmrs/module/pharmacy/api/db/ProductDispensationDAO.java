@@ -20,6 +20,7 @@ import org.openmrs.module.pharmacy.MobilePatientDispensationInfo;
 import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductDispensationService;
+import org.openmrs.module.pharmacy.models.DispensationListDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 
 import java.util.Date;
@@ -41,10 +42,13 @@ public interface ProductDispensationDAO {
 	ProductDispensation saveProductDispensation(ProductDispensation productDispensation);
 	ProductDispensation editProductDispensation(ProductDispensation productDispensation);
 	void removeProductDispensation(ProductDispensation productDispensation);
+	void removeMobilePatientInfo(MobilePatientDispensationInfo info);
+	void removeMobilePatient(MobilePatient patient);
 	ProductDispensation getOneProductDispensationByUuid(String uuid);
 	ProductDispensation getLastProductDispensation(Location location, ProductProgram productProgram);
 	ProductDispensation getLastProductDispensationByDate(Location location, ProductProgram productProgram, Date dispensationDate);
 	List<ProductDispensationFluxDTO> getProductDispensationFluxDTOs(ProductDispensation productDispensation);
+	List<DispensationListDTO> getDispensationListDTOs(Location location);
 
     MobilePatientDispensationInfo getOneMobilePatientDispensationInfoId(Integer mobileDispensationInfoId);
 
@@ -58,4 +62,9 @@ public interface ProductDispensationDAO {
 	MobilePatient getOneMobilePatientById(Integer mobilePatientId);
 
     MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo);
+
+	ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location);
+	ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location, Date dispensationDate);
+
+    List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location);
 }

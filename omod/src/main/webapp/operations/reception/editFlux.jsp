@@ -165,10 +165,10 @@
                                 <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                             </td>
                             <td class="text-center">
-                                    ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}
+                                <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
                             </td>
                             <td class="text-center">
-                                    ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}
+                                <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
                             </td>
                             <td>${productFlux.observation}</td>
                             <td>
@@ -210,7 +210,7 @@
                     <tr>
                         <td>${productFlux.code}</td>
                         <td>
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
+                               ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
                         </td>
                         <td>
                                 ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailUnit : productFlux.wholesaleUnit}
@@ -220,10 +220,10 @@
                             <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                         </td>
                         <td class="text-center">
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}
+                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
                         </td>
                         <td class="text-center">
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}
+                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
                         </td>
                         <td>${productFlux.observation}</td>
                     </tr>

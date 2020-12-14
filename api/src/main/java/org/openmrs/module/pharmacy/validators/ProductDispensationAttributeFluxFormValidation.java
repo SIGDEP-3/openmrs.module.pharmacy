@@ -20,10 +20,13 @@ public class ProductDispensationAttributeFluxFormValidation implements Validator
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-            ValidationUtils.rejectIfEmpty(errors, "selectedProductId", null, "Le produit doit être sélectionné SVP");
+//            ValidationUtils.rejectIfEmpty(errors, "selectedProductId", null, "Le produit doit être sélectionné SVP");
             ValidationUtils.rejectIfEmpty(errors, "dispensingQuantity", null, "La quantité dispensée est requise");
             ValidationUtils.rejectIfEmpty(errors, "requestedQuantity", null, "La quantité demandée est requise");
 
+            if (form.getProductId() == null && form.getSelectedProductId() == null) {
+                errors.rejectValue("selectedProductId", null, "Le produit doit être sélectionné SVP");
+            }
 //            if (form.getQuantityToDeliver() != null && form.getQuantityToDeliver() == 0) {
 //                errors.rejectValue("quantityToDeliver", null, "La quantité livrée ne peut pas être égale à 0");
 //            }

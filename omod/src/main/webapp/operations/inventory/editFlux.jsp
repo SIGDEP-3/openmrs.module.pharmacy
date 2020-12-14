@@ -78,8 +78,8 @@
                 <td class="font-weight-bold text-info">${productInventory.operationNumber}</td>
             </tr>
             <tr>
-                <td>Type d'inventaire</td>
-                <td class="font-weight-bold text-info">${productInventory.inventoryType == 'PARTIAL' ? 'PARTIEL' : 'COMPLET'}</td>
+<%--                <td>Type d'inventaire</td>--%>
+<%--                <td class="font-weight-bold text-info">${productInventory.inventoryType == 'PARTIAL' ? 'PARTIEL' : 'COMPLET'}</td>--%>
                 <td>Observation</td>
                 <td class="font-weight-bold text-info">${productInventory.observation}</td>
             </tr>
@@ -202,7 +202,7 @@
                 </thead>
                 <tbody>
                 <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                    <c:if test="${productInventory.inventoryType == 'FULL' || (productInventory.inventoryType == 'PARTIAL' && productFlux.physicalQuantity != null)}">
+                    <c:if test="${productInventory.productOperationId == productFlux.operationId && productInventory.inventoryType == 'FULL' || (productInventory.inventoryType == 'PARTIAL' && productFlux.physicalQuantity != null)}">
 
                         <tr
                                 <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">
@@ -236,7 +236,7 @@
                             <td class="text-center">
                                 <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">
                                     <c:if test="${ productFlux.physicalQuantity != productFlux.theoreticalQuantity}">
-                                        ${productFlux.theoreticalQuantity - productFlux.physicalQuantity}
+                                        ${productFlux.physicalQuantity - productFlux.theoreticalQuantity}
                                     </c:if>
                                     <c:if test="${ productFlux.physicalQuantity == productFlux.theoreticalQuantity}">
                                         OK

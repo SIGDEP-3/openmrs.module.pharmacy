@@ -22,6 +22,7 @@ import org.openmrs.module.pharmacy.MobilePatientDispensationInfo;
 import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.forms.ProductDispensationForm;
+import org.openmrs.module.pharmacy.models.DispensationListDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,10 +54,13 @@ public interface ProductDispensationService extends OpenmrsService {
 	ProductDispensation saveProductDispensation(ProductDispensation productDispensation) throws APIException;
 	ProductDispensation editProductDispensation(ProductDispensation productDispensation) throws APIException;
 	void removeProductDispensation(ProductDispensation productDispensation) throws APIException;
+	void removeMobilePatientInfo(MobilePatientDispensationInfo info) throws APIException;
+	void removeMobilePatient(MobilePatient patient) throws APIException;
 	ProductDispensation getOneProductDispensationByUuid(String uuid) throws APIException;
 	ProductDispensation getLastProductDispensation(Location location, ProductProgram productProgram) throws APIException;
 	ProductDispensation getLastProductDispensationByDate(Location location, ProductProgram productProgram, Date dispensationDate) throws APIException;
 	List<ProductDispensationFluxDTO> getProductDispensationFluxDTOs(ProductDispensation productDispensation) throws APIException;
+	List<DispensationListDTO> getDispensationListDTOs(Location location) throws APIException;
 
     MobilePatientDispensationInfo getOneMobilePatientDispensationInfoId(Integer mobileDispensationInfoId) throws APIException;
 
@@ -69,4 +73,9 @@ public interface ProductDispensationService extends OpenmrsService {
 	MobilePatient getOneMobilePatientById(Integer mobilePatientId);
 
 	MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo) throws APIException;;
+
+	ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location);
+	ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location, Date dispensationDate);
+
+	List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location);
 }

@@ -5,6 +5,7 @@ import org.openmrs.Location;
 import org.openmrs.module.pharmacy.enumerations.PatientType;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,7 +43,7 @@ public class MobilePatient extends AbstractPharmacyObject {
 //    private Set<ProductDispensation> productDispensation;
 
     @OneToMany(mappedBy = "mobilePatient")
-    private Set<MobilePatientDispensationInfo> mobilePatientDispensationInfos;
+    private Set<MobilePatientDispensationInfo> mobilePatientDispensationInfos = new HashSet<>();
 
     public MobilePatient() {
     }

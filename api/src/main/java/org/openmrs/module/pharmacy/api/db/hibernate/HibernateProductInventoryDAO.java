@@ -129,7 +129,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						"    ppu2.name as wholesaleUnit, " +
 						"    ppa.batch_number as batchNumber, " +
 						"    ppa.expiry_date as expiryDate, " +
-						"    ppaf.quantity as physicalQuantity, " +
+						"    IF(ppaf.quantity IS NULL, 0, ppaf.quantity) as physicalQuantity, " +
 						"    ppo.product_operation_id as operationId, " +
 						"    ppas.quantity_in_stock as theoreticalQuantity, " +
 						"    ppaf.observation as observation, " +
@@ -138,17 +138,17 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						" " +
 						"FROM (SELECT product_attribute_id, product_id, batch_number, expiry_date FROM pharmacy_product_attribute) ppa " +
 						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_flux WHERE operation_id = :productOperationId) ppaf ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_status = 2 AND product_operation_id = :productOperationId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
+						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_status = 2 AND product_operation_id = :productOperationId AND program_id = :productProgramId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
 						"LEFT JOIN pharmacy_product_attribute_stock ppas ON ppas.product_attribute_id = ppa.product_attribute_id " +
 						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
-						"WHERE NOT (ppaf.uuid IS NULL AND ppas.uuid IS NULL) " +
+						"WHERE NOT (ppaf.uuid IS NULL AND ppas.uuid IS NULL) AND (ppas.quantity_in_stock <> 0)" +
 						"ORDER BY ppaf.date_created, ppas.date_created DESC";
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
-//				.addScalar("operationId", StandardBasicTypes.INTEGER)
+				.addScalar("operationId", StandardBasicTypes.INTEGER)
 //				.addScalar("inventoryId", StandardBasicTypes.INTEGER)
 //				.addScalar("productId", StandardBasicTypes.INTEGER)
 				.addScalar("code", StandardBasicTypes.STRING)
@@ -163,6 +163,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.addScalar("observation", StandardBasicTypes.STRING)
 				.addScalar("dateCreated", StandardBasicTypes.DATE)
 				.setParameter("productOperationId", productInventory.getProductOperationId())
+				.setParameter("productProgramId", productInventory.getProductProgram().getProductProgramId())
 				.setResultTransformer(new AliasToBeanResultTransformer(ProductInventoryFluxDTO.class));
 		try {
 			return query.list();

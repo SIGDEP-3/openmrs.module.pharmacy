@@ -9,6 +9,8 @@ import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.forms.ProductRegimenForm;
+import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.validators.ProductRegimenFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -33,6 +36,7 @@ public class PharmacyProductRegimenManageController {
         return Context.getService(ProductRegimenService.class);
     }
     private ProductService productService() { return Context.getService(ProductService.class);}
+
     @RequestMapping(value = "/module/pharmacy/product/regimens/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
@@ -103,6 +107,28 @@ public class PharmacyProductRegimenManageController {
             modelMap.addAttribute("title", "Formulaire de saisie des Regimes");
         }
 
+        return null;
+    }
+
+    @RequestMapping(value = "/module/pharmacy/product/regimens/upload.form", method = RequestMethod.POST)
+    public String uploadProduct(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        if (Context.isAuthenticated()) {
+            HttpSession session = request.getSession();
+            String message = "";
+            if (CSVHelper.hasCSVFormat(file)) {
+                try {
+                    ProductUploadResumeDTO resumeDTO = productService().uploadProductRegimens(file);
+                    message = "Produits importés avec succès : " + file.getOriginalFilename();
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message + ". [" + resumeDTO.toString() + "]");
+                } catch (Exception e) {
+                    message = "Could not upload the file : " + file.getOriginalFilename() + " : "  + e.getMessage();
+                    System.out.println("---------------------" + e.getMessage());
+                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
+                }
+            } else
+                session.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "S'il vous plait importez un fichier CSV !");
+            return "redirect:/module/pharmacy/product/regimens/list.form";
+        }
         return null;
     }
 

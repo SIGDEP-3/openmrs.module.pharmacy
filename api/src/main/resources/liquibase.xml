@@ -1160,4 +1160,11 @@
         <addNotNullConstraint tableName="pharmacy_product_attribute_stock" columnName="date_created" columnDataType="datetime"/>
     </changeSet>
 
+    <changeSet id="pharmacy-dispensation-prescription-date-not-null" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_product_dispensation" columnName="prescription_date" columnDataType="date"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-mobile-info-treatment-end-date-not-null" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_mobile_patient_dispensation_info" columnName="treatment_end_date" columnDataType="date"/>
+    </changeSet>
 </databaseChangeLog>

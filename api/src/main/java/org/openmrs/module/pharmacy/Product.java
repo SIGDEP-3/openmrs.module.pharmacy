@@ -178,4 +178,11 @@ public class Product extends AbstractPharmacyObject {
         getProductPrograms().remove(productProgram);
     }
 
+    public void addRegimen(ProductRegimen regimen) {
+        getProductRegimens().add(regimen);
+    }
+
+    public void removeRegimen(ProductRegimen regimen) {
+        getProductRegimens().remove(regimen);
+    }
 }

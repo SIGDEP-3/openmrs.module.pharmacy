@@ -48,4 +48,5 @@ public class ProductReceptionForm extends ProductOperationForm {
         productReception.setReceptionQuantityMode(getReceptionQuantityMode());
         return productReception;
     }
+
 }

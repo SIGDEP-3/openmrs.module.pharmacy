@@ -43,4 +43,5 @@ public interface ProductDAO {
 	List<Product> searchProductByNameLike(String nameSearch);
 
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
+	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
 }

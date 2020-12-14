@@ -101,6 +101,7 @@
                 <form:hidden path="operationStatus"/>
                 <form:hidden path="inventoryStartDate"/>
                 <form:hidden path="productProgramId"/>
+                <form:hidden path="inventoryType"/>
 <%--                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">--%>
 <%--                    <form:hidden path="productProgramId"/>--%>
 <%--                </c:if>--%>
@@ -163,17 +164,17 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-10">
-                                <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="inventoryType" value="PARTIAL" label="Partiel" cssClass="mr-2"/>
-                                <form:radiobutton path="inventoryType" value="FULL" label="Complet" cssClass="mr-2"/>
-                                <form:errors path="inventoryType" cssClass="error"/>
-                            </div>
+<%--                    <div class="col-6">--%>
+<%--                        <div class="row">--%>
+<%--                            <div class="col-10">--%>
+<%--                                <label class="mb-2">Unite de saisie</label> <br>--%>
+<%--                                <form:radiobutton path="inventoryType" value="PARTIAL" label="Partiel" cssClass="mr-2"/>--%>
+<%--                                <form:radiobutton path="inventoryType" value="FULL" label="Complet" cssClass="mr-2"/>--%>
+<%--                                <form:errors path="inventoryType" cssClass="error"/>--%>
+<%--                            </div>--%>
 
-                        </div>
-                    </div>
+<%--                        </div>--%>
+<%--                    </div>--%>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">

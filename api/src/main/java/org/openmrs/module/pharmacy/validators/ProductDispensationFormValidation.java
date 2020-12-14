@@ -59,17 +59,6 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 //                        }
 //                    }
 
-            if (form.getOperationDate() != null) {
-                ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
-                if (productProgram != null) {
-                    ProductInventory productInventory = inventoryService().getLastProductInventory(
-                            OperationUtils.getUserLocation(), productProgram);
-                    if (productInventory == null) {
-                        createAlert("Vous devez avant toute opération réaliser le premier inventaire complet de votre centre !");
-                        errors.rejectValue("productProgramId", null, "Premier Inventaire complet non réalisé");
-                    }
-                }
-            }
         }
     }
 

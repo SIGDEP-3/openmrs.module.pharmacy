@@ -53,5 +53,5 @@ public interface ProductService extends OpenmrsService {
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
 	List<Product> searchProductByNameLike(String nameSearch);
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
-
+	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
 }

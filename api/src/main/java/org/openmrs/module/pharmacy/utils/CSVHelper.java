@@ -6,16 +6,19 @@ import org.apache.commons.csv.CSVRecord;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
-import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class CSVHelper {
@@ -28,57 +31,55 @@ public class CSVHelper {
         return TYPE.equals(file.getContentType());
     }
 
-    public static ProductUploadResumeDTO csvImportProducts(InputStream is) {
+    public static List<Product> csvProductRegimens(InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
              CSVParser csvParser = new CSVParser(fileReader,
                      CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim().withDelimiter(';'))) {
 
             List<Product> products = new ArrayList<>();
-
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
-            ProductUploadResumeDTO resumeDTO = new ProductUploadResumeDTO();
-            resumeDTO.setTotalToImport(((Collection<?>)csvRecords).size());
-
-            int count = 0;
+            int index = -1;
             for (CSVRecord csvRecord : csvRecords) {
-                boolean hasChanged = false;
-                ProductProgram program = programService().getOneProductProgramByName(csvRecord.get("#Programme"));
-                Product product = productService().getOneProductByCode(csvRecord.get("#Code"));
-                if (product == null) {
-                    product = getNewProduct(csvRecord);
-//                    //product = containsCode(products, csvRecord.get("#Code"));
-//                    if (product == null) {
-//                    }
-                    resumeDTO.addOneNewImported();
-                    product.addProgram(program);
-                    hasChanged = true;
-                    // products.add(product);
-                    productService().saveProduct(product);
-                } else {
-                    if (!product.getProductPrograms().contains(program)) {
-                        product.addProgram(program);
-                        hasChanged = true;
+                Product product;
+                if (csvRecord.get("#Regime").equals("*")) {
+                    product = productService().getOneProductByCode(csvRecord.get("#Code"));
+                    if (product != null) {
+                        List<ProductRegimen> regimens = regimenService().getAllProductRegimen();
+                        for (ProductRegimen regimen : regimens) {
+                            if (!product.getProductRegimens().contains(regimen)) {
+                                product.addRegimen(regimen);
+                            }
+                        }
+                        products.add(product);
                     }
-                    resumeDTO.addOneUpdateImported();
-                }
-                if (hasChanged) {
-                    resumeDTO.addOneTotalImported();
-                }
-                System.out.println("--------- Product : " + ++count);
-            }
-            for (CSVRecord csvRecord : csvRecords) {
-                Product product = productService().getOneProductByCode(csvRecord.get("#Code"));
-                ProductProgram program = programService().getOneProductProgramByName(csvRecord.get("#Programme"));
-                System.out.println("--------- Product : " + ++count);
-                if (program != null) {
-                    if (product.getProductPrograms().contains(program))
+                } else  {
+                    ProductRegimen regimen = regimenService().getOneProductRegimenByConceptName(csvRecord.get("#Regime"));
+                    if (regimen == null) {
                         continue;
-                    product.addProgram(program);
-                    productService().saveProduct(product);
+                    }
+                    product = containsCode(products, csvRecord.get("#Code"));
+                    if (product == null) {
+                        product = productService().getOneProductByCode(csvRecord.get("#Code"));
+                        if (product == null) {
+                            break;
+                        }
+                    } else {
+                        index = products.indexOf(product);
+                    }
+
+                    if (!product.getProductRegimens().contains(regimen)) {
+                        product.addRegimen(regimen);
+                    }
+                    if (index == -1) {
+                        products.add(product);
+                    } else {
+                        products.set(index, product);
+                    }
                 }
+
             }
 
-            return resumeDTO;
+            return products;
         } catch (IOException e) {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
         }
@@ -157,6 +158,10 @@ public class CSVHelper {
 
     private static ProductProgramService programService() {
         return Context.getService(ProductProgramService.class);
+    }
+
+    private static ProductRegimenService regimenService() {
+        return Context.getService(ProductRegimenService.class);
     }
 
 }

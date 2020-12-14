@@ -31,12 +31,12 @@
         </div>
         <div class="row">
             <div class="col-8 mb-2">
-                <labe>Nom (detail) <span class="required">*</span></labe>
+                <labe>D&eacute;signation <span class="required">*</span></labe>
                 <form:input path="retailName" cssClass="form-control form-control-sm" />
                 <form:errors path="retailName" cssClass="error"/>
             </div>
             <div class="col-3 mb-2">
-                <labe>Unite detail <span class="required">*</span></labe>
+                <labe>Unit&eacute; <span class="required">*</span></labe>
                 <form:select path="productRetailUnitId" cssClass="form-control s2" >
                     <form:option value="" label=""/>
                     <form:options items="${availableRetailUnits}" itemValue="productUnitId" itemLabel="name" />
@@ -46,12 +46,12 @@
         </div>
         <div class="row">
             <div class="col-8 mb-2">
-                <labe>Nom (Gros) <span class="required">*</span></labe>
+                <labe>D&eacute;signation (Conditionnement) <span class="required">*</span></labe>
                 <form:input path="wholesaleName" cssClass="form-control form-control-sm" />
                 <form:errors path="wholesaleName" cssClass="error"/>
             </div>
             <div class="col-3 mb-2">
-                <labe>Unite en gros <span class="required">*</span></labe>
+                <labe>Unit&eacute; (Conditionnement) <span class="required">*</span></labe>
                 <form:select path="productWholesaleUnitId" cssClass="form-control s2" >
                     <form:option value="" label=""/>
                     <form:options items="${availableWholesaleUnits}" itemValue="productUnitId" itemLabel="name" />
@@ -61,7 +61,7 @@
         </div>
         <div class="row mb-2">
             <div class="col-2">
-                <labe>Unite de conversion <span class="required">*</span></labe>
+                <labe>Unit&eacute; de conversion <span class="required">*</span></labe>
                 <form:input path="unitConversion" cssClass="form-control form-control-sm" />
                 <form:errors path="unitConversion" cssClass="error"/>
             </div>

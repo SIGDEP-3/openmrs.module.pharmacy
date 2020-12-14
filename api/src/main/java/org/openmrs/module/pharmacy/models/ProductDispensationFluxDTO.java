@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy.models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ProductDispensationFluxDTO implements Serializable {
     private Integer productId;
@@ -10,6 +11,7 @@ public class ProductDispensationFluxDTO implements Serializable {
     private Integer requestedQuantity;
     private Integer dispensingQuantity;
     private Integer quantityInStock;
+    private Date dateCreated;
 
     public ProductDispensationFluxDTO() {
     }
@@ -68,5 +70,13 @@ public class ProductDispensationFluxDTO implements Serializable {
 
     public void setQuantityInStock(Integer quantityInStock) {
         this.quantityInStock = quantityInStock;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

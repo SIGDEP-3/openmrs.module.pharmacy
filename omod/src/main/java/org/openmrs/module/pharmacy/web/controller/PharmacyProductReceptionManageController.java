@@ -6,6 +6,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
+import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
@@ -182,11 +183,20 @@ public class PharmacyProductReceptionManageController {
             if (!result.hasErrors()) {
                 ProductAttribute productAttribute = attributeService().saveProductAttribute(receptionAttributeFluxForm.getProductAttribute());
                 if (productAttribute != null) {
-                    ProductAttributeFlux productAttributeFlux = receptionAttributeFluxForm.getProductAttributeFlux(productAttribute);
-                    productAttributeFlux.setStatus(productReception.getOperationStatus());
+                    ProductAttributeFlux flux = receptionAttributeFluxForm.getProductAttributeFlux(productAttribute);
+                    if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+                        double fluxQuantity = flux.getQuantity() * productAttribute.getProduct().getUnitConversion();
+                        flux.setQuantity((int) fluxQuantity);
+                    }
+                    flux.setStatus(productReception.getOperationStatus());
 
-                    if (attributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
-                        attributeFluxService().saveProductAttributeOtherFlux(receptionAttributeFluxForm.getProductAttributeOtherFlux());
+                    if (attributeFluxService().saveProductAttributeFlux(flux) != null) {
+                        ProductAttributeOtherFlux otherFlux = receptionAttributeFluxForm.getProductAttributeOtherFlux();
+                        if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+                            double otherFluxQuantity = otherFlux.getQuantity() * productAttribute.getProduct().getUnitConversion();
+                            otherFlux.setQuantity((int) otherFluxQuantity);
+                        }
+                        attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
 
                     if (receptionAttributeFluxForm.getProductOperationId() == null) {
@@ -211,6 +221,14 @@ public class PharmacyProductReceptionManageController {
 //        if (productAttributeFluxes.size() != 0) {
 //            Collections.sort(productAttributeFluxes, Collections.<ProductReceptionFluxDTO>reverseOrder());
 //        }
+        if (receptionAttributeFluxForm.getProductAttributeFluxId() != null) {
+            for (ProductReceptionFluxDTO fluxDTO : productAttributeFluxes) {
+                if (fluxDTO.getProductAttributeFluxId().equals(receptionAttributeFluxForm.getProductAttributeFluxId())) {
+                    productAttributeFluxes.remove(fluxDTO);
+                    break;
+                }
+            }
+        }
         modelMap.addAttribute("receptionAttributeFluxForm", receptionAttributeFluxForm);
         modelMap.addAttribute("productReception", productReception);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());

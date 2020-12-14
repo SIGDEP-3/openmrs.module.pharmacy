@@ -33,7 +33,7 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
     private Integer treatmentDays;
 
     @ManyToOne
-    @JoinColumn(name = "mobile_patient_id", nullable = false)
+    @JoinColumn(name = "mobile_patient_id")
     private MobilePatient mobilePatient;
 
     @Column(name = "goal")

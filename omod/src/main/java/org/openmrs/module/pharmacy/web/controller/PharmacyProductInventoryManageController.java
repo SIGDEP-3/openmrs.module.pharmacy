@@ -307,8 +307,9 @@ public class PharmacyProductInventoryManageController {
         if (!Context.isAuthenticated())
             return null;
         ProductOperation operation = service().getOneProductOperationById(inventoryId);
+
         if (operation != null) {
-            System.out.println("--------------------- After getting operation by id");
+            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
 
             if (OperationUtils.validateOperation(operation)) {
                 HttpSession session = request.getSession();

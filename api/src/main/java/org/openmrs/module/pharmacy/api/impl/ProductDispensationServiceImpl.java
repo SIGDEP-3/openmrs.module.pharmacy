@@ -25,6 +25,7 @@ import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductDispensationService;
 import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
+import org.openmrs.module.pharmacy.models.DispensationListDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 
 import java.util.Date;
@@ -94,6 +95,16 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     }
 
     @Override
+    public void removeMobilePatientInfo(MobilePatientDispensationInfo info) throws APIException {
+        dao.removeMobilePatientInfo(info);
+    }
+
+    @Override
+    public void removeMobilePatient(MobilePatient patient) throws APIException {
+        dao.removeMobilePatient(patient);
+    }
+
+    @Override
     public ProductDispensation getOneProductDispensationByUuid(String uuid) {
         return dao.getOneProductDispensationByUuid(uuid);
     }
@@ -111,6 +122,11 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     @Override
     public List<ProductDispensationFluxDTO> getProductDispensationFluxDTOs(ProductDispensation productDispensation) {
         return dao.getProductDispensationFluxDTOs(productDispensation);
+    }
+
+    @Override
+    public List<DispensationListDTO> getDispensationListDTOs(Location location) throws APIException {
+        return dao.getDispensationListDTOs(location);
     }
 
     @Override
@@ -146,5 +162,20 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     @Override
     public MobilePatientDispensationInfo saveMobilePatientDispensationInfo(MobilePatientDispensationInfo mobilePatientDispensationInfo) {
         return dao.saveMobilePatientDispensationInfo(mobilePatientDispensationInfo);
+    }
+
+    @Override
+    public ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location) {
+        return dao.getLastProductDispensationByPatient(identifier, productProgram, location);
+    }
+
+    @Override
+    public ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location, Date dispensationDate) {
+        return dao.getLastProductDispensationByPatient(identifier, productProgram, location, dispensationDate);
+    }
+
+    @Override
+    public List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location) {
+        return dao.getDispensationListDTOsByDate(startDate, endDate, location);
     }
 }
