@@ -16,10 +16,15 @@ package org.openmrs.module.pharmacy.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.ProductAttributeStock;
+import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * The main controller.
@@ -28,9 +33,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class PharmacyManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
+	ProductAttributeStockService stockService() {
+		return Context.getService(ProductAttributeStockService.class);
+	}
+
 	@RequestMapping(value = "/module/pharmacy/manage", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/stock/list.form", method = RequestMethod.GET)
+	public void stock(ModelMap modelMap) {
+//		List<ProductAttributeStock> stocks = stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation());
+		modelMap.addAttribute("user", Context.getAuthenticatedUser());
+		modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
 	}
 }

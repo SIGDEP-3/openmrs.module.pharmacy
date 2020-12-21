@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
 import org.openmrs.module.pharmacy.forms.InventoryAttributeFluxForm;
@@ -128,7 +129,7 @@ public class PharmacyProductInventoryManageController {
             if (!result.hasErrors()) {
 //                boolean idExist = (inventoryHeaderForm.getProductOperationId() != null);
                 ProductInventory inventory = inventoryService().saveProductInventory(productInventoryForm.getProductInventory());
-
+                inventory.setIncidence(Incidence.EQUAL);
                 if (action.equals("addLine")) {
                     if (inventory.getProductAttributeFluxes().size() == 0) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
@@ -359,23 +360,23 @@ public class PharmacyProductInventoryManageController {
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/inventory/delete.form", method = RequestMethod.GET)
-    public String delete(HttpServletRequest request,
-                         @RequestParam(value = "id") Integer id) {
-        if (id != null) {
-            ProductInventory inventory = inventoryService().getOneProductInventoryById(id);
-            if (inventory != null) {
-                Set<ProductAttributeFlux> fluxes = inventory.getProductAttributeFluxes();
-                for (ProductAttributeFlux flux: fluxes) {
-                    attributeFluxService().removeProductAttributeFlux(flux);
-                }
-                inventoryService().removeProductInventory(inventory);
-                attributeService().purgeUnusedAttributes();
-            }
-            HttpSession session = request.getSession();
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaitre a été supprimé avec succès");
-            return "redirect:/module/pharmacy/operations/inventory/list.form";
-        }
-        return null;
-    }
+//    @RequestMapping(value = "/module/pharmacy/operations/inventory/delete.form", method = RequestMethod.GET)
+//    public String delete(HttpServletRequest request,
+//                         @RequestParam(value = "id") Integer id) {
+//        if (id != null) {
+//            ProductInventory inventory = inventoryService().getOneProductInventoryById(id);
+//            if (inventory != null) {
+//                Set<ProductAttributeFlux> fluxes = inventory.getProductAttributeFluxes();
+//                for (ProductAttributeFlux flux: fluxes) {
+//                    attributeFluxService().removeProductAttributeFlux(flux);
+//                }
+//                inventoryService().removeProductInventory(inventory);
+//                attributeService().purgeUnusedAttributes();
+//            }
+//            HttpSession session = request.getSession();
+//            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaitre a été supprimé avec succès");
+//            return "redirect:/module/pharmacy/operations/inventory/list.form";
+//        }
+//        return null;
+//    }
 }

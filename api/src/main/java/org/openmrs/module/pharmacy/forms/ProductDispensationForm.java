@@ -166,7 +166,9 @@ public class ProductDispensationForm extends ProductOperationForm {
     }
 
     public void setMobilePatient(MobilePatient patient) {
-        setPatientIdentifier(patient.getIdentifier());
+        if (patient.getIdentifier() != null) {
+            setPatientIdentifier(patient.getIdentifier());
+        }
         setAge(patient.getAge());
         setGender(patient.getGender());
         setMobilePatientId(patient.getMobilePatientId());

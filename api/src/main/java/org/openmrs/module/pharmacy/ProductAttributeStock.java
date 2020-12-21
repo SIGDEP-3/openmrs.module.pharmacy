@@ -74,4 +74,8 @@ public class ProductAttributeStock extends AbstractPharmacyData {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    public String getProductInStock() {
+        return productAttribute.getProduct().getRetailNameWithCode() + " [" + productAttribute.getBatchNumber() + "]";
+    }
 }

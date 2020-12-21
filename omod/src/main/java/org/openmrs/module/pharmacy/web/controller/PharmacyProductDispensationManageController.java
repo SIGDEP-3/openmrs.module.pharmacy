@@ -9,10 +9,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
-import org.openmrs.module.pharmacy.enumerations.DispensationType;
-import org.openmrs.module.pharmacy.enumerations.Goal;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.enumerations.PatientType;
+import org.openmrs.module.pharmacy.enumerations.*;
 import org.openmrs.module.pharmacy.forms.FindPatientForm;
 import org.openmrs.module.pharmacy.forms.ProductDispensationForm;
 import org.openmrs.module.pharmacy.forms.DispensationAttributeFluxForm;
@@ -83,10 +80,7 @@ public class PharmacyProductDispensationManageController {
                      @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
-//            OperationUtils.getMonthRange();
-//            OperationUtils.getDayRange();
             if (startDate == null && endDate == null) {
-
                 modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
                         OperationUtils.getMonthRange().getStartDate(),
                         OperationUtils.getMonthRange().getEndDate(),
@@ -103,6 +97,10 @@ public class PharmacyProductDispensationManageController {
             }
             modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("findPatientForm", findPatientForm);
+            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                    OperationUtils.getMonthRange().getStartDate(),
+                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getUserLocation()));
         }
     }
 
@@ -145,11 +143,18 @@ public class PharmacyProductDispensationManageController {
                 return "redirect:/module/pharmacy/operations/dispensation/edit.form?mob=" + mobile + "&reg=" + regimen +
                         "&patientId=" + patientId + "&programId=" + findPatientForm.getProductProgramId();
             }
-
+            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+                    OperationUtils.getMonthRange().getStartDate(),
+                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getUserLocation()));
             modelMap.addAttribute("dispensations", dispensationService().getAllProductDispensations(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("subTitle", "Liste des Dispensations du jour");
+            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                    OperationUtils.getMonthRange().getStartDate(),
+                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getUserLocation()));
         }
 
         return null;
@@ -196,7 +201,7 @@ public class PharmacyProductDispensationManageController {
                 }
             } else {
                 productDispensationForm = new ProductDispensationForm();
-
+                productDispensationForm.setIncidence(Incidence.NEGATIVE);
                 productDispensationForm.setProductProgramId(programId);
             }
 
@@ -232,6 +237,7 @@ public class PharmacyProductDispensationManageController {
 
                 ProductDispensation dispensation = productDispensationForm.getProductDispensation();
                 if (dispensation != null) {
+                    //dispensation.setIncidence(Incidence.NEGATIVE);
                     if (mob == 0) {
                         Encounter encounter = productDispensationForm.getEncounter();
                         dispensation.setEncounter(Context.getEncounterService().saveEncounter(encounter));
@@ -292,16 +298,18 @@ public class PharmacyProductDispensationManageController {
                 patientIdentifier = patient.getPatientIdentifier().getIdentifier();
             }
         }
-        ProductProgram program = programService().getOneProductProgramById(productDispensationForm.getProductProgramId());
-        if (program != null) {
-            ProductDispensation lastDispensation = dispensationService().getLastProductDispensationByPatient(
-                    patientIdentifier,
-                    program,
-                    OperationUtils.getUserLocation());
+        if (patientIdentifier != null) {
+            ProductProgram program = programService().getOneProductProgramById(productDispensationForm.getProductProgramId());
+            if (program != null) {
+                ProductDispensation lastDispensation = dispensationService().getLastProductDispensationByPatient(
+                        patientIdentifier,
+                        program,
+                        OperationUtils.getUserLocation());
 
-            if (lastDispensation != null) {
-                LastDispensationDTO lastDispensationDTO = new LastDispensationDTO();
-                modelMap.addAttribute("lastDispensation", lastDispensationDTO.setDispensation(lastDispensation));
+                if (lastDispensation != null) {
+                    LastDispensationDTO lastDispensationDTO = new LastDispensationDTO();
+                    modelMap.addAttribute("lastDispensation", lastDispensationDTO.setDispensation(lastDispensation));
+                }
             }
         }
 
@@ -450,7 +458,6 @@ public class PharmacyProductDispensationManageController {
                 regimen = info.getProductRegimen();
             }
         } else {
-
             Encounter encounter = productDispensation.getEncounter();
             headerDTO.setAge(encounter.getPatient().getAge());
             headerDTO.setGender(encounter.getPatient().getGender());

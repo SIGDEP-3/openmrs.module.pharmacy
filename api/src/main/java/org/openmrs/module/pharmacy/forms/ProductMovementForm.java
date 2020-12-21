@@ -63,10 +63,10 @@ public class ProductMovementForm extends ProductOperationForm {
     }
     public ProductMovementOut getProductMovementOut() {
         ProductMovementOut productMovementOut = (ProductMovementOut) getProductOperation(new ProductMovementOut());
-        if (productMovementOut.getStockOutType().equals(StockOutType.TRANSFER_OUT)){
+//        if (productMovementOut.getStockOutType().equals(StockOutType.TRANSFER_OUT)){
+//            productMovementOut.setRecipient(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
+//        }
 
-            productMovementOut.setRecipient(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
-        }
         productMovementOut.setStockOutType(getStockOutType());
         return productMovementOut;
     }

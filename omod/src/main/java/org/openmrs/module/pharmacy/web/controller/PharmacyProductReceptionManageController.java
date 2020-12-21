@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
@@ -95,6 +96,7 @@ public class PharmacyProductReceptionManageController {
                     return "redirect:/module/pharmacy/operations/reception/list.form";
                 }
                 productReceptionForm = new ProductReceptionForm(programId);
+                productReceptionForm.setIncidence(Incidence.POSITIVE);
                 productReceptionForm.setProductProgramId(program.getProductProgramId());
                 productReceptionForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
 
@@ -123,7 +125,6 @@ public class PharmacyProductReceptionManageController {
             if (!result.hasErrors()) {
 //                boolean idExist = (receptionHeaderForm.getProductOperationId() != null);
                 ProductReception reception = receptionService().saveProductReception(productReceptionForm.getProductReception());
-
                 if (action.equals("addLine")) {
                     if (reception.getProductAttributeFluxes().size() == 0) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");

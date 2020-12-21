@@ -34,6 +34,7 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.DispensationListDTO;
+import org.openmrs.module.pharmacy.models.DispensationResultDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
@@ -415,6 +416,78 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		}
 		System.out.println("-------------------------- Before return in query getLastProductDispensationByPatient ");
 		return (ProductDispensation) query.setMaxResults(1).uniqueResult();
+	}
+
+	@Override
+	public DispensationResultDTO getDispensationResult(Date startDate, Date endDate, Location location) {
+		String sqlQuery = "SELECT " +
+				"       COUNT(IF(age >= 15, age, NULL)) adult, " +
+				"       COUNT(IF(age < 15, age, NULL)) child, " +
+				"       COUNT(IF(gender = 'M', gender, NULL)) male, " +
+				"       COUNT(IF(gender = 'F', gender, NULL)) female, " +
+				"       COUNT(IF(patientType = 'ON_SITE', patientType, NULL)) onSite, " +
+				"       COUNT(IF(patientType = 'MOBILE', patientType, NULL)) mobile, " +
+				"       COUNT(IF(goal = 'PEC', patientType, NULL)) pec, " +
+				"       COUNT(IF(goal = 'NOT_APPLICABLE', patientType, NULL)) notApplicable, " +
+				"       COUNT(IF(goal = 'PTME', patientType, NULL)) ptme, " +
+				"       COUNT(IF(goal = 'AES', patientType, NULL)) aes, " +
+				"       COUNT(IF(goal = 'PREP', patientType, NULL)) prep, " +
+				"       COUNT(*) total " +
+				"FROM ( " +
+				"  SELECT " +
+				"      IF(patientAge IS NOT NULL, patientAge, mobileAge) age, " +
+				"      IF(patientGender IS NOT NULL, patientGender, mobileGender) gender, " +
+				"      IF(patientGoal IS NOT NULL, patientGoal, mobileGoal) goal, " +
+				"      IF(patientAge IS NOT NULL OR patient_type = 0, 'ON_SITE', " +
+				"         IF(patient_type = 1, 'MOBILE', " +
+				"            IF(patient_type = 2, 'OTHER_HIV', NULL))) patientType " +
+				"  FROM ( " +
+				"           SELECT " +
+				"               FLOOR(DATEDIFF(p.birthdate, NOW()) / 365.25) patientAge, " +
+				"               pmp.age mobileAge, " +
+				"               p.gender patientGender, " +
+				"               pmp.gender mobileGender, " +
+				"               IF(pmpdi.goal = 0, 'NOT_APPLICABLE', " +
+				"                  IF(pmpdi.goal = 1, 'PEC', " +
+				"                     IF(pmpdi.goal = 2, 'PTME', " +
+				"                        IF(pmpdi.goal = 3, 'AES', " +
+				"                           IF(pmpdi.goal = 4, 'PREP', NULL))))) mobileGoal, " +
+				"               o.value_text patientGoal, " +
+				"               patient_type " +
+				"           FROM pharmacy_product_operation ppo " +
+				"                    INNER JOIN pharmacy_product_dispensation ppd ON ppo.product_operation_id = ppd.product_operation_id " +
+				"                    LEFT JOIN pharmacy_mobile_patient_dispensation_info pmpdi ON ppd.product_operation_id = pmpdi.mobile_dispensation_info_id " +
+				"                    LEFT JOIN pharmacy_mobile_patient pmp ON pmpdi.mobile_patient_id = pmp.mobile_patient_id " +
+				"                    LEFT JOIN encounter e ON ppd.encounter_id = e.encounter_id " +
+				"                    LEFT JOIN person p ON p.person_id = e.patient_id " +
+				"                    LEFT JOIN (SELECT * FROM obs WHERE concept_id = 165009 AND voided = 0) o ON e.encounter_id = o.encounter_id " +
+				"           WHERE ppo.operation_date BETWEEN :startDate AND :endDate AND ppo.location_id = :locationId AND ppo.operation_status = 2 " +
+				"       ) _ " +
+				"    ) _1";
+//		Type StatusEnum = sessionFactory.getTypeHelper().custom(OperationStatus.class);
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+				.addScalar("onSite", StandardBasicTypes.INTEGER)
+				.addScalar("mobile", StandardBasicTypes.INTEGER)
+				.addScalar("adult", StandardBasicTypes.INTEGER)
+				.addScalar("child", StandardBasicTypes.INTEGER)
+				.addScalar("male", StandardBasicTypes.INTEGER)
+				.addScalar("female", StandardBasicTypes.INTEGER)
+				.addScalar("pec", StandardBasicTypes.INTEGER)
+				.addScalar("ptme", StandardBasicTypes.INTEGER)
+				.addScalar("aes", StandardBasicTypes.INTEGER)
+				.addScalar("prep", StandardBasicTypes.INTEGER)
+				.addScalar("notApplicable", StandardBasicTypes.INTEGER)
+				.addScalar("total", StandardBasicTypes.INTEGER)
+				.setParameter("locationId", location.getLocationId())
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setResultTransformer(new AliasToBeanResultTransformer(DispensationResultDTO.class));
+		try {
+			return (DispensationResultDTO) query.uniqueResult();
+		} catch (HibernateException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 
 }

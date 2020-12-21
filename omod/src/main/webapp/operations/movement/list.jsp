@@ -95,12 +95,12 @@
             <div class="row align-items-center border-bottom border-secondary pb-2">
                 <div class="col-3">
                     <label>Cr&eacute;er une</label><br>
-                    <label for="entry" class="mr-2">
-                        <input type="radio" name="movementType" class="form-check-input mr-1" id="entry" onclick="checkTypeValue()" value="entry">
+                    <label for="entry" class="">
+                        <input type="radio" name="movementType" class="" id="entry" onclick="checkTypeValue()" value="entry">
                         Entr&eacute;e de stock
-                    </label>
+                    </label> &nbsp;&nbsp;&nbsp;
                     <label for="out">
-                        <input type="radio" name="movementType" id="out" value="out" class="mr-1 form-check-input" onclick="checkTypeValue()">
+                        <input type="radio" name="movementType" id="out" value="out" class="" onclick="checkTypeValue()">
                         Sortie de stock
                     </label>
                 </div>
@@ -219,6 +219,7 @@
                 <%--                    </button>--%>
                 <%--                </div>--%>
             </div>
+            ${fct:length(outs)}
             <div class="row bg-light pt-2 pb-2 border border-secondary">
                 <div class="col-12">
                     <table class="table table-striped table-sm">

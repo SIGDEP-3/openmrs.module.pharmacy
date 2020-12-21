@@ -26,6 +26,7 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductDispensationService;
 import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
 import org.openmrs.module.pharmacy.models.DispensationListDTO;
+import org.openmrs.module.pharmacy.models.DispensationResultDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 
 import java.util.Date;
@@ -177,5 +178,10 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     @Override
     public List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location) {
         return dao.getDispensationListDTOsByDate(startDate, endDate, location);
+    }
+
+    @Override
+    public DispensationResultDTO getDispensationResult(Date startDate, Date endDate, Location location) {
+        return dao.getDispensationResult(startDate, endDate, location);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +40,9 @@ public class ProductOperationFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "operationDate", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null) {
-                if (form.getOperationDate().after(new Date())) {
+                Date now = Calendar.getInstance().getTime();
+                if (form.getOperationDate().after(now)) {
+                    //System.out.println("-------------------------------------- : Now () = " + now);
                     errors.rejectValue("operationDate", null, "Impossible de créer une opération avec une date future !");
                 } else {
 //                    ProductOperation operation = service().getOneProductOperationByOperationDateAndProductProgram(

@@ -1,6 +1,5 @@
 package org.openmrs.module.pharmacy.web.controller;
 
-import javafx.scene.effect.SepiaTone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -11,15 +10,11 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.StockEntryType;
 import org.openmrs.module.pharmacy.enumerations.StockOutType;
-import org.openmrs.module.pharmacy.forms.InventoryAttributeFluxForm;
-import org.openmrs.module.pharmacy.forms.MovementAttributeFluxForm;
-import org.openmrs.module.pharmacy.forms.ProductMovementForm;
-import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.forms.*;
+import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductMovementAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductMovementFormValidation;
-import org.openmrs.module.pharmacy.validators.ProductReceptionAttributeFluxFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -46,9 +41,6 @@ public class PharmacyProductMovementManageController {
     private ProductExchangeEntityService ExchangeService() {
         return Context.getService(ProductExchangeEntityService.class);
     }
-    private ProductReceptionService receptionService() {
-        return Context.getService(ProductReceptionService.class);
-    }
     private PharmacyService pharmacyService() {
         return Context.getService(PharmacyService.class);
     }
@@ -60,6 +52,10 @@ public class PharmacyProductMovementManageController {
     }
     private ProductAttributeService productAttributeService(){
         return Context.getService(ProductAttributeService.class);
+    }
+
+    private ProductAttributeStockService stockService() {
+        return Context.getService(ProductAttributeStockService.class);
     }
 
     @ModelAttribute("title")
@@ -75,8 +71,8 @@ public class PharmacyProductMovementManageController {
     public void list(ModelMap modelMap) {
 
         if (Context.isAuthenticated()) {
-            modelMap.addAttribute("entries", service().getAllProductMovementEntry(getUserLocation(), false));
-            modelMap.addAttribute("outs", service().getAllProductMovementOut(getUserLocation(), false));
+            modelMap.addAttribute("entries", service().getAllProductMovementEntry(OperationUtils.getUserLocation(), false));
+            modelMap.addAttribute("outs", service().getAllProductMovementOut(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("stockEntryTypes", getEntryTypeLabels());
             modelMap.addAttribute("stockOutTypes", getOutTypeLabels());
             modelMap.addAttribute("programs", programService().getAllProductProgram());
@@ -99,15 +95,13 @@ public class PharmacyProductMovementManageController {
                 outType = StockOutType.valueOf(type);
                 if (id != 0) {
                     productMovementForm.setProductMovementOut(service().getOneProductMovementOutById(id));
-                }
-                else {
+                } else {
                     productMovementForm = new ProductMovementForm();
                     productMovementForm.setIncidence(Incidence.NEGATIVE);
                     productMovementForm.setLocationId(getUserLocation().getLocationId());
                     productMovementForm.setStockOutType(outType);
                 }
-                modelMap.addAttribute("subTitle", "Mouvement de sortie ("+ getOutTypeLabels()
-                        .get(outType.name())+")");
+                modelMap.addAttribute("subTitle", getOutTypeLabels().get(outType.name()) );
             }
             else {
                 movementType = "entry";
@@ -121,8 +115,8 @@ public class PharmacyProductMovementManageController {
                     productMovementForm.setLocationId(getUserLocation().getLocationId());
                     productMovementForm.setStockEntryType(entryType);
                 }
-                modelMap.addAttribute("subTitle", "Mouvement d'entrée ("+ getEntryTypeLabels()
-                        .get(entryType.name())+")");
+                modelMap.addAttribute("subTitle", getEntryTypeLabels()
+                        .get(entryType.name()));
             }
             productMovementForm.setProductProgramId(programId);
             modelMap.addAttribute("productMovementForm", productMovementForm);
@@ -195,6 +189,7 @@ public class PharmacyProductMovementManageController {
     @RequestMapping(value = "/module/pharmacy/operations/movement/editFlux.form", method = RequestMethod.GET)
     public String editFlux(ModelMap modelMap,
                            @RequestParam(value = "movementId") Integer movementId,
+                           @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
                            @RequestParam(value = "type") String type ,
                            @RequestParam(value = "fluxId", defaultValue = "0", required = false) Integer fluxId,
                            MovementAttributeFluxForm movementAttributeFluxForm) {
@@ -209,13 +204,15 @@ public class PharmacyProductMovementManageController {
                         movementAttributeFluxForm = new MovementAttributeFluxForm();
                         movementAttributeFluxForm.setProductOperationId(movementId);
                     }
+
                 }
                 else {
                     movementAttributeFluxForm = new MovementAttributeFluxForm();
                     movementAttributeFluxForm.setProductOperationId(movementId);
                 }
 
-                modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
+                selectProduct(modelMap, selectedProductId, type, movementAttributeFluxForm, productMovement);
+//                modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
             }
         }
         return null;
@@ -225,6 +222,7 @@ public class PharmacyProductMovementManageController {
     public String saveFlux(ModelMap modelMap,
                            @RequestParam(value = "type") String type,
                            HttpServletRequest request,
+                           @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
                            MovementAttributeFluxForm movementAttributeFluxForm,
                            BindingResult result) {
         if (Context.isAuthenticated()) {
@@ -248,30 +246,44 @@ public class PharmacyProductMovementManageController {
                             + movementAttributeFluxForm.getProductOperationId();
                 }
             }
-
-            modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
+            selectProduct(modelMap, selectedProductId, type, movementAttributeFluxForm, productMovement);
+//            modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
         }
 
         return null;
     }
 
+    private void selectProduct(ModelMap modelMap, @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
+                               @RequestParam(value = "type") String type,
+                               MovementAttributeFluxForm movementAttributeFluxForm,
+                               ProductOperation productOperation) {
+        if (selectedProductId != 0) {
+            ProductAttributeStock stock =  stockService().getOneProductAttributeStockById(selectedProductId);
+            modelMap.addAttribute("stock", stock);
+            movementAttributeFluxForm.setSelectedProductStockId(selectedProductId);
+            movementAttributeFluxForm.setProductId(stock.getProductAttribute().getProduct().getProductId());
+            movementAttributeFluxForm.setBatchNumber(stock.getProductAttribute().getBatchNumber());
+            movementAttributeFluxForm.setExpiryDate(stock.getProductAttribute().getExpiryDate());
+            if (stock.getQuantityInStock() == 0) {
+                modelMap.addAttribute("productMessage", "Ce produit est en rupture de stock");
+            }
+        }
+        modelMappingForView(modelMap, movementAttributeFluxForm, productOperation, type);
+
+    }
+
     private void modelMappingForView(ModelMap modelMap, MovementAttributeFluxForm movementAttributeFluxForm,
                                      ProductOperation productMovement, String type) {
-        List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService()
-                .getAllProductAttributeFluxByOperation(productMovement, false);
-        if (productAttributeFluxes.size() != 0) {
-            Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
-        }
+
         if (type.equals("out")){
+            modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("productMovement", service().getOneProductMovementOutById(productMovement.getProductOperationId()));
-        }
-        else {
+        } else {
+            modelMap.addAttribute("products", programService().getOneProductProgramById(productMovement.getProductProgram().getProductProgramId()).getProducts());
             modelMap.addAttribute("productMovement", service().getOneProductMovementEntryById(productMovement.getProductOperationId()));
         }
         modelMap.addAttribute("movementAttributeFluxForm", movementAttributeFluxForm);
         modelMap.addAttribute("type", type);
-        modelMap.addAttribute("products", programService().getOneProductProgramById(productMovement.getProductProgram().getProductProgramId()).getProducts());
-        modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
 
         if (!productMovement.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
             if (productMovement.getOperationStatus().equals(OperationStatus.VALIDATED))
@@ -279,8 +291,34 @@ public class PharmacyProductMovementManageController {
             else if (productMovement.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
                 modelMap.addAttribute("subTitle", "Mouvenemet - EN ATTENTE DE VALIDATION");
             }
+            List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService()
+                    .getAllProductAttributeFluxByOperation(productMovement, false);
+            if (productAttributeFluxes.size() != 0) {
+                Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
+            }
+            modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
         } else {
-            modelMap.addAttribute("subTitle", "Saisie du mouvement - ajout de produits");
+            if (type.equals("entry")) {
+                List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService()
+                        .getAllProductAttributeFluxByOperation(productMovement, false);
+                if (productAttributeFluxes.size() != 0) {
+                    Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
+                }
+                modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
+            } else {
+                List<ProductOutFluxDTO> productAttributeFluxes = pharmacyService().getProductOutFluxDTOs(productMovement);
+                modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
+            }
+
+            if (type.equals("entry")) {
+                StockEntryType stockEntryType = service().getOneProductMovementEntryById(productMovement.getProductOperationId()).getStockEntryType();
+                modelMap.addAttribute("subTitle", getEntryTypeLabels()
+                        .get(stockEntryType.name()) + " - Ajout de produits");
+            } else {
+                StockOutType stockOutType = service().getOneProductMovementOutById(productMovement.getProductOperationId()).getStockOutType();
+                modelMap.addAttribute("subTitle", getOutTypeLabels()
+                        .get(stockOutType.name()) + " <i class=\"fa fa-play\"></i> Ajout de produits");
+            }
         }
     }
 
@@ -403,10 +441,10 @@ public class PharmacyProductMovementManageController {
         for (StockEntryType value : StockEntryType.values()){
             String label = "";
             switch (value){
-                case DONATION: label = "Don";
+                case DONATION: label = "Dons";
                     break;
-                case TRANSFER_IN: label = "Transfert Entrant";
-                    break;
+//                case TRANSFER_IN: label = "Transfert Entrant";
+//                    break;
                 case SITE_PRODUCT_BACK: label = "Retour de produit du site";
                     break;
                 case POSITIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire positif";
@@ -421,16 +459,16 @@ public class PharmacyProductMovementManageController {
         for (StockOutType value : StockOutType.values()){
             String label = "";
             switch (value){
-                case THIEF: label = "Vol(s)";
+                case THIEF: label = "Produits Volés";
                     break;
-                case DESTROYED: label = "Endommagés";
+                case DESTROYED: label = "Produits Endommagés";
                     break;
                 case EXPIRED_PRODUCT: label = "Produits Perimés";
                     break;
                 case SPOILED_PRODUCT: label = "Produits Avariés";
                     break;
-                case TRANSFER_OUT: label = "Transfert Sortant";
-                    break;
+//                case TRANSFER_OUT: label = "Transfert Sortant";
+//                    break;
                 case NEGATIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire négatif";
                     break;
                 case OTHER_LOST: label = "Autres pertes";

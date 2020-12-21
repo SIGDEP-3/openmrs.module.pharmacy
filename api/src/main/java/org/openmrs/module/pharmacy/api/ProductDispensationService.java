@@ -23,6 +23,7 @@ import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.forms.ProductDispensationForm;
 import org.openmrs.module.pharmacy.models.DispensationListDTO;
+import org.openmrs.module.pharmacy.models.DispensationResultDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,4 +79,5 @@ public interface ProductDispensationService extends OpenmrsService {
 	ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location, Date dispensationDate);
 
 	List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location);
+	DispensationResultDTO getDispensationResult(Date startDate, Date endDate, Location location);
 }

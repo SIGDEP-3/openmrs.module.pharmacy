@@ -1167,4 +1167,47 @@
     <changeSet id="pharmacy-mobile-info-treatment-end-date-not-null" author="BOGUI SERGE">
         <dropNotNullConstraint tableName="pharmacy_mobile_patient_dispensation_info" columnName="treatment_end_date" columnDataType="date"/>
     </changeSet>
+    
+    <changeSet id="pharmacy-product-transfer-create" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_transfer"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_transfer">
+            <column name="product_operation_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="exchange_location" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transfer_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="pharmacy_product_transfer" baseColumnNames="exchange_location"
+                                 constraintName="pharmacy_product_transfer_exchange_location"
+                                 referencedTableName="location"
+                                 referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="location_attribute_is_direct_client" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(name) FROM location_attribute_type WHERE name = 'Client Direct NPSP'; </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO
+            openmrs.location_attribute_type
+            (name, datatype, min_occurs, creator, date_created, retired, uuid)
+            VALUES
+            ('Client Direct NPSP', 'org.openmrs.customdatatype.datatype.BooleanDatatype', 0, 1, '2020-12-15 21:10:08', 0, 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC');
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-movement_out-remove-recipient-index-not-null" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_product_movement_out" columnName="recipient" columnDataType="int"/>
+    </changeSet>
 </databaseChangeLog>
