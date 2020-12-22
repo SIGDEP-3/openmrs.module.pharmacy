@@ -168,11 +168,11 @@ public class PharmacyProductMovementManageController {
                     System.out.println("_--------------- enregistrement des sorties");
                 }
                 else {
-                    System.out.println("_--------------- enregistrement des entrees");
                     ProductMovementEntry entry = service().saveProductMovementEntry(productMovementEntryForm.getProductMovementEntry());
                     movementId = entry.getProductOperationId();
                     movementType = "entry";
                     fluxes = entry.getProductAttributeFluxes();
+                    System.out.println("_--------------- enregistrement des entrees");
 
                 }
                 if (action.equals("addLine")) {
@@ -197,7 +197,7 @@ public class PharmacyProductMovementManageController {
             modelMap.addAttribute("productMovementEntryForm", productMovementEntryForm);
 //            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
             modelMap.addAttribute("programs", programService().getAllProductProgram());
-//            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
+            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("subTitle", "Saisie  de Mouvements");
         }
