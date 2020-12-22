@@ -16,13 +16,12 @@ package org.openmrs.module.pharmacy.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,7 +68,7 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     }
 
     @Override
-    public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) {
+    public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws APIException {
         return dao.getOneProductAttributeStockByAttribute(productAttribute, location, includeVoided);
     }
 
@@ -99,8 +98,8 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     }
 
     @Override
-    public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product) {
-        return dao.getProductAttributeStocksByProduct(product);
+    public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation) {
+        return dao.getProductAttributeStocksByProduct(product, userLocation);
     }
 
     @Override

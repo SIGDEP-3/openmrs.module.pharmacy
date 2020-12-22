@@ -39,7 +39,7 @@ public interface ProductAttributeStockDAO {
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
-	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product);
+	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation);
 
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
 

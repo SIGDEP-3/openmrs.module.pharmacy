@@ -16,6 +16,10 @@ public class ProductReceptionForm extends ProductOperationForm {
         setIncidence(Incidence.POSITIVE);
     }
 
+    public ProductReceptionForm(Integer productProgramId) {
+        super(productProgramId);
+    }
+
     public Integer getProductSupplierId() {
         return productSupplierId;
     }
@@ -44,4 +48,5 @@ public class ProductReceptionForm extends ProductOperationForm {
         productReception.setReceptionQuantityMode(getReceptionQuantityMode());
         return productReception;
     }
+
 }

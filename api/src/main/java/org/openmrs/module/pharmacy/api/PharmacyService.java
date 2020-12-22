@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,4 +41,6 @@ public interface PharmacyService extends OpenmrsService {
 	ProductOperation getOneProductOperationByOperationNumber(String operationNumber);
 	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
 	ProductOperation saveProductOperation(ProductOperation productOperation);
+
+    List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
 }

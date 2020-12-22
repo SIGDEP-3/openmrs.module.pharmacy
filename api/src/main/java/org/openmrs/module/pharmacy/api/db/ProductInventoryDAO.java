@@ -41,4 +41,5 @@ public interface ProductInventoryDAO {
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
     ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
+	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
 }

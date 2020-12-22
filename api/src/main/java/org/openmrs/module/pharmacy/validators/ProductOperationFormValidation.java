@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +40,9 @@ public class ProductOperationFormValidation implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "operationDate", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null) {
-                if (form.getOperationDate().after(new Date())) {
+                Date now = Calendar.getInstance().getTime();
+                if (form.getOperationDate().after(now)) {
+                    //System.out.println("-------------------------------------- : Now () = " + now);
                     errors.rejectValue("operationDate", null, "Impossible de créer une opération avec une date future !");
                 } else {
 //                    ProductOperation operation = service().getOneProductOperationByOperationDateAndProductProgram(
@@ -57,28 +60,7 @@ public class ProductOperationFormValidation implements Validator {
 //                        }
 //                    }
 
-                    if (form.getProductProgramId()!= null) {
-                        ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
-                        if (productProgram != null) {
-
-                            ProductInventory productInventory = inventoryService().getLastProductInventory(OperationUtils.getUserLocation(), productProgram);
-                            if (productInventory != null) {
-                                if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED) ||
-                                        productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                                    if (form.getOperationDate().after(productInventory.getOperationDate()) &&
-                                            form.getOperationDate().before(productInventory.getInventoryStartDate())) {
-                                        errors.rejectValue("operationDate", null, "Vous avez renseigné une date invalide pour cette opération");
-                                        createAlert("Un inventaire est en cours, veuillez valider cet inventaire avant toute opération après ce dernier !");
-                                    }
-                                } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-                                    if (form.getOperationDate().before(productInventory.getOperationDate())) {
-                                        errors.rejectValue("operationDate", null, "Vous avez renseigné une date invalide pour cette opération");
-                                        createAlert("Une opération avant un inventaire ne peut être réalisé !");
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    lastInventoryCheck(form, errors);
                 }
             }
         }
@@ -94,6 +76,34 @@ public class ProductOperationFormValidation implements Validator {
 
     protected ProductInventoryService inventoryService() {
         return Context.getService(ProductInventoryService.class);
+    }
+
+    protected void lastInventoryCheck(ProductOperationForm form, Errors errors) {
+        if (form.getProductProgramId()!= null) {
+            ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
+            if (productProgram != null) {
+                ProductInventory productInventory = inventoryService().getLastProductInventory(OperationUtils.getUserLocation(), productProgram);
+                if (productInventory != null) {
+                    if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED) ||
+                            productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
+                        if (form.getOperationDate().after(productInventory.getOperationDate()) &&
+                                form.getOperationDate().before(productInventory.getInventoryStartDate())) {
+                            errors.rejectValue("operationDate", null, "Vous avez renseigné une date invalide pour cette opération");
+                            createAlert("Un inventaire est en cours, veuillez valider cet inventaire avant toute opération après ce dernier !");
+                        }
+                    } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+                        if (form.getOperationDate().before(productInventory.getOperationDate())) {
+                            errors.rejectValue("operationDate", null, "Vous avez renseigné une date invalide pour cette opération");
+                            createAlert("Une opération avant un inventaire ne peut être réalisé !");
+                        }
+                    }
+                }
+                else {
+                    errors.rejectValue("productProgramId", null, "Premier Inventaire complet non réalisé pour ce programme");
+                    createAlert("Vous devez avant toute opération réaliser le premier inventaire complet de votre centre !");
+                }
+            }
+        }
     }
 
     protected void createAlert(String message) {

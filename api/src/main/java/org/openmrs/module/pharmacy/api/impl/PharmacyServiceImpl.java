@@ -21,8 +21,10 @@ import org.openmrs.module.pharmacy.ProductOperation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * It is a default implementation of {@link PharmacyService}.
@@ -70,6 +72,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public ProductOperation saveProductOperation(ProductOperation productOperation) {
         return dao.saveProductOperation(productOperation);
+    }
+
+    @Override
+    public List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation) {
+        return dao.getProductOutFluxDTOs(productOperation);
     }
 
 }

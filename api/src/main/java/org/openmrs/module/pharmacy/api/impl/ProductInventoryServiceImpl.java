@@ -109,4 +109,9 @@ public class ProductInventoryServiceImpl extends BaseOpenmrsService implements P
     public List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory) {
         return dao.getProductInventoryFluxDTOs(productInventory);
     }
+
+    @Override
+    public List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory) {
+        return dao.getProductInventoryFluxValidatedDTO(productInventory);
+    }
 }

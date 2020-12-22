@@ -92,6 +92,17 @@
 							</c:choose>>
 						Reception de produits
 					</button>
+					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/transfer/list.form'"
+							<c:choose>
+								<c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
+									class=" btn btn-secondary btn-sm"
+								</c:when>
+								<c:otherwise>
+									class="btn btn-outline-secondary text-white btn-sm"
+								</c:otherwise>
+							</c:choose>>
+						Transfert de produits
+					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/list.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/movement") %>'>

@@ -18,11 +18,17 @@ public abstract class ProductOperationForm {
     private Date operationDate;
     private Integer locationId;
     private OperationStatus operationStatus;
-    private Incidence incidence;
+    protected Incidence incidence;
     private String observation;
     private String uuid = UUID.randomUUID().toString();
 
     public ProductOperationForm() {
+        operationStatus = OperationStatus.NOT_COMPLETED;
+        setLocationId(OperationUtils.getUserLocation().getLocationId());
+    }
+
+    public ProductOperationForm(Integer productProgramId) {
+        this.productProgramId = productProgramId;
         operationStatus = OperationStatus.NOT_COMPLETED;
         setLocationId(OperationUtils.getUserLocation().getLocationId());
     }
@@ -123,6 +129,7 @@ public abstract class ProductOperationForm {
         productOperation.setLocation(Context.getLocationService().getLocation(getLocationId()));
         productOperation.setOperationNumber(getOperationNumber());
         productOperation.setOperationStatus(getOperationStatus());
+        productOperation.setIncidence(getIncidence());
         productOperation.setUuid(getUuid());
         return productOperation;
     }

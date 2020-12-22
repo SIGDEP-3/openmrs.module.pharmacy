@@ -94,10 +94,10 @@
                     <thead class="thead-light">
                     <tr class="bg-belize-hole">
                         <th colspan="3" style="width: 250px">Produit <span class="required">*</span></th>
-                        <th style="width: 200px">Numero <br>de lot <span class="required">*</span></th>
-                        <th style="width: 150px">Date de <br>peremption <span class="required">*</span></th>
-                        <th style="width: 60px">Quantite <br>livree <span class="required">*</span></th>
-                        <th style="width: 60px">Quantite <br>recue <span class="required">*</span></th>
+                        <th style="width: 200px">Num&eacute;ro <br>de lot <span class="required">*</span></th>
+                        <th style="width: 150px">Date de <br>p&eacute;remption <span class="required">*</span></th>
+                        <th style="width: 60px">Quantit&eacute; <br>livr&eacute;e <span class="required">*</span></th>
+                        <th style="width: 60px">Quantit&eacute; <br>re&ccedil;ue <span class="required">*</span></th>
                         <th style="width: 250px">observation</th>
                         <th style="width: 50px"></th>
                     </tr>
@@ -165,10 +165,10 @@
                                 <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                             </td>
                             <td class="text-center">
-                                    ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}
+                                <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
                             </td>
                             <td class="text-center">
-                                    ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}
+                                <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
                             </td>
                             <td>${productFlux.observation}</td>
                             <td>
@@ -210,7 +210,7 @@
                     <tr>
                         <td>${productFlux.code}</td>
                         <td>
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
+                               ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
                         </td>
                         <td>
                                 ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailUnit : productFlux.wholesaleUnit}
@@ -220,10 +220,10 @@
                             <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                         </td>
                         <td class="text-center">
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}
+                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
                         </td>
                         <td class="text-center">
-                                ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}
+                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
                         </td>
                         <td>${productFlux.observation}</td>
                     </tr>

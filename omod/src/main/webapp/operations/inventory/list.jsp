@@ -40,7 +40,7 @@
             <select name="program" class="s2 form-control-sm mr-3" id="program">
                 <option value=""></option>
                 <c:forEach var="program" items="${programs}">
-                    <option value="${program.productProgramId}">${program.name}</option>
+                    <option value="${program.productProgramId}" class="text-left">${program.name}</option>
                 </c:forEach>
             </select>
 <%--            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>--%>
@@ -65,7 +65,7 @@
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Programme
                     </th>
-                    <th>Type d'inventaire</th>
+<%--                    <th>Type d'inventaire</th>--%>
                     <th>Nombre de produits</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
@@ -80,7 +80,7 @@
                         <td><fmt:formatDate value="${inventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${inventory.operationNumber}</td>
                         <td>${inventory.productProgram.name}</td>
-                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>
+<%--                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>--%>
                         <c:choose>
                             <c:when test="${fct:length(inventory.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="addLineUrl">
@@ -104,6 +104,14 @@
                             <a href="${editUrl}" class="text-${inventory.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${inventory.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
+                            <c:if test="${inventory.operationStatus != 'VALIDATED'}">
+                                <c:url value="/module/pharmacy/operations/inventory/delete.form" var="delUrl">
+                                    <c:param name="id" value="${inventory.productOperationId}"/>
+                                </c:url>
+                                <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer l\'inventaire, Voulez-vous continuer ?')" class="text-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </c:if>
                         </td>
                     </tr>
                 </c:forEach>

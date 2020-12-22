@@ -51,19 +51,19 @@
         </th>
         <th>
 <%--            <spring:message code="pharmacy.name"/>--%>
-            Nom (detail)
+            D&eacute;signation
         </th>
         <th>
 <%--            <spring:message code="pharmacy.name"/>--%>
-            Unite (detail)
+            Unit&eacute;
         </th>
         <th>
 <%--            <spring:message code="pharmacy.name"/>--%>
-            Nom (Gros)
+            D&eacute;signation (Conditionnement)
         </th>
         <th>
 <%--            <spring:message code="pharmacy.name"/>--%>
-            Unite (Gros)
+            Unit&eacute; (Conditionnement)
         </th>
         <th>
 <%--            <spring:message code="pharmacy.regimenProductNumber"/>--%>

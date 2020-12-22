@@ -5,6 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.api.ProductInventoryService;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
+import org.openmrs.module.pharmacy.forms.ProductOperationForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -45,4 +46,8 @@ public class ProductInventoryFormValidation extends ProductOperationFormValidati
 
     }
 
+    @Override
+    protected void lastInventoryCheck(ProductOperationForm form, Errors errors) {
+
+    }
 }

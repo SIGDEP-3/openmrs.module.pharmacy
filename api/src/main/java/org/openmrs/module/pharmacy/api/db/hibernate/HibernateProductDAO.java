@@ -152,4 +152,24 @@ public class HibernateProductDAO implements ProductDAO {
 			throw new RuntimeException("fail to store csv data: " + e.getMessage());
 		}
 	}
+
+	@Override
+	public ProductUploadResumeDTO uploadProductRegimens(MultipartFile file) {
+		try {
+			ProductUploadResumeDTO resumeDTO = new ProductUploadResumeDTO();
+			List<Product> products = CSVHelper.csvProductRegimens(file.getInputStream());
+			resumeDTO.setTotalToImport(products.size());
+			for (Product product : products) {
+
+				saveProduct(product);
+				resumeDTO.addOneTotalImported();
+			}
+
+			return resumeDTO;
+//			return CSVHelper.csvImportProducts(file.getInputStream());
+
+		} catch (IOException e) {
+			throw new RuntimeException("fail to store csv data: " + e.getMessage());
+		}
+	}
 }

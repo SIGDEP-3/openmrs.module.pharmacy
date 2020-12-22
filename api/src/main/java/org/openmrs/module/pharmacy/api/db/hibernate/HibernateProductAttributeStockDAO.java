@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -83,8 +84,9 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	}
 
 	@Override
-	public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) {
+	public ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws HibernateException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeStock.class);
+
 		return (ProductAttributeStock) criteria
 				.add(Restrictions.eq("productAttribute", productAttribute))
 				.add(Restrictions.eq("location", location))
@@ -121,9 +123,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product ORDER BY s.productAttribute.expiryDate DESC ");
+	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product);
+		query.setParameter("location", userLocation);
 
 		return query.list();
 	}
@@ -131,17 +134,16 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate DESC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
 				.setParameter("location", location);
-
 		return query.list();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Integer getAllProductAttributeStockByProductCount(Product product, Location location) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate DESC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
 				.setParameter("location", location);
 		List<ProductAttributeStock> stocks = query.list();

@@ -129,7 +129,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						"    ppu2.name as wholesaleUnit, " +
 						"    ppa.batch_number as batchNumber, " +
 						"    ppa.expiry_date as expiryDate, " +
-						"    ppaf.quantity as physicalQuantity, " +
+						"    IF(ppaf.quantity IS NULL, 0, ppaf.quantity) as physicalQuantity, " +
 						"    ppo.product_operation_id as operationId, " +
 						"    ppas.quantity_in_stock as theoreticalQuantity, " +
 						"    ppaf.observation as observation, " +
@@ -138,19 +138,17 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						" " +
 						"FROM (SELECT product_attribute_id, product_id, batch_number, expiry_date FROM pharmacy_product_attribute) ppa " +
 						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_flux WHERE operation_id = :productOperationId) ppaf ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_status = 2 AND product_operation_id = :productOperationId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
+						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE product_operation_id = :productOperationId AND program_id = :productProgramId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
 						"LEFT JOIN pharmacy_product_attribute_stock ppas ON ppas.product_attribute_id = ppa.product_attribute_id " +
 						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
-						"WHERE NOT (ppaf.uuid IS NULL AND ppas.uuid IS NULL) " +
+						"WHERE NOT (ppaf.uuid IS NULL) AND (ppas.quantity_in_stock IS NULL OR ppas.quantity_in_stock <> 0)" +
 						"ORDER BY ppaf.date_created, ppas.date_created DESC";
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
-//				.addScalar("operationId", StandardBasicTypes.INTEGER)
-//				.addScalar("inventoryId", StandardBasicTypes.INTEGER)
-//				.addScalar("productId", StandardBasicTypes.INTEGER)
+				.addScalar("operationId", StandardBasicTypes.INTEGER)
 				.addScalar("code", StandardBasicTypes.STRING)
 				.addScalar("retailName", StandardBasicTypes.STRING)
 				.addScalar("wholesaleName", StandardBasicTypes.STRING)
@@ -163,6 +161,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.addScalar("observation", StandardBasicTypes.STRING)
 				.addScalar("dateCreated", StandardBasicTypes.DATE)
 				.setParameter("productOperationId", productInventory.getProductOperationId())
+				.setParameter("productProgramId", productInventory.getProductProgram().getProductProgramId())
 				.setResultTransformer(new AliasToBeanResultTransformer(ProductInventoryFluxDTO.class));
 		try {
 			return query.list();
@@ -193,4 +192,56 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory) {
+		String sqlQuery =
+				"SELECT " +
+						"    ppaf.product_attribute_flux_id as productAttributeFluxId, " +
+						"    pp.code as code, " +
+						"    pp.retail_name as retailName, " +
+						"    pp.wholesale_name as wholesaleName, " +
+						"    ppu.name as retailUnit, " +
+						"    ppu2.name as wholesaleUnit, " +
+						"    ppa.batch_number as batchNumber, " +
+						"    ppa.expiry_date as expiryDate, " +
+						"    IF(ppaf.quantity IS NULL, 0, ppaf.quantity) as physicalQuantity, " +
+						"    ppo.product_operation_id as operationId, " +
+						"    IF(ppaof.quantity IS NOT NULL, ppaf.quantity - (ppaof.quantity), ppaf.quantity) as theoreticalQuantity, " +
+						"    ppaf.observation as observation, " +
+						"    ppaf.date_created as dateCreated, " +
+						"    ppaf.status " +
+						"FROM (SELECT product_attribute_id, product_id, batch_number, expiry_date FROM pharmacy_product_attribute) ppa " +
+						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_flux WHERE operation_id = :productOperationId) ppaf ON ppaf.product_attribute_id = ppa.product_attribute_id " +
+						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_status = 2 AND product_operation_id = :productOperationId AND program_id = :productProgramId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
+						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof ON ppaof.product_attribute_id = ppa.product_attribute_id AND ppo.product_operation_id = ppaof.operation_id " +
+						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
+						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
+						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
+						"ORDER BY ppaf.date_created DESC";
+
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
+				.addScalar("operationId", StandardBasicTypes.INTEGER)
+				.addScalar("code", StandardBasicTypes.STRING)
+				.addScalar("retailName", StandardBasicTypes.STRING)
+				.addScalar("wholesaleName", StandardBasicTypes.STRING)
+				.addScalar("retailUnit", StandardBasicTypes.STRING)
+				.addScalar("wholesaleUnit", StandardBasicTypes.STRING)
+				.addScalar("batchNumber", StandardBasicTypes.STRING)
+				.addScalar("expiryDate", StandardBasicTypes.DATE)
+				.addScalar("physicalQuantity", StandardBasicTypes.INTEGER)
+				.addScalar("theoreticalQuantity", StandardBasicTypes.INTEGER)
+				.addScalar("observation", StandardBasicTypes.STRING)
+				.addScalar("dateCreated", StandardBasicTypes.DATE)
+				.setParameter("productOperationId", productInventory.getProductOperationId())
+				.setParameter("productProgramId", productInventory.getProductProgram().getProductProgramId())
+				.setResultTransformer(new AliasToBeanResultTransformer(ProductInventoryFluxDTO.class));
+		try {
+			return query.list();
+		} catch (HibernateException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
 }

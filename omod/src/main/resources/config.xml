@@ -54,6 +54,230 @@
 		<description>Can Manage Manage Stock</description>
 	</privilege>
 
+	<privilege>
+		<name>Manage Product</name>
+		<description>Can Manage Product</description>
+	</privilege>
+	<privilege>
+		<name>View Product</name>
+		<description>Can View Product</description>
+	</privilege>
+	<privilege>
+		<name>Save Product</name>
+		<description>Can Save and Edit Product</description>
+	</privilege>
+	<privilege>
+		<name>Import Product</name>
+		<description>Can Import Product</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Regimen</name>
+		<description>Can Manage Regimen</description>
+	</privilege>
+	<privilege>
+		<name>View Regimen</name>
+		<description>Can View Regimen</description>
+	</privilege>
+	<privilege>
+		<name>Save Regimen</name>
+		<description>Can Save and Edit Regimen</description>
+	</privilege>
+	<privilege>
+		<name>Import Regimen</name>
+		<description>Can Import Regimen</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Supplier</name>
+		<description>Can Manage Supplier</description>
+	</privilege>
+	<privilege>
+		<name>View Supplier</name>
+		<description>Can View Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Save Supplier</name>
+		<description>Can Save and Edit Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Delete Supplier</name>
+		<description>Can Delete Supplier</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Unit</name>
+		<description>Can Manage Unit</description>
+	</privilege>
+	<privilege>
+		<name>View Unit</name>
+		<description>Can View Unit</description>
+	</privilege>
+	<privilege>
+		<name>Save Unit</name>
+		<description>Can Save and Edit Unit</description>
+	</privilege>
+	<privilege>
+		<name>Delete Unit</name>
+		<description>Can Delete Unit</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Exchange Entity</name>
+		<description>Can Manage Exchange Entity</description>
+	</privilege>
+	<privilege>
+		<name>View Exchange Entity</name>
+		<description>Can View Exchange Entity</description>
+	</privilege>
+	<privilege>
+		<name>Save Exchange Entity</name>
+		<description>Can Save and Edit Exchange Entity</description>
+	</privilege>
+	<privilege>
+		<name>Delete Exchange Entity</name>
+		<description>Can Delete Exchange Entity</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Price</name>
+		<description>Can Manage Price</description>
+	</privilege>
+	<privilege>
+		<name>View Price</name>
+		<description>Can View Price</description>
+	</privilege>
+	<privilege>
+		<name>Save Price</name>
+		<description>Can Save and Edit Price</description>
+	</privilege>
+	<privilege>
+		<name>Delete Price</name>
+		<description>Can Delete Price</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Program</name>
+		<description>Can Manage Program</description>
+	</privilege>
+	<privilege>
+		<name>View Program</name>
+		<description>Can View Program</description>
+	</privilege>
+	<privilege>
+		<name>Save Program</name>
+		<description>Can Save and Edit Program</description>
+	</privilege>
+	<privilege>
+		<name>Delete Program</name>
+		<description>Can Delete Program</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Inventory</name>
+		<description>Can Manage Inventory</description>
+	</privilege>
+	<privilege>
+		<name>View Inventory</name>
+		<description>Can View Inventory</description>
+	</privilege>
+	<privilege>
+		<name>Save Inventory</name>
+		<description>Can Save and Edit Inventory</description>
+	</privilege>
+	<privilege>
+		<name>Delete Inventory</name>
+		<description>Can Delete Inventory</description>
+	</privilege>
+	<privilege>
+		<name>Validate Inventory</name>
+		<description>Can Validate Inventory</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Reception</name>
+		<description>Can Manage Reception</description>
+	</privilege>
+	<privilege>
+		<name>View Reception</name>
+		<description>Can View Reception</description>
+	</privilege>
+	<privilege>
+		<name>Save Reception</name>
+		<description>Can Save and Edit Reception</description>
+	</privilege>
+	<privilege>
+		<name>Delete Reception</name>
+		<description>Can Delete Reception</description>
+	</privilege>
+	<privilege>
+		<name>Validate Reception</name>
+		<description>Can Validate Reception</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Transfer</name>
+		<description>Can Manage Transfer</description>
+	</privilege>
+	<privilege>
+		<name>View Transfer</name>
+		<description>Can View Transfer</description>
+	</privilege>
+	<privilege>
+		<name>Save Transfer</name>
+		<description>Can Save and Edit Transfer</description>
+	</privilege>
+	<privilege>
+		<name>Delete Transfer</name>
+		<description>Can Delete Transfer</description>
+	</privilege>
+	<privilege>
+		<name>Validate Transfer</name>
+		<description>Can Validate Transfer</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Movement</name>
+		<description>Can Manage Movement</description>
+	</privilege>
+	<privilege>
+		<name>View Movement</name>
+		<description>Can View Movement</description>
+	</privilege>
+	<privilege>
+		<name>Save Movement</name>
+		<description>Can Save and Edit Movement</description>
+	</privilege>
+	<privilege>
+		<name>Delete Movement</name>
+		<description>Can Delete Movement</description>
+	</privilege>
+	<privilege>
+		<name>Validate Movement</name>
+		<description>Can Validate Movement</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Dispensation</name>
+		<description>Can Manage Dispensation</description>
+	</privilege>
+	<privilege>
+		<name>View Dispensation</name>
+		<description>Can View Dispensation</description>
+	</privilege>
+	<privilege>
+		<name>Save Dispensation</name>
+		<description>Can Save and Edit Dispensation</description>
+	</privilege>
+	<privilege>
+		<name>Delete Dispensation</name>
+		<description>Can Delete Dispensation</description>
+	</privilege>
+	<privilege>
+		<name>Validate Dispensation</name>
+		<description>Can Validate Dispensation</description>
+	</privilege>
+
 	<!-- /Privileges  -->
 
 	<!-- Module Activator -->

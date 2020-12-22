@@ -166,7 +166,9 @@ public class ProductDispensationForm extends ProductOperationForm {
     }
 
     public void setMobilePatient(MobilePatient patient) {
-        setPatientIdentifier(patient.getIdentifier());
+        if (patient.getIdentifier() != null) {
+            setPatientIdentifier(patient.getIdentifier());
+        }
         setAge(patient.getAge());
         setGender(patient.getGender());
         setMobilePatientId(patient.getMobilePatientId());
@@ -200,12 +202,21 @@ public class ProductDispensationForm extends ProductOperationForm {
         if (getMobileDispensationInfoId() != null) {
             info = dispensationService().getOneMobilePatientDispensationInfoId(getMobileDispensationInfoId());
         }
-        info.setGoal(getGoal());
+        if (getGoal() != null) {
+            info.setGoal(getGoal());
+        }
         info.setLocation(OperationUtils.getUserLocation());
-        info.setProductRegimen(regimenService().getOneProductRegimenByConceptId(getProductRegimenId()));
-        info.setProvider(Context.getProviderService().getProvider(getProviderId()));
+//        if (getProductRegimenId() != null) {
+//            info.setProductRegimen(regimenService().getOneProductRegimenByConceptId(getProductRegimenId()));
+//        }
+        if (getProviderId() != null) {
+            info.setProvider(Context.getProviderService().getProvider(getProviderId()));
+        }
         info.setTreatmentDays(getTreatmentDays());
         info.setTreatmentEndDate(getTreatmentEndDate());
+        if (getProductRegimenId() != null) {
+            info.setProductRegimen(regimenService().getOneProductRegimenById(getProductRegimenId()));
+        }
         return info;
     }
 
@@ -349,5 +360,6 @@ public class ProductDispensationForm extends ProductOperationForm {
         setAge(patient.getAge());
         setPatientIdentifier(patient.getPatientIdentifier().getIdentifier());
         setPatientId(patient.getPatientId());
+        setPatientType(PatientType.ON_SITE);
     }
 }

@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
+import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import org.openmrs.module.pharmacy.forms.ProductReceptionForm;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
@@ -93,14 +95,15 @@ public class PharmacyProductReceptionManageController {
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
                     return "redirect:/module/pharmacy/operations/reception/list.form";
                 }
-                productReceptionForm = new ProductReceptionForm();
+                productReceptionForm = new ProductReceptionForm(programId);
+                productReceptionForm.setIncidence(Incidence.POSITIVE);
+                productReceptionForm.setProductProgramId(program.getProductProgramId());
                 productReceptionForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
 
                 modelMap.addAttribute("program", program);
             }
 
-            modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
-//            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("productReceptionForm", productReceptionForm);
             modelMap.addAttribute("productReception", receptionService().getOneProductReceptionById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie de réception - entête");
@@ -122,7 +125,6 @@ public class PharmacyProductReceptionManageController {
             if (!result.hasErrors()) {
 //                boolean idExist = (receptionHeaderForm.getProductOperationId() != null);
                 ProductReception reception = receptionService().saveProductReception(productReceptionForm.getProductReception());
-
                 if (action.equals("addLine")) {
                     if (reception.getProductAttributeFluxes().size() == 0) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
@@ -136,7 +138,6 @@ public class PharmacyProductReceptionManageController {
                 }
             }
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
-//            modelMap.addAttribute("product", receptionHeaderForm.getProduct());
             modelMap.addAttribute("program", programService().getOneProductProgramById(productReceptionForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie  de réception - entête");
@@ -183,11 +184,20 @@ public class PharmacyProductReceptionManageController {
             if (!result.hasErrors()) {
                 ProductAttribute productAttribute = attributeService().saveProductAttribute(receptionAttributeFluxForm.getProductAttribute());
                 if (productAttribute != null) {
-                    ProductAttributeFlux productAttributeFlux = receptionAttributeFluxForm.getProductAttributeFlux(productAttribute);
-                    productAttributeFlux.setStatus(productReception.getOperationStatus());
+                    ProductAttributeFlux flux = receptionAttributeFluxForm.getProductAttributeFlux(productAttribute);
+                    if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+                        double fluxQuantity = flux.getQuantity() * productAttribute.getProduct().getUnitConversion();
+                        flux.setQuantity((int) fluxQuantity);
+                    }
+                    flux.setStatus(productReception.getOperationStatus());
 
-                    if (attributeFluxService().saveProductAttributeFlux(productAttributeFlux) != null) {
-                        attributeFluxService().saveProductAttributeOtherFlux(receptionAttributeFluxForm.getProductAttributeOtherFlux());
+                    if (attributeFluxService().saveProductAttributeFlux(flux) != null) {
+                        ProductAttributeOtherFlux otherFlux = receptionAttributeFluxForm.getProductAttributeOtherFlux();
+                        if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+                            double otherFluxQuantity = otherFlux.getQuantity() * productAttribute.getProduct().getUnitConversion();
+                            otherFlux.setQuantity((int) otherFluxQuantity);
+                        }
+                        attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
 
                     if (receptionAttributeFluxForm.getProductOperationId() == null) {
@@ -212,6 +222,14 @@ public class PharmacyProductReceptionManageController {
 //        if (productAttributeFluxes.size() != 0) {
 //            Collections.sort(productAttributeFluxes, Collections.<ProductReceptionFluxDTO>reverseOrder());
 //        }
+        if (receptionAttributeFluxForm.getProductAttributeFluxId() != null) {
+            for (ProductReceptionFluxDTO fluxDTO : productAttributeFluxes) {
+                if (fluxDTO.getProductAttributeFluxId().equals(receptionAttributeFluxForm.getProductAttributeFluxId())) {
+                    productAttributeFluxes.remove(fluxDTO);
+                    break;
+                }
+            }
+        }
         modelMap.addAttribute("receptionAttributeFluxForm", receptionAttributeFluxForm);
         modelMap.addAttribute("productReception", productReception);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());
@@ -258,11 +276,11 @@ public class PharmacyProductReceptionManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/reception/delete.form", method = RequestMethod.GET)
     public String deleteOperation(HttpServletRequest request,
-                                  @RequestParam(value = "receptionId") Integer receptionId){
+                                  @RequestParam(value = "id") Integer id){
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
-        ProductReception reception = receptionService().getOneProductReceptionById(receptionId);
+        ProductReception reception = receptionService().getOneProductReceptionById(id);
         for (ProductAttributeOtherFlux otherFlux : attributeFluxService().getAllProductAttributeOtherFluxByOperation(reception, false)) {
             attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
         }
@@ -270,6 +288,7 @@ public class PharmacyProductReceptionManageController {
             attributeFluxService().removeProductAttributeFlux(flux);
         }
         receptionService().removeProductReception(reception);
+        attributeService().purgeUnusedAttributes();
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été supprimée avec succès !");
         return "redirect:/module/pharmacy/operations/reception/list.form";
     }
@@ -308,5 +327,4 @@ public class PharmacyProductReceptionManageController {
         }
         return null;
     }
-
 }

@@ -101,6 +101,7 @@
                 <form:hidden path="operationStatus"/>
                 <form:hidden path="inventoryStartDate"/>
                 <form:hidden path="productProgramId"/>
+                <form:hidden path="inventoryType"/>
 <%--                <c:if test="${fct:length(productInventory.productAttributeFluxes) != 0}">--%>
 <%--                    <form:hidden path="productProgramId"/>--%>
 <%--                </c:if>--%>
@@ -128,9 +129,9 @@
                         <div class="row mb-2">
                             <div class="col-5">
                                 <label class="mb-1">Date du dernier inventaire</label>
-                                <div class="form-control form-control-sm bg-info">
+                                <div class="form-control form-control-sm bg-info text-white">
                                     <c:if test="${latestInventory != null}">
-                                        ${lastInventory.operationDate}
+                                        <fmt:formatDate value="${latestInventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                                     </c:if>
                                     <c:if test="${latestInventory == null}">
                                         C'est votre premier inventaire
@@ -163,17 +164,17 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-10">
-                                <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="inventoryType" value="PARTIAL" label=" Partiel" cssClass="mr-2"/>
-                                <form:radiobutton path="inventoryType" value="FULL" label=" Complet" cssClass=""/>
-                                <form:errors path="inventoryType" cssClass="error"/>
-                            </div>
+<%--                    <div class="col-6">--%>
+<%--                        <div class="row">--%>
+<%--                            <div class="col-10">--%>
+<%--                                <label class="mb-2">Unite de saisie</label> <br>--%>
+<%--                                <form:radiobutton path="inventoryType" value="PARTIAL" label="Partiel" cssClass="mr-2"/>--%>
+<%--                                <form:radiobutton path="inventoryType" value="FULL" label="Complet" cssClass="mr-2"/>--%>
+<%--                                <form:errors path="inventoryType" cssClass="error"/>--%>
+<%--                            </div>--%>
 
-                        </div>
-                    </div>
+<%--                        </div>--%>
+<%--                    </div>--%>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">

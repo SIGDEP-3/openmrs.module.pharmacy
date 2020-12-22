@@ -117,4 +117,9 @@ public class ProductServiceImpl extends BaseOpenmrsService implements ProductSer
         return dao.uploadProducts(file);
     }
 
+    @Override
+    public ProductUploadResumeDTO uploadProductRegimens(MultipartFile file) {
+        return dao.uploadProductRegimens(file);
+    }
+
 }

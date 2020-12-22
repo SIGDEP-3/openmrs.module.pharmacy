@@ -1,12 +1,14 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.ProductReceptionService;
+import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
@@ -14,7 +16,6 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
 
     public ReceptionAttributeFluxForm() {
     }
-
 
     public Integer getQuantityToDeliver() {
         return quantityToDeliver;
@@ -24,10 +25,24 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
         this.quantityToDeliver = quantityToDeliver;
     }
 
-    public void setProductAttributeFlux(ProductAttributeFlux productAttributeFlux, ProductReception productReception) {
-        super.setProductAttributeFlux(productAttributeFlux, productReception);
-        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception, OperationUtils.getUserLocation());
-        setQuantityToDeliver(otherFlux.getQuantity());
+    public void setProductAttributeFlux(ProductAttributeFlux flux, ProductReception productReception) {
+        if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+            Product product = flux.getProductAttribute().getProduct();
+            double fluxQuantity = flux.getQuantity() / product.getUnitConversion();
+            flux.setQuantity((int) fluxQuantity);
+        }
+        super.setProductAttributeFlux(flux, productReception);
+        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
+                flux.getProductAttribute(),
+                productReception,
+                OperationUtils.getUserLocation());
+        if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+            Product product = flux.getProductAttribute().getProduct();
+            double fluxQuantity = otherFlux.getQuantity() / product.getUnitConversion();
+            setQuantityToDeliver((int) fluxQuantity);
+        } else {
+            setQuantityToDeliver(otherFlux.getQuantity());
+        }
     }
 
     public ProductAttributeOtherFlux getProductAttributeOtherFlux() {

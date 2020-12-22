@@ -16,6 +16,7 @@ public class ProductInventoryForm extends ProductOperationForm {
     public ProductInventoryForm() {
         super();
         setIncidence(Incidence.EQUAL);
+        setInventoryType(InventoryType.FULL);
     }
 
     public Date getInventoryStartDate() {

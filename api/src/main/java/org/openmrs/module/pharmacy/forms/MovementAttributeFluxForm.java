@@ -6,6 +6,15 @@ import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.ProductMovementService;
 
 public class MovementAttributeFluxForm extends ProductAttributeFluxForm {
+    private Integer selectedProductStockId;
+
+    public Integer getSelectedProductStockId() {
+        return selectedProductStockId;
+    }
+
+    public void setSelectedProductStockId(Integer selectedProductStockId) {
+        this.selectedProductStockId = selectedProductStockId;
+    }
 
     private ProductMovementService movementService() { return Context.getService(ProductMovementService.class); }
 

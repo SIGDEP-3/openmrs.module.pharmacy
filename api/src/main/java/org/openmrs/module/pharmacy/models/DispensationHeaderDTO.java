@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy.models;
 
 import org.openmrs.Provider;
+import org.openmrs.module.pharmacy.MobilePatient;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductRegimen;
 import org.openmrs.module.pharmacy.enumerations.Goal;
@@ -28,6 +29,7 @@ public class DispensationHeaderDTO {
     private Integer lastDispensationTreatmentDays;
     private Date getLastDispensationTreatmentEndDate;
     private OperationStatus operationStatus;
+    private MobilePatient mobilePatient;
 
     public DispensationHeaderDTO() {
     }
@@ -174,5 +176,13 @@ public class DispensationHeaderDTO {
 
     public OperationStatus getOperationStatus() {
         return operationStatus;
+    }
+
+    public MobilePatient getMobilePatient() {
+        return mobilePatient;
+    }
+
+    public void setMobilePatient(MobilePatient mobilePatient) {
+        this.mobilePatient = mobilePatient;
     }
 }

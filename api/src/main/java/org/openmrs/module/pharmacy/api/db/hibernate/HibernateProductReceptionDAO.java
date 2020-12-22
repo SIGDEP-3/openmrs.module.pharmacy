@@ -124,6 +124,7 @@ public class HibernateProductReceptionDAO implements ProductReceptionDAO {
 						"pp.code as code, " +
 						"pp.retail_name as retailName, " +
 						"pp.wholesale_name as wholesaleName, " +
+						"pp.unit_conversion as unitConversion, " +
 						"ppu.name as retailUnit, " +
 						"ppu2.name as wholesaleUnit, " +
 						"ppa.batch_number as batchNumber, " +
@@ -155,6 +156,7 @@ public class HibernateProductReceptionDAO implements ProductReceptionDAO {
 				.addScalar("batchNumber", StandardBasicTypes.STRING)
 				.addScalar("expiryDate", StandardBasicTypes.DATE)
 				.addScalar("quantityToDeliver", StandardBasicTypes.INTEGER)
+				.addScalar("unitConversion", StandardBasicTypes.DOUBLE)
 				.addScalar("quantity", StandardBasicTypes.INTEGER)
 				.addScalar("observation", StandardBasicTypes.STRING)
 				.addScalar("dateCreated", StandardBasicTypes.DATE)

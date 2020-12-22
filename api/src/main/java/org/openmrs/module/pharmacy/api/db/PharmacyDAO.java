@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
 import java.util.Date;
@@ -36,4 +37,6 @@ public interface PharmacyDAO {
 	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
 
     ProductOperation saveProductOperation(ProductOperation productOperation);
+
+	List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
 }

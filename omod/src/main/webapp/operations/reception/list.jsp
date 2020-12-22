@@ -88,7 +88,7 @@
                         <td><fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${reception.operationNumber}</td>
                         <td>${reception.productProgram.name}</td>
-                        <td>${reception.receptionQuantityMode}</td>
+                        <td>${reception.receptionQuantityMode == 'RETAIL' ? 'DETAIL' : 'EN GROS'}</td>
                         <c:choose>
                             <c:when test="${fct:length(reception.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="addLineUrl">
@@ -112,6 +112,14 @@
                             <a href="${editUrl}" class="text-${reception.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${reception.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
+                            <c:if test="${reception.operationStatus != 'VALIDATED'}">
+                                <c:url value="/module/pharmacy/operations/reception/delete.form" var="delUrl">
+                                    <c:param name="id" value="${reception.productOperationId}"/>
+                                </c:url>
+                                <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer la réception, Voulez-vous continuer ?')" class="text-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </c:if>
                         </td>
                     </tr>
                 </c:forEach>

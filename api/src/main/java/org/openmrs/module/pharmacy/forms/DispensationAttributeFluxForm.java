@@ -6,17 +6,17 @@ import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 
 public class DispensationAttributeFluxForm {
     private Integer productId;
+    private Integer selectedProductId;
     private Integer productOperationId;
     private Integer dispensingQuantity;
     private Integer requestedQuantity;
 
     public DispensationAttributeFluxForm() {
-
     }
 
     public Integer getProductId() {
@@ -25,6 +25,14 @@ public class DispensationAttributeFluxForm {
 
     public void setProductId(Integer productId) {
         this.productId = productId;
+    }
+
+    public Integer getSelectedProductId() {
+        return selectedProductId;
+    }
+
+    public void setSelectedProductId(Integer selectedProductId) {
+        this.selectedProductId = selectedProductId;
     }
 
     public Integer getProductOperationId() {
@@ -77,24 +85,27 @@ public class DispensationAttributeFluxForm {
     public List<ProductAttributeFlux> getProductAttributeFluxes() {
         List<ProductAttributeFlux> fluxes = new ArrayList<ProductAttributeFlux>();
         if (getDispensingQuantity()!= null) {
-            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(getProductId()), OperationUtils.getUserLocation());
+            Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
+            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
             Integer quantity = getDispensingQuantity();
+            int countFlux = 0;
+            int countOldFlux = dispensationService().getOneProductDispensationById(getProductOperationId()).getProductAttributeFluxes().size();
             for (ProductAttributeStock stock : productAttributeStocks) {
+                countFlux ++;
                 ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
                         stock.getProductAttribute(),
-                        receptionService().getOneProductDispensationById(getProductOperationId())
+                        dispensationService().getOneProductDispensationById(getProductOperationId())
                 );
-                if (productAttributeFlux != null){
-                    productAttributeFlux.setQuantity(getDispensingQuantity());
-                } else {
+                if (productAttributeFlux == null) {
                     productAttributeFlux = new ProductAttributeFlux();
-                    productAttributeFlux.setQuantity(getDispensingQuantity());
-                    productAttributeFlux.setLocation(Context.getLocationService().getDefaultLocation());
+//                    productAttributeFlux.setQuantity(getDispensingQuantity());
+                    productAttributeFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeFlux.setProductAttribute(stock.getProductAttribute());
-                    productAttributeFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+                    productAttributeFlux.setOperationDate(dispensationService().getOneProductDispensationById(getProductOperationId()).getOperationDate());
+                    productAttributeFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
                 }
 
-                if (getDispensingQuantity() <= stock.getQuantityInStock()){
+                if (quantity <= stock.getQuantityInStock()){
                     productAttributeFlux.setQuantity(quantity);
                     fluxes.add(productAttributeFlux);
                     break;
@@ -107,7 +118,19 @@ public class DispensationAttributeFluxForm {
                     }
                 }
             }
-
+            if (countOldFlux > countFlux) {
+                int remainFluxesCount = countOldFlux - countFlux;
+                List<ProductAttributeFlux> attributeFluxes =
+                        OperationUtils.getLastElements(
+                                dispensationService().getOneProductDispensationById(
+                                        getProductOperationId()).getProductAttributeFluxes(),
+                                remainFluxesCount
+                        );
+                for (ProductAttributeFlux flux : attributeFluxes) {
+                    flux.setQuantity(0);
+                    fluxes.add(flux);
+                }
+            }
         }
 
         return fluxes;
@@ -116,12 +139,13 @@ public class DispensationAttributeFluxForm {
     public List<ProductAttributeOtherFlux> getProductAttributeOtherFluxes() {
         List<ProductAttributeOtherFlux> otherFluxes = new ArrayList<ProductAttributeOtherFlux>();
         if (getRequestedQuantity()!= null) {
-            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(getProductId()), OperationUtils.getUserLocation());
+            Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
+            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
             Integer quantity = getRequestedQuantity();
             for (ProductAttributeStock stock : productAttributeStocks) {
                 ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
                         stock.getProductAttribute(),
-                        receptionService().getOneProductDispensationById(getProductOperationId()),
+                        dispensationService().getOneProductDispensationById(getProductOperationId()),
                         OperationUtils.getUserLocation()
                 );
                 if (productAttributeOtherFlux != null){
@@ -132,7 +156,7 @@ public class DispensationAttributeFluxForm {
                     productAttributeOtherFlux.setLabel("Quantitié demandée");
                     productAttributeOtherFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeOtherFlux.setProductAttribute(stock.getProductAttribute());
-                    productAttributeOtherFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+                    productAttributeOtherFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
                 }
 
                 if (getRequestedQuantity() <= stock.getQuantityInStock()){
@@ -154,9 +178,10 @@ public class DispensationAttributeFluxForm {
     }
 
     public ProductAttributeOtherFlux getProductAttributeOtherFlux() {
+        Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
         ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperation(
-                productService().getOneProductById(getProductId()),
-                receptionService().getOneProductDispensationById(getProductOperationId())
+                productService().getOneProductById(productId),
+                dispensationService().getOneProductDispensationById(getProductOperationId())
         );
         if (otherFlux != null){
             otherFlux.setQuantity(getRequestedQuantity());
@@ -165,8 +190,8 @@ public class DispensationAttributeFluxForm {
             otherFlux.setQuantity(getDispensingQuantity());
             otherFlux.setLabel("Quantitié demandée");
             otherFlux.setLocation(OperationUtils.getUserLocation());
-            otherFlux.setProduct(productService().getOneProductById(getProductId()));
-            otherFlux.setProductOperation(receptionService().getOneProductDispensationById(getProductOperationId()));
+            otherFlux.setProduct(productService().getOneProductById(productId));
+            otherFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
         }
         return otherFlux;
     }
@@ -175,10 +200,10 @@ public class DispensationAttributeFluxForm {
         setProductId(product.getProductId());
         setProductOperationId(productDispensation.getProductOperationId());
         setDispensingQuantity(fluxService().getAllProductAttributeFluxByOperationAndProductCount(productDispensation, product));
-        setRequestedQuantity(fluxService().getAllProductAttributeOtherFluxByOperationAndProductCount(productDispensation, product));
+        setRequestedQuantity(fluxService().getOneProductAttributeOtherFluxByProductAndOperation(product, productDispensation).getQuantity());
     }
 
-    private ProductDispensationService receptionService() {
+    private ProductDispensationService dispensationService() {
         return Context.getService(ProductDispensationService.class);
     }
 
