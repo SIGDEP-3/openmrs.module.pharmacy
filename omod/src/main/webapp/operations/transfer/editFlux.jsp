@@ -120,7 +120,7 @@
                     <td class="font-weight-bold text-info">
                         <fmt:formatDate value="${productTransfer.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                     </td>
-                    <td>Observation</td>
+                    <td>Raison de transfert</td>
                     <td class="font-weight-bold text-info">${productTransfer.observation}</td>
                 </tr>
                 </thead>

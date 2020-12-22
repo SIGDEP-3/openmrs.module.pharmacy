@@ -52,4 +52,5 @@ public interface ProductInventoryService extends OpenmrsService {
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
 	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
+	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
 }

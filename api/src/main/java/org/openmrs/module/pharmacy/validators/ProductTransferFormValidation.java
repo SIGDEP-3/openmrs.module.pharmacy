@@ -26,6 +26,7 @@ public class ProductTransferFormValidation extends ProductOperationFormValidatio
         } else {
             ValidationUtils.rejectIfEmpty(errors, "exchangeLocationId", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "transferType", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "observation", null, "Ce champ est requis");
         }
     }
 }

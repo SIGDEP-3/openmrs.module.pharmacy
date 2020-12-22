@@ -141,8 +141,68 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
-                                <label>Observations</label>
-                                <form:textarea path="observation" cssClass="form-control form-control-sm" />
+                                <label>Raison de transfert</label>
+                                <form:select path="observation" cssClass="form-control s2">
+                                    <form:option label="Appareil en panne"
+                                                 value="Appareil en panne"/>
+                                    <form:option label="Augmentation de la consommation"
+                                                 value="Augmentation de la consommation"/>
+                                    <form:option label="Baisse de la consommation"
+                                                 value="Baisse de la consommation"/>
+                                    <form:option label="Commande non satisfaite pour le produit durant la période"
+                                                 value="Commande non satisfaite pour le produit durant la période"/>
+                                    <form:option label="Consommation atypique"
+                                                 value="Consommation atypique"/>
+                                    <form:option label="Contraintes liées au conditionnement (1 diluant pour 1 kit)'"
+                                                 value="Contraintes liées au conditionnement (1 diluant pour 1 kit)"/>
+                                    <form:option label="Echange de produit à peremption proche pour consommation"
+                                                 value="Echange de produit à peremption proche pour consommation"/>
+                                    <form:option label="Erreur sur les unités de comptage"
+                                                 value="Erreur sur les unités de comptage"/>
+                                    <form:option label="Livraison Commande Normale + Commande urgente"
+                                                 value="Livraison Commande Normale + Commande urgente"/>
+                                    <form:option label="Manque de communication entre clients de la même aire sanitaire"
+                                                 value="Manque de communication entre clients de la même aire sanitaire"/>
+                                    <form:option label="Mauvaise estimation de la CMM"
+                                                 value="Mauvaise estimation de la CMM"/>
+                                    <form:option label="Mauvaise estimation de la quantité à commander"
+                                                 value="Mauvaise estimation de la quantité à commander"/>
+                                    <form:option label="Mauvaise tenue des fiches de stock (erreur dans les données sources)"
+                                                 value="Mauvaise tenue des fiches de stock (erreur dans les données sources)"/>
+                                    <form:option label="Non promptitude des RM des ESPC"
+                                                 value="Non promptitude des RM des ESPC"/>
+                                    <form:option label="Non suivi des dates de péremption"
+                                                 value="Non suivi des dates de péremption"/>
+                                    <form:option label="Peremption proche"
+                                                 value="Peremption proche"/>
+                                    <form:option label="Probleme lié au conditionnement"
+                                                 value="Probleme lié au conditionnement"/>
+                                    <form:option label="Produit à faible rotation"
+                                                 value="Produit à faible rotation"/>
+                                    <form:option label="Produit en vente ne reponds pas aux normes de gestion des stocks prescrites"
+                                                 value="Produit en vente ne reponds pas aux normes de gestion des stocks prescrites"/>
+                                    <form:option label="Rationnalisation des stock aux sites ou aux services"
+                                                 value="Rationnalisation des stock aux sites ou aux services"/>
+                                    <form:option label="Retard de livraison par la NPSP"
+                                                 value="Retard de livraison par la NPSP"/>
+                                    <form:option label="Rupture nationale"
+                                                 value="Rupture nationale"/>
+                                    <form:option label="Situation dû à un système d'allocation"
+                                                 value="Situation dû à un système d'allocation"/>
+                                    <form:option label="Situation dû à une livraision après un transfert in"
+                                                 value="Situation dû à une livraision après un transfert in"/>
+                                    <form:option label="Structure non habilité à commander ce produit"
+                                                 value="Structure non habilité à commander ce produit"/>
+                                    <form:option label="Transfert sans évaluation du MSD"
+                                                 value="Transfert sans évaluation du MSD"/>
+                                    <form:option label="Unité de comptage non adaptée"
+                                                 value="Unité de comptage non adaptée"/>
+                                    <form:option label="Utilisation des produits PNLS pour d'autres programmes"
+                                                 value="Utilisation des produits PNLS pour d'autres programmes"/>
+                                    <form:option label="Autres"
+                                                 value="Autres"/>
+                                </form:select>
+<%--                                <form:textarea path="observation" cssClass="form-control form-control-sm" />--%>
                                 <form:errors path="observation" cssClass="error"/>
                             </div>
                         </div>

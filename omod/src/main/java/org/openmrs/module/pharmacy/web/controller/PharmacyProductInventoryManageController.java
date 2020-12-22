@@ -14,16 +14,16 @@ import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductInventoryAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductInventoryFormValidation;
 import org.openmrs.web.WebConstants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,8 +36,8 @@ public class PharmacyProductInventoryManageController {
         return Context.getService(PharmacyService.class);
     }
 
-    private ProductService productService() {
-        return Context.getService(ProductService.class);
+    private ProductAttributeStockService stockService() {
+        return Context.getService(ProductAttributeStockService.class);
     }
 
     private ProductInventoryService inventoryService() {
@@ -216,20 +216,45 @@ public class PharmacyProductInventoryManageController {
         modelMap.addAttribute("inventoryAttributeFluxForm", inventoryAttributeFluxForm);
         modelMap.addAttribute("productInventory", productInventory);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productInventory.getProductProgram().getProductProgramId()).getProducts());
-        if (!productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
+
+        if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
             List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxDTOs(productInventory);
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
-            if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED))
+            modelMap.addAttribute("subTitle", "Inventaire - EN ATTENTE DE VALIDATION");
+        } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+            List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxValidatedDTO(productInventory);
+            modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             modelMap.addAttribute("subTitle", "Inventaire - APPROUVEE");
-            else if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", "Inventaire - EN ATTENTE DE VALIDATION");
+        } else if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)){
+            if (getLatestInventory(productInventory) != null) {
+                List<ProductAttributeStock> stocks = stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false);
+                for (ProductAttributeStock stock : stocks) {
+                    if (productInventory.getProductProgram().getProducts().contains(stock.getProductAttribute().getProduct())) {
+                        if (!stock.getQuantityInStock().equals(0)) {
+                            ProductAttributeFlux flux = attributeFluxService().getOneProductAttributeFluxByAttributeAndOperation(
+                                    stock.getProductAttribute(), productInventory
+                            );
+
+                            if (flux == null) {
+                                flux = new ProductAttributeFlux();
+                                flux.setQuantity(0);
+                                flux.setOperationDate(productInventory.getOperationDate());
+                                flux.setLocation(OperationUtils.getUserLocation());
+                                flux.setProductAttribute(stock.getProductAttribute());
+                                flux.setProductOperation(productInventory);
+                                flux.setStatus(productInventory.getOperationStatus());
+                                attributeFluxService().saveProductAttributeFlux(flux);
+                            }
+                        }
+                    }
+                }
             }
-        } else {
             List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
             if (productAttributeFluxes.size() != 0) {
                 Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
             }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
+
             modelMap.addAttribute("subTitle", "Saisie de l'Inventaire - ajout de produits");
         }
     }
@@ -292,11 +317,6 @@ public class PharmacyProductInventoryManageController {
         if (flux != null) {
             HttpSession session = request.getSession();
             attributeFluxService().removeProductAttributeFlux(flux);
-//            ProductAttributeOtherFlux otherFlux = attributeFluxService()
-//                    .getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), flux.getProductOperation(), OperationUtils.getUserLocation());
-//            if (otherFlux != null) {
-//                attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
-//            }
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La ligne du produit a été supprimée avec succès !");
         }
         return "redirect:/module/pharmacy/operations/inventory/editFlux.form?inventoryId=" + inventoryId;
@@ -310,6 +330,21 @@ public class PharmacyProductInventoryManageController {
         ProductOperation operation = service().getOneProductOperationById(inventoryId);
 
         if (operation != null) {
+            for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
+                ProductAttributeOtherFlux otherFlux = new ProductAttributeOtherFlux();
+                otherFlux.setProductOperation(operation);
+                otherFlux.setProductAttribute(flux.getProductAttribute());
+                otherFlux.setLabel("Gap");
+                otherFlux.setLocation(OperationUtils.getUserLocation());
+                ProductAttributeStock stock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), OperationUtils.getUserLocation(), false);
+                if (stock != null) {
+                    otherFlux.setQuantity(flux.getQuantity() - stock.getQuantityInStock());
+                } else {
+                    otherFlux.setQuantity(flux.getQuantity());
+                }
+                attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
+            }
+
             OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
 
             if (OperationUtils.validateOperation(operation)) {
@@ -356,8 +391,10 @@ public class PharmacyProductInventoryManageController {
             }  else {
                 return inventory;
             }
+        } else {
+            inventory = inventoryService().getLastProductInventoryByDate(OperationUtils.getUserLocation(), productInventory.getProductProgram(), productInventory.getOperationDate());
+            return inventory;
         }
-        return null;
     }
 
 //    @RequestMapping(value = "/module/pharmacy/operations/inventory/delete.form", method = RequestMethod.GET)
@@ -379,4 +416,30 @@ public class PharmacyProductInventoryManageController {
 //        }
 //        return null;
 //    }
+
+    @RequestMapping(value = "save-flux.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> saveAttributeFluxAjax(
+            @RequestParam("batchNumber") String batchNumber,
+            @RequestParam("operationId") Integer operationId,
+            @RequestParam("quantity") Integer quantity) {
+
+        ProductAttribute attribute = attributeService().getOneProductAttributeByBatchNumber(batchNumber, OperationUtils.getUserLocation());
+        ProductAttributeFlux flux = attributeFluxService().getOneProductAttributeFluxByAttributeAndOperation(attribute, service().getOneProductOperationById(operationId));
+        flux.setQuantity(quantity);
+        return new ResponseEntity<String>(attributeFluxService().saveProductAttributeFlux(flux).getQuantity().toString(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "save-observation.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> saveObservationAjax(
+            @RequestParam("batchNumber") String batchNumber,
+            @RequestParam("operationId") Integer operationId,
+            @RequestParam("observation") String observation) {
+
+        ProductAttribute attribute = attributeService().getOneProductAttributeByBatchNumber(batchNumber, OperationUtils.getUserLocation());
+        ProductAttributeFlux flux = attributeFluxService().getOneProductAttributeFluxByAttributeAndOperation(attribute, service().getOneProductOperationById(operationId));
+        flux.setObservation(observation);
+        return new ResponseEntity<String>(attributeFluxService().saveProductAttributeFlux(flux).getObservation(), HttpStatus.OK);
+    }
 }

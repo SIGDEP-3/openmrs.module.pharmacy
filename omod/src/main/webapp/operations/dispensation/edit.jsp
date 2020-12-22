@@ -376,23 +376,23 @@
                                             <h6 class="font-italic text-secondary h6">Information de dispensation</h6>
                                             <div class="card bg-light">
                                                 <div class="card-body p-2">
-                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
-                                                        <div class="row mb-2">
-                                                            <div class="col-8">
-                                                                <label class="pt-1">Prescripteur : </label>
-                                                                <form:select path="providerId" cssClass="form-control s2">
-                                                                    <form:option value="" label=""/>
-                                                                    <form:options items="${providers}" itemValue="providerId" itemLabel="name"/>
-                                                                </form:select>
-                                                                <form:errors path="providerId" cssClass="error"/>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <label class="">Date de prescription</label>
-                                                                <form:input path="prescriptionDate" tabindex="true" cssClass="form-control form-control-sm picker"/>
-                                                                <form:errors path="prescriptionDate" cssClass="error"/>
-                                                            </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-8">
+                                                            <label class="pt-1">Prescripteur : </label>
+                                                            <form:select path="providerId" cssClass="form-control s2">
+                                                                <form:option value="" label=""/>
+                                                                <form:options items="${providers}" itemValue="providerId" itemLabel="name"/>
+                                                            </form:select>
+                                                            <form:errors path="providerId" cssClass="error"/>
                                                         </div>
-                                                    </c:if>
+                                                        <div class="col-4">
+                                                            <label class="">Date de prescription</label>
+                                                            <form:input path="prescriptionDate" tabindex="true" cssClass="form-control form-control-sm picker"/>
+                                                            <form:errors path="prescriptionDate" cssClass="error"/>
+                                                        </div>
+                                                    </div>
+<%--                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">--%>
+<%--                                                    </c:if>--%>
                                                     <div class="row mb-2">
                                                         <div class="col-12">
                                                             <label class="mb-1">But <span class="required">*</span></label>
@@ -410,24 +410,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mb-2">
-                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
-                                                            <div class="col-5">
-                                                                <label class="">Date de dispensation <span class="required">*</span> </label>
-                                                                <form:input path="operationDate" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm picker"/>
-                                                                <form:errors path="operationDate" cssClass="error"/>
-                                                            </div>
-                                                            <div class="col-3">
-                                                                <label class="">Nb Jours TTT<span class="required">*</span> </label>
-                                                                <form:input path="treatmentDays" onchange="getTreatmentEndDate()" cssClass="form-control form-control-sm"/>
-                                                                <form:errors path="treatmentDays" cssClass="error"/>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <label class="">Date de fin de TTT <span class="required">*</span> </label>
-                                                                <form:input path="treatmentEndDate" tabindex="-1" cssClass="form-control form-control-sm" readonly="true"/>
-                                                                <form:errors path="treatmentEndDate" cssClass="error"/>
-                                                            </div>
-                                                        </c:if>
-                                                        <c:if test="${productDispensationForm.patientType == 'OTHER_HIV' || productDispensationForm.patientType == 'MOBILE'}">
+                                                        <c:if test="${productDispensationForm.patientType == 'OTHER_HIV' || productDispensationForm.patientType == 'MOBILE' || productDispensationForm.patientType == 'ON_SITE'}">
                                                             <div class="col-5">
                                                                 <label class="">Date de dispensation <span class="required">*</span> </label>
                                                                 <form:input path="operationDate" cssClass="form-control form-control-sm picker"/>
@@ -439,7 +422,13 @@
                                                                 <form:errors path="treatmentDays" cssClass="error"/>
                                                             </div>
                                                         </c:if>
-
+                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                            <div class="col-4">
+                                                                <label class="">Date de fin de TTT <span class="required">*</span> </label>
+                                                                <form:input path="treatmentEndDate" tabindex="-1" cssClass="form-control form-control-sm" readonly="true"/>
+                                                                <form:errors path="treatmentEndDate" cssClass="error"/>
+                                                            </div>
+                                                        </c:if>
                                                     </div>
                                                 </div>
                                             </div>
