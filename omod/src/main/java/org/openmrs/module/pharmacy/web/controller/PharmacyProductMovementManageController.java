@@ -90,6 +90,12 @@ public class PharmacyProductMovementManageController {
             String movementType = "";
             StockEntryType entryType;
             StockOutType outType;
+            if (id != 0){
+              ProductOperation productOperation = pharmacyService().getOneProductOperationById(id);
+              if (productOperation != null) {
+                  modelMap.addAttribute("program", productOperation.getProductProgram());
+              }
+            }
             if (getOutTypeLabels().containsKey(type)){
                 movementType = "out";
                 outType = StockOutType.valueOf(type);
@@ -118,10 +124,12 @@ public class PharmacyProductMovementManageController {
                 modelMap.addAttribute("subTitle", getEntryTypeLabels()
                         .get(entryType.name()));
             }
-            productMovementForm.setProductProgramId(programId);
+            if (programId != 0){
+                productMovementForm.setProductProgramId(programId);
+                modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
+            }
             modelMap.addAttribute("productMovementForm", productMovementForm);
             modelMap.addAttribute("type", type);
-            modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("exchanges", ExchangeService().getAllProductExchange());
             modelMap.addAttribute("movementType", movementType);
         }
@@ -152,11 +160,10 @@ public class PharmacyProductMovementManageController {
                     fluxes = out.getProductAttributeFluxes();
                 }
                 else {
-                    ProductMovementEntry entry = service().saveProductMovementEntry(productMovementEntryForm.getProductMovementEntry());
-                    movementId = entry.getProductOperationId();
+                    ProductMovementEntry entry = productMovementEntryForm.getProductMovementEntry();
+                    movementId =  service().saveProductMovementEntry(entry).getProductOperationId();
                     movementType = "entry";
                     fluxes = entry.getProductAttributeFluxes();
-
                 }
                 if (action.equals("addLine")) {
                     if (fluxes.size() == 0) {
@@ -371,29 +378,30 @@ public class PharmacyProductMovementManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/movement/delete.form", method = RequestMethod.GET)
     public String deleteOperation(HttpServletRequest request,
-                                  @RequestParam(value = "movementId") Integer movementId,
+//                                  @RequestParam(value = "movementId") Integer movementId,
+                                  @RequestParam(value = "id") Integer id,
                                   @RequestParam(value = "type") String type){
         if (!Context.isAuthenticated())
             return null;
+
         HttpSession session = request.getSession();
-        if (type.equals("out")){
-            ProductMovementOut movementOut = service().getOneProductMovementOutById(movementId);
+        if (getOutTypeLabels().containsKey(type)){
+            ProductMovementOut movementOut = service().getOneProductMovementOutById(id);
             for (ProductAttributeFlux flux : productAttributeFluxService().getAllProductAttributeFluxByOperation(movementOut, false)){
                 productAttributeFluxService().removeProductAttributeFlux(flux);
             }
             service().removeProductMovementOut(movementOut);
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le movement de sortie a été supprimée avec succès !");
         }
         else {
-            ProductMovementEntry movementEntry = service().getOneProductMovementEntryById(movementId);
+            ProductMovementEntry movementEntry = service().getOneProductMovementEntryById(id);
             for (ProductAttributeFlux flux : productAttributeFluxService().getAllProductAttributeFluxByOperation(movementEntry, false)){
                 productAttributeFluxService().removeProductAttributeFlux(flux);
             }
             service().removeProductMovementEntry(movementEntry);
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le movement de sortie a été supprimée avec succès !");
 
         }
-        return "redirect:/module/pharmacy/operations/reception/list.form";
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le movement de sortie a été supprimée avec succès !");
+        return "redirect:/module/pharmacy/operations/movement/list.form";
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/movement/deleteFlux.form", method = RequestMethod.GET)
@@ -445,8 +453,8 @@ public class PharmacyProductMovementManageController {
                     break;
 //                case TRANSFER_IN: label = "Transfert Entrant";
 //                    break;
-                case SITE_PRODUCT_BACK: label = "Retour de produit du site";
-                    break;
+//                case SITE_PRODUCT_BACK: label = "Retour de produit du site";
+//                    break;
                 case POSITIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire positif";
                     break;
             }

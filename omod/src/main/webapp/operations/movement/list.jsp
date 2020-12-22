@@ -151,17 +151,6 @@
                 <div class="col-3">
                     <div class="h5 pt-2"><i class="fa fa-list"></i> Entr&eacute;e</div>
                 </div>
-                <%--                <div class="col-9">--%>
-                <%--                    <select name="stockEntryType" id="stockEntryType" class="s2">--%>
-                <%--                        <option value=""></option>--%>
-                <%--                        <c:forEach var="stockEntryType"  items="${stockEntryTypes}">--%>
-                <%--                            <option value="${stockEntryType.key}">${stockEntryType.value}</option>--%>
-                <%--                        </c:forEach>--%>
-                <%--                    </select>--%>
-                <%--                    <button class="btn btn-primary btn-sm" onclick="addStockEntryType()" title="Créer nouveau">--%>
-                <%--                        <i class="fa fa-plus"></i> Nouvelle entr&eacute;e--%>
-                <%--                    </button>--%>
-                <%--                </div>--%>
             </div>
             <div class="row bg-light pt-2 pb-2 border border-secondary">
                 <div class="col-12">
@@ -191,7 +180,18 @@
                                         <c:param name="id" value="${entry.productOperationId}"/>
                                         <c:param name="type" value="${entry.stockEntryType}"/>
                                     </c:url>
-                                    <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
+                                    <a href="${editUrl}" class="text-${entry.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
+                                        <i class="fa fa-${entry.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
+                                    </a>
+                                    <c:if test="${entry.operationStatus != 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
+                                            <c:param name="id" value="${entry.productOperationId}"/>
+                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                        </c:url>
+                                        <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -219,7 +219,7 @@
                 <%--                    </button>--%>
                 <%--                </div>--%>
             </div>
-            ${fct:length(outs)}
+<%--            ${fct:length(outs)}--%>
             <div class="row bg-light pt-2 pb-2 border border-secondary">
                 <div class="col-12">
                     <table class="table table-striped table-sm">
@@ -248,7 +248,18 @@
                                         <c:param name="id" value="${out.productOperationId}"/>
                                         <c:param name="type" value="${out.stockOutType}"/>
                                     </c:url>
-                                    <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
+                                    <a href="${editUrl}" class="text-${out.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
+                                        <i class="fa fa-${out.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
+                                    </a>
+                                    <c:if test="${out.operationStatus != 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
+                                            <c:param name="id" value="${out.productOperationId}"/>
+                                            <c:param name="type" value="${out.stockOutType}"/>
+                                        </c:url>
+                                        <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>

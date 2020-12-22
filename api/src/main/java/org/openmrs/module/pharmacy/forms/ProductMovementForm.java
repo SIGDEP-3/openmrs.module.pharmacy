@@ -44,10 +44,11 @@ public class ProductMovementForm extends ProductOperationForm {
 
     public ProductMovementEntry getProductMovementEntry() {
         ProductMovementEntry productMovementEntry = (ProductMovementEntry) getProductOperation(new ProductMovementEntry());
-        if (productMovementEntry.getStockEntryType().equals(StockEntryType.TRANSFER_IN)){
-
-            productMovementEntry.setSender(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
-        }
+//        if (productMovementEntry.getStockEntryType().equals(StockEntryType.TRANSFER_IN)){
+//
+//            productMovementEntry.setSender(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
+//        }
+        productMovementEntry.setSender(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
         productMovementEntry.setStockEntryType(getStockEntryType());
         return productMovementEntry;
     }

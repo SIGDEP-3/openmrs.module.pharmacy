@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class ProductMovementEntry extends ProductOperation {
 
     @ManyToOne
-    @JoinColumn(name = "sender", nullable = false)
+    @JoinColumn(name = "sender")
     private ProductExchangeEntity sender;
 
     @Column(name = "stock_entry_type", nullable = false)
