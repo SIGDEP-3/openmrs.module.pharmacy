@@ -144,7 +144,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
 						"WHERE NOT (ppaf.uuid IS NULL) AND (ppas.quantity_in_stock IS NULL OR ppas.quantity_in_stock <> 0)" +
-						"ORDER BY ppaf.date_created, ppas.date_created DESC";
+						"ORDER BY pp.retail_name ASC, ppaf.date_created DESC";
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
@@ -218,7 +218,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +
-						"ORDER BY ppaf.date_created DESC";
+						"ORDER BY pp.retail_name ASC";
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
