@@ -115,8 +115,8 @@
                                                           (reception.productReturnedOperationStatus == 'NOT_COMPLETED' ? 'btn-info' :
                                                             (reception.productReturnedOperationStatus == 'AWAITING_VALIDATION' ? 'btn-warning' :
                                                               (reception.productReturnedOperationStatus == 'DISABLED' ? 'btn-danger' :
-                                                                (reception.productReturnedOperationStatus == 'DISABLED' ? 'btn-success' : ''))))}
-                                                text-decoration-none text-white">
+                                                                (reception.productReturnedOperationStatus == 'VALIDATED' ? 'btn-success' : ''))))}
+                                                text-decoration-none text-white ">
                                                     <c:if test="${reception.canReturn == true}">
                                                         <c:choose>
                                                             <c:when test="${reception.productReturnedOperationStatus == null || reception.productReturnedOperationStatus == 'NOT_COMPLETED'}">
