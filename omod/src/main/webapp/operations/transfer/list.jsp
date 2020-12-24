@@ -78,7 +78,7 @@
                     </th>
 <%--                    <th>Type d'inventaire</th>--%>
                     <th>Destinataire / Exp&eacute;diteur</th>
-                    <th>Nombre de produits</th>
+                    <th>Ligne de produits</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
                         Etat
