@@ -105,7 +105,7 @@ public class PharmacyProductReceptionManageController {
                         return "redirect:/module/pharmacy/operations/reception/editFlux.form?receptionId=" +
                                 returnBackProductExisting.getProductOperationId();
                     }
-                    modelMap.addAttribute("subTitle", "Retour de Produits en réception - entête");
+                    modelMap.addAttribute("subTitle", "Réception - Retour de Produits <i class=\"fa fa-play\"></i> Saisie entête");
                 }
 
             } else {
@@ -135,7 +135,7 @@ public class PharmacyProductReceptionManageController {
                 }
                 modelMap.addAttribute("productReception", receptionService().getOneProductReceptionById(id));
                 modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
-                modelMap.addAttribute("subTitle", "Saisie de réception - entête");
+                modelMap.addAttribute("subTitle", "Réception <i class=\"fa fa-play\"></i> Saisie entête");
             }
 
             modelMap.addAttribute("productReceptionForm", productReceptionForm);
@@ -172,11 +172,11 @@ public class PharmacyProductReceptionManageController {
             }
             if (receptionId != 0) {
                 modelMap.addAttribute("reception", receptionService().getOneProductReceptionById(receptionId));
-                modelMap.addAttribute("subTitle", "Retour de Produits en réception - entête");
+                modelMap.addAttribute("subTitle", "Réception - Retour de Produits <i class=\"fa fa-play\"></i> Saisie entête");
             } else {
                 modelMap.addAttribute("program", programService().getOneProductProgramById(productReceptionForm.getProductProgramId()));
                 modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
-                modelMap.addAttribute("subTitle", "Saisie  de réception - entête");
+                modelMap.addAttribute("subTitle", "Réception <i class=\"fa fa-play\"></i> Saisie entête");
             }
             modelMap.addAttribute("receptionHeaderForm", productReceptionForm);
         }
@@ -244,7 +244,7 @@ public class PharmacyProductReceptionManageController {
                         }
                     }
 
-                    if (receptionAttributeFluxForm.getProductOperationId() == null) {
+                    if (receptionAttributeFluxForm.getProductAttributeFluxId() == null) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit insérés avec succès !");
                     } else {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
@@ -338,17 +338,17 @@ public class PharmacyProductReceptionManageController {
 
         modelMap.addAttribute("receptionAttributeFluxForm", receptionAttributeFluxForm);
         modelMap.addAttribute("productReception", productReception);
-        String title = productReception.getIncidence().equals(Incidence.NEGATIVE) ? "Retour de Produits (Réception)" : "Réception";
+        String title = productReception.getIncidence().equals(Incidence.NEGATIVE) ? "Réception - Retour de Produits" : "Réception";
 
         if (!productReception.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
             if (productReception.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-                modelMap.addAttribute("subTitle", title + " - APPROUVEE");
+                modelMap.addAttribute("subTitle", title + " <i class=\"fa fa-play\"></i> APPROUVEE");
             }
             else if (productReception.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", title + " - EN ATTENTE DE VALIDATION");
+                modelMap.addAttribute("subTitle", title + " <i class=\"fa fa-play\"></i> EN ATTENTE DE VALIDATION");
             }
         } else {
-            modelMap.addAttribute("subTitle", title + " - Ajout de produits");
+            modelMap.addAttribute("subTitle", title + " <i class=\"fa fa-play\"></i> Ajout de produits");
         }
     }
 

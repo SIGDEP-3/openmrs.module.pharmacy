@@ -34,4 +34,13 @@ public class DispensationTransformationResultDTO {
     public void setNotTransformed(Integer notTransformed) {
         this.notTransformed = notTransformed;
     }
+
+    @Override
+    public String toString() {
+        return "DispensationTransformationResultDTO{" +
+                "total à transformer =" + total +
+                ", transformé = " + transformed +
+                ", non transformés =" + notTransformed +
+                '}';
+    }
 }

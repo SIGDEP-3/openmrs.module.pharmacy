@@ -494,6 +494,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public DispensationTransformationResultDTO transformDispensation(Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);

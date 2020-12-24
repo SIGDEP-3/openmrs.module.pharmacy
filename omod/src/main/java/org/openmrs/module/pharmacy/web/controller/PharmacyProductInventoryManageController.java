@@ -110,7 +110,7 @@ public class PharmacyProductInventoryManageController {
             modelMap.addAttribute("productInventoryForm", productInventoryForm);
             modelMap.addAttribute("productInventory", inventoryService().getOneProductInventoryById(id));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
-            modelMap.addAttribute("subTitle", "Saisie d'inventaire - Entête");
+            modelMap.addAttribute("subTitle", "Inventaire - Entête");
         }
         return null;
     }
@@ -146,7 +146,7 @@ public class PharmacyProductInventoryManageController {
             modelMap.addAttribute("latestInventory", latestInventory(productInventoryForm.getProductInventory()));
             modelMap.addAttribute("program", programService().getOneProductProgramById(productInventoryForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
-            modelMap.addAttribute("subTitle", "Saisie  de l'inventaire - entête");
+            modelMap.addAttribute("subTitle", "Inventaire - entête");
         }
 
         return null;
@@ -194,7 +194,7 @@ public class PharmacyProductInventoryManageController {
                     productAttributeFlux.setStatus(productInventory.getOperationStatus());
                     attributeFluxService().saveProductAttributeFlux(productAttributeFlux);
 
-                    if (inventoryAttributeFluxForm.getProductOperationId() == null) {
+                    if (inventoryAttributeFluxForm.getProductAttributeFluxId() == null) {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit insérés avec succès !");
                     } else {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
@@ -255,7 +255,7 @@ public class PharmacyProductInventoryManageController {
             }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
 
-            modelMap.addAttribute("subTitle", "Saisie de l'Inventaire - ajout de produits");
+            modelMap.addAttribute("subTitle", "Inventaire - ajout de produits");
         }
     }
 

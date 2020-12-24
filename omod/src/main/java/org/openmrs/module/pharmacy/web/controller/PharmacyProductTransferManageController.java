@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -122,6 +123,7 @@ public class PharmacyProductTransferManageController {
             modelMap.addAttribute("productTransferForm", productTransferForm);
             modelMap.addAttribute("productTransfer", transferService().getOneProductTransferById(id));
             modelMap.addAttribute("clientLocations", transferService().getAllClientLocation(false));
+            modelMap.addAttribute("reasonList", transferReasons());
             modelMap.addAttribute("subTitle", "Saisie de transfert " + transferTypeStr.toUpperCase() + " - Entête");
         }
         return null;
@@ -388,5 +390,39 @@ public class PharmacyProductTransferManageController {
 
         }
         return null;
+    }
+
+    private List<String> transferReasons() {
+        List<String> reasonList = new ArrayList<java.lang.String>();
+        reasonList.add("Appareil en panne");
+        reasonList.add("Augmentation de la consommation");
+        reasonList.add("Baisse de la consommation");
+        reasonList.add("Commande non satisfaite pour le produit durant la période");
+        reasonList.add("Consommation atypique");
+        reasonList.add("Contraintes liées au conditionnement (1 diluant pour 1 kit)");
+        reasonList.add("Echange de produit à peremption proche pour consommation");
+        reasonList.add("Erreur sur les unités de comptage");
+        reasonList.add("Livraison Commande Normale + Commande urgente");
+        reasonList.add("Manque de communication entre clients de la même aire sanitaire");
+        reasonList.add("Mauvaise estimation de la CMM");
+        reasonList.add("Mauvaise estimation de la quantité à commander");
+        reasonList.add("Mauvaise tenue des fiches de stock (erreur dans les données sources)");
+        reasonList.add("Non promptitude des RM des ESPC");
+        reasonList.add("Non suivi des dates de péremption");
+        reasonList.add("Peremption proche");
+        reasonList.add("Probleme lié au conditionnement");
+        reasonList.add("Produit à faible rotation");
+        reasonList.add("Produit en vente ne reponds pas aux normes de gestion des stocks prescrites");
+        reasonList.add("Rationnalisation des stock aux sites ou aux services");
+        reasonList.add("Retard de livraison par la NPSP");
+        reasonList.add("Rupture nationale");
+        reasonList.add("Situation dû à un système d'allocation");
+        reasonList.add("Situation dû à une livraision après un transfert in");
+        reasonList.add("Structure non habilité à commander ce produit");
+        reasonList.add("Transfert sans évaluation du MSD");
+        reasonList.add("Unité de comptage non adaptée");
+        reasonList.add("Utilisation des produits PNLS pour d'autres programmes");
+        reasonList.add("Autres");
+        return reasonList;
     }
 }

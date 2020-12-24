@@ -36,7 +36,7 @@
 <div class="container-fluid mt-2">
 
     <div class="row mb-2">
-        <div class="col-4">
+        <div class="col-4 text-uppercase font-italic text-secondary">
             <div class="h5"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
         <div class="col-8 text-right">

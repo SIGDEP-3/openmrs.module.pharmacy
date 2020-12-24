@@ -42,6 +42,23 @@
                 location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/edit.form?programId="+ programId
             }
         }
+
+        function transformDispensation() {
+            jQuery.ajax({
+                type: 'GET',
+                url: '${pageContext.request.contextPath}/transform-dispensation.form',
+                dataType : "text",
+                crossDomain:true,
+                success : function(data) {
+                    console.log(data);
+                    //jQuery('.' + batchNumber).parent().html(data.quantity)
+                    //alert(data.toString());
+                },
+                error : function(data) {
+                    console.log(data)
+                }
+            })
+        }
     }
 </script>
 <openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/list.form" />
@@ -191,11 +208,16 @@
     <div class="row bg-light border border-secondary align-items-center">
         <div class="col-12">
             <div class="row border-bottom mb-2 border-secondary">
-                <div class="col-sm-6 offset-6 text-right ">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="transformDispensation()"> Transformer dispensation</button>
+                </div>
+                <div class="col-sm-6 text-right ">
                     <table class="table table-sm table-borderless m-0 p-0">
                         <tr>
-                            <td class="m-1 p-1"><input type="text" placeholder="Numero patient"
-                                                       class="form-control form-control-sm"></td>
+                            <td class="m-1 p-1">
+                                <input type="text" placeholder="Numero patient"
+                                                       class="form-control form-control-sm">
+                            </td>
                             <td class="m-1 p-1"><input type="text" placeholder="Date de debut"
                                                        class="form-control form-control-sm"></td>
                             <td class="m-1 p-1"><input type="text" placeholder="Date de fin"

@@ -14,6 +14,7 @@ import org.openmrs.module.pharmacy.forms.FindPatientForm;
 import org.openmrs.module.pharmacy.forms.ProductDispensationForm;
 import org.openmrs.module.pharmacy.forms.DispensationAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.DispensationHeaderDTO;
+import org.openmrs.module.pharmacy.models.DispensationTransformationResultDTO;
 import org.openmrs.module.pharmacy.models.LastDispensationDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -21,13 +22,12 @@ import org.openmrs.module.pharmacy.validators.FindPatientFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductDispensationAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductDispensationFormValidation;
 import org.openmrs.web.WebConstants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -214,7 +214,7 @@ public class PharmacyProductDispensationManageController {
             modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("productDispensationForm", productDispensationForm);
             modelMap.addAttribute("providers", Context.getProviderService().getAllProviders());
-            modelMap.addAttribute("subTitle", "Saisie de dispensation");
+            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Saisie entête");
         }
         return null;
     }
@@ -273,7 +273,7 @@ public class PharmacyProductDispensationManageController {
             modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("providers", Context.getProviderService().getAllProviders());
             modelMap.addAttribute("dispensationHeaderForm", productDispensationForm);
-            modelMap.addAttribute("subTitle", "Saisie de dispensation");
+            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Saisie entête");
         }
 
         return null;
@@ -528,9 +528,9 @@ public class PharmacyProductDispensationManageController {
         modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
         modelMap.addAttribute("dispensationId", productDispensation.getProductOperationId());
         if (productDispensation.getOperationStatus().equals(OperationStatus.VALIDATED))
-            modelMap.addAttribute("subTitle", "Dispensation - APPROUVEE");
+            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> APPROUVEE");
         else {
-            modelMap.addAttribute("subTitle", "Saisie de dispensation");
+            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Ajout de prosuits");
         }
 
     }
@@ -605,7 +605,7 @@ public class PharmacyProductDispensationManageController {
         dispensation.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
         dispensationService().saveProductDispensation(dispensation);
         attributeService().purgeUnusedAttributes();
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été enregistré avec " +
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La dispensation a été enregistrée avec " +
                 "succès et est en attente de validation !");
         return "redirect:/module/pharmacy/operations/dispensation/list.form";
     }
@@ -712,4 +712,12 @@ public class PharmacyProductDispensationManageController {
         return null;
     }
 
+
+    @RequestMapping(value = "transform-dispensation.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> transformDispensationAjax() {
+
+        DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
+        return new ResponseEntity<String>(resultDTO.toString(), HttpStatus.OK);
+    }
 }
