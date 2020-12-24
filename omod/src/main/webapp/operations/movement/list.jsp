@@ -157,37 +157,59 @@
                     <table class="table table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>
-                                Type de mouvement
-                            </th>
-                            <th>
-                                Date de mouvement
-                            </th>
-                            <th>
-                                Programme
-                            </th>
-                            <th style="width: 30px"></th>
+                            <th>Type de mouvement</th>
+                            <th>Date de mouvement</th>
+                            <th>Programme</th>
+                            <th>Nombre de produits</th>
+                            <th>Etat</th>
+                            <th style="width: 40px"></th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="font-size: 11px">
                         <c:forEach var="entry" items="${ entries }">
                             <tr>
-                                <td>${ entry.stockEntryType}</td>
+                                <td>${ entry.stockEntryType == 'DONATION' ? 'DON' : 'Ajustement inventaire positif'}
+                                </td>
                                 <td><fmt:formatDate value="${entry.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${entry.productProgram.name}</td>
+                                <c:choose>
+                                    <c:when test="${fct:length(entry.productAttributeFluxes) == 0}">
+                                        <%--                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">--%>
+                                        <%--                                            <c:param name="movementId" value="${entry.productOperationId}"/>--%>
+                                        <%--                                            <c:param name="type" value="${entry.stockEntryType}"/>--%>
+                                        <%--                                        </c:url>--%>
+                                        <td class="text-danger">
+                                            Pas de produits
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td class="text-center">
+                                                ${fct:length(entry.productAttributeFluxes)}
+                                        </td>
+                                    </c:otherwise>
+                                </c:choose>
+                                <td>${entry.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (entry.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                                 <td>
-                                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
-                                        <c:param name="id" value="${entry.productOperationId}"/>
-                                        <c:param name="type" value="${entry.stockEntryType}"/>
-                                    </c:url>
-                                    <a href="${editUrl}" class="text-${entry.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
-                                        <i class="fa fa-${entry.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
-                                    </a>
+                                    <c:if test="${entry.operationStatus == 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                            <c:param name="movementId" value="${entry.productOperationId}"/>
+                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                        </c:url>
+                                        <a href="${addLineUrl}" class="text-success primary">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </c:if>
+
                                     <c:if test="${entry.operationStatus != 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
+                                            <c:param name="id" value="${entry.productOperationId}"/>
+                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                        </c:url>
                                         <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
                                             <c:param name="id" value="${entry.productOperationId}"/>
                                             <c:param name="type" value="${entry.stockEntryType}"/>
                                         </c:url>
+                                        <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
                                         <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
@@ -206,56 +228,76 @@
                 <div class="col-3">
                     <div class="h5 pt-2"><i class="fa fa-list"></i> Sortie</div>
                 </div>
-                <%--                <div class="col-9 text-right">--%>
-                <%--                    <select name="stockOutType" id="stockOutType" class="s2">--%>
-                <%--                        <option value=""></option>--%>
-                <%--                        <c:forEach var="stockOutType" items="${stockOutTypes}">--%>
-                <%--                            <option value="${stockOutType.key}">${stockOutType.value}</option>--%>
-                <%--                        </c:forEach>--%>
-                <%--                    </select>--%>
-                <%--                    &lt;%&ndash;                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="url"/>&ndash;%&gt;--%>
-                <%--                    <button class="btn btn-primary" onclick="addStockOutType()" title="Créer nouveau">--%>
-                <%--                        <i class="fa fa-plus"></i> Nouvelle Sortie--%>
-                <%--                    </button>--%>
-                <%--                </div>--%>
             </div>
-<%--            ${fct:length(outs)}--%>
             <div class="row bg-light pt-2 pb-2 border border-secondary">
                 <div class="col-12">
                     <table class="table table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>
-                                Type de mouvement
-                            </th>
-                            <th>
-                                Date de mouvement
-                            </th>
-                            <th>
-                                Programme
-                            </th>
-                            <th style="width: 30px"></th>
+                            <th>Type de mouvement</th>
+                            <th>Date de mouvement</th>
+                            <th>Programme</th>
+                            <th>Nombre de produits</th>
+                            <th>Etat</th>
+                            <th style="width: 40px"></th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="font-size: 11px">
                         <c:forEach var="out" items="${ outs }">
                             <tr>
-                                <td>${out.stockOutType}</td>
+                                <td>
+                                    <c:if test="${out.stockOutType == 'THIEF'}">
+                                    Produits Vol&eacute;s
+                                    </c:if>
+                                    <c:if test="${out.stockOutType == 'DESTROYED'}">
+                                    Produits Endommag&eacute;s
+                                    </c:if>
+                                    <c:if test="${out.stockOutType == 'EXPIRED_PRODUCT'}">
+                                        Produits Perim&eacute;s
+                                    </c:if>
+                                    <c:if test="${out.stockOutType == 'SPOILED_PRODUCT'}">
+                                        Produits Avari&eacute;s
+                                    </c:if>
+                                    <c:if test="${out.stockOutType == 'NEGATIVE_INVENTORY_ADJUSTMENT'}">
+                                        Ajustement inventaire n&eacute;gatif
+                                    </c:if>
+                                    <c:if test="${out.stockOutType == 'OTHER_LOST'}">
+                                        Autres pertes
+                                    </c:if>
+                                </td>
                                 <td><fmt:formatDate value="${out.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${out.productProgram.name}</td>
+                                <c:choose>
+                                    <c:when test="${fct:length(out.productAttributeFluxes) == 0}">
+                                        <td class="text-danger">
+                                            Pas de produits
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td class="text-center">
+                                                ${fct:length(out.productAttributeFluxes)}
+                                        </td>
+                                    </c:otherwise>
+                                </c:choose>
+                                <td>${out.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (out.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                                 <td>
-                                    <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
-                                        <c:param name="id" value="${out.productOperationId}"/>
-                                        <c:param name="type" value="${out.stockOutType}"/>
-                                    </c:url>
-                                    <a href="${editUrl}" class="text-${out.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
-                                        <i class="fa fa-${out.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
-                                    </a>
+                                    <c:if test="${out.operationStatus == 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                            <c:param name="id" value="${out.productOperationId}"/>
+                                            <c:param name="type" value="${out.stockOutType}"/>
+                                        </c:url>
+                                        <a href="${addLineUrl}" class="text-success primary"><i class="fa fa-eye"></i></a>
+                                    </c:if>
                                     <c:if test="${out.operationStatus != 'VALIDATED'}">
+                                        <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
+                                            <c:param name="id" value="${out.productOperationId}"/>
+                                            <c:param name="type" value="${out.stockOutType}"/>
+                                        </c:url>
                                         <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
                                             <c:param name="id" value="${out.productOperationId}"/>
                                             <c:param name="type" value="${out.stockOutType}"/>
                                         </c:url>
+                                        <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
                                         <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>

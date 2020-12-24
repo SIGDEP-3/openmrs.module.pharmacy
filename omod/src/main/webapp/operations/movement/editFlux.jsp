@@ -117,10 +117,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <%--                        <c:if test="${type == 'out' && fct:contains(productMovement.stockOutType, 'TRANSFER')}" >--%>
-                    <%--                            <td>Destinataire</td>--%>
-                    <%--                            <td class="font-weight-bold text-info">${productMovement.recipient.name}</td>--%>
-                    <%--                        </c:if>--%>
                     <c:if test="${type == 'entry' && (fct:contains(productMovement.stockEntryType, 'TRANSFER') || productMovement.stockEntryType =='DONATION')}" >
                         <td>Expediteur</td>
                         <td class="font-weight-bold text-info">${productMovement.sender.name}</td>
@@ -241,7 +237,7 @@
                                 </tr>
                             </c:if>
                             <c:if test="${type == 'out'}">
-                                <c:if test="${movementAttributeFluxForm.selectedProductStockId != null && productMessage == null}">
+                                <c:if test="${(movementAttributeFluxForm.selectedProductStockId != null && productMessage == null) || movementAttributeFluxForm.productAttributeFluxId != null}">
                                     <tr>
                                         <td colspan="">${stock.productAttribute.product.code}</td>
                                         <td colspan="">${stock.productAttribute.product.retailName}</td>
@@ -249,9 +245,11 @@
                                         <td>${stock.productAttribute.batchNumber}</td>
                                         <td>${stock.productAttribute.expiryDate}</td>
                                         <td id="quantityInStock">${stock.quantityInStock}</td>
-                                        <td id="transferredQuantity"><form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
+                                        <td id="transferredQuantity">
+                                            <form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
                                         <td class="text-center"><span class="text-success" id="quantityRemaining">0</span></td>
-                                        <td><form:input path="observation" cssClass="form-control form-control-sm" /></td>
+                                        <td>
+                                            <form:input path="observation" cssClass="form-control form-control-sm" /></td>
                                         <td>
                                             <button class="btn btn-success" id="button-submit">
                                                 <c:if test="${not empty movementAttributeFluxForm.productAttributeFluxId}">

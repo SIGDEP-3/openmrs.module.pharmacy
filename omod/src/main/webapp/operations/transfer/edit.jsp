@@ -27,9 +27,6 @@
             e.preventDefault();
             const forms = document.getElementsByTagName('form');
             let form = forms[0];
-            // if (form.getAttribute('action').includes('action=save')) {
-            //     form.submit();
-            // } else
             if (form.getAttribute('action').includes('action=addLine')) {
                 form.setAttribute('action', form.getAttribute('action').replace('addLine', 'save'));
             } else {

@@ -154,7 +154,6 @@ public class PharmacyProductMovementManageController {
             if (!result.hasErrors()) {
                 if (getOutTypeLabels().containsKey(type)){
                     ProductMovementOut out = productMovementEntryForm.getProductMovementOut();
-//                    out = service().saveProductMovementOut(out);
                     movementId = service().saveProductMovementOut(out).getProductOperationId();
                     movementType = "out";
                     fluxes = out.getProductAttributeFluxes();
@@ -264,10 +263,17 @@ public class PharmacyProductMovementManageController {
                                @RequestParam(value = "type") String type,
                                MovementAttributeFluxForm movementAttributeFluxForm,
                                ProductOperation productOperation) {
+        ProductAttributeStock stock = null;
         if (selectedProductId != 0) {
-            ProductAttributeStock stock =  stockService().getOneProductAttributeStockById(selectedProductId);
-            modelMap.addAttribute("stock", stock);
+            stock =  stockService().getOneProductAttributeStockById(selectedProductId);
             movementAttributeFluxForm.setSelectedProductStockId(selectedProductId);
+        }else{
+            if (movementAttributeFluxForm.getProductAttributeFluxId() != null){
+              stock = stockService().getOneProductAttributeStockByAttribute(movementAttributeFluxForm.getProductAttribute(),OperationUtils.getUserLocation(), false);
+            }
+        }
+        if (stock != null){
+            modelMap.addAttribute("stock", stock);
             movementAttributeFluxForm.setProductId(stock.getProductAttribute().getProduct().getProductId());
             movementAttributeFluxForm.setBatchNumber(stock.getProductAttribute().getBatchNumber());
             movementAttributeFluxForm.setExpiryDate(stock.getProductAttribute().getExpiryDate());
@@ -281,7 +287,9 @@ public class PharmacyProductMovementManageController {
 
     private void modelMappingForView(ModelMap modelMap, MovementAttributeFluxForm movementAttributeFluxForm,
                                      ProductOperation productMovement, String type) {
+        if (getOutTypeLabels().containsKey(type)){
 
+        }
         if (type.equals("out")){
             modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("productMovement", service().getOneProductMovementOutById(productMovement.getProductOperationId()));
@@ -291,12 +299,13 @@ public class PharmacyProductMovementManageController {
         }
         modelMap.addAttribute("movementAttributeFluxForm", movementAttributeFluxForm);
         modelMap.addAttribute("type", type);
-
+        String typeTranslate = getTranslateType(type);
         if (!productMovement.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
-            if (productMovement.getOperationStatus().equals(OperationStatus.VALIDATED))
-                modelMap.addAttribute("subTitle", "Inventaire - APPROUVEE");
+            if (productMovement.getOperationStatus().equals(OperationStatus.VALIDATED)){
+                modelMap.addAttribute("subTitle",   typeTranslate +"- APPROUVEE");
+            }
             else if (productMovement.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", "Mouvenemet - EN ATTENTE DE VALIDATION");
+                modelMap.addAttribute("subTitle", typeTranslate +" - EN ATTENTE DE VALIDATION");
             }
             List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService()
                     .getAllProductAttributeFluxByOperation(productMovement, false);
@@ -319,12 +328,10 @@ public class PharmacyProductMovementManageController {
 
             if (type.equals("entry")) {
                 StockEntryType stockEntryType = service().getOneProductMovementEntryById(productMovement.getProductOperationId()).getStockEntryType();
-                modelMap.addAttribute("subTitle", getEntryTypeLabels()
-                        .get(stockEntryType.name()) + " - Ajout de produits");
+                modelMap.addAttribute("subTitle", typeTranslate +" - Ajout de produits");
             } else {
                 StockOutType stockOutType = service().getOneProductMovementOutById(productMovement.getProductOperationId()).getStockOutType();
-                modelMap.addAttribute("subTitle", getOutTypeLabels()
-                        .get(stockOutType.name()) + " <i class=\"fa fa-play\"></i> Ajout de produits");
+                modelMap.addAttribute("subTitle", typeTranslate + " <i class=\"fa fa-play\"></i> Ajout de produits");
             }
         }
     }
@@ -485,5 +492,34 @@ public class PharmacyProductMovementManageController {
             outTypeMap.put(value.name(), label);
         }
         return outTypeMap;
+    }
+    public String getTranslateType(String type){
+        String typeTranslate = new String();
+
+        if (type.equals("DONATION")){
+            typeTranslate = "DON";
+        }
+        if (type.equals("THIEF")){
+            typeTranslate = "Produits Volés";
+        }
+        if (type == "DESTROYED"){
+            typeTranslate = "Produits Endommagés";
+        }
+        if (type == "EXPIRED_PRODUCT"){
+            typeTranslate = "Produits Perimés";
+        }
+        if (type == "SPOILED_PRODUCT"){
+            typeTranslate = "Produits Avariés";
+        }
+        if (type == "NEGATIVE_INVENTORY_ADJUSTMENT"){
+            typeTranslate = "Ajustement inventaire négatif";
+        }
+        if (type == "OTHER_LOST"){
+            typeTranslate = "Autres pertes";
+        }
+        if (type == "POSITIVE_INVENTORY_ADJUSTMENT"){
+            typeTranslate = "Ajustement inventaire positif";
+        }
+        return typeTranslate;
     }
 }

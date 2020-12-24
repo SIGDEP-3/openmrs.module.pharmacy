@@ -24,7 +24,16 @@
             e.preventDefault();
             const forms = document.getElementsByTagName('form');
             let form = forms[0];
-            form.setAttribute('action', form.getAttribute('action') + "&action=addLine");
+             form.setAttribute('action', form.getAttribute('action') + "&action=addLine");
+            // if (form.getAttribute('action').includes('action=addLine')) {
+            //     form.setAttribute('action', form.getAttribute('action').replace('addLine', 'save'));
+            // } else {
+            //     if (form.getAttribute('action').includes('?id=')) {
+            //         form.setAttribute('action', form.getAttribute('action') + '&action=save');
+            //     } else {
+            //         form.setAttribute('action', form.getAttribute('action') + '?action=save');
+            //     }
+            // }
             form.submit();
         }
     }
