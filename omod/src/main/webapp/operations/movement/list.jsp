@@ -49,7 +49,6 @@
 
             }
         }
-
         function openMovementForm() {
             let typeValue = jQuery("input[name='movementType']:checked").val();
             let program = jQuery("#program").val();
@@ -174,17 +173,23 @@
                                 <td>${entry.productProgram.name}</td>
                                 <c:choose>
                                     <c:when test="${fct:length(entry.productAttributeFluxes) == 0}">
-                                        <%--                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">--%>
-                                        <%--                                            <c:param name="movementId" value="${entry.productOperationId}"/>--%>
-                                        <%--                                            <c:param name="type" value="${entry.stockEntryType}"/>--%>
-                                        <%--                                        </c:url>--%>
+                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                            <c:param name="movementId" value="${entry.productOperationId}"/>
+                                            <c:param name="type" value="entry"/>
+                                        </c:url>
                                         <td class="text-danger">
-                                            Pas de produits
+                                            <div class="btn-group">
+                                                <a href="${addLineUrl}"><div class="btn btn-sm btn-success">Ajouter des produits</div></a>
+                                            </div>
                                         </td>
                                     </c:when>
                                     <c:otherwise>
                                         <td class="text-center">
-                                                ${fct:length(entry.productAttributeFluxes)}
+                                            <div class="btn-group">
+                                                <div class="btn btn-sm btn-primary">
+                                                        ${fct:length(entry.productAttributeFluxes)}
+                                                </div>
+                                            </div>
                                         </td>
                                     </c:otherwise>
                                 </c:choose>
@@ -247,10 +252,10 @@
                             <tr>
                                 <td>
                                     <c:if test="${out.stockOutType == 'THIEF'}">
-                                    Produits Vol&eacute;s
+                                        Produits Vol&eacute;s
                                     </c:if>
                                     <c:if test="${out.stockOutType == 'DESTROYED'}">
-                                    Produits Endommag&eacute;s
+                                        Produits Endommag&eacute;s
                                     </c:if>
                                     <c:if test="${out.stockOutType == 'EXPIRED_PRODUCT'}">
                                         Produits Perim&eacute;s
@@ -269,13 +274,23 @@
                                 <td>${out.productProgram.name}</td>
                                 <c:choose>
                                     <c:when test="${fct:length(out.productAttributeFluxes) == 0}">
+                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                            <c:param name="movementId" value="${out.productOperationId}"/>
+                                            <c:param name="type" value="out"/>
+                                        </c:url>
                                         <td class="text-danger">
-                                            Pas de produits
+                                            <div class="btn-group">
+                                                    <a href="${addLineUrl}"><div class="btn btn-sm btn-success">Ajouter des produits</div></a>
+                                            </div>
                                         </td>
                                     </c:when>
                                     <c:otherwise>
                                         <td class="text-center">
-                                                ${fct:length(out.productAttributeFluxes)}
+                                            <div class="btn-group">
+                                                <div class="btn btn-sm btn-primary">
+                                                        ${fct:length(out.productAttributeFluxes)}
+                                                </div>
+                                            </div>
                                         </td>
                                     </c:otherwise>
                                 </c:choose>
@@ -283,7 +298,7 @@
                                 <td>
                                     <c:if test="${out.operationStatus == 'VALIDATED'}">
                                         <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
-                                            <c:param name="id" value="${out.productOperationId}"/>
+                                            <c:param name="movementId" value="${out.productOperationId}"/>
                                             <c:param name="type" value="${out.stockOutType}"/>
                                         </c:url>
                                         <a href="${addLineUrl}" class="text-success primary"><i class="fa fa-eye"></i></a>
