@@ -166,7 +166,6 @@ public class PharmacyProductTransferManageController {
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
             modelMap.addAttribute("subTitle", "Saisie  de du transfert "+ transferTypeStr.toUpperCase() + " - entête");
         }
-
         return null;
     }
 

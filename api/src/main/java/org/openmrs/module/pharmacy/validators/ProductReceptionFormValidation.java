@@ -32,7 +32,7 @@ public class ProductReceptionFormValidation extends ProductOperationFormValidati
             ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
 
             if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
-                ProductReception reception = (ProductReception) service().getOneProductOperationByOperationNumber(form.getOperationNumber());
+                ProductReception reception = (ProductReception) service().getOneProductOperationByOperationNumber(form.getOperationNumber(), form.getIncidence());
                 if (reception != null) {
                     if (form.getProductSupplierId() != null) {
                         if (!reception.getProductOperationId().equals(form.getProductOperationId())) {

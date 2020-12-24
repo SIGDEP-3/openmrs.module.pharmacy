@@ -17,6 +17,8 @@ import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionReturnDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -50,4 +52,7 @@ public interface ProductReceptionService extends OpenmrsService {
 	void removeProductReception(ProductReception productReception);
 	ProductReception getOneProductReceptionByUuid(String uuid);
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
+	List<ProductReceptionReturnDTO> getProductReceptionReturnDTOs(ProductReception productReception);
+	ProductReceptionReturnDTO getOneProductReceptionReturnDTO(ProductReception reception, ProductAttribute productAttribute);
+	List<ProductReceptionListDTO> getProductReceptionListDTOs();
 }

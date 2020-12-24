@@ -21,6 +21,7 @@ import org.openmrs.module.pharmacy.ProductOperation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 
 import java.util.Date;
@@ -60,8 +61,8 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     }
 
     @Override
-    public ProductOperation getOneProductOperationByOperationNumber(String operationNumber) {
-        return dao.getOneProductOperationByOperationNumber(operationNumber);
+    public ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence) {
+        return dao.getOneProductOperationByOperationNumber(operationNumber, incidence);
     }
 
     @Override

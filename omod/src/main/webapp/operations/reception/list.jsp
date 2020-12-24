@@ -84,13 +84,13 @@
                 <tbody>
                 <c:forEach var="reception" items="${ receptions }">
                     <tr>
-                        <td>${reception.productSupplier.name}</td>
+                        <td>${reception.productSupplier}</td>
                         <td><fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${reception.operationNumber}</td>
-                        <td>${reception.productProgram.name}</td>
-                        <td>${reception.receptionQuantityMode == 'RETAIL' ? 'DETAIL' : 'EN GROS'}</td>
+                        <td>${reception.programName}</td>
+                        <td>${reception.receptionMode == 'RETAIL' ? 'DETAIL' : 'EN GROS'}</td>
                         <c:choose>
-                            <c:when test="${fct:length(reception.productAttributeFluxes) == 0}">
+                            <c:when test="${reception.numberOfLine == 0}">
                                 <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="addLineUrl">
                                     <c:param name="receptionId" value="${reception.productOperationId}"/>
                                 </c:url>
@@ -100,7 +100,44 @@
                             </c:when>
                             <c:otherwise>
                                 <td class="text-center">
-                                        ${fct:length(reception.productAttributeFluxes)}
+                                    <div class="btn-group">
+                                        <div class="btn btn-sm btn-primary">
+                                                ${reception.numberOfLine}
+                                        </div>
+                                        <c:if test="${reception.operationStatus == 'VALIDATED'}">
+                                            <c:if test="${reception.canReturn == true || reception.productReturnedOperationId != null}">
+                                                <c:url value="/module/pharmacy/operations/reception/edit.form" var="backUrl">
+                                                    <c:param name="receptionId" value="${reception.productReturnedOperationId != null ? reception.productReturnedOperationId : reception.productOpertaionId}"/>
+                                                </c:url>
+                                                <a href="${backUrl}"
+                                                   class="btn btn-sm
+                                                        ${reception.productReturnedOperationStatus == null ? 'btn-primary' :
+                                                          (reception.productReturnedOperationStatus == 'NOT_COMPLETED' ? 'btn-info' :
+                                                            (reception.productReturnedOperationStatus == 'AWAITING_VALIDATION' ? 'btn-warning' :
+                                                              (reception.productReturnedOperationStatus == 'DISABLED' ? 'btn-danger' :
+                                                                (reception.productReturnedOperationStatus == 'DISABLED' ? 'btn-success' : ''))))}
+                                                text-decoration-none text-white">
+                                                    <c:if test="${reception.canReturn == true}">
+                                                        <c:choose>
+                                                            <c:when test="${reception.productReturnedOperationStatus == null || reception.productReturnedOperationStatus == 'NOT_COMPLETED'}">
+                                                                Retourner des produits
+                                                            </c:when>
+                                                            <c:when test="${reception.productReturnedOperationStatus == 'AWAITING_VALIDATION'}">
+                                                                Retour &agrave; valider
+                                                            </c:when>
+                                                            <c:when test="${reception.productReturnedOperationStatus == 'VALIDATED'}">
+                                                                Produits retourn&eacute;s
+                                                            </c:when>
+                                                        </c:choose>
+                                                    </c:if>
+                                                    <c:if test="${reception.canReturn == false && reception.productReturnedOperationId != null}">
+                                                        Produits retourn&eacute;s
+                                                    </c:if>
+                                                </a>
+                                            </c:if>
+                                        </c:if>
+                                    </div>
+
                                 </td>
                             </c:otherwise>
                         </c:choose>

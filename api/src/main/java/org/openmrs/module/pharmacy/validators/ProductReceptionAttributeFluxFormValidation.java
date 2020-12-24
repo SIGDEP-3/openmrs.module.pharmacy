@@ -1,6 +1,8 @@
 package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.pharmacy.ProductReception;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.forms.ReceptionAttributeFluxForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -21,11 +23,20 @@ public class ProductReceptionAttributeFluxFormValidation extends ProductAttribut
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-            ValidationUtils.rejectIfEmpty(errors, "quantityToDeliver", null, "La quantié à livrer est requise");
+            // ValidationUtils.rejectIfEmpty(errors, "quantityToDeliver", null, "La quantié à livrer est requise");
 
+            if (form.getProductOperationId() != null) {
+                ProductReception reception = (ProductReception) service().getOneProductOperationById(form.getProductOperationId());
+                if (reception.getIncidence().equals(Incidence.POSITIVE)) {
+                    if (form.getQuantityToDeliver() == null) {
+                        errors.rejectValue("quantityToDeliver", null, "La quantité livrée est requise");
+                    }
+                }
+            }
             if (form.getQuantityToDeliver() != null && form.getQuantityToDeliver() == 0) {
                 errors.rejectValue("quantityToDeliver", null, "La quantité livrée ne peut pas être égale à 0");
             }
+
         }
 
     }

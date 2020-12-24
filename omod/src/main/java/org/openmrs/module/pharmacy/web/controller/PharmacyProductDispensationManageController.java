@@ -250,6 +250,7 @@ public class PharmacyProductDispensationManageController {
                         info.setMobilePatient(mobilePatient);
                         info.setDispensation(dispensation);
                         dispensationService().saveMobilePatientDispensationInfo(info);
+
                     }
 
 //                    if (dispensation.getProductAttributeFluxes().size() == 0) {

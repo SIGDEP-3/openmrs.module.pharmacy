@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 
@@ -32,7 +33,7 @@ public interface PharmacyDAO {
 	 */
 //	Boolean validateOperation(ProductOperation operation);
     ProductOperation getOneProductOperationById(Integer productOperationId);
-	ProductOperation getOneProductOperationByOperationNumber(String operationNumber);
+	ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence);
 
 	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
 

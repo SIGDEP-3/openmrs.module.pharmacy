@@ -14,10 +14,13 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -37,10 +40,14 @@ import java.util.List;
 public interface PharmacyService extends OpenmrsService {
 
 //	Boolean validateOperation(ProductOperation operation);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationById(Integer productOperationId);
-	ProductOperation getOneProductOperationByOperationNumber(String operationNumber);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+	ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.SAVE_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation saveProductOperation(ProductOperation productOperation);
-
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
     List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
 }

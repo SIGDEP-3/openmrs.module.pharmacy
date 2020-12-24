@@ -21,6 +21,8 @@ import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.api.db.ProductReceptionDAO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionReturnDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -96,6 +98,21 @@ public class ProductReceptionServiceImpl extends BaseOpenmrsService implements P
     @Override
     public List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception) {
         return dao.getProductReceptionFluxDTOs(productReception);
+    }
+
+    @Override
+    public List<ProductReceptionReturnDTO> getProductReceptionReturnDTOs(ProductReception productReception) {
+        return dao.getProductReceptionReturnDTOs(productReception);
+    }
+
+    @Override
+    public ProductReceptionReturnDTO getOneProductReceptionReturnDTO(ProductReception reception, ProductAttribute productAttribute) {
+        return dao.getOneProductReceptionReturnDTO(reception, productAttribute);
+    }
+
+    @Override
+    public List<ProductReceptionListDTO> getProductReceptionListDTOs() {
+        return dao.getProductReceptionListDTOs();
     }
 
 }

@@ -111,6 +111,9 @@ public class ProductAttributeFlux extends AbstractPharmacyData implements Compar
         this.observation = observation;
     }
 
+    public String getProductWithAttribute() {
+        return productAttribute.getProduct().getRetailNameWithCode() + " [" + productAttribute.getBatchNumber() + "]";
+    }
     @Override
     public int compareTo(ProductAttributeFlux o) {
         return this.getDateCreated().compareTo(o.getDateCreated());

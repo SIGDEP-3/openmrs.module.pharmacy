@@ -278,6 +278,57 @@
 		<description>Can Validate Dispensation</description>
 	</privilege>
 
+	<privilege>
+		<name>Manage Operation</name>
+		<description>Can Manage Operation</description>
+	</privilege>
+	<privilege>
+		<name>View Operation</name>
+		<description>Can View Operation</description>
+	</privilege>
+	<privilege>
+		<name>Save Operation</name>
+		<description>Can Save and Edit Operation</description>
+	</privilege>
+	<privilege>
+		<name>Delete Operation</name>
+		<description>Can Delete Operation</description>
+	</privilege>
+	<privilege>
+		<name>Validate Operation</name>
+		<description>Can Validate Operation</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Flux</name>
+		<description>Can Manage Flux</description>
+	</privilege>
+	<privilege>
+		<name>View Flux</name>
+		<description>Can View Flux</description>
+	</privilege>
+	<privilege>
+		<name>Save Flux</name>
+		<description>Can Save and Edit Flux</description>
+	</privilege>
+	<privilege>
+		<name>Delete Flux</name>
+		<description>Can Delete Flux</description>
+	</privilege>
+	<privilege>
+		<name>Validate Flux</name>
+		<description>Can Validate Flux</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Stock</name>
+		<description>Can Manage Stock</description>
+	</privilege>
+	<privilege>
+		<name>View Stock</name>
+		<description>Can View Stock</description>
+	</privilege>
+
 	<!-- /Privileges  -->
 
 	<!-- Module Activator -->
