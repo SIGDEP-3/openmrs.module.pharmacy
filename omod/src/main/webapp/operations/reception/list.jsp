@@ -73,7 +73,7 @@
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Type de saisie
                     </th>
-                    <th>Ligne de produits</th>
+                    <th>Nombre de produits</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
                         Etat
