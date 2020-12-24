@@ -8,43 +8,6 @@ import org.openmrs.module.pharmacy.api.ProductReceptionService;
 public class TransferAttributeFluxForm extends ProductAttributeFluxForm {
     private Integer selectedProductStockId;
 
-//    public InventoryAttributeFluxForm() {
-//    }
-//
-//
-//    public Integer getQuantityToDeliver() {
-//        return quantityToDeliver;
-//    }
-//
-//    public void setQuantityToDeliver(Integer quantityToDeliver) {
-//        this.quantityToDeliver = quantityToDeliver;
-//    }
-//
-//    public void setProductAttributeFlux(ProductAttributeFlux productAttributeFlux, ProductReception productReception) {
-//        super.setProductAttributeFlux(productAttributeFlux, productReception);
-//        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(productAttributeFlux.getProductAttribute(), productReception);
-//        setQuantityToDeliver(otherFlux.getQuantity());
-//    }
-
-//    public ProductAttributeOtherFlux getProductAttributeOtherFlux() {
-//        ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
-//                attributeService().getOneProductAttributeByBatchNumber(getBatchNumber()),
-//                receptionService().getOneProductReceptionById(getProductOperationId())
-//        );
-//        if (productAttributeOtherFlux != null){
-//            productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
-//        } else {
-//            productAttributeOtherFlux = new ProductAttributeOtherFlux();
-//            productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
-//            productAttributeOtherFlux.setLabel("Quantitié livrée");
-//            productAttributeOtherFlux.setLocation(Context.getLocationService().getDefaultLocation());
-//            productAttributeOtherFlux.setProductAttribute(getProductAttribute());
-//            productAttributeOtherFlux.setProductOperation(receptionService().getOneProductReceptionById(getProductOperationId()));
-//        }
-//
-//        return productAttributeOtherFlux;
-//    }
-
     public Integer getSelectedProductStockId() {
         return selectedProductStockId;
     }

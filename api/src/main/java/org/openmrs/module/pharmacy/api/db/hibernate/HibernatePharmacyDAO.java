@@ -109,9 +109,10 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	}
 
 	@Override
-	public ProductOperation getOneProductOperationByOperationNumber(String operationNumber) {
+	public ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductOperation.class);
-		return (ProductOperation) criteria.add(Restrictions.eq("operationNumber", operationNumber)).uniqueResult();
+		return (ProductOperation) criteria.add(Restrictions.eq("operationNumber", operationNumber))
+				.add(Restrictions.eq("incidence", incidence)).uniqueResult();
 	}
 
 	@Override

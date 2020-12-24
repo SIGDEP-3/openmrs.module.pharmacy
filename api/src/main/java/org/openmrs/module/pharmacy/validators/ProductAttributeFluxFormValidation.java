@@ -72,15 +72,15 @@ public class ProductAttributeFluxFormValidation implements Validator {
 
     }
 
-    private ProductAttributeFluxService fluxService() {
+    protected ProductAttributeFluxService fluxService() {
         return Context.getService(ProductAttributeFluxService.class);
     }
 
-    private ProductAttributeService attributeService() {
+    protected ProductAttributeService attributeService() {
         return Context.getService(ProductAttributeService.class);
     }
 
-    private PharmacyService service() {
+    protected PharmacyService service() {
         return Context.getService(PharmacyService.class);
     }
 }

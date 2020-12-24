@@ -14,8 +14,11 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
+import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
+import org.openmrs.module.pharmacy.models.ProductReceptionReturnDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -35,5 +38,7 @@ public interface ProductReceptionDAO {
 	void removeProductReception(ProductReception productReception);
 	ProductReception getOneProductReceptionByUuid(String uuid);
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
-
+	List<ProductReceptionReturnDTO> getProductReceptionReturnDTOs(ProductReception productReception);
+	ProductReceptionReturnDTO getOneProductReceptionReturnDTO(ProductReception reception, ProductAttribute productAttribute);
+	List<ProductReceptionListDTO> getProductReceptionListDTOs();
 }

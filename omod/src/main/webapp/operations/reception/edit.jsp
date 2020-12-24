@@ -63,7 +63,7 @@
             </button>
         </div>
     </div>
-    <div class="row bg-light pt-2 pb-2 border border-secondary">
+    <div class="row bg-light pt-2 pb-2 border ${productReceptionForm.incidence == 'NEGATIVE' ? 'border-warning' : 'border-secondary'}">
         <div class="col-12">
             <form:form modelAttribute="productReceptionForm" method="post" action="" id="form">
                 <form:hidden path="productOperationId"/>
@@ -72,26 +72,41 @@
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
                 <form:hidden path="productProgramId"/>
+                <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                    <form:hidden path="productSupplierId"/>
+                </c:if>
 <%--                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">--%>
 <%--                </c:if>--%>
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-10 mb-2">
-                                <label>Fournisseur <span class="required">*</span></label>
-                                <br>
-                                <form:select path="productSupplierId" cssClass="form-control s2" >
-                                    <form:option value="" label=""/>
-                                    <form:options items="${suppliers}" itemValue="productSupplierId" itemLabel="name" />
-                                </form:select>
-                                <form:errors path="productSupplierId" cssClass="error"/>
+                                <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                                    <label>Fournisseur de la r&eacute;ception</label>
+                                    <div class="form-control form-control-sm">${reception.productSupplier.name}</div>
+                                </c:if>
+                                <c:if test="${productReceptionForm.incidence == 'POSITIVE'}">
+                                    <label>Fournisseur <span class="required">*</span></label>
+                                    <br>
+                                    <form:select path="productSupplierId" cssClass="form-control s2" >
+                                        <form:option value="" label=""/>
+                                        <form:options items="${suppliers}" itemValue="productSupplierId" itemLabel="name" />
+                                    </form:select>
+                                    <form:errors path="productSupplierId" cssClass="error"/>
+                                </c:if>
+
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-2">
                                 <label>Programme <span class="required">*</span></label>
                                 <div class="form-control form-control-sm">
+                                    <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                                        ${reception.productProgram.name}
+                                    </c:if>
+                                    <c:if test="${productReceptionForm.incidence == 'POSITIVE'}">
                                         ${program.name}
+                                    </c:if>
                                 </div>
 <%--                                <c:if test="${fct:length(productReception.productAttributeFluxes) == 0}">--%>
 <%--                                    <form:select path="productProgramId" cssClass="form-control s2" >--%>
@@ -112,15 +127,26 @@
                     <div class="col-6">
                         <div class="row mb-2">
                             <div class="col-4">
-                                <label>Date de reception <span class="required">*</span></label>
+                                <label>Date de retour <span class="required">*</span></label>
                                 <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
                                 <form:errors path="operationDate" cssClass="error"/>
+                            </div>
+                            <div class="col-4">
+                                <label>Date de la reception </label>
+                                <div class="form-control form-control-sm bg-info text-white">
+                                    <fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                </div>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
                                 <label>Numero de reception</label>
-                                <form:input path="operationNumber" cssClass="form-control form-control-sm" />
+                                <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" readonly="true" />
+                                </c:if>
+                                <c:if test="${productReceptionForm.incidence == 'POSITIVE'}">
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" />
+                                </c:if>
                                 <form:errors path="operationNumber" cssClass="error"/>
                             </div>
                         </div>
@@ -142,7 +168,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
-                                <label>Observations</label>
+                                <label>Motifs de retour de produits</label>
                                 <form:textarea path="observation" cssClass="form-control form-control-sm" />
                                 <form:errors path="observation" cssClass="error"/>
                             </div>

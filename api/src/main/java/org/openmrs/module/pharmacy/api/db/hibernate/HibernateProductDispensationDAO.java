@@ -24,6 +24,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -33,14 +34,17 @@ import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
+import org.openmrs.module.pharmacy.enumerations.PatientType;
 import org.openmrs.module.pharmacy.models.DispensationListDTO;
 import org.openmrs.module.pharmacy.models.DispensationResultDTO;
+import org.openmrs.module.pharmacy.models.DispensationTransformationResultDTO;
 import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * It is a default implementation of  {@link ProductDispensationDAO}.
@@ -488,6 +492,40 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 			System.out.println(e.getMessage());
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public DispensationTransformationResultDTO transformDispensation(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
+		List<MobilePatient> mobilePatients = criteria.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("patientType", PatientType.ON_SITE)).list();
+
+		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
+		transformationResultDTO.setTotal(mobilePatients.size());
+		for (MobilePatient mobilePatient : mobilePatients) {
+			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
+			if (patient != null) {
+				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
+				for (MobilePatientDispensationInfo dispensationInfo : dispensationInfos) {
+					Encounter encounter = new Encounter();
+					encounter.setEncounterDatetime(dispensationInfo.getDispensation().getOperationDate());
+					encounter.setPatient(patient);
+					encounter.setLocation(OperationUtils.getUserLocation());
+					encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
+					encounter.addProvider(Context.getEncounterService().getEncounterRole(1), dispensationInfo.getProvider());
+
+					encounter.setObs(OperationUtils.getDispensationObsList(dispensationInfo, patient));
+					if (Context.getEncounterService().saveEncounter(encounter) != null) {
+						transformationResultDTO.setTransformed(transformationResultDTO.getTransformed() + 1);
+						removeMobilePatientInfo(dispensationInfo);
+					}
+
+				}
+
+			}
+		}
+
+		return transformationResultDTO;
 	}
 
 }

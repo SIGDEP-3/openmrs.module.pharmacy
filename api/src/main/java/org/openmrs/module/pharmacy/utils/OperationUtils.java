@@ -1,14 +1,15 @@
 package org.openmrs.module.pharmacy.utils;
 
+import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductAttributeStock;
-import org.openmrs.module.pharmacy.ProductOperation;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
+import org.openmrs.module.pharmacy.enumerations.Goal;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.PharmacyDateRange;
@@ -112,6 +113,13 @@ public class OperationUtils {
         return Context.getLocationService().getDefaultLocation();
     }
 
+    public static List<Location> getUserLocations() {
+        List<Location> locations = new ArrayList<>();
+        locations.add(getUserLocation());
+        locations.addAll(getUserLocation().getChildLocations());
+        return locations;
+    }
+
     public static <T> List<T> getLastElements(final Iterable<T> elements, Integer numberOfLast) {
         List<T> lastElements = new ArrayList<>();
         int totalSize = ((Collection<?>) elements).size();
@@ -205,7 +213,6 @@ public class OperationUtils {
         return formatter.format(date);
     }
 
-
     public static Integer getConceptIdInGlobalProperties(String property) {
         String value = Context.getAdministrationService().getGlobalProperty("pharmacy.dispensation"+ property + "Concept");
         if (!value.isEmpty()) {
@@ -214,4 +221,41 @@ public class OperationUtils {
         return null;
     }
 
+    public static Concept getConceptInGlobalProperties(String property) {
+        String value = Context.getAdministrationService().getGlobalProperty("pharmacy.dispensation"+ property + "Concept");
+        if (!value.isEmpty()) {
+            Integer conceptId =  Integer.parseInt(value);
+            return Context.getConceptService().getConcept(conceptId);
+        }
+        return null;
+    }
+
+    public static Obs getObs(String property, Location location, Patient patient) {
+        Obs obs = new Obs();
+        obs.setConcept(getConceptInGlobalProperties(property));
+        obs.setLocation(location);
+        obs.setPerson(patient);
+        return obs;
+    }
+
+    public static Set<Obs> getDispensationObsList(MobilePatientDispensationInfo dispensationInfo, Patient patient) {
+        Set<Obs> obsSet = new HashSet<>();
+        Obs obsRegimen = getObs("Regimen", dispensationInfo.getLocation(), patient);
+        obsRegimen.setValueCoded(dispensationInfo.getProductRegimen().getConcept());
+        obsSet.add(obsRegimen);
+
+        Obs obsGoal = getObs("Goal", dispensationInfo.getLocation(), patient);
+        obsGoal.setValueText(dispensationInfo.getGoal().name());
+        obsSet.add(obsGoal);
+
+        Obs obsTreatmentDays = getObs("treatmentDays", dispensationInfo.getLocation(), patient);
+        obsTreatmentDays.setValueNumeric(dispensationInfo.getTreatmentDays().doubleValue());
+        obsSet.add(obsTreatmentDays);
+
+        Obs obsTreatmentEndDate = getObs("treatmentEndDate", dispensationInfo.getLocation(), patient);
+        obsTreatmentEndDate.setValueDate(dispensationInfo.getTreatmentEndDate());
+        obsSet.add(obsTreatmentEndDate);
+
+        return obsSet;
+    }
 }

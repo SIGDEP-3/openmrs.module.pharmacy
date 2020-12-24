@@ -8,11 +8,13 @@ import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.ProductReceptionService;
+import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReceptionQuantityMode;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
     private Integer quantityToDeliver;
+    private Integer selectedProductFluxId;
 
     public ReceptionAttributeFluxForm() {
     }
@@ -25,6 +27,14 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
         this.quantityToDeliver = quantityToDeliver;
     }
 
+    public Integer getSelectedProductFluxId() {
+        return selectedProductFluxId;
+    }
+
+    public void setSelectedProductFluxId(Integer selectedProductFluxId) {
+        this.selectedProductFluxId = selectedProductFluxId;
+    }
+
     public void setProductAttributeFlux(ProductAttributeFlux flux, ProductReception productReception) {
         if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
             Product product = flux.getProductAttribute().getProduct();
@@ -32,16 +42,18 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
             flux.setQuantity((int) fluxQuantity);
         }
         super.setProductAttributeFlux(flux, productReception);
-        ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
-                flux.getProductAttribute(),
-                productReception,
-                OperationUtils.getUserLocation());
-        if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
-            Product product = flux.getProductAttribute().getProduct();
-            double fluxQuantity = otherFlux.getQuantity() / product.getUnitConversion();
-            setQuantityToDeliver((int) fluxQuantity);
-        } else {
-            setQuantityToDeliver(otherFlux.getQuantity());
+        if (productReception.getIncidence().equals(Incidence.POSITIVE)) {
+            ProductAttributeOtherFlux otherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
+                    flux.getProductAttribute(),
+                    productReception,
+                    OperationUtils.getUserLocation());
+            if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
+                Product product = flux.getProductAttribute().getProduct();
+                double fluxQuantity = otherFlux.getQuantity() / product.getUnitConversion();
+                setQuantityToDeliver((int) fluxQuantity);
+            } else {
+                setQuantityToDeliver(otherFlux.getQuantity());
+            }
         }
     }
 
