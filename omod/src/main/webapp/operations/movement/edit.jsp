@@ -25,15 +25,6 @@
             const forms = document.getElementsByTagName('form');
             let form = forms[0];
              form.setAttribute('action', form.getAttribute('action') + "&action=addLine");
-            // if (form.getAttribute('action').includes('action=addLine')) {
-            //     form.setAttribute('action', form.getAttribute('action').replace('addLine', 'save'));
-            // } else {
-            //     if (form.getAttribute('action').includes('?id=')) {
-            //         form.setAttribute('action', form.getAttribute('action') + '&action=save');
-            //     } else {
-            //         form.setAttribute('action', form.getAttribute('action') + '?action=save');
-            //     }
-            // }
             form.submit();
         }
     }
@@ -74,12 +65,7 @@
                                 <label>Programme<span class="required">*</span></label>
                                 <div class="form-control form-control-sm">
                                         ${program.name}
-                                </div>
-                                    <%--                                <form:select path="productProgramId" cssClass="form-control s2" >--%>
-                                    <%--                                    <form:option value="" label=""/>--%>
-                                    <%--                                    <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
-                                    <%--                                </form:select>--%>
-                                    <%--                                <form:errors path="productProgramId" cssClass="error"/>--%>
+                              <form:errors path="productProgramId" cssClass="error"/>--%>
                             </div>
                         </div>
                     </div>
@@ -141,13 +127,6 @@
                         </c:if>
 
                         <button class="btn btn-primary" onclick="saveAndAddProducts(event)">Saisie des produits <i class="fa fa-tablets"></i></button>
-
-<%--                        <c:if test="${productMovementForm.operationStatus == 'AWAITING_VALIDATION'}">--%>
-<%--                            <button class="btn btn-success" name="action" value="add">--%>
-<%--                                <i class="fa fa-edit"></i>--%>
-<%--                                <spring:message code="pharmacy.validate" />--%>
-<%--                            </button>--%>
-<%--                        </c:if>--%>
                     </div>
                 </div>
 

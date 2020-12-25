@@ -56,7 +56,10 @@ public class ProductMovementForm extends ProductOperationForm {
         super.setProductOperation(productMovementOut);
         this.setStockOutType(productMovementOut.getStockOutType());
         this.setProductProgramId(productMovementOut.getProductProgram().getProductProgramId());
-        this.setEntityId(productMovementOut.getRecipient().getProductExchangeEntityId());
+        if (productMovementOut.getRecipient() != null){
+            this.setEntityId(productMovementOut.getRecipient().getProductExchangeEntityId());
+        }
+
     }
     public void setProductMovementEntry(ProductMovementEntry productMovementEntry) {
         super.setProductOperation(productMovementEntry);
@@ -66,10 +69,6 @@ public class ProductMovementForm extends ProductOperationForm {
     }
     public ProductMovementOut getProductMovementOut() {
         ProductMovementOut productMovementOut = (ProductMovementOut) getProductOperation(new ProductMovementOut());
-//        if (productMovementOut.getStockOutType().equals(StockOutType.TRANSFER_OUT)){
-//            productMovementOut.setRecipient(Context.getService(ProductExchangeEntityService.class).getOneProductExchangeById(getEntityId()));
-//        }
-
         productMovementOut.setStockOutType(getStockOutType());
         return productMovementOut;
     }

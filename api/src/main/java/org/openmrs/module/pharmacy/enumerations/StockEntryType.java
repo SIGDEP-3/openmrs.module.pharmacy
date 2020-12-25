@@ -7,6 +7,7 @@ public enum  StockEntryType {
     POSITIVE_INVENTORY_ADJUSTMENT(2);
 
     int type;
+
     StockEntryType(int i) {
         type = i;
     }

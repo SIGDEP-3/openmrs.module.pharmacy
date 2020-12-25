@@ -218,7 +218,6 @@ public class PharmacyProductMovementManageController {
                 }
 
                 selectProduct(modelMap, selectedProductId, type, movementAttributeFluxForm, productMovement);
-//                modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
             }
         }
         return null;
@@ -253,7 +252,6 @@ public class PharmacyProductMovementManageController {
                 }
             }
             selectProduct(modelMap, selectedProductId, type, movementAttributeFluxForm, productMovement);
-//            modelMappingForView(modelMap, movementAttributeFluxForm, productMovement, type);
         }
 
         return null;
@@ -385,7 +383,6 @@ public class PharmacyProductMovementManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/movement/delete.form", method = RequestMethod.GET)
     public String deleteOperation(HttpServletRequest request,
-//                                  @RequestParam(value = "movementId") Integer movementId,
                                   @RequestParam(value = "id") Integer id,
                                   @RequestParam(value = "type") String type){
         if (!Context.isAuthenticated())

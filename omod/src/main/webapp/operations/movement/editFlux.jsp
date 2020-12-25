@@ -184,7 +184,7 @@
                             </c:if>
                             <th style="width: 60px">Quantit&eacute; <span class="required">*</span></th>
                             <c:if test="${type== 'out'}">
-                                <th style="width: 60px">Quantit&eacute; <br>restant</th>
+                                <th style="width: 60px">Quantit&eacute;<br>restant</th>
                             </c:if>
                             <th style="width: 250px">observation</th>
                             <th style="width: 50px"></th>
