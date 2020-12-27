@@ -102,9 +102,9 @@
                 const treatmentEndDateInput = jQuery("#treatmentEndDate");
                 const endDateByOperationDate = addDays(operationDate, treatmentDays);
 
-                let lastTreatmentEndDate = getDate(jQuery("#lastTreatmentEndDate").text());
+                let lastTreatmentEndDate = getDate(jQuery("#lastTreatmentEndDate"));
                 if (lastTreatmentEndDate) {
-                    let endDateByLastTreatmentEndDate = addDays(lastTreatmentEndDate, treatmentDays);
+                    let endDateByLastTreatmentEndDate = addDays(lastTreatmentEndDate.text(), treatmentDays);
                     let treatmentDaysLost = jQuery("#treatmentDaysLost").val();
                     if (treatmentDaysLost) {
                         endDateByLastTreatmentEndDate = removeDays(new Date(endDateByLastTreatmentEndDate), treatmentDaysLost);
@@ -123,14 +123,16 @@
         function getTreatmentDaysLost() {
             const operationDate = getDate(jQuery("#operationDate").val());
             const treatmentDays = jQuery("#treatmentDays").val();
-            const treatmentEndDate = getDate(jQuery("#treatmentEndDate").val());
-            if (treatmentEndDate && treatmentDays && operationDate) {
+            const treatmentEndDateInput = jQuery("#treatmentEndDate");
+            if (treatmentEndDateInput && treatmentDays && operationDate) {
+                let treatmentEndDate = getDate(treatmentEndDateInput.val());
                 let startDate = removeDays(treatmentEndDate, treatmentDays);
                 if (startDate !== operationDate.getTime()) {
-                    let lastTreatmentEndDate = getDate(jQuery("#lastTreatmentEndDate").text());
+                    let lastTreatmentEndDate = jQuery("#lastTreatmentEndDate");
                     if (lastTreatmentEndDate) {
-                        if (startDate !== lastTreatmentEndDate.getTime()) {
-                            let diffInTime = treatmentEndDate.getTime() - lastTreatmentEndDate.getTime();
+                        let lastTreatmentEndDateDate = getDate(lastTreatmentEndDate.text());
+                        if (startDate !== lastTreatmentEndDateDate.getTime()) {
+                            let diffInTime = treatmentEndDate.getTime() - lastTreatmentEndDateDate.getTime();
                             jQuery("#treatmentDaysLost").val(diffInTime / (1000 * 3600 * 24));
                         }
                     }

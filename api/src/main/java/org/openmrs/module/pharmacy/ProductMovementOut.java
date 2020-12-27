@@ -37,4 +37,5 @@ public class ProductMovementOut extends ProductOperation {
     public void setStockOutType(StockOutType stockOutType) {
         this.stockOutType = stockOutType;
     }
+
 }

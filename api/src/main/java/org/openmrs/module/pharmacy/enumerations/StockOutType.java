@@ -10,6 +10,7 @@ public enum StockOutType {
     DESTROYED(10);
 
     int type;
+
     StockOutType(int i) {
         type = i;
     }

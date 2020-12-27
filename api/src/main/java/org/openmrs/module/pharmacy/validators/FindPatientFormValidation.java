@@ -44,8 +44,8 @@ public class FindPatientFormValidation implements Validator {
             }
 
             if (form.getPatientIdentifier() != null && !form.getPatientIdentifier().isEmpty()) {
-                if (form.getPatientType().equals(PatientType.ON_SITE) || form.getPatientType().equals(PatientType.MOBILE)) {
-                    Pattern pattern = Pattern.compile("^[0-9]{4}/.{2}/[0-9]{2}/[0-9]{5}E[1-9]?$", Pattern.CASE_INSENSITIVE);
+                if (form.getPatientType() != null && (form.getPatientType().equals(PatientType.ON_SITE) || form.getPatientType().equals(PatientType.MOBILE))) {
+                    Pattern pattern = Pattern.compile("^[0-9]{4}/.{2}/[0-9]{2}/[0-9]{5}[E[1-9]]?$", Pattern.CASE_INSENSITIVE);
                     if (!pattern.matcher(form.getPatientIdentifier()).matches()) {
                         errors.rejectValue("patientIdentifier", null, "Le numéro patient ne correspond pas à celui d'un patient VIH");
                     }
