@@ -287,25 +287,28 @@ public class PharmacyProductMovementManageController {
 
     private void modelMappingForView(ModelMap modelMap, MovementAttributeFluxForm movementAttributeFluxForm,
                                      ProductOperation productMovement, String type) {
+        String movementTypes ="";
         if (getOutTypeLabels().containsKey(type)){
 
         }
         if (type.equals("out")){
+            movementTypes = service().getOneProductMovementOutById(productMovement.getProductOperationId()).getStockOutType().name();
             modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("productMovement", service().getOneProductMovementOutById(productMovement.getProductOperationId()));
-        } else {
+        }
+        else {
+            movementTypes = service().getOneProductMovementEntryById(productMovement.getProductOperationId()).getStockEntryType().name();
             modelMap.addAttribute("products", programService().getOneProductProgramById(productMovement.getProductProgram().getProductProgramId()).getProducts());
             modelMap.addAttribute("productMovement", service().getOneProductMovementEntryById(productMovement.getProductOperationId()));
         }
         modelMap.addAttribute("movementAttributeFluxForm", movementAttributeFluxForm);
         modelMap.addAttribute("type", type);
-        String typeTranslate = getTranslateType(type);
         if (!productMovement.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
             if (productMovement.getOperationStatus().equals(OperationStatus.VALIDATED)){
-                modelMap.addAttribute("subTitle",   typeTranslate +"- APPROUVEE");
+                modelMap.addAttribute("subTitle",   getTranslateType(movementTypes) +"- APPROUVEE");
             }
             else if (productMovement.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", typeTranslate +" - EN ATTENTE DE VALIDATION");
+                modelMap.addAttribute("subTitle", getTranslateType(movementTypes) +" - EN ATTENTE DE VALIDATION");
             }
             List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService()
                     .getAllProductAttributeFluxByOperation(productMovement, false);
@@ -328,10 +331,10 @@ public class PharmacyProductMovementManageController {
 
             if (type.equals("entry")) {
                 StockEntryType stockEntryType = service().getOneProductMovementEntryById(productMovement.getProductOperationId()).getStockEntryType();
-                modelMap.addAttribute("subTitle", typeTranslate +" - Ajout de produits");
+                modelMap.addAttribute("subTitle", getTranslateType(movementTypes) +" - Ajout de produits");
             } else {
                 StockOutType stockOutType = service().getOneProductMovementOutById(productMovement.getProductOperationId()).getStockOutType();
-                modelMap.addAttribute("subTitle", typeTranslate + " <i class=\"fa fa-play\"></i> Ajout de produits");
+                modelMap.addAttribute("subTitle", getTranslateType(movementTypes) + " <i class=\"fa fa-play\"></i> Ajout de produits");
             }
         }
     }
@@ -494,7 +497,7 @@ public class PharmacyProductMovementManageController {
         return outTypeMap;
     }
     public String getTranslateType(String type){
-        String typeTranslate = new String();
+        String typeTranslate = "";
 
         if (type.equals("DONATION")){
             typeTranslate = "DON";
