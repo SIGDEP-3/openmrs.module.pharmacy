@@ -1,22 +1,24 @@
 package org.openmrs.module.pharmacy.models;
 
 public class DispensationTransformationResultDTO {
-    private Integer total;
+    private Integer totalPatient;
+    private Integer totalDispensation;
     private Integer transformed;
     private Integer notTransformed;
 
     public DispensationTransformationResultDTO() {
-        total= 0;
+        totalPatient = 0;
         transformed = 0;
         notTransformed = 0;
+        totalDispensation = 0;
     }
 
-    public Integer getTotal() {
-        return total;
+    public Integer getTotalPatient() {
+        return totalPatient;
     }
 
-    public void setTotal(Integer total) {
-        this.total = total;
+    public void setTotalPatient(Integer totalPatient) {
+        this.totalPatient = totalPatient;
     }
 
     public Integer getTransformed() {
@@ -35,12 +37,21 @@ public class DispensationTransformationResultDTO {
         this.notTransformed = notTransformed;
     }
 
+    public Integer getTotalDispensation() {
+        return totalDispensation;
+    }
+
+    public void setTotalDispensation(Integer totalDispensation) {
+        this.totalDispensation = totalDispensation;
+    }
+
     @Override
     public String toString() {
         return "DispensationTransformationResultDTO{" +
-                "total à transformer =" + total +
-                ", transformé = " + transformed +
-                ", non transformés =" + notTransformed +
+                "totalPatient=" + totalPatient +
+                ", totalDispensation=" + totalDispensation +
+                ", transformed=" + transformed +
+                ", notTransformed=" + notTransformed +
                 '}';
     }
 }

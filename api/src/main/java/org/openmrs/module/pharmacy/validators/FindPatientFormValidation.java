@@ -5,11 +5,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.enumerations.DispensationType;
+import org.openmrs.module.pharmacy.enumerations.PatientType;
 import org.openmrs.module.pharmacy.forms.FindPatientForm;
 import org.openmrs.module.pharmacy.forms.ProductForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import java.util.regex.Pattern;
 
 @Handler(supports = {FindPatientForm.class}, order = 50)
 public class FindPatientFormValidation implements Validator {
@@ -32,10 +35,19 @@ public class FindPatientFormValidation implements Validator {
                 if (form.getDispensationType() != null) {
                     if (form.getDispensationType().equals(DispensationType.HIV_PATIENT)) {
                         if (form.getPatientIdentifier() == null) {
-                            errors.rejectValue("patientIdentifier", "Renseigner un numéro indentifiant pour le patient VIH SVP !");
+                            errors.rejectValue("patientIdentifier", null, "Renseigner un numéro indentifiant pour le patient VIH SVP !");
                         } else if (form.getPatientType() == null) {
-                            errors.rejectValue("patientType", "Sélectionner le type de patient : Site ou mMobile SIV !");
+                            errors.rejectValue("patientType", null, "Sélectionner le type de patient : Site ou mMobile SIV !");
                         }
+                    }
+                }
+            }
+
+            if (form.getPatientIdentifier() != null && !form.getPatientIdentifier().isEmpty()) {
+                if (form.getPatientType().equals(PatientType.ON_SITE) || form.getPatientType().equals(PatientType.MOBILE)) {
+                    Pattern pattern = Pattern.compile("^[0-9]{4}/.{2}/[0-9]{2}/[0-9]{5}E[1-9]?$", Pattern.CASE_INSENSITIVE);
+                    if (!pattern.matcher(form.getPatientIdentifier()).matches()) {
+                        errors.rejectValue("patientIdentifier", null, "Le numéro patient ne correspond pas à celui d'un patient VIH");
                     }
                 }
             }

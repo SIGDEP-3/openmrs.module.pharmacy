@@ -23,7 +23,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -502,31 +501,71 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				.add(Restrictions.eq("patientType", PatientType.ON_SITE)).list();
 
 		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
-		transformationResultDTO.setTotal(mobilePatients.size());
+		transformationResultDTO.setTotalPatient(mobilePatients.size());
 		for (MobilePatient mobilePatient : mobilePatients) {
+			Integer patientTotalDispensation = 0;
+			Integer patientTotalDispensationTransformed = 0;
 			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
 			if (patient != null) {
 				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
-				for (MobilePatientDispensationInfo dispensationInfo : dispensationInfos) {
-					Encounter encounter = new Encounter();
-					encounter.setEncounterDatetime(dispensationInfo.getDispensation().getOperationDate());
-					encounter.setPatient(patient);
-					encounter.setLocation(OperationUtils.getUserLocation());
-					encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
-					encounter.addProvider(Context.getEncounterService().getEncounterRole(1), dispensationInfo.getProvider());
-
-					encounter.setObs(OperationUtils.getDispensationObsList(dispensationInfo, patient));
-					if (Context.getEncounterService().saveEncounter(encounter) != null) {
-						transformationResultDTO.setTransformed(transformationResultDTO.getTransformed() + 1);
-						removeMobilePatientInfo(dispensationInfo);
-					}
-
+				patientTotalDispensation = dispensationInfos.size();
+				transformationResultDTO.setTotalDispensation(transformationResultDTO.getTotalDispensation() + dispensationInfos.size());
+				transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
+				if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
+					removeMobilePatient(mobilePatient);
 				}
-
 			}
 		}
 
 		return transformationResultDTO;
+	}
+
+	private void transform(DispensationTransformationResultDTO transformationResultDTO, Patient patient, Set<MobilePatientDispensationInfo> dispensationInfos, Integer patientTotalDispensationTransformed) {
+		for (MobilePatientDispensationInfo dispensationInfo : dispensationInfos) {
+			if (dispensationInfo.getDispensation().getOperationStatus().equals(OperationStatus.VALIDATED)) {
+				Encounter encounter = createEncounter(patient, dispensationInfo);
+				if (Context.getEncounterService().saveEncounter(encounter) != null) {
+					transformationResultDTO.setTransformed(transformationResultDTO.getTransformed() + 1);
+					patientTotalDispensationTransformed ++;
+					removeMobilePatientInfo(dispensationInfo);
+				} else {
+					transformationResultDTO.setNotTransformed(transformationResultDTO.getNotTransformed() + 1);
+				}
+			} else {
+				transformationResultDTO.setNotTransformed(transformationResultDTO.getNotTransformed() + 1);
+			}
+		}
+	}
+
+	@Override
+	public DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient) {
+		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
+		transformationResultDTO.setTotalPatient(1);
+		Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
+		Integer patientTotalDispensation = 0;
+		Integer patientTotalDispensationTransformed = 0;
+		if (patient != null) {
+			Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
+			patientTotalDispensation = dispensationInfos.size();
+			transformationResultDTO.setTotalDispensation(dispensationInfos.size());
+			transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
+			if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
+				removeMobilePatient(mobilePatient);
+			}
+		}
+		return transformationResultDTO;
+	}
+
+	private Encounter createEncounter(Patient patient, MobilePatientDispensationInfo dispensationInfo) {
+		Encounter encounter = new Encounter();
+		encounter.setEncounterDatetime(dispensationInfo.getDispensation().getOperationDate());
+		encounter.setPatient(patient);
+		encounter.setLocation(OperationUtils.getUserLocation());
+		encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
+		encounter.addProvider(Context.getEncounterService().getEncounterRole(1), dispensationInfo.getProvider());
+
+		encounter.setObs(OperationUtils.getDispensationObsList(dispensationInfo, patient));
+		return encounter;
 	}
 
 }

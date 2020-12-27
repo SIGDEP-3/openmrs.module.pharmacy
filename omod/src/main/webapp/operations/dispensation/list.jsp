@@ -207,7 +207,7 @@
     </div>
     <div class="row bg-light border border-secondary align-items-center">
         <div class="col-12">
-            <div class="row border-bottom mb-2 border-secondary">
+            <div class="row border-bottom mb-2 border-secondary align-items-center">
                 <div class="col-sm-6">
                     <button type="button" class="btn btn-sm btn-primary" onclick="transformDispensation()"> Transformer dispensation</button>
                 </div>

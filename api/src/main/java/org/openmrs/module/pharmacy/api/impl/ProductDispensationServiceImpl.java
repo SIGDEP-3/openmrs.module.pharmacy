@@ -190,4 +190,9 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     public DispensationTransformationResultDTO transformDispensation(Location location) {
         return dao.transformDispensation(location);
     }
+
+    @Override
+    public DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient) {
+        return dao.transformPatientDispensation(mobilePatient);
+    }
 }

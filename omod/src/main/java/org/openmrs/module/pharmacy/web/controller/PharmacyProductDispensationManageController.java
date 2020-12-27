@@ -80,21 +80,7 @@ public class PharmacyProductDispensationManageController {
                      @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
-            if (startDate == null && endDate == null) {
-                modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                        OperationUtils.getMonthRange().getStartDate(),
-                        OperationUtils.getMonthRange().getEndDate(),
-                        OperationUtils.getUserLocation()));
-                modelMap.addAttribute("subTitle", "Liste des Dispensations saisies ce jour");
-            } else {
-                modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                        startDate,
-                        endDate,
-                        OperationUtils.getUserLocation()));
-
-                modelMap.addAttribute("subTitle", "Liste des Dispensations du " +
-                        OperationUtils.dateToDdMmYyyy(startDate) + " au " + OperationUtils.dateToDdMmYyyy(endDate));
-            }
+            getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
@@ -106,6 +92,8 @@ public class PharmacyProductDispensationManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/list.form", method = RequestMethod.POST)
     public String findPatient(ModelMap modelMap,
+                              @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+                              @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                               FindPatientForm findPatientForm,
                               BindingResult result) {
         if (Context.isAuthenticated()) {
@@ -143,21 +131,38 @@ public class PharmacyProductDispensationManageController {
                 return "redirect:/module/pharmacy/operations/dispensation/edit.form?mob=" + mobile + "&reg=" + regimen +
                         "&patientId=" + patientId + "&programId=" + findPatientForm.getProductProgramId();
             }
-            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                    OperationUtils.getMonthRange().getStartDate(),
-                    OperationUtils.getMonthRange().getEndDate(),
-                    OperationUtils.getUserLocation()));
-            modelMap.addAttribute("dispensations", dispensationService().getAllProductDispensations(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
-            modelMap.addAttribute("findPatientForm", findPatientForm);
+            getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("subTitle", "Liste des Dispensations du jour");
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
                     OperationUtils.getMonthRange().getStartDate(),
                     OperationUtils.getMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
+//            modelMap.addAttribute("dispensations", dispensationService().getAllProductDispensations(OperationUtils.getUserLocation(), false));
+            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("findPatientForm", findPatientForm);
         }
 
         return null;
+    }
+
+    private void getDispensationByPeriodIndicatedByUser(ModelMap modelMap,
+                                                        @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+                                                        @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
+        if (startDate == null && endDate == null) {
+            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+                    OperationUtils.getMonthRange().getStartDate(),
+                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getUserLocation()));
+            modelMap.addAttribute("subTitle", "Liste des Dispensations saisies ce jour");
+        } else {
+            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+                    startDate,
+                    endDate,
+                    OperationUtils.getUserLocation()));
+
+            modelMap.addAttribute("subTitle", "Liste des Dispensations du " +
+                    OperationUtils.dateToDdMmYyyy(startDate) + " au " + OperationUtils.dateToDdMmYyyy(endDate));
+        }
     }
 
     private String getPatientInfo(FindPatientForm findPatientForm) {

@@ -72,4 +72,5 @@ public interface ProductDispensationDAO {
 	DispensationResultDTO getDispensationResult(Date startDate, Date endDate, Location location);
 
     DispensationTransformationResultDTO transformDispensation(Location location);
+	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
 }

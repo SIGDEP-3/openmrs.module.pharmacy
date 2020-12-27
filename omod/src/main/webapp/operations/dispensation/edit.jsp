@@ -189,7 +189,7 @@
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6 text-uppercase font-italic text-secondary">
-            <div class="h5"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
 <%--        <div class="col-6 text-right">--%>
 <%--            <c:url value="/module/pharmacy/operations/dispensation/list.form" var="url"/>--%>
