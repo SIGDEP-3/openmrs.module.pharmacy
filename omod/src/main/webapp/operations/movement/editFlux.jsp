@@ -178,7 +178,7 @@
                         <tr class="bg-belize-hole">
                             <th colspan="3" style="width: 250px">Produit <span class="required">*</span></th>
                             <th style="width: 200px">Numero <br>de lot <span class="required">*</span></th>
-                            <th style="width: 150px">Date de <br>peremption <span class="required">*</span></th>
+                            <th style="width: 150px">Date de <br>p&eacute;remption <span class="required">*</span></th>
                             <c:if test="${type == 'out'}">
                                 <th style="width: 60px">Quantit&eacute; <br>en stock</th>
                             </c:if>
@@ -243,7 +243,7 @@
                                         <td colspan="">${stock.productAttribute.product.retailName}</td>
                                         <td colspan="">${stock.productAttribute.product.productRetailUnit.name}</td>
                                         <td>${stock.productAttribute.batchNumber}</td>
-                                        <td>${stock.productAttribute.expiryDate}</td>
+                                        <td><fmt:formatDate value="${stock.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                         <td id="quantityInStock">${stock.quantityInStock}</td>
                                         <td id="transferredQuantity">
                                             <form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
@@ -315,7 +315,13 @@
                         </c:forEach>
 
                         <c:if test="${fct:length(productAttributeFluxes) == 0}">
-                            <tr><td colspan="9" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
+                            <c:if test="${type == 'entry'}">
+                                <tr><td colspan="9" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
+                            </c:if>
+                            <c:if test="${type == 'out'}">
+                                <tr><td colspan="10" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
+                            </c:if>
+
                         </c:if>
                     </table>
                 </form:form>

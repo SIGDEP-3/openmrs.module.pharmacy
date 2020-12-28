@@ -132,7 +132,7 @@
     </div>
     <div class="row">
         <div class="col-sm-6">
-            <div class="h5 text-info"><i class="fa fa-medkit"></i> Saisie de dispensation</div>
+            <div class="h6 text-info"><i class="fa fa-medkit"></i> Saisie de dispensation</div>
         </div>
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
@@ -202,7 +202,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-6">
-            <div class="h5 text-info"><i class="fa fa-list"></i> ${subTitle}</div>
+            <div class="h6 text-info"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
     </div>
     <div class="row bg-light border border-secondary align-items-center">
@@ -218,9 +218,11 @@
                                 <input type="text" placeholder="Numero patient"
                                                        class="form-control form-control-sm">
                             </td>
-                            <td class="m-1 p-1"><input type="text" placeholder="Date de debut"
+                            <td class="m-1 p-1">
+                                <input type="text" placeholder="Date de debut"
                                                        class="form-control form-control-sm"></td>
-                            <td class="m-1 p-1"><input type="text" placeholder="Date de fin"
+                            <td class="m-1 p-1">
+                                <input type="text" placeholder="Date de fin"
                                                        class="form-control form-control-sm"></td>
                             <td class="m-1 p-1">
                                 <button class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Rechercher</button>

@@ -148,7 +148,7 @@
         <div class="col-6">
             <div class="row mb-2">
                 <div class="col-3">
-                    <div class="h5 pt-2"><i class="fa fa-list"></i> Entr&eacute;e</div>
+                    <div class="h6 pt-2"><i class="fa fa-list"></i> Entr&eacute;e</div>
                 </div>
             </div>
             <div class="row bg-light pt-2 pb-2 border border-secondary">

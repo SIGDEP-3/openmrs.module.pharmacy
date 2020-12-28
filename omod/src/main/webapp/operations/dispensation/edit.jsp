@@ -102,9 +102,10 @@
                 const treatmentEndDateInput = jQuery("#treatmentEndDate");
                 const endDateByOperationDate = addDays(operationDate, treatmentDays);
 
-                let lastTreatmentEndDate = getDate(jQuery("#lastTreatmentEndDate"));
-                if (lastTreatmentEndDate) {
-                    let endDateByLastTreatmentEndDate = addDays(lastTreatmentEndDate.text(), treatmentDays);
+                let lastTreatmentEndDate = jQuery("#lastTreatmentEndDate");
+                console.log('------ lastTreatmentEndDate', lastTreatmentEndDate)
+                if (lastTreatmentEndDate.text()) {
+                    let endDateByLastTreatmentEndDate = addDays(getDate(lastTreatmentEndDate.text()), treatmentDays);
                     let treatmentDaysLost = jQuery("#treatmentDaysLost").val();
                     if (treatmentDaysLost) {
                         endDateByLastTreatmentEndDate = removeDays(new Date(endDateByLastTreatmentEndDate), treatmentDaysLost);
@@ -115,6 +116,7 @@
                         treatmentEndDateInput.val(formatDate(endDateByOperationDate));
                     }
                 } else {
+                    console.log('Operation date before adding ', operationDate);
                     treatmentEndDateInput.val(formatDate(addDays(operationDate, treatmentDays)));
                 }
             }
@@ -124,7 +126,7 @@
             const operationDate = getDate(jQuery("#operationDate").val());
             const treatmentDays = jQuery("#treatmentDays").val();
             const treatmentEndDateInput = jQuery("#treatmentEndDate");
-            if (treatmentEndDateInput && treatmentDays && operationDate) {
+            if (treatmentEndDateInput.val() && treatmentDays && operationDate) {
                 let treatmentEndDate = getDate(treatmentEndDateInput.val());
                 let startDate = removeDays(treatmentEndDate, treatmentDays);
                 if (startDate !== operationDate.getTime()) {
@@ -142,7 +144,7 @@
 
         function dateDiff(date){
             const treatmentEndDate = jQuery("#lastTreatmentEndDate");
-            if (treatmentEndDate) {
+            if (treatmentEndDate.val()) {
                 const date2 = getDate(treatmentEndDate.text());
                 const diffTime = Math.abs(date2 - date);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -352,7 +354,7 @@
                                                                     <div class="col-5">
                                                                         <label>Nb jours TTT</label>
                                                                         <div class="form-control form-control-sm bg-info text-white">
-                                                                                ${lastDispensation.treatmentDays}
+                                                                            ${lastDispensation.treatmentDays}
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-7">
@@ -414,13 +416,13 @@
                                                     <div class="row mb-2">
                                                         <c:if test="${productDispensationForm.patientType == 'OTHER_HIV' || productDispensationForm.patientType == 'MOBILE' || productDispensationForm.patientType == 'ON_SITE'}">
                                                             <div class="col-5">
-                                                                <label class="">Date de dispensation <span class="required">*</span> </label>
-                                                                <form:input path="operationDate" cssClass="form-control form-control-sm picker"/>
+                                                                <label class="">Date de dispensation <span class="required">*</span></label>
+                                                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" onchange="getTreatmentEndDate()"/>
                                                                 <form:errors path="operationDate" cssClass="error"/>
                                                             </div>
                                                             <div class="col-3">
                                                                 <label class="">Nb Jours TTT<span class="required">*</span> </label>
-                                                                <form:input path="treatmentDays" cssClass="form-control form-control-sm"/>
+                                                                <form:input path="treatmentDays" cssClass="form-control form-control-sm" onchange="getTreatmentEndDate()"/>
                                                                 <form:errors path="treatmentDays" cssClass="error"/>
                                                             </div>
                                                         </c:if>

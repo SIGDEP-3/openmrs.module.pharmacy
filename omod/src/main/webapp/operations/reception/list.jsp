@@ -32,7 +32,7 @@
 
     <div class="row mb-2">
         <div class="col-6 text-uppercase font-italic text-secondary">
-            <div class="h5"><i class="fa fa-list"></i> ${subTitle}</div>
+            <div class="h6"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
             <span id="selectMe"></span>

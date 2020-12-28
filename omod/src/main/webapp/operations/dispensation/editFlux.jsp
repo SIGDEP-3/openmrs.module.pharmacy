@@ -86,7 +86,7 @@
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6 text-uppercase font-italic text-secondary">
-            <div class="h5"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
@@ -277,6 +277,20 @@
                                         <h6 class="font-italic text-warning h6">Information de dispensation</h6>
                                         <div class="card bg-light">
                                             <div class="card-body p-2">
+                                                <div class="row mb-2">
+                                                    <div class="col-8">
+                                                        <label class="pt-1">Prescripteur : </label>
+                                                        <div class="form-control form-control-sm bg-info text-white">
+                                                            ${headerDTO.provider.name}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label class="">Date de prescription</label>
+                                                        <div class="form-control form-control-sm bg-info text-white">
+                                                            <fmt:formatDate value="${headerDTO.prescriptionDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12">
                                                         <label class="mb-1">But</label>
@@ -331,23 +345,6 @@
                                                                     ${headerDTO.treatmentDays}
                                                             </div>
                                                         </div>
-                                                    </c:if>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <c:if test="${headerDTO.patientType == 'ON_SITE'}">
-                                                        <div class="col-8">
-                                                            <label class="pt-1">Prescripteur : </label>
-                                                            <div class="form-control form-control-sm bg-info text-white">
-                                                                    ${headerDTO.provider.name}
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <label class="">Date de prescription</label>
-                                                            <div class="form-control form-control-sm bg-info text-white">
-                                                                <fmt:formatDate value="${headerDTO.prescriptionDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                                                            </div>
-                                                        </div>
-
                                                     </c:if>
                                                 </div>
                                             </div>
