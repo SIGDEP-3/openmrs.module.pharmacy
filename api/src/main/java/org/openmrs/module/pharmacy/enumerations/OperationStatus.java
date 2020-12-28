@@ -4,5 +4,7 @@ public enum OperationStatus {
     AWAITING_VALIDATION,
     DISABLED,
     VALIDATED,
-    NOT_COMPLETED
+    NOT_COMPLETED,
+    SUBMITTED,
+    TREATED
 }

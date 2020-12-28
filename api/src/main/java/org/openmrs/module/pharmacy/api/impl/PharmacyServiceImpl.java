@@ -49,11 +49,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     public PharmacyDAO getDao() {
 	    return dao;
     }
-//
-//    @Override
-//    public Boolean validateOperation(ProductOperation operation) {
-//        return null;
-//    }
+
+    @Override
+    public Boolean validateOperation(ProductOperation operation) {
+        return dao.validateOperation(operation);
+    }
 
     @Override
     public ProductOperation getOneProductOperationById(Integer productOperationId) {

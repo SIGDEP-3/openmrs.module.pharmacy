@@ -1210,4 +1210,40 @@
     <changeSet id="pharmacy-movement_out-remove-recipient-index-not-null" author="BOGUI SERGE">
         <dropNotNullConstraint tableName="pharmacy_product_movement_out" columnName="recipient" columnDataType="int"/>
     </changeSet>
+
+    <changeSet id="pharmacy-product-report" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_report"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_report">
+            <column name="product_operation_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="report_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_period" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_info" type="longtext"/>
+            <column name="report_location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_urgent" type="tinyint(1)"/>
+            <column name="report_treatment_date" type="date"/>
+            <column name="child_location_report_id" type="int"/>
+
+        </createTable>
+        <addForeignKeyConstraint constraintName="pharmacy_product_report_product_operation"
+                                 baseTableName="pharmacy_product_report" baseColumnNames="product_operation_id"
+                                 referencedTableName="pharmacy_product_operation" referencedColumnNames="product_operation_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_report_location"
+                                 baseTableName="pharmacy_product_report" baseColumnNames="report_location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+        <addForeignKeyConstraint constraintName="pharmacy_product_report_child_report"
+                                 baseTableName="pharmacy_product_report" baseColumnNames="child_location_report_id"
+                                 referencedTableName="pharmacy_product_report" referencedColumnNames="product_operation_id"/>
+    </changeSet>
 </databaseChangeLog>

@@ -39,7 +39,7 @@ import java.util.List;
 @Transactional
 public interface PharmacyService extends OpenmrsService {
 
-//	Boolean validateOperation(ProductOperation operation);
+	Boolean validateOperation(ProductOperation operation);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationById(Integer productOperationId);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})

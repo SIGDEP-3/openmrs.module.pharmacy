@@ -20,38 +20,38 @@ import java.util.*;
 
 public class OperationUtils {
     public static Boolean validateOperation(ProductOperation operation) {
-
-        if (!operation.getIncidence().equals(Incidence.NONE)) {
-            if (!operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
-                if (fluxes != null && fluxes.size() != 0) {
-                    for (ProductAttributeFlux flux : fluxes) {
-                        ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
-                        if (attributeStock != null) {
-                            Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-                                    attributeStock.getQuantityInStock() + flux.getQuantity() :
-                                    (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
-                            attributeStock.setQuantityInStock(quantity);
-                        } else {
-                            attributeStock = new ProductAttributeStock();
-                            attributeStock.setQuantityInStock(flux.getQuantity());
-                            attributeStock.setLocation(getUserLocation());
-                            attributeStock.setProductAttribute(flux.getProductAttribute());
-                        }
-                        stockService().saveProductAttributeStock(attributeStock);
-
-                        flux.setStatus(OperationStatus.VALIDATED);
-                        fluxService().saveProductAttributeFlux(flux);
-                    }
-                }
-                operation.setOperationStatus(OperationStatus.VALIDATED);
-                service().saveProductOperation(operation);
-
-                return true;
-            }
-        }
-
-        return false;
+        return service().validateOperation(operation);
+//        if (!operation.getIncidence().equals(Incidence.NONE)) {
+//            if (!operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+//                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
+//                if (fluxes != null && fluxes.size() != 0) {
+//                    for (ProductAttributeFlux flux : fluxes) {
+//                        ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
+//                        if (attributeStock != null) {
+//                            Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+//                                    attributeStock.getQuantityInStock() + flux.getQuantity() :
+//                                    (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
+//                            attributeStock.setQuantityInStock(quantity);
+//                        } else {
+//                            attributeStock = new ProductAttributeStock();
+//                            attributeStock.setQuantityInStock(flux.getQuantity());
+//                            attributeStock.setLocation(getUserLocation());
+//                            attributeStock.setProductAttribute(flux.getProductAttribute());
+//                        }
+//                        stockService().saveProductAttributeStock(attributeStock);
+//
+//                        flux.setStatus(OperationStatus.VALIDATED);
+//                        fluxService().saveProductAttributeFlux(flux);
+//                    }
+//                }
+//                operation.setOperationStatus(OperationStatus.VALIDATED);
+//                service().saveProductOperation(operation);
+//
+//                return true;
+//            }
+//        }
+//
+//        return false;
     }
 
     public static void emptyStock(Location location, ProductProgram productProgram) {

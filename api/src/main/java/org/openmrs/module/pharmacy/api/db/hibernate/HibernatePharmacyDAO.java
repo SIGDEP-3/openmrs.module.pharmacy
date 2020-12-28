@@ -25,13 +25,17 @@ import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
+import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
@@ -72,36 +76,40 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		return productAttributeStockDAO;
 	}
 
-//	@Override
-//	public Boolean validateOperation(ProductOperation operation) {
-//		operation.setOperationStatus(OperationStatus.VALIDATED);
-//		sessionFactory.getCurrentSession().saveOrUpdate(operation);
-//		for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
-//			flux.setStatus(OperationStatus.VALIDATED);
-//			getProductAttributeFluxDAO().saveProductAttributeFlux(flux);
-//
-//			if (!operation.getIncidence().equals(Incidence.NONE)) {
-//				List<ProductAttributeStock> productAttributeStocks = getProductAttributeStockDAO().getAllProductAttributeStockByAttribute(flux.getProductAttribute(), false);
-//				//ProductAttributeStock attributeStock = getOneProductAttributeStockByAttribute(flux.getProductAttribute(), Context.getUserContext().getLocation(), false);
-//				ProductAttributeStock attributeStock = getProductAttributeStockDAO().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), Context.getLocationService().getDefaultLocation(), false);
-//				if (productAttributeStocks != null) {
-//					Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-//							attributeStock.getQuantityInStock() + flux.getQuantity() :
-//							(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
-//					attributeStock.setQuantityInStock(quantity);
-//				} else {
-//					attributeStock = new ProductAttributeStock();
-//					attributeStock.setQuantityInStock(flux.getQuantity());
-//					attributeStock.setLocation(Context.getLocationService().getDefaultLocation());
-//					//attributeStock.setLocation(Context.getUserContext().getLocation());
-//					attributeStock.setProductAttribute(flux.getProductAttribute());
-//				}
-//				attributeStock.setDateCreated(new Date());
-//				getProductAttributeStockDAO().saveProductAttributeStock(attributeStock);
-//			}
-//		}
-//		return true;
-//	}
+	@Override
+	public Boolean validateOperation(ProductOperation operation) {
+		if (!operation.getIncidence().equals(Incidence.NONE)) {
+			if (!operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+				Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
+				if (fluxes != null && fluxes.size() != 0) {
+					for (ProductAttributeFlux flux : fluxes) {
+						ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class).getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
+						if (attributeStock != null) {
+							Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+									attributeStock.getQuantityInStock() + flux.getQuantity() :
+									(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
+							attributeStock.setQuantityInStock(quantity);
+						} else {
+							attributeStock = new ProductAttributeStock();
+							attributeStock.setQuantityInStock(flux.getQuantity());
+							attributeStock.setLocation(operation.getLocation());
+							attributeStock.setProductAttribute(flux.getProductAttribute());
+						}
+						Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
+
+						flux.setStatus(OperationStatus.VALIDATED);
+						Context.getService(ProductAttributeFluxService.class).saveProductAttributeFlux(flux);
+					}
+				}
+				operation.setOperationStatus(OperationStatus.VALIDATED);
+				saveProductOperation(operation);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	@Override
 	public ProductOperation getOneProductOperationById(Integer productOperationId) {
