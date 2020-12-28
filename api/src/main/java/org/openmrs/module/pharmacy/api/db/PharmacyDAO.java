@@ -32,6 +32,7 @@ public interface PharmacyDAO {
 	 * Add DAO methods here
 	 */
 	Boolean validateOperation(ProductOperation operation);
+	Boolean cancelOperation(ProductOperation operation);
     ProductOperation getOneProductOperationById(Integer productOperationId);
 	ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence);
 

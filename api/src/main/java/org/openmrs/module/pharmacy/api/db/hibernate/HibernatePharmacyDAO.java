@@ -112,6 +112,37 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	}
 
 	@Override
+	public Boolean cancelOperation(ProductOperation operation) {
+		if (!operation.getIncidence().equals(Incidence.NONE)) {
+			if (operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+				Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
+				if (fluxes != null && fluxes.size() != 0) {
+					for (ProductAttributeFlux flux : fluxes) {
+						if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
+							ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class).getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
+							if (attributeStock != null) {
+								Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+										attributeStock.getQuantityInStock() - flux.getQuantity() :
+										(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() + flux.getQuantity() : flux.getQuantity());
+								attributeStock.setQuantityInStock(quantity);
+							}
+							Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
+
+							flux.setStatus(OperationStatus.DISABLED);
+							Context.getService(ProductAttributeFluxService.class).saveProductAttributeFlux(flux);
+						}
+					}
+				}
+				operation.setOperationStatus(OperationStatus.DISABLED);
+				saveProductOperation(operation);
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public ProductOperation getOneProductOperationById(Integer productOperationId) {
 		return (ProductOperation) sessionFactory.getCurrentSession().get(ProductOperation.class, productOperationId);
 	}

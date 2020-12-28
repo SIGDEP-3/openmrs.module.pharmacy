@@ -38,8 +38,17 @@ import java.util.List;
  */
 @Transactional
 public interface PharmacyService extends OpenmrsService {
-
+	@Authorized(value = {PrivilegeConstants.VALIDATE_OPERATION,
+			PrivilegeConstants.VALIDATE_DISPENSATION,
+			PrivilegeConstants.VALIDATE_INVENTORY,
+			PrivilegeConstants.VALIDATE_RECEPTION,
+			PrivilegeConstants.VALIDATE_MOVEMENT,
+			PrivilegeConstants.VALIDATE_TRANSFER,
+			PrivilegeConstants.VALIDATE_FLUX
+	})
 	Boolean validateOperation(ProductOperation operation);
+	@Authorized(value = {PrivilegeConstants.CANCEL_DISPENSATION, PrivilegeConstants.CANCEL_OPERATION})
+	Boolean cancelOperation(ProductOperation operation);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationById(Integer productOperationId);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})

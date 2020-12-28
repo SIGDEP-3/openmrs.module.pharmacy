@@ -10,6 +10,7 @@ public class PrivilegeConstants {
     public static final String DELETE_OPERATION = "Delete Operation";
     public static final String SAVE_OPERATION   = "Save Operation";
     public static final String VALIDATE_OPERATION   = "Validate Operation";
+    public static final String CANCEL_OPERATION   = "Cancel Operation";
 
     public static final String MANAGE_PRODUCT = "Manage Product";
     public static final String VIEW_PRODUCT = "View Product";
@@ -75,6 +76,7 @@ public class PrivilegeConstants {
     public static final String SAVE_DISPENSATION        = "Save Dispensation";
     public static final String DELETE_DISPENSATION      = "Delete Dispensation";
     public static final String VALIDATE_DISPENSATION    = "Validate Dispensation";
+    public static final String CANCEL_DISPENSATION    = "Cancel Dispensation";
 
     public static final String MANAGE_FLUX      = "Manage Flux";
     public static final String VIEW_FLUX        = "View Flux";

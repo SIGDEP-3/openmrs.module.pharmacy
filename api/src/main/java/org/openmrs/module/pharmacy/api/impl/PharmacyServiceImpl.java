@@ -56,6 +56,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     }
 
     @Override
+    public Boolean cancelOperation(ProductOperation operation) {
+        return dao.cancelOperation(operation);
+    }
+
+    @Override
     public ProductOperation getOneProductOperationById(Integer productOperationId) {
         return dao.getOneProductOperationById(productOperationId);
     }
