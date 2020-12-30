@@ -24,6 +24,7 @@ import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,6 +70,15 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 	public List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeFlux.class);
 		return criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Date startDate, Date endDate, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeFlux.class);
+		return criteria.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.between("operationDate", startDate, endDate)).list();
 	}
 
 	@SuppressWarnings("unchecked")

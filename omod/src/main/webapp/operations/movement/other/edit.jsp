@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
-<%@ include file="../../template/operationHeader.jsp"%>
+<%@ include file="../../../template/operationHeader.jsp"%>
 
 <script>
     if (jQuery) {
@@ -45,7 +45,7 @@
             <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/movement/list.form" var="url"/>
+            <c:url value="/module/pharmacy/operations/movement/other/list.form" var="url"/>
             <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
@@ -156,5 +156,5 @@
     </div>
 </div>
 
-<%@ include file="../../template/localFooter.jsp"%>
+<%@ include file="../../../template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

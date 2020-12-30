@@ -66,8 +66,12 @@ public class PharmacyProductMovementManageController {
     public Location getUserLocation() {
         return Context.getLocationService().getDefaultLocation();
     }
+    @RequestMapping(value = "/module/pharmacy/operations/movement/index.form", method = RequestMethod.GET)
+    public void index(ModelMap modelMap) {
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/list.form", method = RequestMethod.GET)
+    }
+
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
 
         if (Context.isAuthenticated()) {
@@ -80,7 +84,7 @@ public class PharmacyProductMovementManageController {
         }
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/edit.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
                        @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
                        @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
@@ -136,7 +140,7 @@ public class PharmacyProductMovementManageController {
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/edit.form", method = RequestMethod.POST)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/edit.form", method = RequestMethod.POST)
     public String save(ModelMap modelMap,
                        HttpServletRequest request,
                        @RequestParam(value = "action", defaultValue = "addLine", required = false) String action,
@@ -171,7 +175,7 @@ public class PharmacyProductMovementManageController {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
                     }
 
-                    return "redirect:/module/pharmacy/operations/movement/editFlux.form?type="+ movementType +"&movementId=" + movementId;
+                    return "redirect:/module/pharmacy/operations/movement/other/editFlux.form?type="+ movementType +"&movementId=" + movementId;
                 }
                 else {
                     if (productMovementEntryForm.getProductOperationId() != null){
@@ -179,7 +183,7 @@ public class PharmacyProductMovementManageController {
                     }else {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Votre Operation a été enregistrée avec succès !");
                     }
-                    return "redirect:/module/pharmacy/operations/movement/list.form";
+                    return "redirect:/module/pharmacy/operations/movement/other/list.form";
                 }
             }
             modelMap.addAttribute("productMovementEntryForm", productMovementEntryForm);
@@ -192,7 +196,7 @@ public class PharmacyProductMovementManageController {
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/editFlux.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/editFlux.form", method = RequestMethod.GET)
     public String editFlux(ModelMap modelMap,
                            @RequestParam(value = "movementId") Integer movementId,
                            @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
@@ -224,7 +228,7 @@ public class PharmacyProductMovementManageController {
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/editFlux.form", method = RequestMethod.POST)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/editFlux.form", method = RequestMethod.POST)
     public String saveFlux(ModelMap modelMap,
                            @RequestParam(value = "type") String type,
                            HttpServletRequest request,
@@ -248,7 +252,7 @@ public class PharmacyProductMovementManageController {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
                     }
 
-                    return "redirect:/module/pharmacy/operations/movement/editFlux.form?type=" + type +"&movementId="
+                    return "redirect:/module/pharmacy/operations/movement/other/editFlux.form?type=" + type +"&movementId="
                             + movementAttributeFluxForm.getProductOperationId();
                 }
             }
@@ -287,10 +291,8 @@ public class PharmacyProductMovementManageController {
 
     private void modelMappingForView(ModelMap modelMap, MovementAttributeFluxForm movementAttributeFluxForm,
                                      ProductOperation productMovement, String type) {
-        String movementTypes ="";
-        if (getOutTypeLabels().containsKey(type)){
+        String movementTypes;
 
-        }
         if (type.equals("out")){
             movementTypes = service().getOneProductMovementOutById(productMovement.getProductOperationId()).getStockOutType().name();
             modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
@@ -339,7 +341,7 @@ public class PharmacyProductMovementManageController {
         }
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/complete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/complete.form", method = RequestMethod.GET)
     public String complete(HttpServletRequest request,
                            @RequestParam(value = "movementId") Integer movementId,
                            @RequestParam(value = "type") String type){
@@ -361,10 +363,10 @@ public class PharmacyProductMovementManageController {
                     "succès et est en attente de validation !");
         }
 
-        return "redirect:/module/pharmacy/operations/movement/list.form";
+        return "redirect:/module/pharmacy/operations/movement/other/list.form";
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/incomplete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/incomplete.form", method = RequestMethod.GET)
     public String incomplete(HttpServletRequest request,
                              @RequestParam(value = "movementId") Integer movementId,
                              @RequestParam(value = "type") String type){
@@ -383,10 +385,10 @@ public class PharmacyProductMovementManageController {
             service().saveProductMovementEntry(movementEntry);
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à modifier le Mouvement d'entée");
         }
-        return "redirect:/module/pharmacy/operations/movement/editFlux.form?type=" +type+ "&movementId=" + movementId;
+        return "redirect:/module/pharmacy/operations/movement/other/editFlux.form?type=" +type+ "&movementId=" + movementId;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/delete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/delete.form", method = RequestMethod.GET)
     public String deleteOperation(HttpServletRequest request,
 //                                  @RequestParam(value = "movementId") Integer movementId,
                                   @RequestParam(value = "id") Integer id,
@@ -411,10 +413,10 @@ public class PharmacyProductMovementManageController {
 
         }
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le movement de sortie a été supprimée avec succès !");
-        return "redirect:/module/pharmacy/operations/movement/list.form";
+        return "redirect:/module/pharmacy/operations/movement/other/list.form";
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/deleteFlux.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/deleteFlux.form", method = RequestMethod.GET)
     public String deleteFlux(HttpServletRequest request,
                              @RequestParam(value = "movementId") Integer movementId,
                              @RequestParam(value = "fluxId") Integer fluxId,
@@ -427,10 +429,10 @@ public class PharmacyProductMovementManageController {
             productAttributeFluxService().removeProductAttributeFlux(flux);
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La ligne du produit a été supprimée avec succès !");
         }
-        return "redirect:/module/pharmacy/operations/movement/editFlux.form?type="+ type +"&movementId=" + movementId;
+        return "redirect:/module/pharmacy/operations/movement/other/editFlux.form?type="+ type +"&movementId=" + movementId;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/validate.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/other/validate.form", method = RequestMethod.GET)
     public String validate(HttpServletRequest request,
                            @RequestParam(value = "movementId") Integer movementId,
                            @RequestParam(value = "type") String type){
@@ -451,7 +453,7 @@ public class PharmacyProductMovementManageController {
                         "continuer à modifier le movement d'entrée !");
             }
         }
-        return "redirect:/module/pharmacy/operations/movement/list.form";
+        return "redirect:/module/pharmacy/operations/movement/other/list.form";
     }
 
     public Map<String, String> getEntryTypeLabels(){

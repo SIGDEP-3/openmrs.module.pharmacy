@@ -69,7 +69,7 @@ public class PharmacyProductTransferManageController {
     }
 
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/list.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("transfers", transferService().getAllProductTransfers(OperationUtils.getUserLocation(), false));
@@ -78,7 +78,7 @@ public class PharmacyProductTransferManageController {
         }
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/edit.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/edit.form", method = RequestMethod.GET)
     public String edit(ModelMap modelMap,
                        HttpServletRequest request,
                        @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
@@ -91,7 +91,7 @@ public class PharmacyProductTransferManageController {
                 ProductTransfer productTransfer = transferService().getOneProductTransferById(id);
                 if (productTransfer != null) {
                     if (!productTransfer.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
-                        return "redirect:/module/pharmacy/operations/transfer/editFlux.form?transferId=" +
+                        return "redirect:/module/pharmacy/operations/movement/transfer/editFlux.form?transferId=" +
                                 productTransfer.getProductOperationId();
                     }
                     productTransferForm.setProductTransfer(productTransfer);
@@ -103,7 +103,7 @@ public class PharmacyProductTransferManageController {
                     if (program == null) {
                         HttpSession session = request.getSession();
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
-                        return "redirect:/module/pharmacy/operations/transfer/list.form";
+                        return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
                     }
                     productTransferForm = new ProductTransferForm();
                     if (type.equals("IN")) {
@@ -124,12 +124,12 @@ public class PharmacyProductTransferManageController {
             modelMap.addAttribute("productTransfer", transferService().getOneProductTransferById(id));
             modelMap.addAttribute("clientLocations", transferService().getAllClientLocation(false));
             modelMap.addAttribute("reasonList", transferReasons());
-            modelMap.addAttribute("subTitle", "Saisie de transfert " + transferTypeStr.toUpperCase() + " - Entête");
+            modelMap.addAttribute("subTitle", "Saisie de transfert " + transferTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i> Entête");
         }
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/edit.form", method = RequestMethod.POST)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/edit.form", method = RequestMethod.POST)
     public String save(ModelMap modelMap,
                        HttpServletRequest request,
                        @RequestParam(value = "action", defaultValue = "addLine", required = false) String action,
@@ -155,10 +155,10 @@ public class PharmacyProductTransferManageController {
                     } else {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
                     }
-                    return "redirect:/module/pharmacy/operations/transfer/editFlux.form?transferId=" +
+                    return "redirect:/module/pharmacy/operations/movement/transfer/editFlux.form?transferId=" +
                             transfer.getProductOperationId();
                 } else {
-                    return "redirect:/module/pharmacy/operations/transfer/list.form";
+                    return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
                 }
             }
             String transferTypeStr = productTransferForm.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
@@ -166,12 +166,12 @@ public class PharmacyProductTransferManageController {
 //            modelMap.addAttribute("latestTransfer", latestTransfer(productTransferForm.getProductTransfer()));
             modelMap.addAttribute("program", programService().getOneProductProgramById(productTransferForm.getProductProgramId()));
             modelMap.addAttribute("suppliers", supplierService().getAllProductSuppliers());
-            modelMap.addAttribute("subTitle", "Saisie  de du transfert "+ transferTypeStr.toUpperCase() + " - entête");
+            modelMap.addAttribute("subTitle", "Transfert "+ transferTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i> Saisie entête");
         }
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/editFlux.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/editFlux.form", method = RequestMethod.GET)
     public String editFlux(ModelMap modelMap,
                            @RequestParam(value = "transferId") Integer transferId,
                            @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
@@ -213,7 +213,7 @@ public class PharmacyProductTransferManageController {
         modelMappingForView(modelMap, transferAttributeFluxForm, productTransfer);
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/editFlux.form", method = RequestMethod.POST)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/editFlux.form", method = RequestMethod.POST)
     public String saveFlux(ModelMap modelMap,
                            HttpServletRequest request,
                            @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
@@ -238,7 +238,7 @@ public class PharmacyProductTransferManageController {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Produit modifié avec succès");
                     }
 
-                    return "redirect:/module/pharmacy/operations/transfer/editFlux.form?transferId="
+                    return "redirect:/module/pharmacy/operations/movement/transfer/editFlux.form?transferId="
                             + transferAttributeFluxForm.getProductOperationId();
                 }
             }
@@ -281,11 +281,11 @@ public class PharmacyProductTransferManageController {
                 List<ProductOutFluxDTO> productAttributeFluxes = service().getProductOutFluxDTOs(productTransfer);
                 modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             }
-            modelMap.addAttribute("subTitle", "Saisie du transfert " + transferTypeStr.toUpperCase() + " - ajout de produits");
+            modelMap.addAttribute("subTitle", "Transfert " + transferTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i> ajout de produits");
         }
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/complete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/complete.form", method = RequestMethod.GET)
     public String complete(HttpServletRequest request,
                            @RequestParam(value = "transferId") Integer transferId){
         if (!Context.isAuthenticated())
@@ -298,10 +298,10 @@ public class PharmacyProductTransferManageController {
         String transferTypeStr = transfer.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le tranfert " + transferTypeStr.toUpperCase() + " a été enregistré avec " +
                 "succès et est en attente de validation !");
-        return "redirect:/module/pharmacy/operations/transfer/list.form";
+        return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/incomplete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/incomplete.form", method = RequestMethod.GET)
     public String incomplete(HttpServletRequest request,
                              @RequestParam(value = "transferId") Integer transferId){
         if (!Context.isAuthenticated())
@@ -313,10 +313,10 @@ public class PharmacyProductTransferManageController {
         String transferTypeStr = transfer.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                 "continuer à modifier le transfert " + transferTypeStr + " !");
-        return "redirect:/module/pharmacy/operations/transfer/editFlux.form?transferId=" + transferId;
+        return "redirect:/module/pharmacy/operations/movement/transfer/editFlux.form?transferId=" + transferId;
     }
 
-//    @RequestMapping(value = "/module/pharmacy/operations/transfer/delete.form", method = RequestMethod.GET)
+//    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/delete.form", method = RequestMethod.GET)
 //    public String deleteOperation(HttpServletRequest request,
 //                                  @RequestParam(value = "id") Integer id){
 //        if (!Context.isAuthenticated())
@@ -334,10 +334,10 @@ public class PharmacyProductTransferManageController {
 //        attributeService().purgeUnusedAttributes();
 //        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Transfert " + transferTypeStr.toUpperCase() +
 //                " supprimé avec succès !");
-//        return "redirect:/module/pharmacy/operations/transfer/list.form";
+//        return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
 //    }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/deleteFlux.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/deleteFlux.form", method = RequestMethod.GET)
     public String deleteFlux(HttpServletRequest request,
                              @RequestParam(value = "transferId") Integer transferId,
                              @RequestParam(value = "fluxId") Integer fluxId){
@@ -349,10 +349,10 @@ public class PharmacyProductTransferManageController {
             attributeFluxService().removeProductAttributeFlux(flux);
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La ligne du produit a été supprimée avec succès !");
         }
-        return "redirect:/module/pharmacy/operations/transfer/editFlux.form?transferId=" + transferId;
+        return "redirect:/module/pharmacy/operations/movement/transfer/editFlux.form?transferId=" + transferId;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/validate.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/validate.form", method = RequestMethod.GET)
     public String validate(HttpServletRequest request,
                            @RequestParam(value = "transferId") Integer transferId){
         if (!Context.isAuthenticated())
@@ -363,13 +363,13 @@ public class PharmacyProductTransferManageController {
             if (OperationUtils.validateOperation(operation)) {
                 HttpSession session = request.getSession();
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Votre transfert a été validé avec succès !");
-                return "redirect:/module/pharmacy/operations/transfer/list.form";
+                return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
             }
         }
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/transfer/delete.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/delete.form", method = RequestMethod.GET)
     public String delete(HttpServletRequest request,
                          @RequestParam(value = "id") Integer id) {
         if (id != null) {
@@ -383,11 +383,10 @@ public class PharmacyProductTransferManageController {
                 String transferTypeStr = transfer.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
                 attributeService().purgeUnusedAttributes();
                 HttpSession session = request.getSession();
-                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le transfert " + transferTypeStr.toUpperCase() +
+                session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le transfert " + transferTypeStr +
                         " a été supprimé avec succès");
-                return "redirect:/module/pharmacy/operations/transfer/list.form";
+                return "redirect:/module/pharmacy/operations/movement/transfer/list.form";
             }
-
         }
         return null;
     }

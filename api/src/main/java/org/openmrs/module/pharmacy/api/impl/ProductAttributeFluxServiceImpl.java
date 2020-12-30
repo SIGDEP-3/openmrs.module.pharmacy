@@ -21,6 +21,7 @@ import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +60,11 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
     @Override
     public List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided) {
         return dao.getAllProductAttributeFluxes(includeVoided);
+    }
+
+    @Override
+    public List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Date startDate, Date endDate, Boolean includeVoided) {
+        return dao.getAllProductAttributeFluxes(location, startDate, endDate, includeVoided);
     }
 
     @Override

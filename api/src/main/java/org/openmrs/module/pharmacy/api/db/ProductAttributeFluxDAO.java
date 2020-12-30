@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public interface ProductAttributeFluxDAO {
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location);
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided);
+	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Date startDate, Date endDate, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxByOperation(ProductOperation productOperation, Boolean includeVoided);
 	ProductAttributeFlux getOneProductAttributeFluxById(Integer id);

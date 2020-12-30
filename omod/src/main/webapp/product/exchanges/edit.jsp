@@ -3,7 +3,13 @@
 
 <%@ include file="../../template/localHeader.jsp"%>
 <openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/exchanges/edit.form" />
+<script>
+    if (jQuery) {
+        jQuery(document).ready(function () {
 
+        });
+    }
+</script>
 <hr>
 <div class="row">
     <div class="col-6">
@@ -20,28 +26,29 @@
 <div class="container">
     <form:form modelAttribute="exchangeEntityForm" method="post" action="" id="form">
         <form:hidden path="productExchangeEntityId"/>
+        <form:hidden path="locationId"/>
         <form:hidden path="uuid"/>
 
         <div class="row">
             <div class="col-8 mb-2">
-                <labe><spring:message code="pharmacy.nameOrInLocation"/> <span class="required">*</span></labe>
-                <form:select path="locationId" cssClass="form-control s2" >
+                <label><spring:message code="pharmacy.nameOrInLocation"/> <span class="required">*</span></label>
+                <form:select path="locationInList" cssClass="form-control s2" >
                     <form:option value="" label=""/>
                     <form:options items="${locationList}" itemValue="locationId" itemLabel="name" />
                 </form:select>
-                <form:errors path="locationId" cssClass="error"/>
+                <form:errors path="locationInList" cssClass="error"/>
             </div>
         </div>
         <div class="row mb-2">
             <div class="col-2">
-                <labe>Nom Partenaire <span class="required">*</span></labe>
+                <label>Nom Partenaire <span class="required">*</span></label>
                 <form:input path="name" cssClass="form-control-s2" />
                 <form:errors path="name" cssClass="error"/>
             </div>
         </div>
         <div class="row">
             <div class="col-8 mb-2">
-                <labe><spring:message code="pharmacy.description"/></labe>
+                <label><spring:message code="pharmacy.description"/></label>
                 <form:textarea path="description" cssClass="form-control" />
                 <form:errors path="description" cssClass="error"/>
             </div>

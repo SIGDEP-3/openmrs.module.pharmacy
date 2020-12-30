@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
-<%@ include file="../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/transfer/list.form" />
+<%@ include file="../../../template/operationHeader.jsp"%>
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/list.form" />
 
 <script>
     if (jQuery) {
@@ -27,7 +27,7 @@
                 if(transferType === undefined || transferType === null || transferType === '') {
                     jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
                 } else {
-                    location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/transfer/edit.form?programId=" + programId + "&type=" + transferType
+                    location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/edit.form?programId=" + programId + "&type=" + transferType
                 }
             }
         }
@@ -95,7 +95,7 @@
                         <td>${transfer.exchangeLocation.name}</td>
                         <c:choose>
                             <c:when test="${fct:length(transfer.productAttributeFluxes) == 0}">
-                                <c:url value="/module/pharmacy/operations/transfer/editFlux.form" var="addLineUrl">
+                                <c:url value="/module/pharmacy/operations/movement/site-back/editFlux.form" var="addLineUrl">
                                     <c:param name="transferId" value="${transfer.productOperationId}"/>
                                 </c:url>
                                 <td class="text-danger">
@@ -110,14 +110,14 @@
                         </c:choose>
                         <td>${transfer.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (transfer.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                         <td>
-                            <c:url value="/module/pharmacy/operations/transfer/edit.form" var="editUrl">
+                            <c:url value="/module/pharmacy/operations/movement/transfer/edit.form" var="editUrl">
                                 <c:param name="id" value="${transfer.productOperationId}"/>
                             </c:url>
                             <a href="${editUrl}" class="text-${transfer.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${transfer.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
                             <c:if test="${transfer.operationStatus != 'VALIDATED'}">
-                                <c:url value="/module/pharmacy/operations/transfer/delete.form" var="delUrl">
+                                <c:url value="/module/pharmacy/operations/movement/site-back/delete.form" var="delUrl">
                                     <c:param name="id" value="${transfer.productOperationId}"/>
                                 </c:url>
                                 <a href="${delUrl}" onclick="return confirm('Vous êtes sur le point de supprimer le transfert, Voulez-vous continuer ?')" class="text-danger">
@@ -133,5 +133,5 @@
         </div>
     </div>
 </div>
-<%@ include file="../../template/localFooter.jsp"%>
+<%@ include file="../../../template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

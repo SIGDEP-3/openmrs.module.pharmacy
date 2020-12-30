@@ -15,6 +15,7 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.openmrs.module.pharmacy.api.ProductExchangeEntityService;
@@ -49,6 +50,11 @@ public class ProductExchangeEntityServiceImpl extends BaseOpenmrsService impleme
     @Override
     public List<ProductExchangeEntity> getAllProductExchange() {
         return dao.getAllProductExchange();
+    }
+
+    @Override
+    public List<ProductExchangeEntity> getAllProductExchange(Location location) {
+        return dao.getAllProductExchange(location);
     }
 
     @Override

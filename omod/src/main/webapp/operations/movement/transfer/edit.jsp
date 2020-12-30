@@ -2,9 +2,9 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
-<%@ include file="../../template/operationHeader.jsp"%>
+<%@ include file="../../../template/operationHeader.jsp"%>
 
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/transfer/edit.form" />
+<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/transfer/edit.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){
@@ -64,7 +64,7 @@
             <div class="h6 pt-2"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/transfer/list.form" var="url"/>
+            <c:url value="/module/pharmacy/operations/movement/transfer/list.form" var="url"/>
             <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
@@ -138,7 +138,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
-                                <label>Raison du transfert</label>
+                                <label>Raison du transfert <span class="required">*</span></label>
                                 <form:select path="observation" cssClass="form-control s2">
                                     <form:option label="" value=""/>
                                     <c:forEach var="reason" items="${reasonList}">
@@ -183,5 +183,5 @@
     </div>
 </div>
 
-<%@ include file="../../template/localFooter.jsp"%>
+<%@ include file="../../../template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

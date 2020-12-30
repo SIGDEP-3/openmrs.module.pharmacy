@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductExchangeEntityDAO;
@@ -50,6 +51,13 @@ public class HibernateProductExchangeEntityDAO implements ProductExchangeEntityD
 	@Override
 	public List<ProductExchangeEntity> getAllProductExchange() {
 		return sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductExchangeEntity> getAllProductExchange(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductExchangeEntity.class);
+		return criteria.add(Restrictions.eq("location", location)).list();
 	}
 
 	@Override

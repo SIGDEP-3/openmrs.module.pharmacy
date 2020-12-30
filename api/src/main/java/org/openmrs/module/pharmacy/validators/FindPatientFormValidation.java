@@ -43,6 +43,16 @@ public class FindPatientFormValidation implements Validator {
                 }
             }
 
+            if (form.getPatientType() != null) {
+                if (form.getPatientType().equals(PatientType.ON_SITE) || form.getPatientType().equals(PatientType.MOBILE)) {
+                    if (form.getPatientIdentifier() == null) {
+                        errors.rejectValue("patientIdentifier", null, "Le numéro patient est requis pour les patients mobiles et du site !");
+                    }
+                }
+            }
+
+
+
             if (form.getPatientIdentifier() != null && !form.getPatientIdentifier().isEmpty()) {
                 if (form.getPatientType() != null && (form.getPatientType().equals(PatientType.ON_SITE) || form.getPatientType().equals(PatientType.MOBILE))) {
                     Pattern pattern = Pattern.compile("^[0-9]{4}/.{2}/[0-9]{2}/[0-9]{5}[E[1-9]]?$", Pattern.CASE_INSENSITIVE);

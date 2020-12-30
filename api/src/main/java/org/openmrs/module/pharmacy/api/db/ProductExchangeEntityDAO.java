@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
+import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 public interface ProductExchangeEntityDAO {
 
 	List<ProductExchangeEntity> getAllProductExchange();
+	List<ProductExchangeEntity> getAllProductExchange(Location location);
 	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
 	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
 	void removeProductExchange(ProductExchangeEntity productExchangeEntity);

@@ -7,7 +7,8 @@ public enum StockOutType {
     NEGATIVE_INVENTORY_ADJUSTMENT(7),
     EXPIRED_PRODUCT(8),
     SPOILED_PRODUCT(9),
-    DESTROYED(10);
+    DESTROYED(10),
+    BACK_TO_SUPPLIER(10);
 
     int type;
 

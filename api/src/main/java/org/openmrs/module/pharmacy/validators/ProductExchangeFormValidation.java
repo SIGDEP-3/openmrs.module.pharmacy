@@ -22,7 +22,7 @@ public class ProductExchangeFormValidation implements Validator {
             errors.reject("pharmacy", "general.error");
         } else {
             ValidationUtils.rejectIfEmpty(errors, "name", null, "Ce champ est requis");
-            ValidationUtils.rejectIfEmpty(errors, "locationId", null, "Ce champ est requis");
+//            ValidationUtils.rejectIfEmpty(errors, "locationId", null, "Ce champ est requis");
 
         }
     }

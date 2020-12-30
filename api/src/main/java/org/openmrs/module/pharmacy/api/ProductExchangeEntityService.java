@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.pharmacy.api;
 
+import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import java.util.List;
 public interface ProductExchangeEntityService extends OpenmrsService {
 
 	List<ProductExchangeEntity> getAllProductExchange();
+	List<ProductExchangeEntity> getAllProductExchange(Location location);
 	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
 	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
 	void removeProductExchange(ProductExchangeEntity productExchangeEntity);

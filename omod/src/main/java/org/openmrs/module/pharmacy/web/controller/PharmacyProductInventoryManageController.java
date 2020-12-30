@@ -220,11 +220,11 @@ public class PharmacyProductInventoryManageController {
         if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
             List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxDTOs(productInventory);
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
-            modelMap.addAttribute("subTitle", "Inventaire - EN ATTENTE DE VALIDATION");
+            modelMap.addAttribute("subTitle", "Inventaire <i class=\"fa fa-play\"></i> EN ATTENTE DE VALIDATION");
         } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
             List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxValidatedDTO(productInventory);
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
-            modelMap.addAttribute("subTitle", "Inventaire - APPROUVEE");
+            modelMap.addAttribute("subTitle", "Inventaire <i class=\"fa fa-play\"></i> APPROUVEE");
         } else if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)){
             if (getLatestInventory(productInventory) != null) {
                 List<ProductAttributeStock> stocks = stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false);
@@ -255,7 +255,7 @@ public class PharmacyProductInventoryManageController {
             }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
 
-            modelMap.addAttribute("subTitle", "Inventaire - ajout de produits");
+            modelMap.addAttribute("subTitle", "Inventaire <i class=\"fa fa-play\"></i> ajout de produits");
         }
     }
 

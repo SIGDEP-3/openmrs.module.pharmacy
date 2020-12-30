@@ -65,33 +65,34 @@ public class OperationUtils {
     }
 
     public static Boolean cancelOperation(ProductOperation operation) {
-        if (!operation.getIncidence().equals(Incidence.NONE)) {
-            if (operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
-                if (fluxes != null && fluxes.size() != 0) {
-                    for (ProductAttributeFlux flux : fluxes) {
-                        if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
-                            ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
-                            if (attributeStock != null) {
-                                Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-                                        attributeStock.getQuantityInStock() - flux.getQuantity() :
-                                        (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() + flux.getQuantity() : flux.getQuantity());
-                                attributeStock.setQuantityInStock(quantity);
-                            }
-                            stockService().saveProductAttributeStock(attributeStock);
-
-                            flux.setStatus(OperationStatus.DISABLED);
-                            fluxService().saveProductAttributeFlux(flux);
-                        }
-                    }
-                }
-                operation.setOperationStatus(OperationStatus.DISABLED);
-                service().saveProductOperation(operation);
-
-                return true;
-            }
-        }
-        return false;
+        return service().cancelOperation(operation);
+//        if (!operation.getIncidence().equals(Incidence.NONE)) {
+//            if (operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+//                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
+//                if (fluxes != null && fluxes.size() != 0) {
+//                    for (ProductAttributeFlux flux : fluxes) {
+//                        if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
+//                            ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
+//                            if (attributeStock != null) {
+//                                Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+//                                        attributeStock.getQuantityInStock() - flux.getQuantity() :
+//                                        (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() + flux.getQuantity() : flux.getQuantity());
+//                                attributeStock.setQuantityInStock(quantity);
+//                            }
+//                            stockService().saveProductAttributeStock(attributeStock);
+//
+//                            flux.setStatus(OperationStatus.DISABLED);
+//                            fluxService().saveProductAttributeFlux(flux);
+//                        }
+//                    }
+//                }
+//                operation.setOperationStatus(OperationStatus.DISABLED);
+//                service().saveProductOperation(operation);
+//
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     private static PharmacyService service() {

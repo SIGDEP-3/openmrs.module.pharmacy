@@ -92,18 +92,7 @@
 							</c:choose>>
 						Reception de produits
 					</button>
-					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/transfer/list.form'"
-							<c:choose>
-								<c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
-									class=" btn btn-secondary btn-sm"
-								</c:when>
-								<c:otherwise>
-									class="btn btn-outline-secondary text-white btn-sm"
-								</c:otherwise>
-							</c:choose>>
-						Transfert de produits
-					</button>
-					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/list.form'"
+					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/index.form'"
 							<c:choose>
 								<c:when test='<%= request.getRequestURI().contains("/movement") %>'>
 									class=" btn btn-secondary btn-sm"
@@ -112,7 +101,7 @@
 									class="btn btn-outline-secondary text-white btn-sm"
 								</c:otherwise>
 							</c:choose>>
-						Perte & ajustement
+						Pertes & ajustements
 					</button>
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form'"
 							<c:choose>
@@ -163,10 +152,65 @@
 			</div>
 		</div>
 	</div>
-	<div class="row mt-0 mb-1 pb-3 pt-3 pl-0 border-bottom border-secondary bg-light">
+	<div class="row mt-0 mb-1 pb-2 pt-2 pl-0 border-bottom border-secondary bg-light">
 		<div class="col-12">
 			<div class="text-uppercase text-secondary font-weight-bold">
-				<h5 class="m-0">${title}</h5>
+				<div class="row align-items-center mt-0 mb-0">
+					<div class="col-5 pt-1">
+						<div class="h5">${title}</div>
+					</div>
+					<c:if test='<%= request.getRequestURI().contains("/movement") %>'>
+						<div class="col-7 text-right">
+							<div class="btn-group">
+								<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/transfer/list.form'"
+										<c:choose>
+											<c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
+												class=" btn btn-secondary btn-sm"
+											</c:when>
+											<c:otherwise>
+												class="btn btn-outline-secondary btn-sm"
+											</c:otherwise>
+										</c:choose>>
+									Transfert de produits
+								</button>
+								<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/list.form'"
+										<c:choose>
+											<c:when test='<%= request.getRequestURI().contains("/site-back") %>'>
+												class=" btn btn-secondary btn-sm"
+											</c:when>
+											<c:otherwise>
+												class="btn btn-outline-secondary btn-sm"
+											</c:otherwise>
+										</c:choose>>
+									Retour de produit
+								</button>
+								<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/supplier-back/list.form'"
+										<c:choose>
+											<c:when test='<%= request.getRequestURI().contains("/supplier-back") %>'>
+												class=" btn btn-secondary btn-sm"
+											</c:when>
+											<c:otherwise>
+												class="btn btn-outline-secondary btn-sm"
+											</c:otherwise>
+										</c:choose>>
+									Retour au fournisseur
+								</button>
+								<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/other/list.form'"
+										<c:choose>
+											<c:when test='<%= request.getRequestURI().contains("/other") %>'>
+												class=" btn btn-secondary btn-sm"
+											</c:when>
+											<c:otherwise>
+												class="btn btn-outline-secondary btn-sm"
+											</c:otherwise>
+										</c:choose>>
+									Autres Pertes & ajustements
+								</button>
+							</div>
+						</div>
+					</c:if>
+				</div>
+				<h5 class="m-0"></h5>
 			</div>
 		</div>
 	</div>

@@ -18,6 +18,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +42,7 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location);
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided);
+	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Date startDate, Date endDate, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
 	List<ProductAttributeFlux> getAllProductAttributeFluxByOperation(ProductOperation productOperation, Boolean includeVoided);
 	ProductAttributeFlux getOneProductAttributeFluxById(Integer id);

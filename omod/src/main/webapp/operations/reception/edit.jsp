@@ -75,8 +75,6 @@
                 <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
                     <form:hidden path="productSupplierId"/>
                 </c:if>
-<%--                <c:if test="${fct:length(productReception.productAttributeFluxes) != 0}">--%>
-<%--                </c:if>--%>
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
@@ -126,17 +124,27 @@
                     </div>
                     <div class="col-6">
                         <div class="row mb-2">
-                            <div class="col-4">
-                                <label>Date de retour <span class="required">*</span></label>
-                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
-                                <form:errors path="operationDate" cssClass="error"/>
-                            </div>
-                            <div class="col-4">
-                                <label>Date de la reception </label>
-                                <div class="form-control form-control-sm bg-info text-white">
-                                    <fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                            <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                                <div class="col-4">
+                                    <label>Date de retour <span class="required">*</span></label>
+                                    <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
+                                    <form:errors path="operationDate" cssClass="error"/>
                                 </div>
-                            </div>
+                                <div class="col-4">
+                                    <label>Date de la reception </label>
+                                    <div class="form-control form-control-sm bg-info text-white">
+                                        <fmt:formatDate value="${reception.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                    </div>
+                                </div>
+                            </c:if>
+                            <c:if test="${productReceptionForm.incidence == 'POSITIVE'}">
+                                <div class="col-4">
+                                    <label>Date de r&eacute;ception <span class="required">*</span></label>
+                                    <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
+                                    <form:errors path="operationDate" cssClass="error"/>
+                                </div>
+                            </c:if>
+
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
