@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/editFlux.form" />
+<openmrs:require privilege="Save Dispensation" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/editFlux.form" />
 
 <%@ include file="../../template/operationHeader.jsp"%>
 <%--<script src="<openmrs:contextPath/>/module/pharmacy/web/DWRPharmacyService.js"></script>--%>
@@ -112,34 +112,45 @@
                                 </div>
                                 <div class="col-4 text-right">
                                     <c:if test="${headerDTO.operationStatus == 'NOT_COMPLETED'}">
-                                        <c:if test="${fct:length(productAttributeFluxes) != 0}">
-                                            <c:url value="/module/pharmacy/operations/dispensation/validate.form"
-                                                   var="validationUrl">
+                                        <openmrs:hasPrivilege privilege="Validate Dispensation">
+                                            <c:if test="${fct:length(productAttributeFluxes) != 0}">
+                                                <c:url value="/module/pharmacy/operations/dispensation/validate.form"
+                                                       var="validationUrl">
+                                                    <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
+                                                </c:url>
+                                                <button type="button" class="btn btn-success btn-sm mr-2"
+                                                        onclick="window.location='${validationUrl}'" tabindex="-1">
+                                                    <i class="fa fa-save"></i> Enregistrer
+                                                </button>
+                                            </c:if>
+                                        </openmrs:hasPrivilege>
+                                        <openmrs:hasPrivilege privilege="Delete Dispensation">
+                                            <c:url value="/module/pharmacy/operations/dispensation/delete.form"
+                                                    var="delUrl">
                                                 <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
                                             </c:url>
-                                            <button type="button" class="btn btn-success btn-sm mr-2"
-                                                    onclick="window.location='${validationUrl}'" tabindex="-1">
-                                                <i class="fa fa-save"></i> Enregistrer
+                                            <button type="button" class="btn btn-warning btn-sm"
+                                                    onclick="window.location='${delUrl}'" tabindex="-1">
+                                                <i class="fa fa-eject"></i> Annuler
                                             </button>
-                                        </c:if>
-                                        <c:url value="/module/pharmacy/operations/dispensation/delete.form" var="delUrl">
-                                            <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
-                                        </c:url>
-                                        <button type="button" class="btn btn-warning btn-sm" onclick="window.location='${delUrl}'" tabindex="-1">
-                                            <i class="fa fa-eject"></i> Annuler
-                                        </button>
+                                        </openmrs:hasPrivilege>
                                     </c:if>
                                     <c:if test="${headerDTO.operationStatus != 'NOT_COMPLETED'}">
-                                        <c:if test="${headerDTO.operationStatus != 'DISABLED'}">
-                                            <c:url value="/module/pharmacy/operations/dispensation/cancel.form"
-                                                  var="cancelUrl">
-                                            <c:param name="dispensationId" value="${headerDTO.productOperationId}"/>
-                                        </c:url>
-                                            <a href="${cancelUrl}" class="btn btn-warning btn-sm mr-2 text-decoration-none text-white"
-                                                    onclick="return confirm('Voulez-vous vraiment annuler la dispensation ?')" tabindex="-1">
-                                                <i class="fa fa-eject"></i> Annuler la dispensation
-                                            </a>
-                                        </c:if>
+                                        <openmrs:hasPrivilege privilege="Cancel Dispensation">
+                                            <c:if test="${headerDTO.operationStatus != 'DISABLED'}">
+                                                <c:url value="/module/pharmacy/operations/dispensation/cancel.form"
+                                                       var="cancelUrl">
+                                                    <c:param name="dispensationId"
+                                                             value="${headerDTO.productOperationId}"/>
+                                                </c:url>
+                                                <a href="${cancelUrl}"
+                                                   class="btn btn-warning btn-sm mr-2 text-decoration-none text-white"
+                                                   onclick="return confirm('Voulez-vous vraiment annuler la dispensation ?')"
+                                                   tabindex="-1">
+                                                    <i class="fa fa-eject"></i> Annuler la dispensation
+                                                </a>
+                                            </c:if>
+                                        </openmrs:hasPrivilege>
                                         <c:url value="/module/pharmacy/operations/dispensation/list.form" var="listUrl"/>
                                         <button type="button" class="btn btn-primary btn-sm" onclick="window.location='${listUrl}'" tabindex="-1">
                                             <i class="fa fa-home"></i> Voir la liste

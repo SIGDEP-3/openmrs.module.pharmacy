@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
+<openmrs:require privilege="Save Movement" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/other/editFlux.form" />
 
 <%@ include file="../../../template/operationHeader.jsp"%>
 <script>
@@ -74,13 +75,15 @@
                     <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
                         <i class="fa fa-pen"></i> Editer le movement
                     </button>
-                    <c:url value="/module/pharmacy/operations/movement/other/validate.form" var="validationUrl">
-                        <c:param name="movementId" value="${productMovement.productOperationId}"/>
-                        <c:param name="type" value="${type}"/>
-                    </c:url>
-                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider le movement
-                    </button>
+                    <openmrs:hasPrivilege privilege="Validate Movement">
+                        <c:url value="/module/pharmacy/operations/movement/other/validate.form" var="validationUrl">
+                            <c:param name="movementId" value="${productMovement.productOperationId}"/>
+                            <c:param name="type" value="${type}"/>
+                        </c:url>
+                        <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
+                            <i class="fa fa-pen"></i> Valider
+                        </button>
+                    </openmrs:hasPrivilege>
                 </c:if>
             </c:if>
             <c:if test="${productMovement.operationStatus == 'NOT_COMPLETED'}">

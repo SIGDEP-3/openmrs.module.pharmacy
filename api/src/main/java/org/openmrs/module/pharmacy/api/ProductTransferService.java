@@ -14,10 +14,12 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductTransfer;
 //import org.openmrs.module.pharmacy.models.ProductTransferFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -40,15 +42,25 @@ public interface ProductTransferService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	ProductTransfer getOneProductTransferById(Integer id);
+	@Authorized(value = {PrivilegeConstants.SAVE_TRANSFER})
 	ProductTransfer saveProductTransfer(ProductTransfer productTransfer);
+	@Authorized(value = {PrivilegeConstants.SAVE_TRANSFER})
 	ProductTransfer editProductTransfer(ProductTransfer productTransfer);
+	@Authorized(value = {PrivilegeConstants.DELETE_TRANSFER})
 	void removeProductTransfer(ProductTransfer productTransfer);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	ProductTransfer getOneProductTransferByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<Location> getAllClientLocation(Boolean includeVoided);
 //	List<ProductOutFluxDTO> getProductTransferFluxDTOs(ProductTransfer productTransfer);
 //	ProductTransfer getLastProductTransfer(Location location, ProductProgram productProgram);

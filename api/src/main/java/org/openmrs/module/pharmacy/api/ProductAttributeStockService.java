@@ -14,9 +14,11 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -39,19 +41,32 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	 * 
 	 */
 
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockById(Integer id);
+	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
+	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
+	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	Integer getProductAttributeStocksByProductCount(Product product);
-
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     Integer getAllProductAttributeStockByProductCount(Product product, Location location);
 }

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/reception/list.form" />
+<openmrs:require privilege="View Reception" otherwise="/login.htm" redirect="/module/pharmacy/operations/reception/list.form" />
 
 <script>
     if (jQuery) {
@@ -149,14 +149,18 @@
                             <a href="${editUrl}" class="text-${reception.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${reception.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
-                            <c:if test="${reception.operationStatus != 'VALIDATED'}">
-                                <c:url value="/module/pharmacy/operations/reception/delete.form" var="delUrl">
-                                    <c:param name="id" value="${reception.productOperationId}"/>
-                                </c:url>
-                                <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer la réception, Voulez-vous continuer ?')" class="text-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </c:if>
+                            <openmrs:hasPrivilege privilege="Delete Reception">
+                                <c:if test="${reception.operationStatus != 'VALIDATED'}">
+                                    <c:url value="/module/pharmacy/operations/reception/delete.form" var="delUrl">
+                                        <c:param name="id" value="${reception.productOperationId}"/>
+                                    </c:url>
+                                    <a href="${delUrl}"
+                                       onclick="return confirm('Vous etes sur le point de supprimer la réception, Voulez-vous continuer ?')"
+                                       class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </c:if>
+                            </openmrs:hasPrivilege>
                         </td>
                     </tr>
                 </c:forEach>

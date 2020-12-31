@@ -44,6 +44,7 @@ public interface PharmacyService extends OpenmrsService {
 			PrivilegeConstants.VALIDATE_RECEPTION,
 			PrivilegeConstants.VALIDATE_MOVEMENT,
 			PrivilegeConstants.VALIDATE_TRANSFER,
+			PrivilegeConstants.VALIDATE_PRODUCT_BACK_SUPPLIER,
 			PrivilegeConstants.VALIDATE_FLUX
 	})
 	Boolean validateOperation(ProductOperation operation);

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/list.form" />
+<openmrs:require privilege="View Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/list.form" />
 
 <script>
     if (jQuery) {
@@ -14,21 +14,16 @@
                 } else {
                     jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
                 }
-            })
+            });
         });
 
         function create() {
             const selection = jQuery("#program");
-            const transferType = jQuery("input[name='transfer']:checked").val();
             const programId = selection.val();
             if (programId === undefined || programId === null || programId === '' ) {
                 jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
             } else {
-                if(transferType === undefined || transferType === null || transferType === '') {
-                    jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
-                } else {
-                    location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/edit.form?programId=" + programId + "&type=" + transferType
-                }
+                location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/edit.form?programId=" + programId;
             }
         }
     }
@@ -48,13 +43,6 @@
                     <option value="${program.productProgramId}" class="text-left">${program.name}</option>
                 </c:forEach>
             </select>
-            <label>
-                <input type="radio" name="transfer" value="IN"> Transfert Entrant
-            </label>
-            <label>
-                <input type="radio" name="transfer" value="OUT"> Transfert Sortant
-            </label>
-            <%--            <c:url value="/module/pharmacy/operations/transfer/edit.form" var="url"/>--%>
             <button class="btn btn-primary btn-sm" onclick="create()" title="Nouveau">
                 <i class="fa fa-plus"></i> Nouveau
             </button>
@@ -66,37 +54,28 @@
                 <thead>
                 <tr>
                     <th>
-                        <%--            <spring:message code="pharmacy.transferDate"/>--%>
-                        Date du transfert
+                        Date de retour
                     </th>
                     <th>
-                        Type de transfert
-                    </th>
-                    <th>
-                        <%--            <spring:message code="pharmacy.program"/>--%>
                         Programme
                     </th>
-<%--                    <th>Type d'inventaire</th>--%>
-                    <th>Destinataire / Exp&eacute;diteur</th>
-                    <th>Nombre de produits</th>
+                    <th>Lignes de produit</th>
                     <th>
-                        <%--            <spring:message code="pharmacy.status"/>--%>
                         Etat
                     </th>
                     <th style="width: 30px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="transfer" items="${ transfers }">
+                <c:forEach var="siteBack" items="${ siteBacks }">
                     <tr>
-                        <td><fmt:formatDate value="${transfer.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
-                        <td>${transfer.transferType == 'IN' ? 'ENTRANT' : 'SORTANT' }</td>
-                        <td>${transfer.productProgram.name}</td>
-                        <td>${transfer.exchangeLocation.name}</td>
+                        <td><fmt:formatDate value="${siteBack.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                        <td>${siteBack.productProgram.name}</td>
+                        <td>${siteBack.exchangeLocation.name}</td>
                         <c:choose>
-                            <c:when test="${fct:length(transfer.productAttributeFluxes) == 0}">
+                            <c:when test="${fct:length(siteBack.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/movement/site-back/editFlux.form" var="addLineUrl">
-                                    <c:param name="transferId" value="${transfer.productOperationId}"/>
+                                    <c:param name="backSupplierId" value="${siteBack.productOperationId}"/>
                                 </c:url>
                                 <td class="text-danger">
                                     <a href="${addLineUrl}">Ajouter des produits</a>
@@ -104,26 +83,30 @@
                             </c:when>
                             <c:otherwise>
                                 <td class="text-center">
-                                        ${fct:length(transfer.productAttributeFluxes)}
+                                        ${fct:length(siteBack.productAttributeFluxes)}
                                 </td>
                             </c:otherwise>
                         </c:choose>
-                        <td>${transfer.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (transfer.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
+                        <td>${siteBack.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (siteBack.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                         <td>
-                            <c:url value="/module/pharmacy/operations/movement/transfer/edit.form" var="editUrl">
-                                <c:param name="id" value="${transfer.productOperationId}"/>
+                            <c:url value="/module/pharmacy/operations/movement/site-back/edit.form" var="editUrl">
+                                <c:param name="id" value="${siteBack.productOperationId}"/>
                             </c:url>
-                            <a href="${editUrl}" class="text-${transfer.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
-                                <i class="fa fa-${transfer.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
+                            <a href="${editUrl}" class="text-${siteBack.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
+                                <i class="fa fa-${siteBack.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
-                            <c:if test="${transfer.operationStatus != 'VALIDATED'}">
-                                <c:url value="/module/pharmacy/operations/movement/site-back/delete.form" var="delUrl">
-                                    <c:param name="id" value="${transfer.productOperationId}"/>
-                                </c:url>
-                                <a href="${delUrl}" onclick="return confirm('Vous êtes sur le point de supprimer le transfert, Voulez-vous continuer ?')" class="text-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </c:if>
+                            <openmrs:fasPrivilege privilege="Delete Product Back Supplier">
+                                <c:if test="${siteBack.operationStatus != 'VALIDATED'}">
+                                    <c:url value="/module/pharmacy/operations/movement/back/delete.form" var="delUrl">
+                                        <c:param name="id" value="${siteBack.productOperationId}"/>
+                                    </c:url>
+                                    <a href="${delUrl}"
+                                       onclick="return confirm('Vous êtes sur le point de supprimer le retour de produit, Voulez-vous continuer ?')"
+                                       class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </c:if>
+                            </openmrs:fasPrivilege>
                         </td>
                     </tr>
                 </c:forEach>

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../template/localHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/units/list.form" />
+<openmrs:require privilege="View Product" otherwise="/login.htm" redirect="/module/pharmacy/product/units/list.form" />
 
 <script>
     if (jQuery) {
@@ -18,19 +18,22 @@
         <h4>${title}</h4>
     </div>
     <div class="col-5">
-        <form method="POST" enctype="multipart/form-data" action="${pageContext.request.contextPath}/module/pharmacy/product/upload.form">
-            <div class="row">
-                <div class="col-7">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile" name="file">
-                        <label class="custom-file-label" for="customFile">Choisir le fichier CSV</label>
+        <openmrs:hasPrivilege privilege="Import Product">
+            <form method="POST" enctype="multipart/form-data"
+                  action="${pageContext.request.contextPath}/module/pharmacy/product/upload.form">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="file">
+                            <label class="custom-file-label" for="customFile">Choisir le fichier CSV</label>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-success"><i class="fa fa-upload"></i> Importer</button>
                     </div>
                 </div>
-                <div class="col-4">
-                    <button class="btn btn-success"> <i class="fa fa-upload"></i> Importer</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </openmrs:hasPrivilege>
     </div>
     <div class="col-1 text-right">
         <c:url value="/module/pharmacy/product/edit.form" var="url"/>

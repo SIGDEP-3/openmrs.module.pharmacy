@@ -14,10 +14,12 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -35,27 +37,41 @@ import java.util.List;
  */
 @Transactional
 public interface ProductMovementService extends OpenmrsService {
-
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementEntry getOneProductMovementEntryById(Integer id) throws APIException;
+	@Authorized(value = {PrivilegeConstants.SAVE_MOVEMENT})
 	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	@Authorized(value = {PrivilegeConstants.SAVE_MOVEMENT})
 	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	@Authorized(value = {PrivilegeConstants.DELETE_MOVEMENT})
 	void removeProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) throws APIException;
-//	List<ProductMovementEntryFluxDTO> getProductMovementEntryFluxDTOs(ProductReception productReception);
-
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut getOneProductMovementOutById(Integer id);
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	void removeProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut getOneProductMovementOutByUuid(String uuid) throws APIException;
-//	List<ProductReceptionFluxDTO> getProductMovementOutFluxDTOs(ProductReception productReception);
 
 }

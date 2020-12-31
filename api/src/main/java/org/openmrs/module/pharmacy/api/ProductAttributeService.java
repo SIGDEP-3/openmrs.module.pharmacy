@@ -14,8 +14,10 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -33,17 +35,28 @@ import java.util.List;
  */
 @Transactional
 public interface ProductAttributeService extends OpenmrsService {
-
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Product product);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeById(Integer id);
+	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
 	ProductAttribute saveProductAttribute(ProductAttribute productAttribute);
+	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
 	ProductAttribute editProductAttribute(ProductAttribute productAttribute);
+	@Authorized(value = {PrivilegeConstants.DELETE_PRODUCT_ATTRIBUTE})
 	void removeProductAttribute(ProductAttribute productAttribute);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
+	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
     Integer purgeUnusedAttributes();
 }

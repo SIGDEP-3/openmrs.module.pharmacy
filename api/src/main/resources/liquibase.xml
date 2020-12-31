@@ -1246,4 +1246,24 @@
                                  baseTableName="pharmacy_product_report" baseColumnNames="child_location_report_id"
                                  referencedTableName="pharmacy_product_report" referencedColumnNames="product_operation_id"/>
     </changeSet>
+
+    <changeSet id="pharmacy-product-back-supplier-create" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <tableExists tableName="pharmacy_product_back_supplier"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_product_back_supplier">
+            <column name="product_operation_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="exchange_location" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="pharmacy_product_back_supplier" baseColumnNames="exchange_location"
+                                 constraintName="pharmacy_product_back_supplier_exchange_location"
+                                 referencedTableName="location"
+                                 referencedColumnNames="location_id"/>
+    </changeSet>
 </databaseChangeLog>

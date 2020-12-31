@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/programs/list.form" />
+<openmrs:require privilege="View Program" otherwise="/login.htm" redirect="/module/pharmacy/product/programs/list.form" />
 
 <script>
     if (jQuery) {
@@ -46,10 +46,13 @@
                     <c:param name="id" value="${program.productProgramId}"/>
                 </c:url>
                 <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
-                <c:url value="/module/pharmacy/product/programs/delete.form" var="deleteUrl">
-                    <c:param name="id" value="${program.productProgramId}"/>
-                </c:url>
-                <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce programme ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                <openmrs:hasPrivilege privilege="Delete Program">
+                    <c:url value="/module/pharmacy/product/programs/delete.form" var="deleteUrl">
+                        <c:param name="id" value="${program.productProgramId}"/>
+                    </c:url>
+                    <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce programme ?')"
+                       class="text-danger"><i class="fa fa-trash"></i></a>
+                </openmrs:hasPrivilege>
             </td>
         </tr>
     </c:forEach>

@@ -67,7 +67,6 @@ public class ExchangeEntityForm {
     }
 
     public void setProductExchangeEntity(ProductExchangeEntity productExchangeEntity) {
-
         this.setProductExchangeEntityId(productExchangeEntity.getProductExchangeEntityId());
         this.setName(productExchangeEntity.getName());
         this.setDescription(productExchangeEntity.getDescription());

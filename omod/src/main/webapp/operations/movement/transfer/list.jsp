@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/transfer/list.form" />
+<openmrs:require privilege="View Transfer" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/transfer/list.form" />
 
 <script>
     if (jQuery) {
@@ -116,14 +116,19 @@
                             <a href="${editUrl}" class="text-${transfer.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${transfer.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
-                            <c:if test="${transfer.operationStatus != 'VALIDATED'}">
-                                <c:url value="/module/pharmacy/operations/movement/transfer/delete.form" var="delUrl">
-                                    <c:param name="id" value="${transfer.productOperationId}"/>
-                                </c:url>
-                                <a href="${delUrl}" onclick="return confirm('Vous êtes sur le point de supprimer le transfert, Voulez-vous continuer ?')" class="text-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </c:if>
+                            <openmrs:hasPrivilege privilege="Delete Transfer">
+                                <c:if test="${transfer.operationStatus != 'VALIDATED'}">
+                                    <c:url value="/module/pharmacy/operations/movement/transfer/delete.form"
+                                           var="delUrl">
+                                        <c:param name="id" value="${transfer.productOperationId}"/>
+                                    </c:url>
+                                    <a href="${delUrl}"
+                                       onclick="return confirm('Vous êtes sur le point de supprimer le transfert, Voulez-vous continuer ?')"
+                                       class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </c:if>
+                            </openmrs:hasPrivilege>
                         </td>
                     </tr>
                 </c:forEach>

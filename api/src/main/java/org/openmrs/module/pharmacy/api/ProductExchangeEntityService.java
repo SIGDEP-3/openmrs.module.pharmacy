@@ -14,8 +14,10 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductExchangeEntity;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -33,13 +35,21 @@ import java.util.List;
 @Transactional
 public interface ProductExchangeEntityService extends OpenmrsService {
 
+	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	List<ProductExchangeEntity> getAllProductExchange();
+	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	List<ProductExchangeEntity> getAllProductExchange(Location location);
+	@Authorized(value = {PrivilegeConstants.SAVE_EXCHANGE_ENTITY})
 	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
+	@Authorized(value = {PrivilegeConstants.SAVE_EXCHANGE_ENTITY})
 	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
+	@Authorized(value = {PrivilegeConstants.DELETE_EXCHANGE_ENTITY})
 	void removeProductExchange(ProductExchangeEntity productExchangeEntity);
+	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId);
+	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeByName(String name);
 
 }

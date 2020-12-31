@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/reception/editFlux.form" />
+<openmrs:require privilege="Save Reception" otherwise="/login.htm" redirect="/module/pharmacy/operations/reception/editFlux.form" />
 <script>
     if (jQuery) {
         <c:if test="${productReception.incidence == 'NEGATIVE'}">
@@ -81,18 +81,20 @@
                             Editer la r&eacute;ception
                         </c:if>
                     </button>
-                    <c:url value="/module/pharmacy/operations/reception/validate.form" var="validationUrl">
-                        <c:param name="receptionId" value="${productReception.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider
-                        <c:if test="${productReception.incidence == 'NEGATIVE'}">
-                            le retour de r&eacute;ception
-                        </c:if>
-                        <c:if test="${productReception.incidence == 'POSITIVE'}">
-                            la r&eacute;ception
-                        </c:if>
-                    </button>
+                    <openmrs:hasPrivilege privilege="Validate Reception">
+                        <c:url value="/module/pharmacy/operations/reception/validate.form" var="validationUrl">
+                            <c:param name="receptionId" value="${productReception.productOperationId}"/>
+                        </c:url>
+                        <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
+                            <i class="fa fa-pen"></i> Valider
+                            <c:if test="${productReception.incidence == 'NEGATIVE'}">
+                                le retour de r&eacute;ception
+                            </c:if>
+                            <c:if test="${productReception.incidence == 'POSITIVE'}">
+                                la r&eacute;ception
+                            </c:if>
+                        </button>
+                    </openmrs:hasPrivilege>
                 </c:if>
             </c:if>
             <c:if test="${productReception.operationStatus == 'NOT_COMPLETED'}">

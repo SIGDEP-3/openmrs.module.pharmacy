@@ -70,6 +70,27 @@
 		<name>Import Product</name>
 		<description>Can Import Product</description>
 	</privilege>
+	<privilege>
+		<name>Delete Product</name>
+		<description>Can Delete Product</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Product Attribute</name>
+		<description>Can Manage Product Attribute</description>
+	</privilege>
+	<privilege>
+		<name>View Product Attribute</name>
+		<description>Can View Product Attribute</description>
+	</privilege>
+	<privilege>
+		<name>Save Product Attribute</name>
+		<description>Can Save and Edit Product Attribute</description>
+	</privilege>
+	<privilege>
+		<name>Delete Product Attribute</name>
+		<description>Can Delete Product Attribute</description>
+	</privilege>
 
 	<privilege>
 		<name>Manage Regimen</name>
@@ -277,6 +298,10 @@
 		<name>Validate Dispensation</name>
 		<description>Can Validate Dispensation</description>
 	</privilege>
+	<privilege>
+		<name>Transform Dispensation</name>
+		<description>Can Transform Dispensation</description>
+	</privilege>
 
 	<privilege>
 		<name>Manage Operation</name>
@@ -321,12 +346,67 @@
 	</privilege>
 
 	<privilege>
+		<name>Manage Product Back Supplier</name>
+		<description>Can Manage Product Back Supplier</description>
+	</privilege>
+	<privilege>
+		<name>View Edit Product Back Supplier</name>
+		<description>Can View Product Back Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Save Edit Product Back Supplier</name>
+		<description>Can Save and Edit Product Back Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Delete Product Back Supplier</name>
+		<description>Can Delete Product Back Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Validate Product Back Supplier</name>
+		<description>Can Validate Product Back Supplier</description>
+	</privilege>
+
+	<privilege>
 		<name>Manage Stock</name>
 		<description>Can Manage Stock</description>
 	</privilege>
 	<privilege>
 		<name>View Stock</name>
 		<description>Can View Stock</description>
+	</privilege>
+
+	<privilege>
+		<name>Manage Report</name>
+		<description>Can Manage Report</description>
+	</privilege>
+	<privilege>
+		<name>View Report</name>
+		<description>Can View Report</description>
+	</privilege>
+	<privilege>
+		<name>Save Flux</name>
+		<description>Can Save and Edit Report</description>
+	</privilege>
+	<privilege>
+		<name>Delete Flux</name>
+		<description>Can Delete Report</description>
+	</privilege>
+	<privilege>
+		<name>Validate Report</name>
+		<description>Can Validate Report</description>
+	</privilege>
+	<privilege>
+		<name>Treat Report</name>
+		<description>Can Manage Report</description>
+	</privilege>
+	<privilege>
+		<name>Import Report</name>
+		<description>Can Import Report</description>
+	</privilege>
+
+	<privilege>
+		<name>View Parameters</name>
+		<description>Can View Parameters</description>
 	</privilege>
 
 	<!-- /Privileges  -->

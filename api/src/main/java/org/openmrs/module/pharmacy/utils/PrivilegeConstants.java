@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy.utils;
 
 public class PrivilegeConstants {
+
     private PrivilegeConstants() {}
 
     public static final String MANAGE_PHARMACY  = "Manage Pharmacy";
@@ -16,11 +17,18 @@ public class PrivilegeConstants {
     public static final String VIEW_PRODUCT = "View Product";
     public static final String SAVE_PRODUCT = "Save Product";
     public static final String IMPORT_PRODUCT = "Import Product";
+    public static final String DELETE_PRODUCT = "Delete Product";
+
+    public static final String MANAGE_PRODUCT_ATTRIBUTE = "Manage Product Attribute";
+    public static final String VIEW_PRODUCT_ATTRIBUTE = "View Product Attribute";
+    public static final String SAVE_PRODUCT_ATTRIBUTE = "Save Product Attribute";
+    public static final String DELETE_PRODUCT_ATTRIBUTE = "Delete Product Attribute";
 
     public static final String MANAGE_REGIMEN = "Manage Regimen";
     public static final String VIEW_REGIMEN = "View Regimen";
     public static final String SAVE_REGIMEN = "Save Regimen";
     public static final String IMPORT_REGIMEN = "Import Regimen";
+    public static final String DELETE_REGIMEN = "Delete Regimen";
 
     public static final String MANAGE_SUPPLIER = "Manage Supplier";
     public static final String VIEW_SUPPLIER = "View Supplier";
@@ -76,7 +84,8 @@ public class PrivilegeConstants {
     public static final String SAVE_DISPENSATION        = "Save Dispensation";
     public static final String DELETE_DISPENSATION      = "Delete Dispensation";
     public static final String VALIDATE_DISPENSATION    = "Validate Dispensation";
-    public static final String CANCEL_DISPENSATION    = "Cancel Dispensation";
+    public static final String CANCEL_DISPENSATION      = "Cancel Dispensation";
+    public static final String TRANSFORM_DISPENSATION   = "Transform Dispensation";
 
     public static final String MANAGE_FLUX      = "Manage Flux";
     public static final String VIEW_FLUX        = "View Flux";
@@ -84,6 +93,18 @@ public class PrivilegeConstants {
     public static final String DELETE_FLUX      = "Delete Flux";
     public static final String VALIDATE_FLUX    = "Validate Flux";
 
-    public static final String MANAGE_STOCK      = "Manage Stock";
-    public static final String VIEW_STOCK        = "View Stock";
+    public static final String MANAGE_STOCK     = "Manage Stock";
+    public static final String VIEW_STOCK       = "View Stock";
+
+    public static final String MANAGE_PRODUCT_BACK_SUPPLIER     = "Manage Product Back Supplier";
+    public static final String VIEW_PRODUCT_BACK_SUPPLIER       = "View Product Back Supplier";
+    public static final String SAVE_PRODUCT_BACK_SUPPLIER       = "Save Product Back Supplier";
+    public static final String DELETE_PRODUCT_BACK_SUPPLIER     = "Delete Product Back Supplier";
+    public static final String VALIDATE_PRODUCT_BACK_SUPPLIER   = "Validate Product Back Supplier";
+
+    public static final String SAVE_REPORT = "Save Report";
+    public static final String REMOVE_REPORT = "Delete report";
+    public static final String VIEW_REPORT = "View Report";
+    public static final String IMPORT_REPORT = "Import Report";
+    public static final String TREAT_REPORT = "Treat Report";
 }

@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
+<openmrs:require privilege="Save Movement" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/other/edit.form" />
 
 <%@ include file="../../../template/operationHeader.jsp"%>
 

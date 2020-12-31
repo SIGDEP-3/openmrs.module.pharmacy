@@ -14,9 +14,11 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -34,17 +36,18 @@ import java.util.List;
  */
 @Transactional
 public interface ProductProgramService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
 
+	@Authorized(value = {PrivilegeConstants.SAVE_PROGRAM})
 	ProductProgram saveProductProgram(ProductProgram programForm);
+	@Authorized(value = {PrivilegeConstants.DELETE_PROGRAM})
 	void removeProductProgram(ProductProgram productProgram);
+	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramById(Integer programId);
+	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramByName(String name);
+	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	List<ProductProgram> getAllProductProgram();
 
 }

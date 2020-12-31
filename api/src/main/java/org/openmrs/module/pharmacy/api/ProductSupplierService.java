@@ -14,9 +14,11 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -39,13 +41,19 @@ public interface ProductSupplierService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
-
+	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	List<ProductSupplier> getAllProductSuppliers();
+	@Authorized(value = {PrivilegeConstants.SAVE_SUPPLIER})
 	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
+	@Authorized(value = {PrivilegeConstants.SAVE_SUPPLIER})
 	ProductSupplier editProductSupplier(ProductSupplier productSupplier);
+	@Authorized(value = {PrivilegeConstants.DELETE_SUPPLIER})
 	void removeProductSupplier(ProductSupplier productSupplier);
+	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierById(Integer productSupplierId);
+	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierByName(String name);
 
 }

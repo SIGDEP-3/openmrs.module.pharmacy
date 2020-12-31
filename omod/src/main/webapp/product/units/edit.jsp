@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
+<openmrs:require privilege="Save Unit" otherwise="/login.htm" redirect="/module/pharmacy/product/units/edit.form" />
+
 <%@ include file="../../template/localHeader.jsp"%>
 
 <hr>

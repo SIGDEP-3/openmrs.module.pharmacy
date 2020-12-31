@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.pharmacy.api;
 
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,19 +41,32 @@ public interface ProductService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
-
+	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT})
 	Product saveProduct(Product product);
+	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT})
 	Product editProduct(Product product);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductById(Integer productId);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByCode(String code);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByRetailName(String retailName);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByWholesaleName(String wholesaleName);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByName(String name);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProduct();
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProductByRetailUnit(ProductUnit retailUnit);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> searchProductByNameLike(String nameSearch);
+	@Authorized(value = {PrivilegeConstants.IMPORT_PRODUCT})
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
+	@Authorized(value = {PrivilegeConstants.IMPORT_REGIMEN})
 	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
 }

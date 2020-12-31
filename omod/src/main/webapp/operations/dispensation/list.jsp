@@ -2,6 +2,8 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/operationHeader.jsp"%>
+<openmrs:require privilege="View Dispensation" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/list.form" />
+
 <style>
     .card {
         border-radius: 0;
@@ -61,7 +63,6 @@
         }
     }
 </script>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/list.form" />
 <div class="container-fluid mt-2">
     <div class="row mt-3">
         <div class="col-12">
@@ -276,14 +277,18 @@
                             <a href="${editUrl}" class="text-${dispensation.operationStatus == 'VALIDATED' || dispensation.operationStatus == 'DISABLED' ? 'info': 'primary'}">
                                 <i class="fa fa-${dispensation.operationStatus == 'VALIDATED' || dispensation.operationStatus == 'DISABLED' ? 'eye': 'edit'}"></i>
                             </a>
-                            <c:if test="${dispensation.operationStatus == 'NOT_COMPLETED'}">
-                                <c:url value="/module/pharmacy/operations/dispensation/delete.form" var="delUrl">
-                                    <c:param name="dispensationId" value="${dispensation.productOperationId}"/>
-                                </c:url>
-                                <a href="${delUrl}" onclick="return confirm('Voulez-vous supprimer la dispensation en cours de saisie ?')" class="text-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </c:if>
+                            <openmrs:hasPrivilege privilege="Delete Dispensation">
+                                <c:if test="${dispensation.operationStatus == 'NOT_COMPLETED'}">
+                                    <c:url value="/module/pharmacy/operations/dispensation/delete.form" var="delUrl">
+                                        <c:param name="dispensationId" value="${dispensation.productOperationId}"/>
+                                    </c:url>
+                                    <a href="${delUrl}"
+                                       onclick="return confirm('Voulez-vous supprimer la dispensation en cours de saisie ?')"
+                                       class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </c:if>
+                            </openmrs:hasPrivilege>
                         </td>
                     </tr>
                 </c:forEach>

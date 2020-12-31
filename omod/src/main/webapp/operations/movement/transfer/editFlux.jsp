@@ -3,7 +3,7 @@
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/transfer/editFlux.form" />
+<openmrs:require privilege="Save Transfer" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/transfer/editFlux.form" />
 <script>
     if (jQuery) {
         <c:if test="${productTransfer.transferType == 'OUT'}">
@@ -74,12 +74,14 @@
                     <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
                         <i class="fa fa-pen"></i> Editer l'inventaire
                     </button>
-                    <c:url value="/module/pharmacy/operations/movement/transfer/validate.form" var="validationUrl">
-                        <c:param name="transferId" value="${productTransfer.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider
-                    </button>
+                    <openmrs:hasPrivilege privilege="Validate Transfer">
+                        <c:url value="/module/pharmacy/operations/movement/transfer/validate.form" var="validationUrl">
+                            <c:param name="transferId" value="${productTransfer.productOperationId}"/>
+                        </c:url>
+                        <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
+                            <i class="fa fa-pen"></i> Valider
+                        </button>
+                    </openmrs:hasPrivilege>
                 </c:if>
             </c:if>
             <c:if test="${productTransfer.operationStatus == 'NOT_COMPLETED'}">

@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
+<openmrs:require privilege="View Movement" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/other/list.form" />
 
 <%@ include file="../../../template/operationHeader.jsp"%>
 
@@ -7,7 +8,9 @@
 
     if (jQuery) {
         jQuery(document).ready(function (){
-            jQuery('.table').DataTable();
+            jQuery('.table').DataTable({
+                "columnDefs" : [{"targets":0, "type":"date-eu"}],
+            });
 
             checkTypeValue();
 
@@ -67,14 +70,14 @@
         }
 
         function go(program, type) {
-            window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/edit.form?type=" +
+            window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/other/edit.form?type=" +
                 type + "&programId=" + program;
         }
 
         function addStockEntryType(){
             const selector = document.querySelector('#stockEntryType')
             if (selector.value !== null && selector.value !== undefined) {
-                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/edit.form?type="+selector.value;
+                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/other/edit.form?type="+selector.value;
             }
             else {jQuery('#stockEntryType').addClass('is-invalid');}
         }
@@ -82,7 +85,7 @@
         function addStockOutType(){
             const selector = document.querySelector('#stockOutType')
             if (selector.value !== null && selector.value !== undefined) {
-                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/edit.form?type="+selector.value;
+                window.location="${pageContext.request.contextPath}/module/pharmacy/operations/movement/other/edit.form?type="+selector.value;
             }
             else {jQuery('#stockOutType').addClass('is-invalid');}
         }
@@ -145,10 +148,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <div class="row mb-2">
                 <div class="col-3">
-                    <div class="h6 pt-2"><i class="fa fa-list"></i> Entr&eacute;e</div>
+                    <div class="h6 pt-2"><i class="fa fa-list"></i> Liste des autres pertes et ajustements</div>
                 </div>
             </div>
             <div class="row bg-light pt-2 pb-2 border border-secondary">
@@ -156,20 +159,19 @@
                     <table class="table table-striped table-sm">
                         <thead>
                         <tr>
+                            <th>Date du mouvement</th>
                             <th>Type de mouvement</th>
-                            <th>Date de mouvement</th>
                             <th>Programme</th>
-                            <th>Nombre de produits</th>
+                            <th>Lignes de produit</th>
                             <th>Etat</th>
                             <th style="width: 40px"></th>
                         </tr>
                         </thead>
-                        <tbody style="font-size: 11px">
+                        <tbody>
                         <c:forEach var="entry" items="${ entries }">
                             <tr>
-                                <td>${ entry.stockEntryType == 'DONATION' ? 'DON' : 'Ajustement inventaire positif'}
-                                </td>
                                 <td><fmt:formatDate value="${entry.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                                <td>${ entry.stockEntryType == 'DONATION' ? 'DON' : 'Ajustement inventaire positif'}</td>
                                 <td>${entry.productProgram.name}</td>
                                 <c:choose>
                                     <c:when test="${fct:length(entry.productAttributeFluxes) == 0}">
@@ -196,7 +198,7 @@
                                 <td>${entry.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (entry.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                                 <td>
                                     <c:if test="${entry.operationStatus == 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="addLineUrl">
                                             <c:param name="movementId" value="${entry.productOperationId}"/>
                                             <c:param name="type" value="${entry.stockEntryType}"/>
                                         </c:url>
@@ -206,11 +208,11 @@
                                     </c:if>
 
                                     <c:if test="${entry.operationStatus != 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/edit.form" var="editUrl">
                                             <c:param name="id" value="${entry.productOperationId}"/>
                                             <c:param name="type" value="${entry.stockEntryType}"/>
                                         </c:url>
-                                        <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/delete.form" var="delUrl">
                                             <c:param name="id" value="${entry.productOperationId}"/>
                                             <c:param name="type" value="${entry.stockEntryType}"/>
                                         </c:url>
@@ -222,34 +224,9 @@
                                 </td>
                             </tr>
                         </c:forEach>
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row mb-2 ml-1 mr-1">
-                <div class="col-3">
-                    <div class="h5 pt-2"><i class="fa fa-list"></i> Sortie</div>
-                </div>
-            </div>
-            <div class="row bg-light pt-2 pb-2 border border-secondary">
-                <div class="col-12">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                        <tr>
-                            <th>Type de mouvement</th>
-                            <th>Date de mouvement</th>
-                            <th>Programme</th>
-                            <th>Nombre de produits</th>
-                            <th>Etat</th>
-                            <th style="width: 40px"></th>
-                        </tr>
-                        </thead>
-                        <tbody style="font-size: 11px">
                         <c:forEach var="out" items="${ outs }">
                             <tr>
+                                <td><fmt:formatDate value="${out.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>
                                     <c:if test="${out.stockOutType == 'THIEF'}">
                                         Produits Vol&eacute;s
@@ -270,17 +247,16 @@
                                         Autres pertes
                                     </c:if>
                                 </td>
-                                <td><fmt:formatDate value="${out.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${out.productProgram.name}</td>
                                 <c:choose>
                                     <c:when test="${fct:length(out.productAttributeFluxes) == 0}">
-                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="addLineUrl">
                                             <c:param name="movementId" value="${out.productOperationId}"/>
                                             <c:param name="type" value="out"/>
                                         </c:url>
                                         <td class="text-danger">
                                             <div class="btn-group">
-                                                    <a href="${addLineUrl}"><div class="btn btn-sm btn-success">Ajouter des produits</div></a>
+                                                <a href="${addLineUrl}"><div class="btn btn-sm btn-success">Ajouter des produits</div></a>
                                             </div>
                                         </td>
                                     </c:when>
@@ -297,25 +273,30 @@
                                 <td>${out.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (out.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
                                 <td>
                                     <c:if test="${out.operationStatus == 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/editFlux.form" var="addLineUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="addLineUrl">
                                             <c:param name="movementId" value="${out.productOperationId}"/>
                                             <c:param name="type" value="${out.stockOutType}"/>
                                         </c:url>
                                         <a href="${addLineUrl}" class="text-success primary"><i class="fa fa-eye"></i></a>
                                     </c:if>
-                                    <c:if test="${out.operationStatus != 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/edit.form" var="editUrl">
-                                            <c:param name="id" value="${out.productOperationId}"/>
-                                            <c:param name="type" value="${out.stockOutType}"/>
-                                        </c:url>
-                                        <c:url value="/module/pharmacy/operations/movement/delete.form" var="delUrl">
+                                        <c:url value="/module/pharmacy/operations/movement/other/edit.form" var="editUrl">
                                             <c:param name="id" value="${out.productOperationId}"/>
                                             <c:param name="type" value="${out.stockOutType}"/>
                                         </c:url>
                                         <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
-                                        <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
+                                    <c:if test="${out.operationStatus != 'VALIDATED'}">
+                                        <openmrs:hasPrivilege privilege="Delete Movement">
+                                            <c:url value="/module/pharmacy/operations/movement/other/delete.form"
+                                                   var="delUrl">
+                                                <c:param name="id" value="${out.productOperationId}"/>
+                                                <c:param name="type" value="${out.stockOutType}"/>
+                                            </c:url>
+                                            <a href="${delUrl}"
+                                               onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')"
+                                               class="text-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </openmrs:hasPrivilege>
                                     </c:if>
                                 </td>
                             </tr>
@@ -326,6 +307,33 @@
                 </div>
             </div>
         </div>
+        <%--        <div class="col-6">--%>
+        <%--            <div class="row mb-2 ml-1 mr-1">--%>
+        <%--                <div class="col-3">--%>
+        <%--                    <div class="h6 pt-2"><i class="fa fa-list"></i> Sortie</div>--%>
+        <%--                </div>--%>
+        <%--            </div>--%>
+        <%--            <div class="row bg-light pt-2 pb-2 border border-secondary">--%>
+        <%--                <div class="col-12">--%>
+        <%--                    <table class="table table-striped table-sm">--%>
+        <%--                        <thead>--%>
+        <%--                        <tr>--%>
+        <%--                            <th>Type de mouvement</th>--%>
+        <%--                            <th>Date de mouvement</th>--%>
+        <%--                            <th>Programme</th>--%>
+        <%--                            <th>Nombre de produits</th>--%>
+        <%--                            <th>Etat</th>--%>
+        <%--                            <th style="width: 40px"></th>--%>
+        <%--                        </tr>--%>
+        <%--                        </thead>--%>
+        <%--                        <tbody style="font-size: 11px">--%>
+
+        <%--                        </tbody>--%>
+
+        <%--                    </table>--%>
+        <%--                </div>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
 
     </div>
 </div>

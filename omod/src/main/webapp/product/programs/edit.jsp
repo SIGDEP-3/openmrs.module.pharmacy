@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/programs/edit.form" />
+<openmrs:require privilege="Save Program" otherwise="/login.htm" redirect="/module/pharmacy/product/programs/edit.form" />
 
 <hr>
 <div class="row">

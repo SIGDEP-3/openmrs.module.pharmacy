@@ -13,9 +13,11 @@
  */
 package org.openmrs.module.pharmacy.api;
 
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductPrice;
 import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,15 +34,23 @@ import java.util.List;
  */
 @Transactional
 public interface ProductPriceService extends OpenmrsService {
-
+	@Authorized(value = {PrivilegeConstants.SAVE_PRICE})
 	ProductPrice saveProductPrice(ProductPrice productPrice);
+	@Authorized(value = {PrivilegeConstants.DELETE_PRICE})
 	void removeProductPrice(ProductPrice productPrice);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceById(Integer productPriceId);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByProductId(Integer productId);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	List<ProductPrice> getAllProductPrices();
 
 }

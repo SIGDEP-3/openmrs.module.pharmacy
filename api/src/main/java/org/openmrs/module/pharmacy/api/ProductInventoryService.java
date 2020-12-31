@@ -14,10 +14,12 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -40,17 +42,30 @@ public interface ProductInventoryService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryById(Integer id);
+	@Authorized(value = {PrivilegeConstants.SAVE_INVENTORY})
 	ProductInventory saveProductInventory(ProductInventory productInventory);
+	@Authorized(value = {PrivilegeConstants.SAVE_INVENTORY})
 	ProductInventory editProductInventory(ProductInventory productInventory);
+	@Authorized(value = {PrivilegeConstants.DELETE_INVENTORY})
 	void removeProductInventory(ProductInventory productInventory);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
 }

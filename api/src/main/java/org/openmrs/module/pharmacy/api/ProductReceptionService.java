@@ -14,11 +14,13 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionReturnDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -36,23 +38,31 @@ import java.util.List;
  */
 @Transactional
 public interface ProductReceptionService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
 
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReception getOneProductReceptionById(Integer id);
+	@Authorized(value = {PrivilegeConstants.SAVE_RECEPTION})
 	ProductReception saveProductReception(ProductReception productReception);
+	@Authorized(value = {PrivilegeConstants.SAVE_RECEPTION})
 	ProductReception editProductReception(ProductReception productReception);
+	@Authorized(value = {PrivilegeConstants.DELETE_RECEPTION})
 	void removeProductReception(ProductReception productReception);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReception getOneProductReceptionByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionReturnDTO> getProductReceptionReturnDTOs(ProductReception productReception);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReceptionReturnDTO getOneProductReceptionReturnDTO(ProductReception reception, ProductAttribute productAttribute);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionListDTO> getProductReceptionListDTOs();
 }

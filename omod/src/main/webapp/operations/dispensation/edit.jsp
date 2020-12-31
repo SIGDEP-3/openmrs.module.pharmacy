@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
+<openmrs:require privilege="Save Dispensation" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/edit.form" />
 
 <%@ include file="../../template/operationHeader.jsp"%>
 
@@ -189,7 +190,6 @@
 
     }
 </script>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/dispensation/edit.form" />
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6 text-uppercase font-italic text-secondary">

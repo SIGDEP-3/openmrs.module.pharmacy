@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/localHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/product/exchanges/list.form" />
+<openmrs:require privilege="View Exchange Entity" otherwise="/login.htm" redirect="/module/pharmacy/product/exchanges/list.form" />
 
 <script>
     if (jQuery) {
@@ -48,10 +48,13 @@
                     <c:param name="id" value="${exchange.productExchangeEntityId}"/>
                 </c:url>
                 <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
-                <c:url value="/module/pharmacy/product/exchanges/delete.form" var="deleteUrl">
-                    <c:param name="id" value="${exchange.productExchangeEntityId}"/>
-                </c:url>
-                <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce partenaire ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                <openmrs:hasPrivilege privilege="Delete Exchange Entity">
+                    <c:url value="/module/pharmacy/product/exchanges/delete.form" var="deleteUrl">
+                        <c:param name="id" value="${exchange.productExchangeEntityId}"/>
+                    </c:url>
+                    <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce partenaire ?')"
+                       class="text-danger"><i class="fa fa-trash"></i></a>
+                </openmrs:hasPrivilege>
             </td>
         </tr>
     </c:forEach>

@@ -110,6 +110,10 @@ public class PharmacyProductDispensationManageController {
                         if (findPatientForm.getPatientType().equals(PatientType.ON_SITE)) {
                             Patient patient = dispensationService().getPatientByIdentifier(findPatientForm.getPatientIdentifier());
                             if (patient != null) {
+                                MobilePatient mobilePatient = dispensationService().getOneMobilePatientByIdentifier(findPatientForm.getPatientIdentifier());
+                                if (mobilePatient != null) {
+                                    dispensationService().transformPatientDispensation(mobilePatient);
+                                }
                                 patientId = patient.getPatientId().toString();
                             } else {
                                 patientId = getPatientInfo(findPatientForm);

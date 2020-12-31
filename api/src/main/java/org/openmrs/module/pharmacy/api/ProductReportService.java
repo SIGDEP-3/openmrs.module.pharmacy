@@ -14,11 +14,13 @@
 package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.Location;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -42,20 +44,35 @@ public interface ProductReportService extends OpenmrsService {
 	 * 
 	 */
 
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportById(Integer id);
+	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
 	ProductReport saveProductReport(ProductReport productReport);
+	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
 	ProductReport editProductReport(ProductReport productReport);
+	@Authorized(value = {PrivilegeConstants.REMOVE_REPORT})
 	void removeProductReport(ProductReport productReport);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReportLineDTO> getProductReportFluxDTOs(ProductReport productReport);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<Product> getAllActivityProducts(ProductInventory inventory);
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);

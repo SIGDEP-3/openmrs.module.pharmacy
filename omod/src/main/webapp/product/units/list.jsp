@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
+<openmrs:require privilege="View Unit" otherwise="/login.htm" redirect="/module/pharmacy/product/units/list.form" />
 <%@ include file="../../template/localHeader.jsp"%>
 
 <script>
@@ -43,10 +44,13 @@
                     <c:param name="id" value="${unit.productUnitId}"/>
                 </c:url>
                 <a href="${editUrl}" class="text-info mr-2"><i class="fa fa-edit"></i></a>
-                <c:url value="/module/pharmacy/product/units/delete.form" var="deleteUrl">
-                    <c:param name="id" value="${unit.productUnitId}"/>
-                </c:url>
-                <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer cette unité ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                <openmrs:hasPrivilege privilege="Delete Unit">
+                    <c:url value="/module/pharmacy/product/units/delete.form" var="deleteUrl">
+                        <c:param name="id" value="${unit.productUnitId}"/>
+                    </c:url>
+                    <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer cette unité ?')"
+                       class="text-danger"><i class="fa fa-trash"></i></a>
+                </openmrs:hasPrivilege>
             </td>
         </tr>
     </c:forEach>

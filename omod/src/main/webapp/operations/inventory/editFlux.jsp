@@ -3,7 +3,7 @@
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Manage Pharmacy" otherwise="/login.htm" redirect="/module/pharmacy/operations/inventory/editFlux.form" />
+<openmrs:require privilege="Save Inventory" otherwise="/login.htm" redirect="/module/pharmacy/operations/inventory/editFlux.form" />
 
 <script>
     if (jQuery) {
@@ -79,12 +79,12 @@
                       productInventory.operationStatus != 'DISABLED'}">
 
                 <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED' && fct:length(productAttributeFluxes) != 0}">
-                    <c:url value="/module/pharmacy/operations/inventory/complete.form" var="completeUrl">
+                        <c:url value="/module/pharmacy/operations/inventory/complete.form" var="completeUrl">
                         <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
                     </c:url>
-                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${completeUrl}'">
-                        <i class="fa fa-save"></i> Terminer
-                    </button>
+                        <button class="btn btn-success btn-sm mr-2" onclick="window.location='${completeUrl}'">
+                            <i class="fa fa-save"></i> Terminer
+                        </button>
                 </c:if>
                 <c:if test="${productInventory.operationStatus != 'NOT_COMPLETED'}">
                     <c:url value="/module/pharmacy/operations/inventory/incomplete.form" var="incompleteUrl">
@@ -93,12 +93,14 @@
                     <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
                         <i class="fa fa-pen"></i> Editer l'inventaire
                     </button>
-                    <c:url value="/module/pharmacy/operations/inventory/validate.form" var="validationUrl">
-                        <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
-                    </c:url>
-                    <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
-                        <i class="fa fa-pen"></i> Valider
-                    </button>
+                    <openmes:hasPrivilege privilege="Validate Dispensation">
+                        <c:url value="/module/pharmacy/operations/inventory/validate.form" var="validationUrl">
+                            <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
+                        </c:url>
+                        <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
+                            <i class="fa fa-pen"></i> Valider
+                        </button>
+                    </openmes:hasPrivilege>
                 </c:if>
             </c:if>
             <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED'}">
@@ -329,17 +331,6 @@
                                         </c:if>
                                     </c:if>
                                 </c:if>
-                                    <%--                            <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">--%>
-                                    <%--                                ${productFlux.theoreticalQuantity - productFlux.physicalQuantity}--%>
-                                    <%--                            </c:if>--%>
-                                    <%--                            <c:if test="${productFlux.physicalQuantity != productFlux.theoreticalQuantity }">--%>
-                                    <%--                                <c:if test="${productFlux.physicalQuantity == null}">--%>
-                                    <%--                                    Ne fait pas partie de l'inventaire--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                                <c:if test="${productFlux.theoreticalQuantity == null }">--%>
-                                    <%--                                    N'existait pas en stock--%>
-                                    <%--                                </c:if>--%>
-                                    <%--                            </c:if>--%>
                             </td>
                             <td>
                                 <c:if test="${productInventory.operationStatus == 'AWAITING_VALIDATION'}">
