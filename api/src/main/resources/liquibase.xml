@@ -1266,4 +1266,35 @@
                                  referencedTableName="location"
                                  referencedColumnNames="location_id"/>
     </changeSet>
+
+    <changeSet id="location_attribute_program_available" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(name) FROM location_attribute_type WHERE name = 'Programmes Disponibles'; </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO
+            location_attribute_type
+            (name, datatype, min_occurs, creator, date_created, retired, uuid)
+            VALUES
+            ('Programmes Disponibles', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 0, 1, '2021-01-01 21:10:08', 0, 'AVAILPRGRMCCCCCCCCCCCCCCCCCCCCCCCCCC');
+        </sql>
+    </changeSet>
+
+    <changeSet id="location_attribute_level" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(name) FROM location_attribute_type WHERE name = 'Niveau'; </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO
+            location_attribute_type
+            (name, datatype, min_occurs, creator, date_created, retired, uuid)
+            VALUES
+            ('Niveau', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 0, 1, '2021-01-01 21:10:08', 0, 'LEVELCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

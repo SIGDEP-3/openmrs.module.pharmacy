@@ -23,12 +23,10 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
-import org.openmrs.module.pharmacy.api.ProductMovementService;
-import org.openmrs.module.pharmacy.api.ProductReceptionService;
-import org.openmrs.module.pharmacy.api.ProductTransferService;
+import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
@@ -67,6 +65,38 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
 		return criteria.add(Restrictions.eq("location", location)).
 				add(Restrictions.eq("voided", includeVoided)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.isNotNull("reportLocation")).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return criteria
+				.add(Restrictions.in("location", location.getChildLocations(includeVoided)))
+				.add(Restrictions.eq("operationStatus", OperationStatus.SUBMITTED))
+				.add(Restrictions.eq("voided", includeVoided))
+				.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return criteria
+				.add(Restrictions.in("location", location.getChildLocations(includeVoided)))
+				.add(Restrictions.eq("operationStatus", OperationStatus.TREATED))
+				.add(Restrictions.eq("voided", includeVoided))
+				.list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -254,7 +284,6 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		}
 		return products;
 	}
-
 
 
 //	@SuppressWarnings("unchecked")

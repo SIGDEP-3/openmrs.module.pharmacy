@@ -47,6 +47,10 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location);

@@ -13,10 +13,8 @@ public class ProductReportForm extends ProductOperationForm {
     private ReportType reportType;
     private String reportPeriod;
     private String reportInfo;
-    private Integer reportLocationId;
     private Date treatmentDate;
     private Boolean isUrgent;
-    private Integer childLocationReportId;
 
     public ProductReportForm() {
         super();
@@ -28,14 +26,11 @@ public class ProductReportForm extends ProductOperationForm {
         setReportType(productReport.getReportType());
         setReportPeriod(productReport.getReportPeriod());
         setReportInfo(productReport.getReportInfo());
-        if (productReport.getChildLocationReport() != null) {
-            setChildLocationReportId(productReport.getChildLocationReport().getProductOperationId());
+        if (productReport.getTreatmentDate() != null) {
+            setTreatmentDate(productReport.getTreatmentDate());
         }
         if (productReport.getReportInfo() != null) {
             setReportInfo(productReport.getReportInfo());
-        }
-        if (productReport.getReportLocation() != null) {
-            setReportLocationId(productReport.getReportLocation().getLocationId());
         }
     }
 
@@ -44,14 +39,11 @@ public class ProductReportForm extends ProductOperationForm {
         productReport.setReportType(getReportType());
         productReport.setReportPeriod(getReportPeriod());
         productReport.setReportInfo(getReportInfo());
-        if (getChildLocationReportId() != null) {
-            productReport.setChildLocationReport(reportService().getOneProductReportById(getChildLocationReportId()));
+        if (getTreatmentDate() != null) {
+            productReport.setTreatmentDate(getTreatmentDate());
         }
         if (getReportInfo() != null) {
             productReport.setReportInfo(getReportInfo());
-        }
-        if (getReportLocationId() != null) {
-            productReport.setReportLocation(Context.getLocationService().getLocation(getReportLocationId()));
         }
         return productReport;
     }
@@ -84,18 +76,6 @@ public class ProductReportForm extends ProductOperationForm {
         this.reportInfo = reportInfo;
     }
 
-    public Integer getReportLocationId() {
-        return reportLocationId;
-    }
-
-    public void setReportLocationId(Integer reportLocationId) {
-        this.reportLocationId = reportLocationId;
-    }
-
-    public Date getTreatmentDate() {
-        return treatmentDate;
-    }
-
     public void setTreatmentDate(Date treatmentDate) {
         this.treatmentDate = treatmentDate;
     }
@@ -108,11 +88,7 @@ public class ProductReportForm extends ProductOperationForm {
         isUrgent = urgent;
     }
 
-    public Integer getChildLocationReportId() {
-        return childLocationReportId;
-    }
-
-    public void setChildLocationReportId(Integer childLocationReportId) {
-        this.childLocationReportId = childLocationReportId;
+    public Date getTreatmentDate() {
+        return treatmentDate;
     }
 }

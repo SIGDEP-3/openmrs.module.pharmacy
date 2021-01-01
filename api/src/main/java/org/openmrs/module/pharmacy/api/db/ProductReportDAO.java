@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 
@@ -31,6 +32,9 @@ public interface ProductReportDAO {
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	List<ProductReport> getAllProductReports(Location location);
 	List<ProductReport> getAllProductReports(Boolean includeVoided);
+	List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided);
+	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided);
+	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
 	ProductReport getOneProductReportById(Integer id);
 	ProductReport saveProductReport(ProductReport productReport);
 	ProductReport editProductReport(ProductReport productReport);
@@ -42,6 +46,7 @@ public interface ProductReportDAO {
 	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	List<Product> getAllActivityProducts(ProductInventory inventory);
+
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);
 //	List<ProductReportListDTO> getProductReportListDTOs();

@@ -21,6 +21,7 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductProgramDAO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.List;
 
@@ -77,6 +78,9 @@ public class HibernateProductProgramDAO implements ProductProgramDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductProgram> getAllProductProgram() {
+		if (OperationUtils.getUserLocationPrograms().size() != 0) {
+			return OperationUtils.getUserLocationPrograms();
+		}
 		return sessionFactory.getCurrentSession().createCriteria(ProductProgram.class).list();
 	}
 

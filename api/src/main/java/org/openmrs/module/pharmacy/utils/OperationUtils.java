@@ -1,14 +1,12 @@
 package org.openmrs.module.pharmacy.utils;
 
-import org.openmrs.Concept;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
+import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.enumerations.Goal;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
@@ -99,6 +97,10 @@ public class OperationUtils {
         return Context.getService(PharmacyService.class);
     }
 
+    private static ProductProgramService programService() {
+        return Context.getService(ProductProgramService.class);
+    }
+
     private static ProductAttributeFluxService fluxService() {
         return Context.getService(ProductAttributeFluxService.class);
     }
@@ -119,6 +121,26 @@ public class OperationUtils {
         locations.add(getUserLocation());
         locations.addAll(getUserLocation().getChildLocations());
         return locations;
+    }
+
+    public static List<ProductProgram> getUserLocationPrograms() {
+        return getLocationPrograms(getUserLocation());
+    }
+    public static List<ProductProgram> getLocationPrograms(Location location) {
+        List<ProductProgram> productPrograms = new ArrayList<>();
+        for (LocationAttribute attribute : location.getActiveAttributes()) {
+            if (attribute.getAttributeType().getName().equals("Programmes Disponibles")) {
+                String programString = attribute.getValue().toString();
+                if (programString != null) {
+                    String[] programsString = programString.split(",");
+                    for (String programName : programsString) {
+                       productPrograms.add(programService().getOneProductProgramByName(programName));
+                    }
+                }
+                break;
+            }
+        }
+        return productPrograms;
     }
 
     public static <T> List<T> getLastElements(final Iterable<T> elements, Integer numberOfLast) {
@@ -175,8 +197,6 @@ public class OperationUtils {
             end = calendar.getTime();
         }
 
-//        System.out.println("---------------------Get Day Range beginning :" + start);
-//        System.out.println("---------------------Get Day Range end :" + end);
         return new PharmacyDateRange(start, end);
     }
 

@@ -2,9 +2,13 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductProgramFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @Controller
 public class PharmacyProductProgramManageController {
@@ -23,6 +28,10 @@ public class PharmacyProductProgramManageController {
 
     private ProductProgramService service() {
         return Context.getService(ProductProgramService.class);
+    }
+
+    private LocationService locationService() {
+        return Context.getLocationService();
     }
 
     @RequestMapping(value = "/module/pharmacy/product/programs/list.form", method = RequestMethod.GET)
@@ -91,4 +100,31 @@ public class PharmacyProductProgramManageController {
 
         return null;
     }
+
+    @RequestMapping(value = "/module/pharmacy/product/programs/location.form", method = RequestMethod.GET)
+    public String location(ModelMap modelMap,
+                            HttpServletRequest request) {
+        if (Context.isAuthenticated()) {
+            List<Location> locations = OperationUtils.getUserLocations();
+
+            Map<Integer, List<Integer>> locationPrograms = new HashMap<Integer, List<Integer>>();
+
+            for (Location location : locations) {
+                List<Integer> programIds = new ArrayList<Integer>();
+                for (ProductProgram program : OperationUtils.getLocationPrograms(location)) {
+                    programIds.add(program.getProductProgramId());
+                }
+                locationPrograms.put(location.getLocationId(), programIds);
+            }
+
+            modelMap.addAttribute("locations", locations);
+            modelMap.addAttribute("locationPrograms", locationPrograms);
+            modelMap.addAttribute("programs", service().getAllProductProgram());
+            modelMap.addAttribute("title", "Gestion des Programmes du centre");
+        }
+
+        return null;
+    }
+
+
 }

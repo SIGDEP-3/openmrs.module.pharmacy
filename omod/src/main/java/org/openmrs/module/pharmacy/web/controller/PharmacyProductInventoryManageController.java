@@ -373,9 +373,6 @@ public class PharmacyProductInventoryManageController {
                 return null;
             } else {
                 return lastProductInventory;
-//                String pattern = "dd/MM/yyyy";
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-//                result = simpleDateFormat.format(lastProductInventory.getOperationDate());
             }
         }
         return null;
@@ -397,49 +394,4 @@ public class PharmacyProductInventoryManageController {
         }
     }
 
-//    @RequestMapping(value = "/module/pharmacy/operations/inventory/delete.form", method = RequestMethod.GET)
-//    public String delete(HttpServletRequest request,
-//                         @RequestParam(value = "id") Integer id) {
-//        if (id != null) {
-//            ProductInventory inventory = inventoryService().getOneProductInventoryById(id);
-//            if (inventory != null) {
-//                Set<ProductAttributeFlux> fluxes = inventory.getProductAttributeFluxes();
-//                for (ProductAttributeFlux flux: fluxes) {
-//                    attributeFluxService().removeProductAttributeFlux(flux);
-//                }
-//                inventoryService().removeProductInventory(inventory);
-//                attributeService().purgeUnusedAttributes();
-//            }
-//            HttpSession session = request.getSession();
-//            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaitre a été supprimé avec succès");
-//            return "redirect:/module/pharmacy/operations/inventory/list.form";
-//        }
-//        return null;
-//    }
-
-    @RequestMapping(value = "save-flux.form", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<String> saveAttributeFluxAjax(
-            @RequestParam("batchNumber") String batchNumber,
-            @RequestParam("operationId") Integer operationId,
-            @RequestParam("quantity") Integer quantity) {
-
-        ProductAttribute attribute = attributeService().getOneProductAttributeByBatchNumber(batchNumber, OperationUtils.getUserLocation());
-        ProductAttributeFlux flux = attributeFluxService().getOneProductAttributeFluxByAttributeAndOperation(attribute, service().getOneProductOperationById(operationId));
-        flux.setQuantity(quantity);
-        return new ResponseEntity<String>(attributeFluxService().saveProductAttributeFlux(flux).getQuantity().toString(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "save-observation.form", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<String> saveObservationAjax(
-            @RequestParam("batchNumber") String batchNumber,
-            @RequestParam("operationId") Integer operationId,
-            @RequestParam("observation") String observation) {
-
-        ProductAttribute attribute = attributeService().getOneProductAttributeByBatchNumber(batchNumber, OperationUtils.getUserLocation());
-        ProductAttributeFlux flux = attributeFluxService().getOneProductAttributeFluxByAttributeAndOperation(attribute, service().getOneProductOperationById(operationId));
-        flux.setObservation(observation);
-        return new ResponseEntity<String>(attributeFluxService().saveProductAttributeFlux(flux).getObservation(), HttpStatus.OK);
-    }
 }
