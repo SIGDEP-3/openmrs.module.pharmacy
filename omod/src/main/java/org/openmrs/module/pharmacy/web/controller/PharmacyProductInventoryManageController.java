@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class PharmacyProductInventoryManageController {
@@ -216,13 +213,24 @@ public class PharmacyProductInventoryManageController {
         modelMap.addAttribute("inventoryAttributeFluxForm", inventoryAttributeFluxForm);
         modelMap.addAttribute("productInventory", productInventory);
         modelMap.addAttribute("products", programService().getOneProductProgramById(productInventory.getProductProgram().getProductProgramId()).getProducts());
-
+        Comparator<ProductInventoryFluxDTO> compareByProductFluxName = new Comparator<ProductInventoryFluxDTO>() {
+            @Override
+            public int compare(ProductInventoryFluxDTO o1, ProductInventoryFluxDTO o2) {
+                return o1.getRetailName().compareTo(o2.getRetailName());
+            }
+        };
         if (productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
             List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxDTOs(productInventory);
+            if (productAttributeFluxes.size() != 0) {
+                Collections.sort(productAttributeFluxes, compareByProductFluxName);
+            }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             modelMap.addAttribute("subTitle", "Inventaire <i class=\"fa fa-play\"></i> EN ATTENTE DE VALIDATION");
         } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
             List<ProductInventoryFluxDTO> productAttributeFluxes = inventoryService().getProductInventoryFluxValidatedDTO(productInventory);
+            if (productAttributeFluxes.size() != 0) {
+                Collections.sort(productAttributeFluxes, compareByProductFluxName);
+            }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             modelMap.addAttribute("subTitle", "Inventaire <i class=\"fa fa-play\"></i> APPROUVEE");
         } else if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)){
@@ -251,7 +259,13 @@ public class PharmacyProductInventoryManageController {
             }
             List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productInventory, false);
             if (productAttributeFluxes.size() != 0) {
-                Collections.sort(productAttributeFluxes, Collections.<ProductAttributeFlux>reverseOrder());
+                Comparator<ProductAttributeFlux> compareByProductName = new Comparator<ProductAttributeFlux>() {
+                @Override
+                public int compare(ProductAttributeFlux o1, ProductAttributeFlux o2) {
+                    return o1.getProductAttribute().getProduct().getRetailName().compareTo(o2.getProductAttribute().getProduct().getRetailName());
+                }
+            };
+                Collections.sort(productAttributeFluxes, compareByProductName);
             }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
 

@@ -95,7 +95,7 @@
                             <a href="${editUrl}" class="text-${siteBack.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                 <i class="fa fa-${siteBack.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                             </a>
-                            <openmrs:fasPrivilege privilege="Delete Product Back Supplier">
+                            <openmrs:hasPrivilege privilege="Delete Product Back Supplier">
                                 <c:if test="${siteBack.operationStatus != 'VALIDATED'}">
                                     <c:url value="/module/pharmacy/operations/movement/back/delete.form" var="delUrl">
                                         <c:param name="id" value="${siteBack.productOperationId}"/>
@@ -106,7 +106,7 @@
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </c:if>
-                            </openmrs:fasPrivilege>
+                            </openmrs:hasPrivilege>
                         </td>
                     </tr>
                 </c:forEach>

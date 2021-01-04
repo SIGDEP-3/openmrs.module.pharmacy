@@ -6,20 +6,21 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductSupplier;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductSupplierService;
+import org.openmrs.module.pharmacy.forms.SupplierForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-@Handler(supports = {ProductProgram.class}, order = 50)
+@Handler(supports = {SupplierForm.class}, order = 50)
 public class ProductSupplierFormValidation implements Validator {
     @Override
     public boolean supports(Class aClass) {
-        return aClass.equals(ProductSupplier.class);
+        return aClass.equals(SupplierForm.class);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        ProductSupplier supplier = (ProductSupplier) o;
+        SupplierForm supplier = (SupplierForm) o;
 
         if (supplier == null) {
             errors.reject("pharmacy", "general.error");

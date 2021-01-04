@@ -283,9 +283,13 @@
                                         <td>${stock.batchNumber}</td>
                                         <td><fmt:formatDate value="${stock.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                         <td class="text-center font-weight-bold">
-                                            <span id="quantityReceived">${productReception.receptionQuantityMode == 'RETAIL' ? stock.quantityReceived : stock.quantityReceived / stock.unitConversion}</span>
+                                            <span id="quantityReceived">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? stock.quantityReceived : stock.quantityReceived / stock.unitConversion}" />
+                                            </span>
                                         </td>
-                                        <td id="quantityInStock" class="text-center">${productReception.receptionQuantityMode == 'RETAIL' ? stock.quantityInStock : stock.quantityInStock / stock.unitConversion}</td>
+                                        <td id="quantityInStock" class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? stock.quantityInStock : stock.quantityInStock / stock.unitConversion}" />
+                                        </td>
                                         <td id="quantityToReturn"><form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
                                         <td class="text-center"><span class="text-success" id="quantityRemaining">0</span></td>
                                         <td><form:input path="observation" cssClass="form-control form-control-sm"/></td>

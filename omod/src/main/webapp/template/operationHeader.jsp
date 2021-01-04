@@ -70,19 +70,19 @@
 						</button>
 					</openmrs:hasPrivilege>
 
-					<openmrs:hasPrivilege privilege="View Distribution">
-						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
-								<c:choose>
-									<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
-										class=" btn btn-secondary btn-sm"
-									</c:when>
-									<c:otherwise>
-										class="btn btn-outline-secondary text-white btn-sm"
-									</c:otherwise>
-								</c:choose>>
-							Distribution
-						</button>
-					</openmrs:hasPrivilege>
+<%--					<openmrs:hasPrivilege privilege="View Distribution">--%>
+<%--						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"--%>
+<%--								<c:choose>--%>
+<%--									<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>--%>
+<%--										class=" btn btn-secondary btn-sm"--%>
+<%--									</c:when>--%>
+<%--									<c:otherwise>--%>
+<%--										class="btn btn-outline-secondary text-white btn-sm"--%>
+<%--									</c:otherwise>--%>
+<%--								</c:choose>>--%>
+<%--							Distribution--%>
+<%--						</button>--%>
+<%--					</openmrs:hasPrivilege>--%>
 				</div>
 
 				<div class="btn-group mr-3">

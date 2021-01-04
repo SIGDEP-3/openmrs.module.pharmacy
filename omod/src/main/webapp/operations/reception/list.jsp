@@ -107,7 +107,7 @@
                                         <c:if test="${reception.operationStatus == 'VALIDATED'}">
                                             <c:if test="${reception.canReturn == true || reception.productReturnedOperationId != null}">
                                                 <c:url value="/module/pharmacy/operations/reception/edit.form" var="backUrl">
-                                                    <c:param name="receptionId" value="${reception.productReturnedOperationId != null ? reception.productReturnedOperationId : reception.productOpertaionId}"/>
+                                                    <c:param name="receptionId" value="${reception.productReturnedOperationId != null ? reception.productReturnedOperationId : reception.productOperationId}"/>
                                                 </c:url>
                                                 <a href="${backUrl}"
                                                    class="btn btn-sm

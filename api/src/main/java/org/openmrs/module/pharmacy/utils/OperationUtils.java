@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy.utils;
 
+import com.mifmif.common.regex.Generex;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
@@ -12,6 +13,7 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.PharmacyDateRange;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -278,5 +280,24 @@ public class OperationUtils {
         obsSet.add(obsTreatmentEndDate);
 
         return obsSet;
+    }
+
+    public static String generateNumber() {
+        String prefix = getUserLocation().getPostalCode();
+        DateFormat df = new SimpleDateFormat("yy");
+        String formattedDate = df.format(Calendar.getInstance().getTime());
+        String returnedNumber;
+        do {
+            if (prefix != null) {
+                String[] prefixSplit = prefix.split("/");
+                Generex generex = new Generex(prefixSplit[0] + "-" + prefixSplit[1] + formattedDate + "-[0-9a-z]{4}");
+                returnedNumber = generex.random();
+            } else {
+                Generex generex = new Generex("[0-9]{4}-[a-b0-9]{2}" + formattedDate + "[0-9a-z]{4}");
+                returnedNumber = generex.random();
+            }
+        } while (service().getOneProductOperationByOperationNumber(returnedNumber, Incidence.NEGATIVE) != null);
+
+        return returnedNumber.toUpperCase();
     }
 }

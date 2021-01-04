@@ -8,6 +8,7 @@
     if (jQuery) {
         jQuery(document).ready(function (){
             jQuery('.table').DataTable();
+
             jQuery("#program").change(function () {
                 if (jQuery(this).val()){
                     jQuery('#selectMe').text('');
@@ -23,7 +24,7 @@
             if (programId === undefined || programId === null || programId === '') {
                 jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
             } else {
-                location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/inventory/edit.form?programId="+ programId
+                location.href = "${pageContext.request.contextPath}/module/pharmacy/operations/distribution/edit.form?programId="+ programId
             }
         }
     }
@@ -171,7 +172,7 @@
                                                         </div>
                                                         <div class="col">
                                                             <div class="text-center text-success border-bottom border-success">Trait&eacute;s</div>
-                                                            <div class="h1 text-center text-success font-weight-bold">${}</div>
+                                                            <div class="h1 text-center text-success font-weight-bold">0</div>
                                                         </div>
                                                     </div>
                                                 </div>

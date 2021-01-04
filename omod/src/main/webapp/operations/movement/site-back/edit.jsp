@@ -123,7 +123,7 @@
                         <div class="row">
                             <div class="col-6 mb-2">
                                 <label>Num&eacute;ro BL</label>
-                                <form:input path="operationNumber" cssClass="form-control form-control-sm" />
+                                <form:input path="operationNumber" cssClass="form-control form-control-sm" readonly="true" />
                                 <form:errors path="operationNumber" cssClass="error"/>
                             </div>
                         </div>

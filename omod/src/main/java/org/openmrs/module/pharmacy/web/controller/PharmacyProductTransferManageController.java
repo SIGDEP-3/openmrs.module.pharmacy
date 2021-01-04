@@ -110,6 +110,7 @@ public class PharmacyProductTransferManageController {
                         productTransferForm.setIncidence(Incidence.POSITIVE);
                     } else {
                         productTransferForm.setIncidence(Incidence.NEGATIVE);
+                        productTransferForm.setOperationNumber(OperationUtils.generateNumber());
                     }
                     productTransferForm.setProductProgramId(program.getProductProgramId());
                     productTransferForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
@@ -121,6 +122,7 @@ public class PharmacyProductTransferManageController {
             transferTypeStr = productTransferForm.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
 
             modelMap.addAttribute("productTransferForm", productTransferForm);
+            modelMap.addAttribute("type", type);
             modelMap.addAttribute("productTransfer", transferService().getOneProductTransferById(id));
             modelMap.addAttribute("clientLocations", transferService().getAllClientLocation(false));
             modelMap.addAttribute("reasonList", transferReasons());

@@ -92,15 +92,6 @@
                                 <div class="form-control form-control-sm">
                                         ${program.name}
                                 </div>
-<%--                                <c:if test="${fct:length(productTransfer.productAttributeFluxes) == 0}">--%>
-<%--                                    <form:select path="productProgramId" cssClass="form-control s2" >--%>
-<%--                                        <form:option value="" label=""/>--%>
-<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
-<%--                                    </form:select>--%>
-<%--                                    <form:errors path="productProgramId" cssClass="error"/>--%>
-<%--                                </c:if>--%>
-<%--                                <c:if test="${fct:length(productTransfer.productAttributeFluxes) != 0}">--%>
-<%--                                </c:if>--%>
                             </div>
                         </div>
                     </div>
@@ -136,6 +127,23 @@
                         </div>
                     </div>
                     <div class="col-6">
+                        <div class="row mb-2">
+                            <div class="col-4">
+                                <label>Num&eacute;ro BL <span class="required">*</span></label>
+                                <c:if test="${type == 'IN'}">
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm picker" />
+                                    <form:errors path="operationNumber" cssClass="error"/>
+                                </c:if>
+                                <c:if test="${type == 'OUT'}">
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm picker" readonly="true" />
+                                    <form:errors path="operationNumber" cssClass="error"/>
+                                </c:if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
                         <div class="row">
                             <div class="col-12 mb-2">
                                 <label>Raison du transfert <span class="required">*</span></label>
@@ -145,7 +153,7 @@
                                         <form:option label="${reason}" value="${reason}"/>
                                     </c:forEach>
                                 </form:select>
-<%--                                <form:textarea path="observation" cssClass="form-control form-control-sm" />--%>
+                                    <%--                                <form:textarea path="observation" cssClass="form-control form-control-sm" />--%>
                                 <form:errors path="observation" cssClass="error"/>
                             </div>
                         </div>

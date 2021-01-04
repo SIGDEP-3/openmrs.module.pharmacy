@@ -25,7 +25,7 @@
 
         <div class="row">
             <div class="col-8 mb-2">
-                <labe><spring:message code="pharmacy.nameOrInLocation"/> <span class="required">*</span></labe>
+                <labe>Nom <span class="required">*</span></labe>
                 <form:select path="name" cssClass="form-control s2" >
                     <form:option value="" label=""/>
                     <form:options items="${locationList}" itemValue="name" itemLabel="name" />
@@ -37,28 +37,28 @@
         </div>
         <div class="row mb-2">
             <div class="col-2">
-                <labe><spring:message code="pharmacy.shortName"/></labe>
+                <labe>Nom court</labe>
                 <form:input path="shortName" cssClass="form-control form-control-sm" />
                 <form:errors path="shortName" cssClass="error"/>
             </div>
         </div>
         <div class="row mb-2">
             <div class="col-2">
-                <labe><spring:message code="pharmacy.phoneNumber"/></labe>
+                <labe>Num&eacute;ro de t&eacute;l&eacute;phone</labe>
                 <form:input path="phoneNumber" cssClass="form-control form-control-sm" />
                 <form:errors path="phoneNumber" cssClass="error"/>
             </div>
         </div>
         <div class="row mb-2">
             <div class="col-2">
-                <labe><spring:message code="pharmacy.email"/></labe>
+                <labe>Email</labe>
                 <form:input path="email" cssClass="form-control form-control-sm" />
                 <form:errors path="email" cssClass="error"/>
             </div>
         </div>
         <div class="row">
             <div class="col-8 mb-2">
-                <labe><spring:message code="pharmacy.description"/></labe>
+                <labe>description</labe>
                 <form:textarea path="description" cssClass="form-control" />
                 <form:errors path="description" cssClass="error"/>
             </div>

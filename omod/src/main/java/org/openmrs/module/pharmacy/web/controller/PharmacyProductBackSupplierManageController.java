@@ -101,6 +101,7 @@ public class PharmacyProductBackSupplierManageController {
                 }
                 productBackSupplierForm = new ProductBackSupplierForm();
                 productBackSupplierForm.setIncidence(Incidence.NEGATIVE);
+                productBackSupplierForm.setOperationNumber(OperationUtils.generateNumber());
                 productBackSupplierForm.setProductProgramId(program.getProductProgramId());
                 productBackSupplierForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
                 modelMap.addAttribute("program", program);
