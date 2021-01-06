@@ -2,10 +2,7 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
@@ -74,6 +71,16 @@ public class PharmacyProductDispensationManageController {
         return "Dispensation / Vente";
     }
 
+    @ModelAttribute("isDirectClient")
+    public Boolean isDirectClient() {
+        return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
+    }
+
+    @ModelAttribute("canDistribute")
+    public Boolean canDistribute() {
+        return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+    }
+
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap,
                      @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
@@ -87,6 +94,8 @@ public class PharmacyProductDispensationManageController {
                     OperationUtils.getMonthRange().getStartDate(),
                     OperationUtils.getMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
+            modelMap.addAttribute("numberPatientToTransform",
+                    dispensationService().countPatientToTransform(OperationUtils.getUserLocation()));
         }
     }
 

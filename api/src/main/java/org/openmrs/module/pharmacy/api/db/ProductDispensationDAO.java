@@ -57,6 +57,7 @@ public interface ProductDispensationDAO {
 	MobilePatient getOneMobilePatientByIdentifier(String patientIdentifier);
 
 	MobilePatient saveMobilePatient(MobilePatient patient);
+	List<MobilePatient> getAllMobilePatients(Location location);
 
 	Patient getPatientByIdentifier(String identifier);
 
@@ -73,4 +74,6 @@ public interface ProductDispensationDAO {
 
     DispensationTransformationResultDTO transformDispensation(Location location);
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
+
+    Integer countPatientToTransform(Location location);
 }

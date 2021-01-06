@@ -63,6 +63,11 @@
 			Partenaires
 		</a>
 	</li>
+	<li <c:if test='<%= request.getRequestURI().contains("/center") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/pharmacy/center/manage.form">
+			Gestion du centre / district
+		</a>
+	</li>
 	<li>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/manage.form">
 			Retour &agrave; la pharmacie

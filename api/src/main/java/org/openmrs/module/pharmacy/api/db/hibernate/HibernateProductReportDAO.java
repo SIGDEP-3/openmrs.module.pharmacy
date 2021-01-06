@@ -81,11 +81,23 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		return criteria
-				.add(Restrictions.in("location", location.getChildLocations(includeVoided)))
-				.add(Restrictions.eq("operationStatus", OperationStatus.SUBMITTED))
-				.add(Restrictions.eq("voided", includeVoided))
-				.list();
+		List<String> locations = new ArrayList<>();
+		for (Location userLocation : location.getChildLocations()) {
+			locations.add(userLocation.getName());
+		}
+		if (locations.size() != 0) {
+			return criteria
+					.add(
+							Restrictions.and(
+									Restrictions.and(
+											Restrictions.eq("voided", includeVoided),
+											Restrictions.eq("operationStatus", OperationStatus.SUBMITTED)
+									),
+									Restrictions.in("location.name", locations)
+							)
+					).list();
+		}
+		return new ArrayList<>();
 	}
 
 	@SuppressWarnings("unchecked")

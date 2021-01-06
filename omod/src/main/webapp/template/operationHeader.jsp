@@ -69,20 +69,21 @@
 							Dispensation
 						</button>
 					</openmrs:hasPrivilege>
-
-<%--					<openmrs:hasPrivilege privilege="View Distribution">--%>
-<%--						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"--%>
-<%--								<c:choose>--%>
-<%--									<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>--%>
-<%--										class=" btn btn-secondary btn-sm"--%>
-<%--									</c:when>--%>
-<%--									<c:otherwise>--%>
-<%--										class="btn btn-outline-secondary text-white btn-sm"--%>
-<%--									</c:otherwise>--%>
-<%--								</c:choose>>--%>
-<%--							Distribution--%>
-<%--						</button>--%>
-<%--					</openmrs:hasPrivilege>--%>
+                    <c:if test="${canDistribute}">
+                        <openmrs:hasPrivilege privilege="View Distribution">
+                            <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
+                                    <c:choose>
+                                        <c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
+                                            class=" btn btn-secondary btn-sm"
+                                        </c:when>
+                                        <c:otherwise>
+                                            class="btn btn-outline-secondary text-white btn-sm"
+                                        </c:otherwise>
+                                    </c:choose>>
+                                Distribution
+                            </button>
+                        </openmrs:hasPrivilege>
+                    </c:if>
 				</div>
 
 				<div class="btn-group mr-3">
@@ -179,42 +180,48 @@
 					<c:if test='<%= request.getRequestURI().contains("/movement") %>'>
 						<div class="col-7 text-right">
 							<div class="btn-group">
-								<openmrs:hasPrivilege privilege="View Transfer">
-									<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/transfer/list.form'"
-											<c:choose>
-												<c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
-													class=" btn btn-secondary btn-sm"
-												</c:when>
-												<c:otherwise>
-													class="btn btn-outline-secondary btn-sm"
-												</c:otherwise>
-											</c:choose>>
-										Transfert de produits
-									</button>
-								</openmrs:hasPrivilege>
-								<openmrs:hasPrivilege privilege="View View Edit Product Back Supplier">
-									<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/list.form'"
-											<c:choose>
-												<c:when test='<%= request.getRequestURI().contains("/site-back") %>'>
-													class=" btn btn-secondary btn-sm"
-												</c:when>
-												<c:otherwise>
-													class="btn btn-outline-secondary btn-sm"
-												</c:otherwise>
-											</c:choose>>
-										Retour au fournisseur
-									</button>
-									<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/supplier-back/list.form'"
-											<c:choose>
-												<c:when test='<%= request.getRequestURI().contains("/supplier-back") %>'>
-													class=" btn btn-secondary btn-sm"
-												</c:when>
-												<c:otherwise>
-													class="btn btn-outline-secondary btn-sm"
-												</c:otherwise>
-											</c:choose>>
-										Retour des sites / PPS
-									</button>
+                                <c:if test="${isDirectClient}">
+                                    <openmrs:hasPrivilege privilege="View Transfer">
+                                        <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/transfer/list.form'"
+                                                <c:choose>
+                                                    <c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
+                                                        class=" btn btn-secondary btn-sm"
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        class="btn btn-outline-secondary btn-sm"
+                                                    </c:otherwise>
+                                                </c:choose>>
+                                            Transfert de produits
+                                        </button>
+                                    </openmrs:hasPrivilege>
+                                </c:if>
+								<openmrs:hasPrivilege privilege="View Product Back Supplier">
+                                    <c:if test="${!isDirectClient}">
+                                        <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/list.form'"
+                                                <c:choose>
+                                                    <c:when test='<%= request.getRequestURI().contains("/site-back") %>'>
+                                                        class=" btn btn-secondary btn-sm"
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        class="btn btn-outline-secondary btn-sm"
+                                                    </c:otherwise>
+                                                </c:choose>>
+                                            Retour au fournisseur
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${canDistribute}">
+                                        <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/supplier-back/list.form'"
+                                                <c:choose>
+                                                    <c:when test='<%= request.getRequestURI().contains("/supplier-back") %>'>
+                                                        class=" btn btn-secondary btn-sm"
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        class="btn btn-outline-secondary btn-sm"
+                                                    </c:otherwise>
+                                                </c:choose>>
+                                            Retour des sites / PPS
+                                        </button>
+                                    </c:if>
 								</openmrs:hasPrivilege>
 								<openmrs:hasPrivilege privilege="View Movement">
 									<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/other/list.form'"

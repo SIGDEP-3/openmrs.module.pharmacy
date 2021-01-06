@@ -14,16 +14,16 @@
 
 <hr>
 <div class="row">
-    <div class="col-4">
+    <div class="col-6">
         <h4>${title}</h4>
     </div>
-    <div class="col-4">
-        <c:url value="/module/pharmacy/product/programs/location.form" var="locationUrl"/>
-        <button class="btn btn-primary" onclick="window.location='${locationUrl}'" title="">
-            <i class="fa fa-plus"></i> Gestion des programmes du centre
-        </button>
-    </div>
-    <div class="col-4 text-right">
+<%--    <div class="col-4">--%>
+<%--        <c:url value="/module/pharmacy/product/programs/location.form" var="locationUrl"/>--%>
+<%--        <button class="btn btn-primary" onclick="window.location='${locationUrl}'" title="">--%>
+<%--            <i class="fa fa-plus"></i> Gestion des programmes du centre--%>
+<%--        </button>--%>
+<%--    </div>--%>
+    <div class="col-6 text-right">
         <c:url value="/module/pharmacy/product/programs/edit.form" var="url"/>
         <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau programme">
             <i class="fa fa-plus"></i>

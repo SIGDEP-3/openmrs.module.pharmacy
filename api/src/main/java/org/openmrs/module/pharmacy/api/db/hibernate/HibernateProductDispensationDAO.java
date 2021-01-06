@@ -200,6 +200,14 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		return patient;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MobilePatient> getAllMobilePatients(Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
+		return criteria
+				.add(Restrictions.eq("location", location)).list();
+	}
+
 	@Override
 	public Patient getPatientByIdentifier(String identifier) {
 		return (Patient) sessionFactory.getCurrentSession().createQuery("" +
@@ -554,6 +562,18 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 			}
 		}
 		return transformationResultDTO;
+	}
+
+	@Override
+	public Integer countPatientToTransform(Location location) {
+		int quantity = 0;
+		List<MobilePatient> mobilePatients = getAllMobilePatients(location);
+		for (MobilePatient patient : mobilePatients) {
+			if (getPatientByIdentifier(patient.getIdentifier()) != null) {
+				quantity = quantity + 1;
+			}
+		}
+		return quantity;
 	}
 
 	private Encounter createEncounter(Patient patient, MobilePatientDispensationInfo dispensationInfo) {

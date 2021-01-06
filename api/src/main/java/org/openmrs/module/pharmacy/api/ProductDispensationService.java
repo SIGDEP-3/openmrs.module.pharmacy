@@ -89,6 +89,8 @@ public interface ProductDispensationService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.SAVE_DISPENSATION})
 	MobilePatient saveMobilePatient(MobilePatient patient) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
+	List<MobilePatient> getAllMobilePatients(Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
 	MobilePatientDispensationInfo getOneMobilePatientDispensationInfoByDispensation(ProductDispensation productDispensation) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
 	MobilePatient getOneMobilePatientById(Integer mobilePatientId);
@@ -106,4 +108,5 @@ public interface ProductDispensationService extends OpenmrsService {
 	DispensationTransformationResultDTO transformDispensation(Location location);
 	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
+	Integer countPatientToTransform(Location location);
 }

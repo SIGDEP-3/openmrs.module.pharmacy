@@ -300,4 +300,19 @@ public class OperationUtils {
 
         return returnedNumber.toUpperCase();
     }
+
+    public static Boolean canDistribute(Location location) {
+        return location.getChildLocations() != null && location.getChildLocations().size() != 0;
+    }
+
+    public static Boolean isDirectClient(Location location) {
+        for (LocationAttribute attribute : location.getActiveAttributes()) {
+            if (attribute.getAttributeType().getName().equals("Client Direct NPSP")) {
+                if (attribute.getValue().equals(true)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

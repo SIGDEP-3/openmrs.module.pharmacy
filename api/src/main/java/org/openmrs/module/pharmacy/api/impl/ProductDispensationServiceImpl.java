@@ -152,6 +152,11 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     }
 
     @Override
+    public List<MobilePatient> getAllMobilePatients(Location location) {
+        return dao.getAllMobilePatients(location);
+    }
+
+    @Override
     public MobilePatientDispensationInfo getOneMobilePatientDispensationInfoByDispensation(ProductDispensation productDispensation) {
         return dao.getOneMobilePatientDispensationInfoByDispensation(productDispensation);
     }
@@ -194,5 +199,10 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     @Override
     public DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient) {
         return dao.transformPatientDispensation(mobilePatient);
+    }
+
+    @Override
+    public Integer countPatientToTransform(Location location) {
+        return dao.countPatientToTransform(location);
     }
 }

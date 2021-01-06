@@ -210,7 +210,11 @@
         <div class="col-12">
             <div class="row border-bottom mb-2 border-secondary align-items-center">
                 <div class="col-sm-6">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="transformDispensation()"> Transformer dispensation</button>
+                    <c:if test="${numberPatientToTransform > 0}">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="transformDispensation()">
+                            Transformer dispensation (${numberPatientToTransform})
+                        </button>
+                    </c:if>
                 </div>
                 <div class="col-sm-6 text-right ">
                     <table class="table table-sm table-borderless m-0 p-0">

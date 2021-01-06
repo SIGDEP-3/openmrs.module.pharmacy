@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
@@ -68,6 +69,15 @@ public class PharmacyProductTransferManageController {
         return "Transferts de produits";
     }
 
+    @ModelAttribute("isDirectClient")
+    public Boolean isDirectClient() {
+        return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
+    }
+
+    @ModelAttribute("canDistribute")
+    public Boolean canDistribute() {
+        return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+    }
 
     @RequestMapping(value = "/module/pharmacy/operations/movement/transfer/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
