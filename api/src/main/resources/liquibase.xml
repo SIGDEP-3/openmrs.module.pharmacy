@@ -1305,7 +1305,16 @@
             INSERT INTO role (role, description, uuid) VALUE ('AUXILIAIRE', 'Auxiliaire de la pharmacie', 'AUXILIAIRERRRRRRRRRRRRRRRRRRRRRRRRRR');
         </sql>
     </changeSet>
-    <changeSet id="pharmacy-add-privilege-auxiliary" author="BOGUI SERGE">
+    <changeSet id="pharmacy-add-privilege-auxiliary-0" author="BOGUI SERGE" runOnChange="true">
+        <preConditions onFail="CONTINUE" onError="CONTINUE">
+            <and>
+                <not>
+                    <sqlCheck expectedResult="44">SELECT COUNT(*) FROM role_privilege WHERE role = 'AUXILIAIRE'
+                    </sqlCheck>
+                </not>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Dispensation'</sqlCheck>
+            </and>
+        </preConditions>
         <sql>
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Add Report Objects');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Add Reports');
@@ -1335,7 +1344,6 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Product');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Product Attribute');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Program');
-            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Programs');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Reception');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Regimen');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Stock');
@@ -1351,6 +1359,7 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Encounters');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Encounter Types');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Transform Dispensation');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Manage Pharmacy');
         </sql>
     </changeSet>
     <changeSet id="pharmacy-create-role-pgp" author="BOGUI SERGE">
@@ -1361,7 +1370,15 @@
             INSERT INTO role (role, description, uuid) VALUE ('PGP', 'Pharmacien de la pharmacie', 'PGPRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR');
         </sql>
     </changeSet>
-    <changeSet id="pharmacy_create-add-pgp-privileges" author="BOGUI SERGE">
+    <changeSet id="pharmacy_create-add-pgp-privileges-0" author="BOGUI SERGE" runOnChange="true">
+        <preConditions onFail="CONTINUE" onError="CONTINUE">
+            <and>
+                <not>
+                    <sqlCheck expectedResult="16">SELECT COUNT(*) FROM role_privilege WHERE role = 'PGP'</sqlCheck>
+                </not>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Edit Product Back Supplier'</sqlCheck>
+            </and>
+        </preConditions>
         <sql>
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Edit Product Back Supplier');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Transfer');
@@ -1390,7 +1407,16 @@
         </sql>
     </changeSet>
 
-    <changeSet id="pharmacy-add-pharmacist-privileges" author="BOGUI SERGE">
+    <changeSet id="pharmacy-add-pharmacist-privileges-0" author="BOGUI SERGE" runOnChange="true">
+        <preConditions onFail="CONTINUE" onError="CONTINUE">
+            <and>
+                <not>
+                    <sqlCheck expectedResult="38">SELECT COUNT(*) FROM role_privilege WHERE role = 'PHARMACIEN'
+                    </sqlCheck>
+                </not>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'Manage Dispensation'</sqlCheck>
+            </and>
+        </preConditions>
         <sql>
             REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Manage Dispensation');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Manage Exchange Entity');
@@ -1451,4 +1477,24 @@
         </sql>
     </changeSet>
 
+    <changeSet id="pharmacy-product-report-report-location-null-index" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_product_report" columnName="report_location_id" columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-attribute-other-flux-integer-double" author="BOGUI SERGE">
+        <sql>
+            alter table pharmacy_product_attribute_other_flux modify quantity float(11,1) not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-create-direct-clients" author="BOGUI SERGE">
+        <sql>
+            INSERT INTO location_attribute (location_attribute_id, location_id, attribute_type_id, value_reference, uuid, creator, date_created, voided)
+            SELECT NULL AS location_attribute_id, location_id, (SELECT location_attribute_type_id FROM location_attribute_type WHERE uuid = 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC' ) attribute_type_id, 'true' AS value_reference, uuid() AS uuid, 1, '2021-01-01 00:00:00', 0
+            FROM location l
+            WHERE
+            (name LIKE 'CHU%' OR name LIKE 'CHR%' OR name LIKE 'HG%' OR name LIKE 'DISTRICT SANITAIRE%')
+            AND location_id NOT IN (SELECT location_id FROM location_attribute la WHERE attribute_type_id = (SELECT location_attribute_type_id FROM location_attribute_type lat WHERE uuid = 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC' ) AND la.location_id = l.location_id)
+        </sql>
+    </changeSet>
 </databaseChangeLog>

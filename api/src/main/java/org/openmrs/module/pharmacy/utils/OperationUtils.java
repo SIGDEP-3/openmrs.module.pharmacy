@@ -165,7 +165,7 @@ public class OperationUtils {
         return lastElement;
     }
 
-    public static PharmacyDateRange getMonthRange() {
+    public static PharmacyDateRange getCurrentMonthRange() {
         Date start, end;
         {
             Calendar calendar = getCalendarForNow();
@@ -176,6 +176,27 @@ public class OperationUtils {
 
         {
             Calendar calendar = getCalendarForNow();
+            calendar.set(Calendar.DAY_OF_MONTH,
+                    calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            setTimeToEndOfDay(calendar);
+            end = calendar.getTime();
+        }
+//        System.out.println("---------------------Get Month Range beginning :" + start);
+//        System.out.println("---------------------Get Month Range end :" + end);
+        return new PharmacyDateRange(start, end);
+    }
+
+    public static PharmacyDateRange getMonthRange(Date date) {
+        Date start, end;
+        {
+            Calendar calendar = getCalendarForDate(date);
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+            setTimeToBeginningOfDay(calendar);
+            start = calendar.getTime();
+        }
+
+        {
+            Calendar calendar = getCalendarForDate(date);
             calendar.set(Calendar.DAY_OF_MONTH,
                     calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             setTimeToEndOfDay(calendar);
@@ -205,6 +226,12 @@ public class OperationUtils {
     private static Calendar getCalendarForNow() {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date());
+        return calendar;
+    }
+
+    private static Calendar getCalendarForDate(Date date) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
         return calendar;
     }
 
@@ -314,5 +341,188 @@ public class OperationUtils {
             }
         }
         return false;
+    }
+
+    public static Date getLastMonthOfDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, -1);
+        return cal.getTime();
+    }
+
+    public static Date getFirstDateFromStockMax(Location location, Date endDate) {
+        String locationType = "CenterAndNGOs";
+        if (isDirectClient(location)) {
+            locationType = "DirectClient";
+        } else if (location.getName().contains("DISTRICT SANITAIRE")) {
+            locationType = "District";
+        } else {
+            if (location.getChildLocations().size() == 0 && !location.getParentLocation().getName().contains("DISTRICT SANITAIRE")) {
+                locationType = "PointOfServiceDelivery";
+            }
+        }
+        String value = Context.getAdministrationService().getGlobalProperty("pharmacy.stockMax" + locationType);
+        String[] valueSplit = value.split(" ");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+
+        switch (valueSplit[1]) {
+            case "Months":
+                cal.add(Calendar.MONTH, -Integer.parseInt(valueSplit[0]));
+                break;
+            case "Weeks":
+                cal.add(Calendar.DATE, -(Integer.parseInt(valueSplit[0]) * 7));
+                break;
+            case "Days":
+                cal.add(Calendar.DATE, -Integer.parseInt(valueSplit[0]));
+                break;
+        }
+        return cal.getTime();
+    }
+
+    public static String getStockMax(String level) {
+        return Context.getAdministrationService().getGlobalProperty("pharmacy.stockMax" + level);
+    }
+
+    public static Integer getStockMaxDistrictNumber() {
+        String stockMax = getStockMax("District");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getStockMaxDistrictUnit() {
+        String stockMax = getStockMax("District");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getStockMaxDirectClientNumber() {
+        String stockMax = getStockMax("DirectClient");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getStockMaxDirectClientUnit() {
+        String stockMax = getStockMax("DirectClient");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getStockMaxCenterAndNGONumber() {
+        String stockMax = getStockMax("CenterAndNGOs");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getStockMaxCenterAndNGOUnit() {
+        String stockMax = getStockMax("CenterAndNGOs");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getStockMaxPointOfServiceDeliveryNumber() {
+        String stockMax = getStockMax("PointOfServiceDelivery");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getStockMaxPointOfServiceDeliveryUnit() {
+        String stockMax = getStockMax("PointOfServiceDelivery");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static String getEmergencyControlPoint(String level) {
+        return Context.getAdministrationService().getGlobalProperty("pharmacy.emergencyControlPoint" + level);
+    }
+
+    public static Integer getEmergencyControlPointDistrictNumber() {
+        String stockMax = getEmergencyControlPoint("District");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getEmergencyControlPointDistrictUnit() {
+        String stockMax = getEmergencyControlPoint("District");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getEmergencyControlPointDirectClientNumber() {
+        String stockMax = getEmergencyControlPoint("DirectClient");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getEmergencyControlPointDirectClientUnit() {
+        String stockMax = getEmergencyControlPoint("DirectClient");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getEmergencyControlPointCenterAndNGONumber() {
+        String stockMax = getEmergencyControlPoint("CenterAndNGOs");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getEmergencyControlPointCenterAndNGOUnit() {
+        String stockMax = getEmergencyControlPoint("CenterAndNGOs");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getEmergencyControlPointPointOfServiceDeliveryNumber() {
+        String stockMax = getEmergencyControlPoint("PointOfServiceDelivery");
+        return Integer.parseInt(stockMax.split(" ")[0]);
+    }
+
+    public static Integer getEmergencyControlPointPointOfServiceDeliveryUnit() {
+        String stockMax = getEmergencyControlPoint("PointOfServiceDelivery");
+        return Integer.parseInt(stockMax.split(" ")[1]);
+    }
+
+    public static Integer getUserLocationStockMax() {
+        Location location = getUserLocation();
+        if (isDirectClient(location)) {
+            return getStockMaxDirectClientNumber();
+        } else if (location.getName().contains("DISTRICT SANITAIRE")) {
+            return getStockMaxDistrictNumber();
+        } else {
+            if (location.getChildLocations().size() == 0 && !location.getParentLocation().getName().contains("DISTRICT SANITAIRE")) {
+                return getStockMaxPointOfServiceDeliveryNumber();
+            }
+        }
+        return getStockMaxCenterAndNGONumber();
+    }
+
+    public static Integer getMonthsForCMM() {
+        String months = Context.getAdministrationService().getGlobalProperty("pharmacy.monthsForCMM");
+        return Integer.parseInt(months);
+    }
+
+    public static Map<Integer, String> getServices() {
+        Map<Integer, String> services = new HashMap<>();
+        services.put(0,"Cancérologie");
+        services.put(1,"CDI");
+        services.put(2,"CDT");
+        services.put(3,"Chirurgie générale et digestive");
+        services.put(4,"Chirurgie pédiatrique");
+        services.put(5,"Consultations externes");
+        services.put(6,"CPN");
+        services.put(7,"Dermatologie");
+        services.put(8,"Diabétologie");
+        services.put(9,"Dispensaire");
+        services.put(10,"Gastro-entérologie");
+        services.put(11,"Gynécologie-obstétrique ");
+        services.put(12,"Hématologie");
+        services.put(13,"Hospitalisation");
+        services.put(14,"Laboratoire");
+        services.put(15,"Maternité");
+        services.put(16,"Médecine générale");
+        services.put(17,"Néonatalogie");
+        services.put(18,"Néphrologie");
+        services.put(19,"Neurologie ");
+        services.put(20,"Nutrition");
+        services.put(21,"O.R.L");
+        services.put(22,"Odonto-stomatologique");
+        services.put(23,"Ophtalmologie");
+        services.put(24,"Pédiatrie");
+        services.put(25,"Pneumologie (PPH)");
+        services.put(26,"Post-natal");
+        services.put(27,"Réanimation");
+        services.put(28,"Rééducation et réadaptation fonctionnelles");
+        services.put(29,"Rhumatologie");
+        services.put(30,"SMIT");
+        services.put(31,"Traumatologie et chirurgie orthopédique ");
+        services.put(32,"Urgences");
+        services.put(33,"Urologie");
+        return services;
     }
 }

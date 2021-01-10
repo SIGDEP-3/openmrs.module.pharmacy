@@ -58,4 +58,6 @@ public interface ProductAttributeFluxDAO {
 	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
 
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
+
+    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label);
 }

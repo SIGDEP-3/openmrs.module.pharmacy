@@ -19,6 +19,7 @@ import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
@@ -86,6 +87,11 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
+    public ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided) {
+        return dao.getOneProductReportByReportPeriodAndProgram(reportPeriod, productProgram, location, includeVoided);
+    }
+
+    @Override
     public ProductReport saveProductReport(ProductReport productReport) {
         return dao.saveProductReport(productReport);
     }
@@ -117,7 +123,12 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
 
     @Override
     public Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return getDao().getProductQuantityInStockInLastOperationByProduct(product, inventory, location);
+        return getDao().getProductInitialQuantityByProduct(product, inventory, location);
+    }
+
+    @Override
+    public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location) {
+        return dao.getProductQuantityInStockOperationByProduct(product, inventory, location);
     }
 
     @Override
@@ -131,9 +142,45 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
+    public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
+        return dao.getProductQuantityDistributedInLastOperationByProduct(product, inventory, location);
+    }
+
+    @Override
+    public Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) {
+        return dao.getChildLocationsThatKnownRupture(product, inventory, location);
+    }
+
+    @Override
+    public Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {
+        return dao.getProductQuantityDistributedInAgo1MonthOperationByProduct(product, inventory, location);
+    }
+
+    @Override
+    public Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {
+        return dao.getProductQuantityDistributedInAgo2MonthOperationByProduct(product, inventory, location);
+    }
+
+    @Override
+    public Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided) {
+        return dao.getProductAverageMonthlyConsumption(product, productProgram, location, includeVoided);
+    }
+
+    @Override
     public List<Product> getAllActivityProducts(ProductInventory inventory) {
         return dao.getAllActivityProducts(inventory);
     }
+
+    @Override
+    public ProductReport getLastProductReport(Location location, ProductProgram productProgram) {
+        return dao.getLastProductReport(location, productProgram);
+    }
+
+    @Override
+    public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) {
+        return dao.getLastProductReportByDate(location, productProgram, reportDate);
+    }
+
 //
 //    @Override
 //    public List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport) {

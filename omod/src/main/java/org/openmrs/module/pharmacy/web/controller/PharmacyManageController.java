@@ -53,6 +53,11 @@ public class PharmacyManageController {
 		return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
 	}
 
+	@ModelAttribute("canDistribute")
+	public Boolean canDistribute() {
+		return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+	}
+
 	@RequestMapping(value = "/module/pharmacy/manage", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
@@ -91,9 +96,9 @@ public class PharmacyManageController {
 			for (Location location : Context.getLocationService().getAllLocations()) {
 				if (location.getName().contains("DISTRICT SANITAIRE") ||
 						location.getName().contains("REGION SANITAIRE") ||
-						location.getName().contains("CHU") ||
-						location.getName().contains("CHR") ||
-						location.getName().contains("HG") ||
+						location.getName().startsWith("CHU") ||
+						location.getName().startsWith("CHR") ||
+						location.getName().startsWith("HG") ||
 						location.getParentLocation() != null ||
 						OperationUtils.isDirectClient(location) || location.getLocationId().equals(1)) {
 					allLocations.remove(location);
@@ -107,7 +112,7 @@ public class PharmacyManageController {
 			modelMap.addAttribute("locationPrograms", locationPrograms);
 			modelMap.addAttribute("programs", programService().getAllProductProgram());
 			modelMap.addAttribute("allLocations", allLocations);
+			modelMap.addAttribute("services", OperationUtils.getServices());
 		}
 	}
-
 }

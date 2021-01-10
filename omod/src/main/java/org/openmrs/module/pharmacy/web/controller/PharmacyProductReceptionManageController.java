@@ -247,7 +247,7 @@ public class PharmacyProductReceptionManageController {
                             ProductAttributeOtherFlux otherFlux = receptionAttributeFluxForm.getProductAttributeOtherFlux();
                             if (productReception.getReceptionQuantityMode().equals(ReceptionQuantityMode.WHOLESALE)) {
                                 double otherFluxQuantity = otherFlux.getQuantity() * productAttribute.getProduct().getUnitConversion();
-                                otherFlux.setQuantity((int) otherFluxQuantity);
+                                otherFlux.setQuantity(otherFluxQuantity);
                             }
                             attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                         }

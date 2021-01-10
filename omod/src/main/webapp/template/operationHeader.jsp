@@ -69,7 +69,7 @@
 							Dispensation
 						</button>
 					</openmrs:hasPrivilege>
-                    <c:if test="${canDistribute}">
+                    <c:if test="${canDistribute == true}">
                         <openmrs:hasPrivilege privilege="View Distribution">
                             <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
                                     <c:choose>
@@ -143,7 +143,7 @@
 						</button>
 					</openmrs:hasPrivilege>
 					<openmrs:hasPrivilege privilege="View Report">
-						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/report/list.form'"
+						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/reports/list.form'"
 								<c:choose>
 									<c:when test='<%= request.getRequestURI().contains("/report") %>'>
 										class=" btn btn-secondary btn-sm"
@@ -152,7 +152,7 @@
 										class="btn btn-outline-secondary text-white btn-sm"
 									</c:otherwise>
 								</c:choose>>
-							Rapport d'activite
+							Rapport d'activit&eacute;
 						</button>
 					</openmrs:hasPrivilege>
 				</div>
@@ -209,7 +209,7 @@
                                             Retour au fournisseur
                                         </button>
                                     </c:if>
-                                    <c:if test="${canDistribute}">
+                                    <c:if test="${canDistribute == true}">
                                         <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/supplier-back/list.form'"
                                                 <c:choose>
                                                     <c:when test='<%= request.getRequestURI().contains("/supplier-back") %>'>

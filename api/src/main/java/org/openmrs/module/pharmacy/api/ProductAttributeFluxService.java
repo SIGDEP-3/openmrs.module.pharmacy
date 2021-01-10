@@ -90,4 +90,6 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
+	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
+    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label);
 }

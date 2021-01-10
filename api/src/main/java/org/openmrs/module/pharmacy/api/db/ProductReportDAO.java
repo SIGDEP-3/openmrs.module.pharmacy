@@ -36,16 +36,25 @@ public interface ProductReportDAO {
 	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided);
 	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
 	ProductReport getOneProductReportById(Integer id);
+	ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided);
 	ProductReport saveProductReport(ProductReport productReport);
 	ProductReport editProductReport(ProductReport productReport);
 	void removeProductReport(ProductReport productReport);
 	ProductReport getOneProductReportByUuid(String uuid);
 	List<ProductReportLineDTO> getProductReportFluxDTOs(ProductReport productReport);
+	Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location);
 	Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location);
 	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location);
+	Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided);
 	List<Product> getAllActivityProducts(ProductInventory inventory);
+	ProductReport getLastProductReport(Location location, ProductProgram productProgram);
+	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
 
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);

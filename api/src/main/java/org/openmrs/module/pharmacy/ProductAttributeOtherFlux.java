@@ -29,7 +29,7 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
     private String label;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private Double quantity;
 
     @ManyToOne
     @JoinColumn(name = "operation_id", nullable = false)
@@ -74,11 +74,11 @@ public class ProductAttributeOtherFlux extends AbstractPharmacyObject {
         this.label = label;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 

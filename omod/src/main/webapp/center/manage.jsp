@@ -12,6 +12,10 @@
                 saveLocationPrograms(id, value);
             });
 
+            jQuery(".mySelect2").select2({
+                dropdownParent: jQuery("#dialog-form")
+            })
+
             jQuery('input[name=clientInfo]').on('click', function (){
                 let clientCheckbox = jQuery(this);
                 let id = clientCheckbox.attr('id');
@@ -97,14 +101,14 @@
             function addLocation() {
                 let valid = true;
                 allFields.removeClass( "ui-state-error" );
-                if (!name && nameSelected) {
+                if (nameSelected.val()) {
                     name.val(nameSelected.val());
                 }
-                valid = valid && checkLength( name, "service/centre", 3, 255 );
+                // valid = valid && checkLength( name, "service/centre", 3, 255 );
                 valid = valid && checkLength( prefix, "Prefix", 8, 8 );
 
-                valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Le nom du centre/service doit etre compose de a-z, 0-9, underscores, espaces et doit commentcer par un lettre." );
-                valid = valid && checkRegexp( prefix, /^[0-9]{4}\/.{2}\//i, "Prefix field only allow : a-z 0-9" );
+                // valid = valid && checkRegexp( name, /^[a-z]([0-9A-zÀ-ú_\s])+$/i, "Le nom du centre/service doit etre compose de a-z, 0-9, underscores, espaces et doit commentcer par un lettre." );
+                valid = valid && checkRegexp( prefix, /^[0-9]{4}\/.{2}\//i, "Le format du préfixe n'est pas correct : 0000/XX/" );
 
                 if ( valid ) {
                     saveLocation(name.val(), prefix.val());
@@ -172,12 +176,18 @@
             }
         }
 
-        function saveLocation(name, prefix) {
-            if (name && prefix) {
+        function saveLocation(id, prefix) {
+            let type = 'service';
+            if (jQuery("#nameSelected").val()){
+                type = 'location';
+            }
+            if (id && prefix) {
+                let uri = encodeURI('${pageContext.request.contextPath}/save-location.form?' + type +'Id=' +
+                    id + '&prefix='+ prefix);
+                // console.log(uri);
                 jQuery.ajax({
                     type: 'GET',
-                    url: '${pageContext.request.contextPath}/save-location.form?name=' +
-                        name + '&prefix='+ prefix,
+                    url: uri,
                     dataType : "json",
                     crossDomain:true,
                     success : function(data) {
@@ -257,13 +267,18 @@
             <form>
                 <fieldset>
                     <label for="name">Nom du centre / Service <span class="required">*</span></label>
-                    <input type="text" name="name" id="name" value="" class="form-control form-control-sm">
+                    <select name="name" id="name" style="width: 100%" class="form-control-sm mySelect2">
+                        <option value=""></option>
+                        <c:forEach var="service" items="${services}">
+                            <option value="${service.key}">${service.value}</option>
+                        </c:forEach>
+                    </select>
                     <div class="row" id="existingNameZone">
                         <div class="col-12">
-                            <select name="name" id="nameSelected" style="width: 100%" class="form-control form-control-sm s2">
+                            <select name="name" id="nameSelected" style="width: 100%" class="form-control-sm mySelect2">
                                 <option value=""></option>
                                 <c:forEach var="eLocation" items="${allLocations}">
-                                    <option value="${eLocation.name}">${eLocation.name}</option>
+                                    <option value="${eLocation.locationId}">${eLocation.name}</option>
                                 </c:forEach>
                             </select>
                         </div>

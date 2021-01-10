@@ -352,9 +352,9 @@ public class PharmacyProductInventoryManageController {
                 otherFlux.setLocation(OperationUtils.getUserLocation());
                 ProductAttributeStock stock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), OperationUtils.getUserLocation(), false);
                 if (stock != null) {
-                    otherFlux.setQuantity(flux.getQuantity() - stock.getQuantityInStock());
+                    otherFlux.setQuantity(flux.getQuantity().doubleValue() - stock.getQuantityInStock());
                 } else {
-                    otherFlux.setQuantity(flux.getQuantity());
+                    otherFlux.setQuantity(flux.getQuantity().doubleValue());
                 }
                 attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
             }

@@ -229,7 +229,7 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 		List<ProductAttributeOtherFlux> fluxes = query.list();
 		Integer quantity = 0;
 		for (ProductAttributeOtherFlux flux : fluxes) {
-			quantity += flux.getQuantity();
+			quantity += flux.getQuantity().intValue();
 		}
 		return quantity;
 	}
@@ -239,6 +239,15 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation");
 		query.setParameter("product", product)
 				.setParameter("operation", productOperation);
+		return (ProductAttributeOtherFlux) query.setMaxResults(1).uniqueResult();
+	}
+
+	@Override
+	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation AND s.label = :label");
+		query.setParameter("product", product)
+				.setParameter("operation", productOperation)
+				.setParameter("label", label);
 		return (ProductAttributeOtherFlux) query.setMaxResults(1).uniqueResult();
 	}
 

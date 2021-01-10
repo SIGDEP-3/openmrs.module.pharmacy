@@ -35,7 +35,7 @@ public class ProductReportForm extends ProductOperationForm {
     }
 
     public ProductReport getProductReport() {
-        ProductReport productReport = (ProductReport) super.getProductOperation(new ProductReception());
+        ProductReport productReport = (ProductReport) super.getProductOperation(new ProductReport());
         productReport.setReportType(getReportType());
         productReport.setReportPeriod(getReportPeriod());
         productReport.setReportInfo(getReportInfo());

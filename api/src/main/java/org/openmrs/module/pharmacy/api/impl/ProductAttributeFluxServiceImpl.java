@@ -172,4 +172,9 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
         return dao.getOneProductAttributeOtherFluxByProductAndOperation(product, productOperation);
     }
 
+    @Override
+    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label) {
+        return dao.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label);
+    }
+
 }

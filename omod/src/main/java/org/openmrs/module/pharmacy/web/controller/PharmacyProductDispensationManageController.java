@@ -91,8 +91,8 @@ public class PharmacyProductDispensationManageController {
             modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    OperationUtils.getMonthRange().getStartDate(),
-                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getCurrentMonthRange().getStartDate(),
+                    OperationUtils.getCurrentMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
             modelMap.addAttribute("numberPatientToTransform",
                     dispensationService().countPatientToTransform(OperationUtils.getUserLocation()));
@@ -147,8 +147,8 @@ public class PharmacyProductDispensationManageController {
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("subTitle", "Liste des Dispensations du jour");
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    OperationUtils.getMonthRange().getStartDate(),
-                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getCurrentMonthRange().getStartDate(),
+                    OperationUtils.getCurrentMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
 //            modelMap.addAttribute("dispensations", dispensationService().getAllProductDispensations(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("programs", programService().getAllProductProgram());
@@ -163,8 +163,8 @@ public class PharmacyProductDispensationManageController {
                                                         @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
         if (startDate == null && endDate == null) {
             modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                    OperationUtils.getMonthRange().getStartDate(),
-                    OperationUtils.getMonthRange().getEndDate(),
+                    OperationUtils.getCurrentMonthRange().getStartDate(),
+                    OperationUtils.getCurrentMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
             modelMap.addAttribute("subTitle", "Liste des Dispensations saisies ce jour");
         } else {

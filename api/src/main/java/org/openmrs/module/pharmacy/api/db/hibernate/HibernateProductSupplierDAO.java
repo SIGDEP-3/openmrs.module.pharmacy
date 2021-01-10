@@ -21,6 +21,7 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.pharmacy.ProductSupplier;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductSupplierDAO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.List;
 
@@ -49,7 +50,11 @@ public class HibernateProductSupplierDAO implements ProductSupplierDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductSupplier> getAllProductSuppliers() {
-		return sessionFactory.getCurrentSession().createCriteria(ProductSupplier.class).list();
+		List<ProductSupplier> suppliers = sessionFactory.getCurrentSession().createCriteria(ProductSupplier.class).list();
+		if (!OperationUtils.isDirectClient(OperationUtils.getUserLocation())) {
+			suppliers.remove(getOneProductSupplierById(1));
+		}
+		return suppliers;
 	}
 
 	@Override

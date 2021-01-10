@@ -19,11 +19,11 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
@@ -32,6 +32,7 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.StockOutType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,11 +82,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		List<String> locations = new ArrayList<>();
-		for (Location userLocation : location.getChildLocations()) {
-			locations.add(userLocation.getName());
-		}
-		if (locations.size() != 0) {
+		if (location.getChildLocations() != null) {
 			return criteria
 					.add(
 							Restrictions.and(
@@ -93,7 +90,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 											Restrictions.eq("voided", includeVoided),
 											Restrictions.eq("operationStatus", OperationStatus.SUBMITTED)
 									),
-									Restrictions.in("location.name", locations)
+									Restrictions.in("location", location.getChildLocations())
 							)
 					).list();
 		}
@@ -104,11 +101,14 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		return criteria
-				.add(Restrictions.in("location", location.getChildLocations(includeVoided)))
-				.add(Restrictions.eq("operationStatus", OperationStatus.TREATED))
-				.add(Restrictions.eq("voided", includeVoided))
-				.list();
+		if (location.getChildLocations() != null) {
+			return criteria
+					.add(Restrictions.in("location", location.getChildLocations(includeVoided)))
+					.add(Restrictions.eq("operationStatus", OperationStatus.TREATED))
+					.add(Restrictions.eq("voided", includeVoided))
+					.list();
+		}
+		return new ArrayList<>();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -138,6 +138,17 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public ProductReport getOneProductReportById(Integer id) {
 		return (ProductReport) sessionFactory.getCurrentSession().get(ProductReport.class, id);
+	}
+
+	@Override
+	public ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return (ProductReport) criteria
+				.add(Restrictions.eq("reportPeriod", reportPeriod))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.uniqueResult();
 	}
 
 	@Override
@@ -226,34 +237,39 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		Integer quantity = 0;
 		for (ProductReception reception :
 				productReceptions) {
-			for (ProductAttributeFlux flux : reception.getProductAttributeFluxes()) {
-				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
-					if (reception.getIncidence().equals(Incidence.POSITIVE)) {
-						quantity += flux.getQuantity();
-					} else if (reception.getIncidence().equals(Incidence.NEGATIVE)) {
-						quantity -= flux.getQuantity();
-					}
-				}
-			}
+			quantity += getFluxQuantity(reception, product);
 		}
 		return quantity;
 	}
 
 	@Override
-	public Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-		Integer quantity = 0;
+	public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location) {
+		Double quantity = 0.0;
 		for (ProductAttributeFlux flux : inventory.getProductAttributeFluxes()) {
 			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
 				quantity += flux.getQuantity();
 			}
 		}
-		return quantity;
+
+		return getChildLocationReportProductQuantity(location, product, inventory, "SDU", quantity);
+	}
+
+	@Override
+	public Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location) {
+		ProductInventory inventoryBeforeLatest = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+		Double quantity = 0.0;
+		for (ProductAttributeFlux flux : inventoryBeforeLatest.getProductAttributeFluxes()) {
+			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
+				quantity += flux.getQuantity();
+			}
+		}
+		return getChildLocationReportProductQuantity(location, product, inventory, "SI", quantity);
 	}
 
 	@Override
 	public Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
 		List<ProductMovementOut> productMovementOuts = Context.getService(ProductMovementService.class).getAllProductMovementOut(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
-		Integer quantity = 0;
+		Double quantity = 0.0;
 		for (ProductMovementOut movementOut :
 				productMovementOuts) {
 			if (!movementOut.getStockOutType().equals(StockOutType.BACK_TO_SUPPLIER)) {
@@ -264,22 +280,176 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				}
 			}
 		}
-		return quantity;
+		return getChildLocationReportProductQuantity(location, product, inventory, "QL", quantity);
 	}
 
 	@Override
 	public Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
 		List<ProductTransfer> productTransfers = Context.getService(ProductTransferService.class).getAllProductTransfers(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+		Double quantity = 0.0;
+		for (ProductTransfer productTransfer : productTransfers) {
+			quantity += getFluxQuantity(productTransfer, product);
+		}
+
+		List<ProductBackSupplier> productBackSuppliers = Context.getService(ProductBackSupplierService.class).getAllProductBackSuppliers(location, false);
+		for (ProductBackSupplier backSupplier : productBackSuppliers) {
+			quantity += getFluxQuantity(backSupplier, product);
+		}
+
+		List<ProductMovementEntry> productMovementEntries = Context.getService(ProductMovementService.class).getAllProductMovementEntry(location, false);
+		for (ProductMovementEntry movementEntry : productMovementEntries) {
+			quantity += getFluxQuantity(movementEntry, product);
+		}
+
+		return getChildLocationReportProductQuantity(location, product, inventory, "QA", quantity);
+	}
+
+	private Integer getFluxQuantity(ProductOperation operation, Product product) {
 		Integer quantity = 0;
-		for (ProductTransfer productTransfer :
-				productTransfers) {
-			for (ProductAttributeFlux flux : productTransfer.getProductAttributeFluxes()) {
-				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
-					if (productTransfer.getIncidence().equals(Incidence.POSITIVE)) {
-						quantity += flux.getQuantity();
-					} else if (productTransfer.getIncidence().equals(Incidence.NEGATIVE)) {
-						quantity -= flux.getQuantity();
+		for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
+			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
+				if (operation.getIncidence().equals(Incidence.POSITIVE)) {
+					quantity += flux.getQuantity();
+				} else if (operation.getIncidence().equals(Incidence.NEGATIVE)) {
+					quantity -= flux.getQuantity();
+				}
+			}
+		}
+		return quantity;
+	}
+
+	@Override
+	public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
+		Double quantity = getDistributionQuantity(product, inventory, location);
+		return getChildLocationReportProductQuantity(location, product, inventory, "QD", quantity);
+	}
+
+	private Integer getChildLocationReportProductQuantity(Location location, Product product, ProductInventory inventory, String label, Double quantity) {
+		if (location.getChildLocations().size() != 0) {
+			String reportPeriod = inventory.getOperationNumber().split("-")[1];
+			for (Location childLocation : location.getChildLocations()) {
+				ProductReport report = getOneProductReportByReportPeriodAndProgram(reportPeriod, inventory.getProductProgram(), childLocation, false);
+				if (report != null) {
+					ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
+							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+									product,
+									report,
+									label
+							);
+					if (otherFlux != null) {
+						quantity += otherFlux.getQuantity();
 					}
+				}
+			}
+		}
+		return quantity.intValue();
+	}
+
+	@Override
+	public Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) {
+		if (location.getChildLocations().size() != 0) {
+			Integer quantity = 0;
+			String reportPeriod = inventory.getOperationNumber().split("-")[1];
+			for (Location childLocation : location.getChildLocations()) {
+				ProductReport report = getOneProductReportByReportPeriodAndProgram(reportPeriod, inventory.getProductProgram(), childLocation, false);
+				if (report != null) {
+					ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
+							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+									product,
+									report,
+									"QL"
+							);
+					if (otherFlux != null && otherFlux.getQuantity() > 0) {
+						quantity += 1;
+						break;
+					}
+				}
+			}
+			return quantity;
+		}
+		return 0;
+	}
+
+	@Override
+	public Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+		if (report != null) {
+			return getReportQuantityDistributed(report, product, "QD").intValue();
+		}
+		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate());
+		return getDistributionQuantity(product, inventoryBefore, location).intValue();
+	}
+
+	@Override
+	public Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {
+		ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getInventoryStartDate());
+		if (report != null) {
+			return getReportQuantityDistributed(report, product, "DM1").intValue();
+		}
+		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate());
+		ProductInventory inventoryBeforeAntLast = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventoryBefore.getProductProgram(),inventoryBefore.getOperationDate());
+		if (inventoryBeforeAntLast == null) {
+			return 0;
+		}
+		return getDistributionQuantity(product, inventoryBeforeAntLast, location).intValue();
+	}
+
+	private Double getReportQuantityDistributed(ProductReport report, Product product, String label) {
+		ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
+				.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+						product,
+						report,
+						label
+				);
+		if (otherFlux != null) {
+			return otherFlux.getQuantity();
+		}
+
+		return 0.0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		int months = OperationUtils.getMonthsForCMM();
+		List<ProductReport> reports = criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.eq("voided", includeVoided))
+				.addOrder(Order.desc("operationDate")).setMaxResults(months)
+				.list();
+
+		if (reports != null && reports.size() != 0) {
+			int countReport = 0;
+			Double quantity = 0.0;
+			for (ProductReport report : reports) {
+				ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
+						.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+								product,
+								report,
+								"QD"
+						);
+				if (otherFlux != null) {
+					quantity += otherFlux.getQuantity();
+				}
+				countReport += 1;
+				if (countReport == months) {
+					return quantity / months;
+				}
+			}
+			return quantity / countReport;
+		}
+
+		return 0.0;
+	}
+
+	private Double getDistributionQuantity(Product product, ProductInventory inventory, Location location) {
+		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class).getAllProductDispensations(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+		Double quantity = 0.0;
+		for (ProductDispensation dispensation : dispensations) {
+			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
+					quantity += flux.getQuantity();
 				}
 			}
 		}
@@ -292,11 +462,30 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		List<Product> products = new ArrayList<>();
 		for (ProductAttributeFlux flux :
 				fluxes) {
-			products.add(flux.getProductAttribute().getProduct());
+			if (!products.contains(flux.getProductAttribute().getProduct()))
+				products.add(flux.getProductAttribute().getProduct());
 		}
 		return products;
 	}
 
+	@Override
+	public ProductReport getLastProductReport(Location location, ProductProgram productProgram) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return (ProductReport) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+	}
+
+	@Override
+	public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return (ProductReport) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.lt("operationDate", reportDate))
+				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+	}
 
 //	@SuppressWarnings("unchecked")
 //	@Override

@@ -101,30 +101,4 @@ public class PharmacyProductProgramManageController {
         return null;
     }
 
-//    @RequestMapping(value = "/module/pharmacy/product/programs/location.form", method = RequestMethod.GET)
-//    public String location(ModelMap modelMap,
-//                            HttpServletRequest request) {
-//        if (Context.isAuthenticated()) {
-//            List<Location> locations = OperationUtils.getUserLocations();
-//
-//            Map<Integer, List<Integer>> locationPrograms = new HashMap<Integer, List<Integer>>();
-//
-//            for (Location location : locations) {
-//                List<Integer> programIds = new ArrayList<Integer>();
-//                for (ProductProgram program : OperationUtils.getLocationPrograms(location)) {
-//                    programIds.add(program.getProductProgramId());
-//                }
-//                locationPrograms.put(location.getLocationId(), programIds);
-//            }
-//
-//            modelMap.addAttribute("locations", locations);
-//            modelMap.addAttribute("locationPrograms", locationPrograms);
-//            modelMap.addAttribute("programs", service().getAllProductProgram());
-//            modelMap.addAttribute("title", "Gestion des Programmes du centre");
-//        }
-//
-//        return null;
-//    }
-
-
 }

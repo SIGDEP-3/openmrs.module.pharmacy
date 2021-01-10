@@ -47,6 +47,51 @@
 		<defaultValue>165033</defaultValue>
 		<description>Insert here the concept for the regimen concept for dispensation in pharmacy </description>
 	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.stockMaxDistrict</property>
+		<defaultValue>4 Months</defaultValue>
+		<description>Insert here the stock max for district </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.stockMaxDirectClient</property>
+		<defaultValue>4 Months</defaultValue>
+		<description>Insert here the stock max for direct client </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.stockMaxCenterAndNGOs</property>
+		<defaultValue>2 Months</defaultValue>
+		<description>Insert here the stock max for Center and NGOs  </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.stockMaxPointOfServiceDelivery</property>
+		<defaultValue>2 Weeks</defaultValue>
+		<description>Insert here the stock max for point of service delivery </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.emergencyControlPointDistrict</property>
+		<defaultValue>1 Months</defaultValue>
+		<description>Insert here the emergency control point for district </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.emergencyControlPointDirectClient</property>
+		<defaultValue>1 Months</defaultValue>
+		<description>Insert here the emergency control point for direct client </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.emergencyControlPointCenterAndNGOs</property>
+		<defaultValue>2 Weeks</defaultValue>
+		<description>Insert here the emergency control point for Center and NGOs  </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.emergencyControlPointPointOfServiceDelivery</property>
+		<defaultValue>2 Days</defaultValue>
+		<description>Insert here the emergency control point for point of service delivery </description>
+	</globalProperty>
+	<globalProperty>
+		<property>pharmacy.monthsForCMM</property>
+		<defaultValue>3</defaultValue>
+		<description>Insert here the number of months for CMM </description>
+	</globalProperty>
 
 	<!-- Privileges  -->
 	<privilege>

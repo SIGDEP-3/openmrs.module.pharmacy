@@ -141,7 +141,7 @@ public class DispensationAttributeFluxForm {
         if (getRequestedQuantity()!= null) {
             Integer productId = getProductId() == null ? getSelectedProductId() : getProductId();
             List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
-            Integer quantity = getRequestedQuantity();
+            Double quantity = getRequestedQuantity().doubleValue();
             for (ProductAttributeStock stock : productAttributeStocks) {
                 ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
                         stock.getProductAttribute(),
@@ -149,10 +149,10 @@ public class DispensationAttributeFluxForm {
                         OperationUtils.getUserLocation()
                 );
                 if (productAttributeOtherFlux != null){
-                    productAttributeOtherFlux.setQuantity(getRequestedQuantity());
+                    productAttributeOtherFlux.setQuantity(getRequestedQuantity().doubleValue());
                 } else {
                     productAttributeOtherFlux = new ProductAttributeOtherFlux();
-                    productAttributeOtherFlux.setQuantity(getDispensingQuantity());
+                    productAttributeOtherFlux.setQuantity(getDispensingQuantity().doubleValue());
                     productAttributeOtherFlux.setLabel("Quantitié demandée");
                     productAttributeOtherFlux.setLocation(OperationUtils.getUserLocation());
                     productAttributeOtherFlux.setProductAttribute(stock.getProductAttribute());
@@ -164,7 +164,7 @@ public class DispensationAttributeFluxForm {
                     otherFluxes.add(productAttributeOtherFlux);
                     break;
                 } else {
-                    productAttributeOtherFlux.setQuantity(stock.getQuantityInStock());
+                    productAttributeOtherFlux.setQuantity(stock.getQuantityInStock().doubleValue());
                     quantity -= stock.getQuantityInStock();
                     otherFluxes.add(productAttributeOtherFlux);
                     if (quantity.equals(0)) {
@@ -184,10 +184,10 @@ public class DispensationAttributeFluxForm {
                 dispensationService().getOneProductDispensationById(getProductOperationId())
         );
         if (otherFlux != null){
-            otherFlux.setQuantity(getRequestedQuantity());
+            otherFlux.setQuantity(getRequestedQuantity().doubleValue());
         } else {
             otherFlux = new ProductAttributeOtherFlux();
-            otherFlux.setQuantity(getDispensingQuantity());
+            otherFlux.setQuantity(getDispensingQuantity().doubleValue());
             otherFlux.setLabel("Quantitié demandée");
             otherFlux.setLocation(OperationUtils.getUserLocation());
             otherFlux.setProduct(productService().getOneProductById(productId));
@@ -200,7 +200,7 @@ public class DispensationAttributeFluxForm {
         setProductId(product.getProductId());
         setProductOperationId(productDispensation.getProductOperationId());
         setDispensingQuantity(fluxService().getAllProductAttributeFluxByOperationAndProductCount(productDispensation, product));
-        setRequestedQuantity(fluxService().getOneProductAttributeOtherFluxByProductAndOperation(product, productDispensation).getQuantity());
+        setRequestedQuantity(fluxService().getOneProductAttributeOtherFluxByProductAndOperation(product, productDispensation).getQuantity().intValue());
     }
 
     private ProductDispensationService dispensationService() {

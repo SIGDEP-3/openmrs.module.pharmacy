@@ -7,8 +7,6 @@ import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReportType;
 
-import java.util.Date;
-
 public class ProductDistributionForm extends ProductReportForm {
 
     private Integer reportLocationId;
@@ -17,7 +15,7 @@ public class ProductDistributionForm extends ProductReportForm {
     public ProductDistributionForm() {
         super();
         setIncidence(Incidence.NEGATIVE);
-        setReportType(ReportType.CONSUMING_REPORT);
+        setReportType(ReportType.CLIENT_REPORT);
     }
 
     public Integer getReportLocationId() {

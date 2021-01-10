@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
@@ -130,11 +131,12 @@ public class PharmacyProductTransferManageController {
             }
 
             transferTypeStr = productTransferForm.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
-
+            List<Location> clientLocations = transferService().getAllClientLocation(false);
+            clientLocations.remove(OperationUtils.getUserLocation());
             modelMap.addAttribute("productTransferForm", productTransferForm);
             modelMap.addAttribute("type", type);
             modelMap.addAttribute("productTransfer", transferService().getOneProductTransferById(id));
-            modelMap.addAttribute("clientLocations", transferService().getAllClientLocation(false));
+            modelMap.addAttribute("clientLocations", clientLocations);
             modelMap.addAttribute("reasonList", transferReasons());
             modelMap.addAttribute("subTitle", "Saisie de transfert " + transferTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i> Entête");
         }

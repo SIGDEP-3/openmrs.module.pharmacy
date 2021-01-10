@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
@@ -78,10 +79,18 @@ public class PharmacyProductDistributionManageController {
     @RequestMapping(value = "/module/pharmacy/operations/distribution/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
+            int totalReportsToSubmit = 0;
+            for (Location location : OperationUtils.getUserLocation().getChildLocations()) {
+                if (OperationUtils.getLocationPrograms(location).size() != 0) {
+                    totalReportsToSubmit = totalReportsToSubmit + OperationUtils.getLocationPrograms(location).size();
+                }
+            }
+
             modelMap.addAttribute("reports", reportService().getAllProductDistributionReports(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("submittedReports", reportService().getAllSubmittedChildProductReports(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("programs", programService().getAllProductProgram());
             modelMap.addAttribute("childrenLocation", OperationUtils.getUserLocation().getChildLocations());
+            modelMap.addAttribute("totalReportsToSubmit", totalReportsToSubmit);
             modelMap.addAttribute("subTitle", "Liste des Distributions");
         }
     }
@@ -349,9 +358,9 @@ public class PharmacyProductDistributionManageController {
                 otherFlux.setLocation(OperationUtils.getUserLocation());
                 ProductAttributeStock stock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), OperationUtils.getUserLocation(), false);
                 if (stock != null) {
-                    otherFlux.setQuantity(flux.getQuantity() - stock.getQuantityInStock());
+                    otherFlux.setQuantity(flux.getQuantity().doubleValue() - stock.getQuantityInStock());
                 } else {
-                    otherFlux.setQuantity(flux.getQuantity());
+                    otherFlux.setQuantity(flux.getQuantity().doubleValue());
                 }
                 attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
             }

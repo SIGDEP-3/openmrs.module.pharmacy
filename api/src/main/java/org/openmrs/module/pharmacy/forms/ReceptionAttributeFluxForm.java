@@ -52,7 +52,7 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
                 double fluxQuantity = otherFlux.getQuantity() / product.getUnitConversion();
                 setQuantityToDeliver((int) fluxQuantity);
             } else {
-                setQuantityToDeliver(otherFlux.getQuantity());
+                setQuantityToDeliver(otherFlux.getQuantity().intValue());
             }
         }
     }
@@ -63,10 +63,10 @@ public class ReceptionAttributeFluxForm extends ProductAttributeFluxForm {
                 receptionService().getOneProductReceptionById(getProductOperationId()),
                 OperationUtils.getUserLocation());
         if (productAttributeOtherFlux != null){
-            productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
+            productAttributeOtherFlux.setQuantity(getQuantityToDeliver().doubleValue());
         } else {
             productAttributeOtherFlux = new ProductAttributeOtherFlux();
-            productAttributeOtherFlux.setQuantity(getQuantityToDeliver());
+            productAttributeOtherFlux.setQuantity(getQuantityToDeliver().doubleValue());
             productAttributeOtherFlux.setLabel("Quantitié livrée");
             productAttributeOtherFlux.setLocation(Context.getLocationService().getDefaultLocation());
             productAttributeOtherFlux.setProductAttribute(getProductAttribute());

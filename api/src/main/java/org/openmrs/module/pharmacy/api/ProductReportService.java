@@ -18,6 +18,7 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductInventory;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
@@ -58,6 +59,8 @@ public interface ProductReportService extends OpenmrsService {
 	List<ProductReport> getAllProductReports(Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportById(Integer id);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
 	ProductReport saveProductReport(ProductReport productReport);
 	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
@@ -73,11 +76,27 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location userLocation);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<Product> getAllActivityProducts(ProductInventory inventory);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductReport getLastProductReport(Location location, ProductProgram productProgram);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);
 //	List<ProductReportListDTO> getProductReportListDTOs();

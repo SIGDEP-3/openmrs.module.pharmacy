@@ -164,7 +164,7 @@
                                                     <div class="row">
                                                         <div class="col">
                                                             <div class="text-center text-secondary border-bottom border-secondary">Total</div>
-                                                            <div class="h1 text-center text-secondary font-weight-bold">${fct:length(childrenLocation)}</div>
+                                                            <div class="h1 text-center text-secondary font-weight-bold">${totalReportsToSubmit}</div>
                                                         </div>
                                                         <div class="col">
                                                             <div class="text-center text-warning border-bottom border-warning">Soumis</div>

@@ -5,13 +5,8 @@ import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
-import org.openmrs.module.pharmacy.api.ProductAttributeService;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +27,9 @@ public class AjaxCustomController {
 
     private PharmacyService service() {
         return Context.getService(PharmacyService.class);
+    }
+    private ProductService productService() {
+        return Context.getService(ProductService.class);
     }
     private ProductAttributeFluxService attributeFluxService() {
         return Context.getService(ProductAttributeFluxService.class);
@@ -65,6 +65,20 @@ public class AjaxCustomController {
         return new ResponseEntity<String>(attributeFluxService().saveProductAttributeFlux(flux).getQuantity().toString(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "save-other-flux.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> saveAttributeOtherFluxAjax(
+            @RequestParam("code") String code,
+            @RequestParam("operationId") Integer operationId,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam("label") String label
+            ) {
+        Product product = productService().getOneProductByCode(code);
+        ProductOperation productOperation = service().getOneProductOperationById(operationId);
+        ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label);
+        otherFlux.setQuantity(quantity.doubleValue());
+        return new ResponseEntity<String>(attributeFluxService().saveProductAttributeOtherFlux(otherFlux).getQuantity().toString(), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "save-observation.form", method = RequestMethod.GET)
     @ResponseBody
@@ -118,43 +132,52 @@ public class AjaxCustomController {
     @RequestMapping(value = "save-location.form", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> saveLocationAjax(
-            @RequestParam("name") String name,
+            @RequestParam(value = "serviceId", required = false, defaultValue = "-1") Integer serviceId,
+            @RequestParam(value = "locationId", required = false, defaultValue = "0") Integer locationId,
             @RequestParam("prefix") String prefix) {
-        Location location = locationService().getLocation(name);
-        System.out.println("Prefix -----------------------------------------> " + prefix);
-        String result = "";
-        if (location == null) {
-            location = new Location();
-            location.setName(name);
+        Location location;
+        if (serviceId != -1) {
+            String locationName = "SERVICE " + OperationUtils.getServices().get(serviceId).toUpperCase() + " " + OperationUtils.getUserLocation().getName();
+            location = locationService().getLocation(locationName);
+            if (location == null) {
+                location = new Location();
+                location.setName(locationName);
+            }
+        } else {
+            location = locationService().getLocation(locationId);
+//            if (location == null) {
+//                location = new Location();
+//            }
         }
         location.setPostalCode(prefix);
         location.setParentLocation(OperationUtils.getUserLocation());
-        Location locationSaved = locationService().saveLocation(location);
+//        Location locationSaved =
+        locationService().saveLocation(location);
 
-        StringBuilder programList = new StringBuilder();
-        for (ProductProgram program : programService().getAllProductProgram())
-        {
-            if (OperationUtils.getLocationPrograms(locationSaved).contains(program)) {
-                programList.append("\t\t\t<option value=\"").append(program.getProductProgramId()).append("\" selected=\"selected\">").append(program.getName()).append("</option>\n");
-            } else {
-                programList.append("\t\t\t<option value=\"").append(program.getProductProgramId()).append("\">").append(program.getName()).append("</option>\n");
-            }
-        }
-        result = "<tr id=\"location-"+ location.getLocationId() + "\">" +
-                    "\t<td>" + name + " (" + locationSaved.getPostalCode() + ") </td>" +
-                    "\t<td>" +
-                        "\t\t<select id=\"" + locationSaved.getLocationId() + "\" class=\"form-control s2\" multiple=\"multiple\">" +
-                            "\t\t\t<option value=\"\"></option>" +
-                            programList.toString() +
-                        "\t\t</select>" +
-                    "\t</td>" +
-                    "\t<td><button type=\"button\" class=\"btn btn-sm btn-danger\" onclick=\"retireLocation("+ location.getLocationId()
-                        +"\"><i class=\"fa fa-trash\"></i> Retirer</button></td>" +
-                "</tr>";
+//        StringBuilder programList = new StringBuilder();
+//        for (ProductProgram program : programService().getAllProductProgram())
+//        {
+//            if (OperationUtils.getLocationPrograms(locationSaved).contains(program)) {
+//                programList.append("\t\t\t<option value=\"").append(program.getProductProgramId()).append("\" selected=\"selected\">").append(program.getName()).append("</option>\n");
+//            } else {
+//                programList.append("\t\t\t<option value=\"").append(program.getProductProgramId()).append("\">").append(program.getName()).append("</option>\n");
+//            }
+//        }
+//        result = "<tr id=\"location-"+ location.getLocationId() + "\">" +
+//                    "\t<td>" + name + " (" + locationSaved.getPostalCode() + ") </td>" +
+//                    "\t<td>" +
+//                        "\t\t<select id=\"" + locationSaved.getLocationId() + "\" class=\"form-control s2\" multiple=\"multiple\">" +
+//                            "\t\t\t<option value=\"\"></option>" +
+//                            programList.toString() +
+//                        "\t\t</select>" +
+//                    "\t</td>" +
+//                    "\t<td><button type=\"button\" class=\"btn btn-sm btn-danger\" onclick=\"retireLocation("+ location.getLocationId()
+//                        +"\"><i class=\"fa fa-trash\"></i> Retirer</button></td>" +
+//                "</tr>";
 
 
 
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+        return new ResponseEntity<String>(location.getName(), HttpStatus.OK);
     }
 
 
