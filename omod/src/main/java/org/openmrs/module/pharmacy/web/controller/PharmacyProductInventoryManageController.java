@@ -62,6 +62,15 @@ public class PharmacyProductInventoryManageController {
         return "Inventaire de produits";
     }
 
+    @ModelAttribute("isDirectClient")
+    public Boolean isDirectClient() {
+        return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
+    }
+
+    @ModelAttribute("canDistribute")
+    public Boolean canDistribute() {
+        return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+    }
 
     @RequestMapping(value = "/module/pharmacy/operations/inventory/list.form", method = RequestMethod.GET)
     public void list(ModelMap modelMap) {

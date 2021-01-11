@@ -319,33 +319,6 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-		Double quantity = getDistributionQuantity(product, inventory, location);
-		return getChildLocationReportProductQuantity(location, product, inventory, "QD", quantity);
-	}
-
-	private Integer getChildLocationReportProductQuantity(Location location, Product product, ProductInventory inventory, String label, Double quantity) {
-		if (location.getChildLocations().size() != 0) {
-			String reportPeriod = inventory.getOperationNumber().split("-")[1];
-			for (Location childLocation : location.getChildLocations()) {
-				ProductReport report = getOneProductReportByReportPeriodAndProgram(reportPeriod, inventory.getProductProgram(), childLocation, false);
-				if (report != null) {
-					ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
-							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
-									product,
-									report,
-									label
-							);
-					if (otherFlux != null) {
-						quantity += otherFlux.getQuantity();
-					}
-				}
-			}
-		}
-		return quantity.intValue();
-	}
-
-	@Override
 	public Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) {
 		if (location.getChildLocations().size() != 0) {
 			Integer quantity = 0;
@@ -371,6 +344,13 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
+	public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
+		Double quantity = getDistributionQuantity(product, inventory, location);
+		System.out.println("--------------------------------------> getDistributionQuantity " + quantity);
+		return getChildLocationReportProductQuantity(location, product, inventory, "QD", quantity);
+	}
+
+	@Override
 	public Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
 		if (report != null) {
 			return getReportQuantityDistributed(report, product, "QD").intValue();
@@ -393,6 +373,20 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return getDistributionQuantity(product, inventoryBeforeAntLast, location).intValue();
 	}
 
+	private Double getDistributionQuantity(Product product, ProductInventory inventory, Location location) {
+		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class).getAllProductDispensations(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+		Double quantity = 0.0;
+		for (ProductDispensation dispensation : dispensations) {
+			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
+					System.out.println("--------------------------------------> flux.getQuantity() " + flux.getQuantity());
+					quantity += flux.getQuantity();
+				}
+			}
+		}
+		return quantity;
+	}
+
 	private Double getReportQuantityDistributed(ProductReport report, Product product, String label) {
 		ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
 				.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
@@ -405,6 +399,27 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		}
 
 		return 0.0;
+	}
+
+	private Integer getChildLocationReportProductQuantity(Location location, Product product, ProductInventory inventory, String label, Double quantity) {
+		if (location.getChildLocations().size() != 0) {
+			String reportPeriod = inventory.getOperationNumber().split("-")[1];
+			for (Location childLocation : location.getChildLocations()) {
+				ProductReport report = getOneProductReportByReportPeriodAndProgram(reportPeriod, inventory.getProductProgram(), childLocation, false);
+				if (report != null) {
+					ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
+							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+									product,
+									report,
+									label
+							);
+					if (otherFlux != null) {
+						quantity += otherFlux.getQuantity();
+					}
+				}
+			}
+		}
+		return quantity.intValue();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -441,19 +456,6 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		}
 
 		return 0.0;
-	}
-
-	private Double getDistributionQuantity(Product product, ProductInventory inventory, Location location) {
-		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class).getAllProductDispensations(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
-		Double quantity = 0.0;
-		for (ProductDispensation dispensation : dispensations) {
-			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
-				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
-					quantity += flux.getQuantity();
-				}
-			}
-		}
-		return quantity;
 	}
 
 	@Override

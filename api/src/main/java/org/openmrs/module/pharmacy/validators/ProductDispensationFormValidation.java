@@ -61,8 +61,4 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 
         }
     }
-
-    private PharmacyService service() {
-        return Context.getService(PharmacyService.class);
-    }
 }

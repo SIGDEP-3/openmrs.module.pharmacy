@@ -154,7 +154,7 @@ public class ProductReportLineDTO {
 
     public Boolean getAsserted() {
         Integer sd = getInitialQuantity() + getReceivedQuantity() -
-                (getLostQuantity() - getDistributedQuantity()) +
+                (getLostQuantity() + getDistributedQuantity()) +
                 (getAdjustmentQuantity());
         return getQuantityInStock().equals(sd);
     }

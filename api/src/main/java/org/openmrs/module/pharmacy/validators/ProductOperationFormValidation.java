@@ -66,7 +66,7 @@ public class ProductOperationFormValidation implements Validator {
         }
     }
 
-    private PharmacyService service() {
+    protected PharmacyService service() {
         return Context.getService(PharmacyService.class);
     }
 
@@ -94,7 +94,7 @@ public class ProductOperationFormValidation implements Validator {
                     } else if (productInventory.getOperationStatus().equals(OperationStatus.VALIDATED)) {
                         if (form.getOperationDate().before(productInventory.getOperationDate())) {
                             errors.rejectValue("operationDate", null, "Vous avez renseigné une date invalide pour cette opération");
-                            createAlert("Une opération avant un inventaire ne peut être réalisé !");
+                            createAlert("Une opération précédant la date du dernier inventaire ne peut être réalisé !");
                         }
                     }
                 }

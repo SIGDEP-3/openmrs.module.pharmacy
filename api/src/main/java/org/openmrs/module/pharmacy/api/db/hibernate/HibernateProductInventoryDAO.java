@@ -177,7 +177,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 		return (ProductInventory) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
-				.add(Restrictions.eq("inventoryType", InventoryType.FULL))
+				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
@@ -187,7 +187,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 		return (ProductInventory) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
-				.add(Restrictions.eq("inventoryType", InventoryType.FULL))
+				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
 				.add(Restrictions.lt("operationDate", inventoryDate))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
@@ -243,5 +243,25 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 			System.out.println(e.getMessage());
 		}
 		return null;
+	}
+
+	@Override
+	public ProductInventory getProductInventoryByDate(Location location, ProductProgram program, Date operationDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductInventory.class);
+		return (ProductInventory) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", program))
+				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
+				.add(Restrictions.eq("operationDate", operationDate)).uniqueResult();
+	}
+
+	@Override
+	public ProductInventory getOneProductInventoryByOperationNumber(Location location, ProductProgram program, String operationNumber, InventoryType inventoryType) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductInventory.class);
+		return (ProductInventory) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", program))
+				.add(Restrictions.eq("inventoryType", inventoryType))
+				.add(Restrictions.eq("operationNumber", operationNumber)).uniqueResult();
 	}
 }

@@ -490,27 +490,27 @@
                     </table>
                 </form:form>
             </c:if>
+            <c:if test="${headerDTO.operationStatus != 'NOT_COMPLETED'}">
+                <table class="table table-condensed table-striped table-sm table-bordered">
+                    <thead class="thead-light">
+                    <tr class="bg-belize-hole">
+                        <th colspan="3" style="width: 250px">Produit</th>
+                        <th style="width: 150px">Quantit&eacute; demand&eacute;e </th>
+                        <th style="width: 150px">Quantit&eacute; dispens&eacute;e </th>
+                    </tr>
+                    </thead>
+                    <c:forEach var="productFlux" items="${productAttributeFluxes}">
+                        <tr class="align-middle">
+                            <td>${productFlux.code}</td>
+                            <td>${productFlux.retailName}</td>
+                            <td>${productFlux.retailUnit}</td>
+                            <td class="text-center">${productFlux.requestedQuantity}</td>
+                            <td class="text-center">${productFlux.dispensingQuantity}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
         </div>
-<%--        <c:if test="${headerDTO.operationStatus != 'NOT_COMPLETED'}">--%>
-<%--            <table class="table table-condensed table-striped table-sm table-bordered">--%>
-<%--                <thead class="thead-light">--%>
-<%--                <tr class="bg-belize-hole">--%>
-<%--                    <th colspan="3" style="width: 250px">Produit</th>--%>
-<%--                    <th style="width: 150px">Quantit&eacute; demand&eacute;e </th>--%>
-<%--                    <th style="width: 150px">Quantit&eacute; dispens&eacute;e </th>--%>
-<%--                </tr>--%>
-<%--                </thead>--%>
-<%--                <c:forEach var="productFlux" items="${productAttributeFluxes}">--%>
-<%--                    <tr>--%>
-<%--                        <td>${productFlux.code}</td>--%>
-<%--                        <td>${productFlux.retailName}</td>--%>
-<%--                        <td>${productFlux.retailUnit}</td>--%>
-<%--                        <td class="text-center">${productFlux.requestedQuantity}</td>--%>
-<%--                        <td class="text-center">${productFlux.dispensingQuantity}</td>--%>
-<%--                    </tr>--%>
-<%--                </c:forEach>--%>
-<%--            </table>--%>
-<%--        </c:if>--%>
     </div>
 
 </div>

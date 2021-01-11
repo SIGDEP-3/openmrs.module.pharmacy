@@ -14,7 +14,6 @@ public class ProductMovementForm extends ProductOperationForm {
     private StockOutType stockOutType;
 
     public ProductMovementForm() {
-        setIncidence(Incidence.POSITIVE);
     }
 
     public Integer getEntityId() {

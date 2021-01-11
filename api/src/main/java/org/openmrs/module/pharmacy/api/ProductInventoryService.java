@@ -18,6 +18,7 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,4 +69,8 @@ public interface ProductInventoryService extends OpenmrsService {
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
+    ProductInventory getProductInventoryByDate(Location userLocation, ProductProgram oneProductProgramById, Date operationDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
+	ProductInventory getOneProductInventoryByOperationNumber(Location location, ProductProgram program, String operationNumber, InventoryType inventoryType);
 }

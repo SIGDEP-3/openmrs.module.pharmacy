@@ -19,27 +19,27 @@
             <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:if test="${productSupplierBack.operationStatus != 'VALIDATED' &&
-                      productSupplierBack.operationStatus != 'DISABLED'}">
+            <c:if test="${productBackSupplier.operationStatus != 'VALIDATED' &&
+                      productBackSupplier.operationStatus != 'DISABLED'}">
 
-                <c:if test="${productSupplierBack.operationStatus == 'NOT_COMPLETED' && fct:length(productAttributeFluxes) != 0}">
+                <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED' && fct:length(productAttributeFluxes) != 0}">
                     <c:url value="/module/pharmacy/operations/movement/back/complete.form" var="completeUrl">
-                        <c:param name="backSupplierId" value="${productSupplierBack.productOperationId}"/>
+                        <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>
                     </c:url>
                     <button class="btn btn-success btn-sm mr-2" onclick="window.location='${completeUrl}'">
                         <i class="fa fa-save"></i> Terminer
                     </button>
                 </c:if>
-                <c:if test="${productSupplierBack.operationStatus != 'NOT_COMPLETED'}">
+                <c:if test="${productBackSupplier.operationStatus != 'NOT_COMPLETED'}">
                     <c:url value="/module/pharmacy/operations/movement/back/incomplete.form" var="incompleteUrl">
-                        <c:param name="backSupplierId" value="${productSupplierBack.productOperationId}"/>
+                        <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>
                     </c:url>
                     <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
                         <i class="fa fa-pen"></i> Editer l'inventaire
                     </button>
                     <openmrs:hasPrivilege privilege="Validate Product Back Supplier">
                         <c:url value="/module/pharmacy/operations/movement/back/validate.form" var="validationUrl">
-                            <c:param name="backSupplierId" value="${productSupplierBack.productOperationId}"/>
+                            <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>
                         </c:url>
                         <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">
                             <i class="fa fa-pen"></i> Valider
@@ -47,9 +47,9 @@
                     </openmrs:hasPrivilege>
                 </c:if>
             </c:if>
-            <c:if test="${productSupplierBack.operationStatus == 'NOT_COMPLETED'}">
+            <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
                 <c:url value="/module/pharmacy/operations/movement/supplier-back/edit.form" var="editUrl">
-                    <c:param name="id" value="${productSupplierBack.productOperationId}"/>
+                    <c:param name="id" value="${productBackSupplier.productOperationId}"/>
                 </c:url>
                 <button class="btn btn-primary btn-sm" onclick="window.location='${editUrl}'" title="Voir la liste">
                     <i class="fa fa-edit"></i> Editer l'ent&ecirc;te
@@ -67,31 +67,30 @@
                 <thead class="thead-light">
                 <tr>
                     <td>Programme </td>
-                    <td class="font-weight-bold text-info">${productSupplierBack.productProgram.name}</td>
-                    <td>Site / PPS
-                    </td>
+                    <td class="font-weight-bold text-info">${productBackSupplier.productProgram.name}</td>
+                    <td>Site / PPS</td>
                     <td class="font-weight-bold text-info">
-                        ${productSupplierBack.exchangeLocation.name}
+                        ${productBackSupplier.exchangeLocation.name}
                     </td>
                 </tr>
                 <tr>
                     <td>Date de r&eacute;ception du retour</td>
                     <td class="font-weight-bold text-info">
-                        <fmt:formatDate value="${productSupplierBack.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                        <fmt:formatDate value="${productBackSupplier.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                     </td>
                     <td>BL</td>
-                    <td class="font-weight-bold text-info">${productSupplierBack.operationNumber}</td>
+                    <td class="font-weight-bold text-info">${productBackSupplier.operationNumber}</td>
                 </tr>
                 <tr>
                     <td>Observation</td>
-                    <td class="font-weight-bold text-info">${productSupplierBack.observation}</td>
+                    <td class="font-weight-bold text-info">${productBackSupplier.observation}</td>
                     <td colspan="2"></td>
                 </tr>
                 </thead>
             </table>
 
-            <c:if test="${productSupplierBack.operationStatus == 'NOT_COMPLETED'}">
-                <form:form modelAttribute="transferAttributeFluxForm" method="post" action="" id="form">
+            <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
+                <form:form modelAttribute="backSupplierAttributeFluxForm" method="post" action="" id="form">
                     <form:hidden path="productAttributeFluxId"/>
                     <form:hidden path="productOperationId"/>
                     <form:hidden path="locationId"/>
@@ -113,7 +112,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:if test="${productSupplierBack.operationStatus == 'NOT_COMPLETED'}">
+                        <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
                             <tr>
                                 <td colspan="3">
                                     <form:select path="productId" cssClass="form-control s2" >
@@ -122,18 +121,18 @@
                                     </form:select>
                                 </td>
                                 <td>
-                                    <c:if test="${empty transferAttributeFluxForm.productAttributeFluxId}">
+                                    <c:if test="${empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                         <form:input path="batchNumber" cssClass="form-control form-control-sm"  />
                                     </c:if>
-                                    <c:if test="${not empty transferAttributeFluxForm.productAttributeFluxId}">
+                                    <c:if test="${not empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                         <form:input path="batchNumber" cssClass="form-control form-control-sm" readonly="true"  />
                                     </c:if>
                                 </td>
                                 <td>
-                                    <c:if test="${empty transferAttributeFluxForm.productAttributeFluxId}">
+                                    <c:if test="${empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                         <form:input path="expiryDate" cssClass="form-control form-control-sm picker" />
                                     </c:if>
-                                    <c:if test="${not empty transferAttributeFluxForm.productAttributeFluxId}">
+                                    <c:if test="${not empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                         <form:input path="expiryDate" cssClass="form-control form-control-sm picker" readonly="true"  />
                                     </c:if>
                                 </td>
@@ -145,10 +144,10 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-success">
-                                        <c:if test="${not empty transferAttributeFluxForm.productAttributeFluxId}">
+                                        <c:if test="${not empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                             <i class="fa fa-edit"></i>
                                         </c:if>
-                                        <c:if test="${empty transferAttributeFluxForm.productAttributeFluxId}">
+                                        <c:if test="${empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                             <i class="fa fa-plus"></i>
                                         </c:if>
                                     </button>
@@ -169,14 +168,14 @@
                                     <td class="text-center">${productFlux.quantity}</td>
                                     <td>${productFlux.observation}</td>
                                     <td>
-                                        <c:if test="${productSupplierBack.operationStatus == 'NOT_COMPLETED'}">
+                                        <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
                                             <c:url value="/module/pharmacy/operations/movement/supplier-back/editFlux.form" var="editUrl">
-                                                <c:param name="backSupplierId" value="${productSupplierBack.productOperationId}"/>
+                                                <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>
                                                 <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
                                             </c:url>
                                             <a href="${editUrl}" class="text-info"><i class="fa fa-edit"></i></a>
                                             <c:url value="/module/pharmacy/operations/movement/back/deleteFlux.form" var="deleteUrl">
-                                                <c:param name="backSupplierId" value="${productSupplierBack.productOperationId}"/>
+                                                <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>
                                                 <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
                                             </c:url>
                                             <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>
@@ -185,12 +184,7 @@
                                 </tr>
                             </c:forEach>
                             <c:if test="${fct:length(productAttributeFluxes) == 0}">
-                                <c:if test="${productSupplierBack.transferType == 'IN'}">
-                                    <tr><td colspan="8" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
-                                </c:if>
-                                <c:if test="${productSupplierBack.transferType == 'OUT'}">
-                                    <tr><td colspan="10" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
-                                </c:if>
+                                <tr><td colspan="8" class="text-center text-warning h5">Aucun produit dans la liste</td></tr>
                             </c:if>
                         </c:if>
                         </tbody>
@@ -198,7 +192,7 @@
                 </form:form>
             </c:if>
 
-            <c:if test="${productSupplierBack.operationStatus != 'NOT_COMPLETED'}">
+            <c:if test="${productBackSupplier.operationStatus != 'NOT_COMPLETED'}">
                 <table class="table table-condensed table-striped table-sm table-bordered">
                     <thead class="thead-light">
                     <tr class="bg-belize-hole">

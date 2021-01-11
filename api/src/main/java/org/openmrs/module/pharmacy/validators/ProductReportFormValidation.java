@@ -56,7 +56,4 @@ public class ProductReportFormValidation extends ProductOperationFormValidation 
         }
     }
 
-    PharmacyService service() {
-        return Context.getService(PharmacyService.class);
-    }
 }

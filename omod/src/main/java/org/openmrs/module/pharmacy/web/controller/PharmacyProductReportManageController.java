@@ -173,8 +173,13 @@ public class PharmacyProductReportManageController {
                     modelMap.addAttribute("productReport", report);
                 }
             }
+
             modelMap.addAttribute("program", programService().getOneProductProgramById(productReportForm.getProductProgramId()));
-            modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Saisie entête");
+            if (isDirectClient()) {
+                modelMap.addAttribute("subTitle", "Rapport commande mensuel <i class=\"fa fa-play\"></i> Saisie entête");
+            } else {
+                modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Saisie entête");
+            }
 
             modelMap.addAttribute("productReportForm", productReportForm);
         }
@@ -200,7 +205,11 @@ public class PharmacyProductReportManageController {
             modelMap.addAttribute("productReport", productReport);
             modelMap.addAttribute("stockMax", OperationUtils.getUserLocationStockMax());
             modelMap.addAttribute("reportData", reportLineDTOS);
-            modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Visualisation");
+            if (isDirectClient()) {
+                modelMap.addAttribute("subTitle", "Rapport commande mensuel <i class=\"fa fa-play\"></i> Visualisation");
+            } else {
+                modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Visualisation");
+            }
 
 //            if (fluxId != 0) {
 //                ProductAttributeFlux productAttributeFlux = attributeFluxService().getOneProductAttributeFluxById(fluxId);
@@ -399,7 +408,7 @@ public class PharmacyProductReportManageController {
         }
         reportService().removeProductReport(report);
         attributeService().purgeUnusedAttributes();
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La réception a été supprimée avec succès !");
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le rapport a été supprimé avec succès !");
         return "redirect:/module/pharmacy/reports/list.form";
     }
 
@@ -431,13 +440,7 @@ public class PharmacyProductReportManageController {
         HttpSession session = request.getSession();
         ProductReport report = reportService().getOneProductReportById(reportId);
         if (OperationUtils.validateOperation(report)) {
-            String message;
-            if (report.getIncidence().equals(Incidence.POSITIVE)) {
-                message = "La réception été validée avec succèss !";
-            } else {
-                message = "Le retour de réception été validé avec succèss !";
-            }
-            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
+            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le rapport été validée avec succèss !");
             return "redirect:/module/pharmacy/reports/list.form";
         }
         return null;

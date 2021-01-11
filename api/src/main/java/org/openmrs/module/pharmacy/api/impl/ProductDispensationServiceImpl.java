@@ -63,7 +63,7 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
 
     @Override
     public List<ProductDispensation> getAllProductDispensations(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
-        return dao.getAllProductDispensations(location, includeVoided, operationEndDate, operationEndDate);
+        return dao.getAllProductDispensations(location, includeVoided, operationStartDate, operationEndDate);
     }
 
     @Override

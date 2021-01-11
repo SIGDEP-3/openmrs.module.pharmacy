@@ -169,7 +169,7 @@
                         </thead>
                         <tbody>
                         <c:forEach var="entry" items="${ entries }">
-                            <tr>
+                            <tr class="align-middle">
                                 <td><fmt:formatDate value="${entry.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${ entry.stockEntryType == 'DONATION' ? 'DON' : 'Ajustement inventaire positif'}</td>
                                 <td>${entry.productProgram.name}</td>
@@ -200,7 +200,7 @@
                                     <c:if test="${entry.operationStatus == 'VALIDATED'}">
                                         <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="addLineUrl">
                                             <c:param name="movementId" value="${entry.productOperationId}"/>
-                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                            <c:param name="type" value="entry"/>
                                         </c:url>
                                         <a href="${addLineUrl}" class="text-success primary">
                                             <i class="fa fa-eye"></i>
@@ -225,11 +225,11 @@
                             </tr>
                         </c:forEach>
                         <c:forEach var="out" items="${ outs }">
-                            <tr>
+                            <tr class="align-middle">
                                 <td><fmt:formatDate value="${out.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>
                                     <c:if test="${out.stockOutType == 'THIEF'}">
-                                        Produits Vol&eacute;s
+                                        VOLS
                                     </c:if>
                                     <c:if test="${out.stockOutType == 'DESTROYED'}">
                                         Produits Endommag&eacute;s
@@ -275,16 +275,16 @@
                                     <c:if test="${out.operationStatus == 'VALIDATED'}">
                                         <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="addLineUrl">
                                             <c:param name="movementId" value="${out.productOperationId}"/>
-                                            <c:param name="type" value="${out.stockOutType}"/>
+                                            <c:param name="type" value="out"/>
                                         </c:url>
                                         <a href="${addLineUrl}" class="text-success primary"><i class="fa fa-eye"></i></a>
                                     </c:if>
+                                    <c:if test="${out.operationStatus != 'VALIDATED'}">
                                         <c:url value="/module/pharmacy/operations/movement/other/edit.form" var="editUrl">
                                             <c:param name="id" value="${out.productOperationId}"/>
                                             <c:param name="type" value="${out.stockOutType}"/>
                                         </c:url>
                                         <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
-                                    <c:if test="${out.operationStatus != 'VALIDATED'}">
                                         <openmrs:hasPrivilege privilege="Delete Movement">
                                             <c:url value="/module/pharmacy/operations/movement/other/delete.form"
                                                    var="delUrl">

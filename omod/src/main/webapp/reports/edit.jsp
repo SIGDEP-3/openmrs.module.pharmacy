@@ -85,7 +85,7 @@
             <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-            <c:url value="/module/pharmacy/operations/inventory/list.form" var="url"/>
+            <c:url value="/module/pharmacy/reports/list.form" var="url"/>
             <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>

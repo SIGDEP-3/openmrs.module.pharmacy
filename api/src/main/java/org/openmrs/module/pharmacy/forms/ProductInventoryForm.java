@@ -16,7 +16,7 @@ public class ProductInventoryForm extends ProductOperationForm {
     public ProductInventoryForm() {
         super();
         setIncidence(Incidence.EQUAL);
-        setInventoryType(InventoryType.FULL);
+        setInventoryType(InventoryType.MONTHLY);
     }
 
     public Date getInventoryStartDate() {
@@ -40,6 +40,7 @@ public class ProductInventoryForm extends ProductOperationForm {
         if (productInventory.getInventoryStartDate() != null) {
             setInventoryStartDate(productInventory.getInventoryStartDate());
         }
+        setInventoryType(productInventory.getInventoryType());
         setInventoryType(productInventory.getInventoryType());
     }
 

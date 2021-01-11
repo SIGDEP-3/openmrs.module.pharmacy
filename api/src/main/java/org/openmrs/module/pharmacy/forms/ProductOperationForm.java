@@ -7,6 +7,7 @@ import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Date;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public abstract class ProductOperationForm {
     private OperationStatus operationStatus;
     protected Incidence incidence;
     private String observation;
-    private String uuid = UUID.randomUUID().toString();
+    private String uuid = OpenmrsUtil.generateUid();
 
     public ProductOperationForm() {
         operationStatus = OperationStatus.NOT_COMPLETED;

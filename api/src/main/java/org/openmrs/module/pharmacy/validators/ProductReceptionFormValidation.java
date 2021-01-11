@@ -22,11 +22,13 @@ public class ProductReceptionFormValidation extends ProductOperationFormValidati
     public void validate(Object o, Errors errors) {
         ProductReceptionForm form = (ProductReceptionForm) o;
 
-        super.validate(form, errors);
 
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
+
+            super.validate(form, errors);
+
             ValidationUtils.rejectIfEmpty(errors, "productSupplierId", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "receptionQuantityMode", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
@@ -42,21 +44,6 @@ public class ProductReceptionFormValidation extends ProductOperationFormValidati
                 }
             }
 
-            if (form.getOperationDate() != null) {
-                ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
-                if (productProgram != null) {
-                    ProductInventory productInventory = inventoryService().getLastProductInventory(
-                            OperationUtils.getUserLocation(), productProgram);
-                    if (productInventory == null) {
-                        createAlert("Vous devez avant toute opération réaliser le premier inventaire complet de votre centre !");
-                        errors.rejectValue("productProgramId", null, "Premier Inventaire complet non réalisé");
-                    }
-                }
-            }
         }
-    }
-
-    PharmacyService service() {
-        return Context.getService(PharmacyService.class);
     }
 }

@@ -167,8 +167,8 @@
                     <th style="width: 50px" class="text-center">Nombre de <br>sites ayant <br>connu une<br> rupture</th>
                 </c:if>
                 <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
-                    <th style="width: 50px" class="text-center">Quantit&eacute; <br>distribu&eacute;e M-2</th>
                     <th style="width: 50px" class="text-center">Quantit&eacute; <br>distribu&eacute;e M-1</th>
+                    <th style="width: 50px" class="text-center">Quantit&eacute; <br>distribu&eacute;e M-2</th>
                 </c:if>
                 <c:if test="${productReport.reportType == 'CLIENT_REPORT'}">
                     <th style="width: 50px" class="text-center">Consommation <br>Moyenne <br>Mensuelle<br> (CMM)</th>
@@ -227,19 +227,6 @@
                     <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
                         <td class="text-center align-middle">
                             <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
-                                <c:if test="${reportLine.quantityDistributed2monthAgo == 0}">
-                                    <input id="${reportLine.code}-DM2" type="text" name="${reportLine.code}-DM2" class="input-value-flux form-control form-control-sm text-center">
-                                </c:if>
-                                <c:if test="${reportLine.quantityDistributed2monthAgo != 0}">
-                                    ${reportLine.quantityDistributed2monthAgo}
-                                </c:if>
-                            </c:if>
-                            <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
-                                ${reportLine.quantityDistributed2monthAgo}
-                            </c:if>
-                        </td>
-                        <td class="text-center align-middle">
-                            <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
                                 <c:if test="${reportLine.quantityDistributed1monthAgo == 0}">
                                     <input id="${reportLine.code}-DM1" type="text" name="${reportLine.code}-DM1" class="input-value-flux form-control form-control-sm text-center">
                                 </c:if>
@@ -249,6 +236,19 @@
                             </c:if>
                             <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
                                 ${reportLine.quantityDistributed1monthAgo}
+                            </c:if>
+                        </td>
+                        <td class="text-center align-middle">
+                            <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
+                                <c:if test="${reportLine.quantityDistributed2monthAgo == 0}">
+                                    <input id="${reportLine.code}-DM2" type="text" name="${reportLine.code}-DM2" class="input-value-flux form-control form-control-sm text-center">
+                                </c:if>
+                                <c:if test="${reportLine.quantityDistributed2monthAgo != 0}">
+                                    ${reportLine.quantityDistributed2monthAgo}
+                                </c:if>
+                            </c:if>
+                            <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
+                                ${reportLine.quantityDistributed2monthAgo}
                             </c:if>
                         </td>
                     </c:if>

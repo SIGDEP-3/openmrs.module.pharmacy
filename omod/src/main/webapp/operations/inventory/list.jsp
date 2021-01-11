@@ -65,8 +65,8 @@
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Programme
                     </th>
-<%--                    <th>Type d'inventaire</th>--%>
-                    <th>Nombre de produits</th>
+                    <th>Type d'inventaire</th>
+                    <th>Lignes de produits</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
                         Etat
@@ -80,7 +80,7 @@
                         <td><fmt:formatDate value="${inventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${inventory.operationNumber}</td>
                         <td>${inventory.productProgram.name}</td>
-<%--                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>--%>
+                        <td>${inventory.inventoryType == 'MONTHLY' ? 'MENSUEL' : 'INTERMEDIAIRE'}</td>
                         <c:choose>
                             <c:when test="${fct:length(inventory.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="addLineUrl">

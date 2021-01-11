@@ -242,7 +242,7 @@ public class PharmacyProductBackSupplierManageController {
                 ProductBackSupplier productBackSupplier = backSupplierService().getOneProductBackSupplierById(id);
                 if (productBackSupplier != null) {
                     if (!productBackSupplier.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
-                        return "redirect:/module/pharmacy/operations/movement/backSupplier/editFlux.form?backSupplierId=" +
+                        return "redirect:/module/pharmacy/operations/movement/supplier-back/editFlux.form?backSupplierId=" +
                                 productBackSupplier.getProductOperationId();
                     }
                     productBackSupplierForm.setProductBackSupplier(productBackSupplier);
@@ -392,10 +392,10 @@ public class PharmacyProductBackSupplierManageController {
         String backSupplierTypeStr = productBackSupplier.getIncidence().equals(Incidence.POSITIVE) ? "Retour de produits du site" : "Retour de produits au fournisseur";
         if (!productBackSupplier.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
             if (productBackSupplier.getOperationStatus().equals(OperationStatus.VALIDATED))
-                modelMap.addAttribute("subTitle", "BackSupplier " + backSupplierTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i APPROUVEE");
+                modelMap.addAttribute("subTitle", backSupplierTypeStr.toUpperCase() + " <i class=\"fa fa-play\"></i> APPROUVEE");
             else if (productBackSupplier.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-                modelMap.addAttribute("subTitle", "BackSupplier " + backSupplierTypeStr.toUpperCase() +
-                        " - EN ATTENTE DE VALIDATION");
+                modelMap.addAttribute("subTitle", backSupplierTypeStr.toUpperCase() +
+                        "  <i class=\"fa fa-play\"></i> EN ATTENTE DE VALIDATION");
             }
             List<ProductAttributeFlux> productAttributeFluxes = attributeFluxService().getAllProductAttributeFluxByOperation(productBackSupplier, false);
             if (productAttributeFluxes.size() != 0) {

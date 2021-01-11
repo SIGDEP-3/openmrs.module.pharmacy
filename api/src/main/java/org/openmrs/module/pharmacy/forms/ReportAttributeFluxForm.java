@@ -30,10 +30,14 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
         reportLineDTO.setRetailUnit(product.getProductRetailUnit().getName());
         reportLineDTO.setInitialQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityInStockInLastOperationByProduct(product, getInventory(),OperationUtils.getUserLocation()).doubleValue(), "SI").getQuantity().intValue());
         reportLineDTO.setReceivedQuantity(createProductAttributeOtherFlux(product, reportService().getProductReceivedQuantityInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QR").getQuantity().intValue());
-        reportLineDTO.setDistributedQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityDistributedInLastOperationByProduct(product, getInventory(),OperationUtils.getUserLocation()).doubleValue(), "QD").getQuantity().intValue());
+        reportLineDTO.setDistributedQuantity(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductQuantityDistributedInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(),
+                        "QD").getQuantity().intValue());
         reportLineDTO.setLostQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityLostInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QL").getQuantity().intValue());
         reportLineDTO.setAdjustmentQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityAdjustmentInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QA").getQuantity().intValue());
-        reportLineDTO.setQuantityInStock(createProductAttributeOtherFlux(product, stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation()).doubleValue(), "SDU").getQuantity().intValue());
+        reportLineDTO.setQuantityInStock(createProductAttributeOtherFlux(product, reportService().getProductQuantityInStockOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "SDU").getQuantity().intValue());
         reportLineDTO.setNumDaysOfRupture(createProductAttributeOtherFlux(product, 0.0, "NDR").getQuantity().intValue());
         if (OperationUtils.isDirectClient(OperationUtils.getUserLocation())) {
             reportLineDTO.setNumSitesInRupture(createProductAttributeOtherFlux(product, reportService().getChildLocationsThatKnownRupture(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "NSR").getQuantity().intValue());

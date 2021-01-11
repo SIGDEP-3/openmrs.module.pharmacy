@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
 
 import java.util.Date;
@@ -42,4 +43,6 @@ public interface ProductInventoryDAO {
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
     ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
+    ProductInventory getProductInventoryByDate(Location location, ProductProgram program, Date operationDate);
+	ProductInventory getOneProductInventoryByOperationNumber(Location location, ProductProgram program, String operationNumber, InventoryType inventoryType);
 }
