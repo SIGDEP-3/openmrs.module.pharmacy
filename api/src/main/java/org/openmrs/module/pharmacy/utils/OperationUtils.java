@@ -4,10 +4,7 @@ import com.mifmif.common.regex.Generex;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
-import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.Goal;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
@@ -21,37 +18,6 @@ import java.util.*;
 public class OperationUtils {
     public static Boolean validateOperation(ProductOperation operation) {
         return service().validateOperation(operation);
-//        if (!operation.getIncidence().equals(Incidence.NONE)) {
-//            if (!operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-//                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
-//                if (fluxes != null && fluxes.size() != 0) {
-//                    for (ProductAttributeFlux flux : fluxes) {
-//                        ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
-//                        if (attributeStock != null) {
-//                            Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-//                                    attributeStock.getQuantityInStock() + flux.getQuantity() :
-//                                    (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
-//                            attributeStock.setQuantityInStock(quantity);
-//                        } else {
-//                            attributeStock = new ProductAttributeStock();
-//                            attributeStock.setQuantityInStock(flux.getQuantity());
-//                            attributeStock.setLocation(getUserLocation());
-//                            attributeStock.setProductAttribute(flux.getProductAttribute());
-//                        }
-//                        stockService().saveProductAttributeStock(attributeStock);
-//
-//                        flux.setStatus(OperationStatus.VALIDATED);
-//                        fluxService().saveProductAttributeFlux(flux);
-//                    }
-//                }
-//                operation.setOperationStatus(OperationStatus.VALIDATED);
-//                service().saveProductOperation(operation);
-//
-//                return true;
-//            }
-//        }
-//
-//        return false;
     }
 
     public static void emptyStock(Location location, ProductProgram productProgram) {
@@ -66,33 +32,6 @@ public class OperationUtils {
 
     public static Boolean cancelOperation(ProductOperation operation) {
         return service().cancelOperation(operation);
-//        if (!operation.getIncidence().equals(Incidence.NONE)) {
-//            if (operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-//                Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
-//                if (fluxes != null && fluxes.size() != 0) {
-//                    for (ProductAttributeFlux flux : fluxes) {
-//                        if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
-//                            ProductAttributeStock attributeStock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), getUserLocation(), false);
-//                            if (attributeStock != null) {
-//                                Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-//                                        attributeStock.getQuantityInStock() - flux.getQuantity() :
-//                                        (operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() + flux.getQuantity() : flux.getQuantity());
-//                                attributeStock.setQuantityInStock(quantity);
-//                            }
-//                            stockService().saveProductAttributeStock(attributeStock);
-//
-//                            flux.setStatus(OperationStatus.DISABLED);
-//                            fluxService().saveProductAttributeFlux(flux);
-//                        }
-//                    }
-//                }
-//                operation.setOperationStatus(OperationStatus.DISABLED);
-//                service().saveProductOperation(operation);
-//
-//                return true;
-//            }
-//        }
-//        return false;
     }
 
     private static PharmacyService service() {
@@ -105,6 +44,10 @@ public class OperationUtils {
 
     private static ProductAttributeFluxService fluxService() {
         return Context.getService(ProductAttributeFluxService.class);
+    }
+
+    private static ProductReportService reportService() {
+        return Context.getService(ProductReportService.class);
     }
 
     private static ProductAttributeStockService stockService() {
@@ -127,6 +70,20 @@ public class OperationUtils {
 
     public static List<ProductProgram> getUserLocationPrograms() {
         return getLocationPrograms(getUserLocation());
+    }
+
+    public static List<Location> getUserChildLocationsByProgram(ProductProgram productProgram) {
+        return getChildLocationsByProgram(getUserLocation(), productProgram);
+    }
+
+    public static List<Location> getChildLocationsByProgram(Location location, ProductProgram productProgram) {
+        List<Location> childLocations = new ArrayList<>();
+        for (Location childLocation : location.getChildLocations()) {
+            if (getLocationPrograms(childLocation).contains(productProgram)) {
+                childLocations.add(childLocation);
+            }
+        }
+        return childLocations;
     }
     public static List<ProductProgram> getLocationPrograms(Location location) {
         List<ProductProgram> productPrograms = new ArrayList<>();
@@ -524,5 +481,59 @@ public class OperationUtils {
         services.put(32,"Urgences");
         services.put(33,"Urologie");
         return services;
+    }
+
+    public static ProductAttributeOtherFlux createProductAttributeOtherFlux(Product product, Double quantity, String label, ProductReport report) {
+        ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+                product,
+                report,
+                label,
+                report.getLocation()
+        );
+        if (productAttributeOtherFlux != null){
+            productAttributeOtherFlux.setQuantity(quantity);
+        } else {
+            productAttributeOtherFlux = getProductAttributeOtherFlux(product, quantity, label, report, reportService());
+            productAttributeOtherFlux.setProductOperation(report);
+        }
+        return  productAttributeOtherFlux;
+    }
+
+    public static ProductAttributeOtherFlux getProductAttributeOtherFlux(Product product, Double quantity, String label, ProductReport report, ProductReportService productReportService) {
+        ProductAttributeOtherFlux productAttributeOtherFlux;
+        productAttributeOtherFlux = new ProductAttributeOtherFlux();
+        switch (label) {
+            case "SI": {
+                ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "SDU", report, report.getLocation());
+                if (lastOtherFlux != null) {
+                    productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
+                } else {
+                    productAttributeOtherFlux.setQuantity(quantity);
+                }
+                break;
+            }
+            case "DM1": {
+                ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "QD", report, report.getLocation());
+                if (lastOtherFlux != null) {
+                    productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
+                } else {
+                    productAttributeOtherFlux.setQuantity(quantity);
+                }
+                break;
+            }
+            case "DM2": {
+                ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "DM1", report, report.getLocation());
+                if (lastOtherFlux != null) {
+                    productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
+                } else {
+                    productAttributeOtherFlux.setQuantity(quantity);
+                }
+                break;
+            }
+        }
+        productAttributeOtherFlux.setLabel(label);
+        productAttributeOtherFlux.setLocation(report.getLocation());
+        productAttributeOtherFlux.setProduct(product);
+        return productAttributeOtherFlux;
     }
 }

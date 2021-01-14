@@ -242,11 +242,22 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 		return (ProductAttributeOtherFlux) query.setMaxResults(1).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation AND s.label = :label");
+	public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation AND s.location = :location");
 		query.setParameter("product", product)
 				.setParameter("operation", productOperation)
+				.setParameter("location", productOperation.getLocation());
+		return query.list();
+	}
+
+	@Override
+	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation AND s.label = :label AND s.location = :location");
+		query.setParameter("product", product)
+				.setParameter("operation", productOperation)
+				.setParameter("location", location)
 				.setParameter("label", label);
 		return (ProductAttributeOtherFlux) query.setMaxResults(1).uniqueResult();
 	}

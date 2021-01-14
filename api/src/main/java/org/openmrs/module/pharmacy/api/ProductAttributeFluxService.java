@@ -85,11 +85,13 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product);
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
-    List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product);
+    List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
-    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label);
+    ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location);
+	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
+	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location);
 }

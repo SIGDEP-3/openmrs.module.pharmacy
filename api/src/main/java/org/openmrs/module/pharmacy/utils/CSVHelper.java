@@ -4,13 +4,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
-import org.openmrs.module.pharmacy.api.ProductRegimenService;
-import org.openmrs.module.pharmacy.api.ProductService;
-import org.openmrs.module.pharmacy.api.ProductUnitService;
+import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.api.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -148,6 +143,38 @@ public class CSVHelper {
         return null;
     }
 
+    public static List<ProductAttributeOtherFlux> csvReport(InputStream is, ProductReport report) {
+
+
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+             CSVParser csvParser = new CSVParser(fileReader,
+                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim().withDelimiter(';')))  {
+            Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+            List<ProductAttributeOtherFlux> otherFluxes = new ArrayList<>();
+
+            for (CSVRecord csvRecord : csvRecords) {
+                Product product = productService().getOneProductByCode(csvRecord.get(0));
+                if (product != null) {
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(3)), "SI", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(4)), "QR", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(5)), "QD", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(6)), "QL", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(7)), "QA", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(8)), "SDU", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(9)), "NDR", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(10)), "DM1", report));
+                    otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(11)), "DM2", report));
+                }
+            }
+
+            return otherFluxes;
+
+        } catch (IOException e) {
+            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+        }
+
+    }
+
     private static ProductService productService() {
         return Context.getService(ProductService.class);
     }
@@ -162,6 +189,14 @@ public class CSVHelper {
 
     private static ProductRegimenService regimenService() {
         return Context.getService(ProductRegimenService.class);
+    }
+
+    private static ProductReportService reportService() {
+        return Context.getService(ProductReportService.class);
+    }
+
+    private static ProductAttributeFluxService fluxService() {
+        return Context.getService(ProductAttributeFluxService.class);
     }
 
 }

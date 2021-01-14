@@ -1497,4 +1497,13 @@
             AND location_id NOT IN (SELECT location_id FROM location_attribute la WHERE attribute_type_id = (SELECT location_attribute_type_id FROM location_attribute_type lat WHERE uuid = 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC' ) AND la.location_id = l.location_id)
         </sql>
     </changeSet>
+
+    <changeSet id="pharmacy-product-movement-entry-sender-null-index" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_product_movement_entry" columnName="sender" columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-product-movement-out-recipient-null-index" author="BOGUI SERGE">
+        <dropNotNullConstraint tableName="pharmacy_product_movement_out" columnName="recipient" columnDataType="int"/>
+    </changeSet>
+
 </databaseChangeLog>

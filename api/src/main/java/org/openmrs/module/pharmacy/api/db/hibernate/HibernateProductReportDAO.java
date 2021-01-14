@@ -64,8 +64,22 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public List<ProductReport> getAllProductReports(Location location, Boolean includeVoided) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		return criteria.add(Restrictions.eq("location", location)).
-				add(Restrictions.eq("voided", includeVoided)).list();
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.isNull("reportLocation")).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReport> getAllProductReports(Location location, ProductProgram productProgram, Boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.ne("operationStatus", OperationStatus.NOT_COMPLETED))
+				.add(Restrictions.isNull("reportLocation")).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -118,6 +132,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.isNull("reportLocation"))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
 	}
 
@@ -330,7 +345,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 									product,
 									report,
-									"QL"
+									"QL",
+									childLocation
 							);
 					if (otherFlux != null && otherFlux.getQuantity() > 0) {
 						quantity += 1;
@@ -392,7 +408,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 						product,
 						report,
-						label
+						label,
+						report.getLocation()
 				);
 		if (otherFlux != null) {
 			return otherFlux.getQuantity();
@@ -411,7 +428,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 									product,
 									report,
-									label
+									label,
+									report.getLocation()
 							);
 					if (otherFlux != null) {
 						quantity += otherFlux.getQuantity();
@@ -442,7 +460,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 						.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 								product,
 								report,
-								"QD"
+								"QD",
+								report.getLocation()
 						);
 				if (otherFlux != null) {
 					quantity += otherFlux.getQuantity();
@@ -486,6 +505,76 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.lt("operationDate", reportDate))
+				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+	}
+
+	@Override
+	public List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) {
+		List<ProductReportLineDTO> reportLineDTOS = new ArrayList<>();
+
+		List<Product> products = report.getOtherFluxesProductList();
+		for (Product product : products) {
+			ProductReportLineDTO productReportLineDTO = new ProductReportLineDTO();
+
+			List<ProductAttributeOtherFlux> otherFluxes =
+					Context.getService(ProductAttributeFluxService.class).getAllProductAttributeOtherFluxByProductAndOperation(
+							product,
+							report,
+							report.getLocation());
+
+			if (otherFluxes.size() != 0) {
+				productReportLineDTO.setProductId(product.getProductId());
+				productReportLineDTO.setCode(product.getCode());
+				productReportLineDTO.setRetailName(product.getRetailName());
+				productReportLineDTO.setRetailUnit(product.getProductRetailUnit().getName());
+
+				for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
+					switch (otherFlux.getLabel()) {
+						case "SI":
+							productReportLineDTO.setInitialQuantity(otherFlux.getQuantity().intValue());
+							break;
+						case "QR":
+							productReportLineDTO.setReceivedQuantity(otherFlux.getQuantity().intValue());
+							break;
+						case "QD":
+							productReportLineDTO.setDistributedQuantity(otherFlux.getQuantity().intValue());
+							break;
+						case "QL":
+							productReportLineDTO.setLostQuantity(otherFlux.getQuantity().intValue());
+							break;
+						case "QA":
+							productReportLineDTO.setAdjustmentQuantity(otherFlux.getQuantity().intValue());
+							break;
+						case "SDU":
+							productReportLineDTO.setQuantityInStock(otherFlux.getQuantity().intValue());
+							break;
+						case "NDR":
+							productReportLineDTO.setNumDaysOfRupture(otherFlux.getQuantity().intValue());
+							break;
+						case "DM1":
+							productReportLineDTO.setQuantityDistributed1monthAgo(otherFlux.getQuantity().intValue());
+							break;
+						case "DM2":
+							productReportLineDTO.setQuantityDistributed2monthAgo(otherFlux.getQuantity().intValue());
+							break;
+					}
+				}
+				reportLineDTOS.add(productReportLineDTO);
+			}
+		}
+
+		return reportLineDTOS;
+	}
+
+	@Override
+	public ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) {
+		ProductReport lastReport = getLastProductReportByDate(location, report.getProductProgram(), report.getOperationDate());
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
+		return (ProductAttributeOtherFlux) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productOperation", lastReport))
+				.add(Restrictions.eq("product", product))
+				.add(Restrictions.eq("label", label))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 

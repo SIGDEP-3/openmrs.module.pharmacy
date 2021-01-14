@@ -80,6 +80,16 @@
                     </c:if>
                 </c:if>
 
+                <openmrs:hasPrivilege privilege="Delete Report">
+                    <c:url value="/module/pharmacy/reports/delete.form"
+                           var="delUrl">
+                        <c:param name="id" value="${headerDTO.productOperationId}"/>
+                    </c:url>
+                    <button type="button" class="btn btn-warning btn-sm"
+                            onclick="window.location='${delUrl}'" tabindex="-1">
+                        <i class="fa fa-eject"></i> Annuler
+                    </button>
+                </openmrs:hasPrivilege>
 
                 <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
                     <c:url value="/module/pharmacy/reports/incomplete.form" var="incompleteUrl">

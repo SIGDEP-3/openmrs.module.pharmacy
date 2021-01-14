@@ -6,5 +6,6 @@ public enum OperationStatus {
     VALIDATED,
     NOT_COMPLETED,
     SUBMITTED,
+    AWAITING_TREATMENT,
     TREATED
 }

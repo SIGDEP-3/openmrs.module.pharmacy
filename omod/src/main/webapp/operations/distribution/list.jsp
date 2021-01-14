@@ -15,7 +15,7 @@
                 } else {
                     jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
                 }
-            })
+            });
         });
 
         function create() {
@@ -53,7 +53,7 @@
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
             <div class="row">
-                <div class="col-7">
+                <div class="col-8">
                     <div class="h6 text-info font-italic">Liste des distributions du mois</div>
                     <div class="card">
                         <div class="card-body">
@@ -62,7 +62,7 @@
                                 <tr>
                                     <th>
                                         <%--            <spring:message code="pharmacy.inventoryDate"/>--%>
-                                        Date de l'operation
+                                        Date de l'op&eacute;ration
                                     </th>
                                     <th>
                                         P&eacute;riode
@@ -72,7 +72,8 @@
                                         Programme
                                     </th>
                                     <%--                    <th>Type d'inventaire</th>--%>
-                                    <th>Nombre de produits</th>
+                                    <th>Centre / PPS</th>
+                                    <th>Lignes de produits</th>
                                     <th>
                                         <%--            <spring:message code="pharmacy.status"/>--%>
                                         Etat
@@ -86,11 +87,12 @@
                                         <td><fmt:formatDate value="${report.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                         <td>${report.reportPeriod}</td>
                                         <td>${report.productProgram.name}</td>
+                                        <td>${report.reportLocation.name}</td>
                                             <%--                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>--%>
                                         <c:choose>
                                             <c:when test="${fct:length(report.productAttributeFluxes) == 0}">
                                                 <c:url value="/module/pharmacy/operations/distribution/editFlux.form" var="addLineUrl">
-                                                    <c:param name="inventoryId" value="${report.productOperationId}"/>
+                                                    <c:param name="distributionId" value="${report.productOperationId}"/>
                                                 </c:url>
                                                 <td class="text-danger">
                                                     <a href="${addLineUrl}">Ajouter des produits</a>
@@ -110,7 +112,7 @@
                                             <a href="${editUrl}" class="text-${report.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                                 <i class="fa fa-${report.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                                             </a>
-                                            <openmrs:hasPrivilege privilege="Delete inventory">
+                                            <openmrs:hasPrivilege privilege="Delete Report">
                                                 <c:if test="${report.operationStatus != 'VALIDATED'}">
                                                     <c:url value="/module/pharmacy/operations/distribution/delete.form" var="delUrl">
                                                         <c:param name="id" value="${report.productOperationId}"/>
@@ -131,7 +133,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="h6 text-info font-italic">Rapports soumis non trait&eacute;s</div>
@@ -156,7 +158,7 @@
                         <div class="col-12">
                             <div class="h6 text-info font-italic">&nbsp;</div>
                             <div class="row">
-                                <div class="col-8">
+                                <div class="col-12">
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="card">
@@ -180,12 +182,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                            </div>
+                            <div class="row">
+                                <div class="col">
                                     <div class="card">
                                         <div class="card-body p-1">
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="text-center text-info border-bottom border-info">Compl&eacute;tude</div>
+                                                    <div class="h1 text-center text-info font-weight-bold">100%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body p-1">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="text-center text-info border-bottom border-info">Promptitude</div>
                                                     <div class="h1 text-center text-info font-weight-bold">100%</div>
                                                 </div>
                                             </div>

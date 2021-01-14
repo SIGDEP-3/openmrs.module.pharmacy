@@ -7,6 +7,8 @@ import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
+import org.openmrs.module.pharmacy.enumerations.StockEntryType;
+import org.openmrs.module.pharmacy.enumerations.StockOutType;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
 import org.openmrs.module.pharmacy.forms.InventoryAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
@@ -353,19 +355,62 @@ public class PharmacyProductInventoryManageController {
         ProductOperation operation = service().getOneProductOperationById(inventoryId);
 
         if (operation != null) {
+            ProductMovementOut movementOut = new ProductMovementOut();
+            ProductMovementEntry movementEntry = new ProductMovementEntry();
+
             for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
-                ProductAttributeOtherFlux otherFlux = new ProductAttributeOtherFlux();
-                otherFlux.setProductOperation(operation);
-                otherFlux.setProductAttribute(flux.getProductAttribute());
-                otherFlux.setLabel("Gap");
-                otherFlux.setLocation(OperationUtils.getUserLocation());
+                ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), operation, operation.getLocation());
+                if (otherFlux == null) {
+                    otherFlux = new ProductAttributeOtherFlux();
+                    otherFlux.setProductOperation(operation);
+                    otherFlux.setProductAttribute(flux.getProductAttribute());
+                    otherFlux.setLabel("Gap");
+                    otherFlux.setLocation(OperationUtils.getUserLocation());
+                }
+
                 ProductAttributeStock stock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), OperationUtils.getUserLocation(), false);
                 if (stock != null) {
                     otherFlux.setQuantity(flux.getQuantity().doubleValue() - stock.getQuantityInStock());
+                    if (flux.getQuantity() > stock.getQuantityInStock()){
+                        ProductAttributeFlux movementEntryFlux = new ProductAttributeFlux();
+                        movementEntryFlux.setProductAttribute(flux.getProductAttribute());
+                        movementEntryFlux.setStatus(OperationStatus.VALIDATED);
+                        movementEntryFlux.setQuantity((flux.getQuantity() - stock.getQuantityInStock()));
+                        movementEntryFlux.setLocation(flux.getLocation());
+                        movementEntryFlux.setOperationDate(flux.getOperationDate());
+                        movementEntry.addProductAttributeFlux(movementEntryFlux);
+                    } else if (flux.getQuantity() < stock.getQuantityInStock()){
+                        ProductAttributeFlux movementOutFlux = new ProductAttributeFlux();
+                        movementOutFlux.setProductAttribute(flux.getProductAttribute());
+                        movementOutFlux.setStatus(OperationStatus.VALIDATED);
+                        movementOutFlux.setQuantity((stock.getQuantityInStock() - flux.getQuantity()));
+                        movementOutFlux.setLocation(flux.getLocation());
+                        movementOutFlux.setOperationDate(flux.getOperationDate());
+                        movementOut.addProductAttributeFlux(movementOutFlux);
+                    }
                 } else {
                     otherFlux.setQuantity(flux.getQuantity().doubleValue());
                 }
                 attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
+                if (movementEntry.getProductAttributeFluxes().size() != 0) {
+                    movementEntry.setOperationDate(operation.getOperationDate());
+                    movementEntry.setStockEntryType(StockEntryType.POSITIVE_INVENTORY_ADJUSTMENT);
+                    movementEntry.setIncidence(Incidence.NEGATIVE);
+                    movementEntry.setProductProgram(operation.getProductProgram());
+                    movementEntry.setOperationStatus(OperationStatus.VALIDATED);
+                    movementEntry.setLocation(operation.getLocation());
+                    Context.getService(ProductMovementService.class).saveProductMovementEntry(movementEntry);
+                }
+                if (movementOut.getProductAttributeFluxes().size() != 0) {
+                    Context.getService(ProductMovementService.class).saveProductMovementOut(movementOut);
+                    movementOut.setOperationDate(operation.getOperationDate());
+                    movementOut.setStockOutType(StockOutType.NEGATIVE_INVENTORY_ADJUSTMENT);
+                    movementOut.setIncidence(Incidence.NEGATIVE);
+                    movementOut.setProductProgram(operation.getProductProgram());
+                    movementOut.setOperationStatus(OperationStatus.VALIDATED);
+                    movementOut.setLocation(operation.getLocation());
+                    Context.getService(ProductMovementService.class).saveProductMovementOut(movementOut);
+                }
             }
 
             OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());

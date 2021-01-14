@@ -75,7 +75,7 @@ public class AjaxCustomController {
             ) {
         Product product = productService().getOneProductByCode(code);
         ProductOperation productOperation = service().getOneProductOperationById(operationId);
-        ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label);
+        ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label, OperationUtils.getUserLocation());
         otherFlux.setQuantity(quantity.doubleValue());
         return new ResponseEntity<String>(attributeFluxService().saveProductAttributeOtherFlux(otherFlux).getQuantity().toString(), HttpStatus.OK);
     }

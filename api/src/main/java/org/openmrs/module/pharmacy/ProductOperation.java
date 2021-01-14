@@ -6,9 +6,7 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductOperation")
@@ -49,6 +47,9 @@ public abstract class ProductOperation extends AbstractPharmacyData {
 
     @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductAttributeFlux> productAttributeFluxes = new HashSet<>();
+
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProductAttributeOtherFlux> productAttributeOtherFluxes = new HashSet<>();
 
     public ProductOperation() {
     }
@@ -125,16 +126,49 @@ public abstract class ProductOperation extends AbstractPharmacyData {
         this.productAttributeFluxes = productAttributeFluxes;
     }
 
-    void addProduct(ProductAttributeFlux productAttributeFlux) {
+    public Set<ProductAttributeOtherFlux> getProductAttributeOtherFluxes() {
+        return productAttributeOtherFluxes;
+    }
+
+    public void setProductAttributeOtherFluxes(Set<ProductAttributeOtherFlux> productAttributeOtherFluxes) {
+        this.productAttributeOtherFluxes = productAttributeOtherFluxes;
+    }
+
+    public void addProductAttributeFlux(ProductAttributeFlux productAttributeFlux) {
         if (productAttributeFluxes == null) {
             productAttributeFluxes = new HashSet<ProductAttributeFlux>();
         }
+        productAttributeFlux.setProductOperation(this);
         productAttributeFluxes.add(productAttributeFlux);
     }
 
-    void removeProduct(ProductAttributeFlux productAttributeFlux) {
+    public void removeProductAttributeFlux(ProductAttributeFlux productAttributeFlux) {
         if (productAttributeFluxes != null) {
             productAttributeFluxes.remove(productAttributeFlux);
         }
+    }
+
+    public void addProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux) {
+        if (productAttributeOtherFluxes == null) {
+            productAttributeOtherFluxes = new HashSet<ProductAttributeOtherFlux>();
+        }
+        productAttributeOtherFlux.setProductOperation(this);
+        productAttributeOtherFluxes.add(productAttributeOtherFlux);
+    }
+
+    public void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux) {
+        if (productAttributeOtherFlux != null) {
+            productAttributeOtherFluxes.remove(productAttributeOtherFlux);
+        }
+    }
+
+    public List<Product> getOtherFluxesProductList() {
+        List<Product> products = new ArrayList<>();
+        for (ProductAttributeOtherFlux otherFlux : productAttributeOtherFluxes) {
+            if (!products.contains(otherFlux.getProduct())) {
+                products.add(otherFlux.getProduct());
+            }
+        }
+        return products;
     }
 }

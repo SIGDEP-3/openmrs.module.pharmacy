@@ -176,10 +176,10 @@
                         <div class="row">
                             <div class="col-12 mb-2">
                                 <label>
-                                    <c:if test="${productReceptionForm.incidence == 'NEGATIVE'}">
+                                    <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
                                         Motifs de retour de produits
                                     </c:if>
-                                    <c:if test="${productReceptionForm.incidence == 'POSITIVE'}">
+                                    <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
                                         Obseration
                                     </c:if>
                                 </label>
@@ -190,7 +190,6 @@
                     </div>
                 </div>
                 <hr>
-
                 <div class="row">
                     <div class="col-12">
                         <c:if test="${not empty productReceptionForm.productOperationId}">

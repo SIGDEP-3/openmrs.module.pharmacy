@@ -17,10 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductReport;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
@@ -54,6 +51,11 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     @Override
     public List<ProductReport> getAllProductReports(Location location, Boolean includeVoided) {
         return dao.getAllProductReports(location, includeVoided);
+    }
+
+    @Override
+    public List<ProductReport> getAllProductReports(Location location, ProductProgram productProgram, Boolean includeVoided) {
+        return dao.getAllProductReports(location, productProgram, includeVoided);
     }
 
     @Override
@@ -179,6 +181,16 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     @Override
     public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) {
         return dao.getLastProductReportByDate(location, productProgram, reportDate);
+    }
+
+    @Override
+    public List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) {
+        return dao.getReportDistributionLines(report);
+    }
+
+    @Override
+    public ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) {
+        return dao.getPreviousReportProductAttributeOtherFluxByLabel(product, label, report, location);
     }
 
 //

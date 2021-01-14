@@ -16,10 +16,7 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductReport;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +44,8 @@ public interface ProductReportService extends OpenmrsService {
 
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReport> getAllProductReports(Location location, ProductProgram productProgram, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
@@ -97,6 +96,10 @@ public interface ProductReportService extends OpenmrsService {
 	ProductReport getLastProductReport(Location location, ProductProgram productProgram);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location);
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);
 //	List<ProductReportListDTO> getProductReportListDTOs();

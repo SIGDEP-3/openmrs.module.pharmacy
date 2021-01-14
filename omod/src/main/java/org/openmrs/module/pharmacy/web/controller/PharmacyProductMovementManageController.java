@@ -471,17 +471,16 @@ public class PharmacyProductMovementManageController {
         Map<String, String> entryTypeMap = new HashMap<String, String>();
         for (StockEntryType value : StockEntryType.values()){
             String label = "";
-            switch (value){
-                case DONATION: label = "Dons";
-                    break;
-//                case TRANSFER_IN: label = "Transfert Entrant";
+            if (value == StockEntryType.DONATION) {
+                label = "DONS";
+                //                case TRANSFER_IN: label = "Transfert Entrant";
 //                    break;
 //                case SITE_PRODUCT_BACK: label = "Retour de produit du site";
 //                    break;
-                case POSITIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire positif";
-                    break;
+//                case POSITIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire positif";
+//                    break;
+                entryTypeMap.put(value.name(), label);
             }
-            entryTypeMap.put(value.name(), label);
         }
         return entryTypeMap;
     }
@@ -490,7 +489,7 @@ public class PharmacyProductMovementManageController {
         for (StockOutType value : StockOutType.values()){
             String label = "";
             switch (value){
-                case THIEF: label = "Produits Volés";
+                case THIEF: label = "VOLS";
                     break;
                 case DESTROYED: label = "Produits Endommagés";
                     break;
@@ -500,16 +499,19 @@ public class PharmacyProductMovementManageController {
                     break;
 //                case TRANSFER_OUT: label = "Transfert Sortant";
 //                    break;
-                case NEGATIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire négatif";
-                    break;
+//                case NEGATIVE_INVENTORY_ADJUSTMENT: label = "Ajustement inventaire négatif";
+//                    break;
                 case OTHER_LOST: label = "Autres pertes";
                     break;
             }
-            outTypeMap.put(value.name(), label);
+            if (!label.isEmpty()) {
+                outTypeMap.put(value.name(), label);
+            }
         }
         return outTypeMap;
     }
-    public String getTranslateType(String type){
+
+    public String getTranslateType(String type) {
         String typeTranslate = "";
 
         if (type.equals("DONATION")){
@@ -518,22 +520,22 @@ public class PharmacyProductMovementManageController {
         if (type.equals("THIEF")){
             typeTranslate = "Produits Volés";
         }
-        if (type == "DESTROYED"){
+        if (type.equals("DESTROYED")){
             typeTranslate = "Produits Endommagés";
         }
-        if (type == "EXPIRED_PRODUCT"){
+        if (type.equals("EXPIRED_PRODUCT")){
             typeTranslate = "Produits Perimés";
         }
-        if (type == "SPOILED_PRODUCT"){
+        if (type.equals("SPOILED_PRODUCT")){
             typeTranslate = "Produits Avariés";
         }
-        if (type == "NEGATIVE_INVENTORY_ADJUSTMENT"){
+        if (type.equals("NEGATIVE_INVENTORY_ADJUSTMENT")){
             typeTranslate = "Ajustement inventaire négatif";
         }
-        if (type == "OTHER_LOST"){
+        if (type.equals("OTHER_LOST")){
             typeTranslate = "Autres pertes";
         }
-        if (type == "POSITIVE_INVENTORY_ADJUSTMENT"){
+        if (type.equals("POSITIVE_INVENTORY_ADJUSTMENT")){
             typeTranslate = "Ajustement inventaire positif";
         }
         return typeTranslate;

@@ -1,9 +1,9 @@
 package org.openmrs.module.pharmacy.models;
 
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.utils.OperationUtils;
+import java.io.Serializable;
 
-public class ProductReportLineDTO {
+public class ProductReportLineDTO implements Serializable {
+    private Integer productId;
     private String code;
     private String retailName;
     private String retailUnit;
@@ -20,8 +20,17 @@ public class ProductReportLineDTO {
     private Double averageMonthlyConsumption;
     private Double calculatedAverageMonthlyConsumption;
     private Double quantityToOrder;
+    private Boolean asserted;
 
     public ProductReportLineDTO() {
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getCode() {
@@ -152,11 +161,16 @@ public class ProductReportLineDTO {
         return this.quantityToOrder;
     }
 
+    public void setAsserted(Boolean asserted) {
+        this.asserted = asserted;
+    }
+
     public Boolean getAsserted() {
         Integer sd = getInitialQuantity() + getReceivedQuantity() -
                 (getLostQuantity() + getDistributedQuantity()) +
                 (getAdjustmentQuantity());
-        return getQuantityInStock().equals(sd);
+        this.asserted = getQuantityInStock().equals(sd);
+        return this.asserted;
     }
 
     public void setQuantityToOrder(Double quantity) {

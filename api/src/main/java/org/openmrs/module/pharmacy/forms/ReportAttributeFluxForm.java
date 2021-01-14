@@ -71,7 +71,8 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
         ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                 product,
                 reportService().getOneProductReportById(getProductOperationId()),
-                label
+                label,
+                OperationUtils.getUserLocation()
         );
         if (productAttributeOtherFlux != null){
             return productAttributeOtherFlux;

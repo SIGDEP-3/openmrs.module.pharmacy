@@ -11,7 +11,17 @@
             jQuery('#form').on('submit', function (e){
                 e.preventDefault();
 
-            })
+            });
+
+            jQuery(".periodSelector").monthpicker({
+                //pattern: "mm/yyyy"
+            });
+
+            jQuery('.periodSelector').on('change',function (e) {
+                console.log(e);
+                console.log(jQuery(this).val());
+                jQuery(this).val(getNumber(jQuery(this).val()));
+            });
         });
         function saveOnly(e) {
             e.preventDefault();
@@ -31,6 +41,23 @@
             }
 
             form.submit();
+        }
+        function getNumber(period) {
+            const months = {
+                '01': 'Janvier',
+                '02': 'Fevrier',
+                '03': 'Mars',
+                '04': 'Avril',
+                '05': 'Mai',
+                '06': 'Juin',
+                '07': 'Juillet',
+                '08': 'Aout',
+                '09': 'Septembre',
+                '10': 'Octobre',
+                '11': 'Novembre',
+                '12': 'Decembre',
+            };
+            return period.replace(period.split('/')[0] + '/', months[period.split('/')[0]] + ' ');
         }
 
         function saveAndAddProducts(e) {
@@ -71,124 +98,72 @@
                 <form:hidden path="locationId"/>
                 <form:hidden path="incidence"/>
                 <form:hidden path="operationStatus"/>
+                <form:hidden path="reportType"/>
                 <form:hidden path="productProgramId"/>
-                <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                    <form:hidden path="productSupplierId"/>
-                </c:if>
+                <form:hidden path="treatmentDate"/>
+                <form:hidden path="childLocationReportId"/>
                 <div class="row">
                     <div class="col-6">
-                        <div class="row">
-                            <div class="col-10 mb-2">
-                                <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                                    <label>Fournisseur de la r&eacute;ception</label>
-                                    <div class="form-control form-control-sm">${distribution.productSupplier.name}</div>
-                                </c:if>
-                                <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
-                                    <label>Fournisseur <span class="required">*</span></label>
-                                    <br>
-                                    <form:select path="productSupplierId" cssClass="form-control s2" >
-                                        <form:option value="" label=""/>
-                                        <form:options items="${suppliers}" itemValue="productSupplierId" itemLabel="name" />
-                                    </form:select>
-                                    <form:errors path="productSupplierId" cssClass="error"/>
-                                </c:if>
-
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-6 mb-2">
                                 <label>Programme <span class="required">*</span></label>
                                 <div class="form-control form-control-sm">
-                                    <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                                        ${distribution.productProgram.name}
-                                    </c:if>
-                                    <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
                                         ${program.name}
-                                    </c:if>
                                 </div>
-<%--                                <c:if test="${fct:length(productDistribution.productAttributeFluxes) == 0}">--%>
-<%--                                    <form:select path="productProgramId" cssClass="form-control s2" >--%>
-<%--                                        <form:option value="" label=""/>--%>
-<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
-<%--                                    </form:select>--%>
-<%--                                    <form:errors path="productProgramId" cssClass="error"/>--%>
-<%--                                </c:if>--%>
-<%--                                <c:if test="${fct:length(productDistribution.productAttributeFluxes) != 0}">--%>
-<%--                                    <form:select path="productProgramId" cssClass="form-control s2" disabled="true" title="" >--%>
-<%--                                        <form:option value="" label=""/>--%>
-<%--                                        <form:options items="${programs}" itemValue="productProgramId" itemLabel="name" />--%>
-<%--                                    </form:select>--%>
-<%--                                </c:if>--%>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10 mb-2">
+                                <label>PPS / Centre</label>
+                                <br>
+                                <form:select path="reportLocationId" cssClass="form-control s2" >
+                                    <form:option value="" label=""/>
+                                    <form:options items="${childrenLocation}" itemValue="locationId" itemLabel="name" />
+                                </form:select>
+                                <form:errors path="reportLocationId" cssClass="error"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row mb-2">
-                            <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                                <div class="col-4">
-                                    <label>Date de retour <span class="required">*</span></label>
-                                    <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
-                                    <form:errors path="operationDate" cssClass="error"/>
-                                </div>
-                                <div class="col-4">
-                                    <label>Date de la distribution </label>
-                                    <div class="form-control form-control-sm bg-info text-white">
-                                        <fmt:formatDate value="${distribution.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                                    </div>
-                                </div>
-                            </c:if>
-                            <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
-                                <div class="col-4">
-                                    <label>Date de r&eacute;ception <span class="required">*</span></label>
-                                    <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
-                                    <form:errors path="operationDate" cssClass="error"/>
-                                </div>
-                            </c:if>
+                            <div class="col-4">
+                                <label>Date de soumission<span class="required">*</span></label>
+                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
+                                <form:errors path="operationDate" cssClass="error"/>
+                            </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
-                                <label>Numero de distribution</label>
-                                <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" readonly="true" />
-                                </c:if>
-                                <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
-                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" />
-                                </c:if>
-                                <form:errors path="operationNumber" cssClass="error"/>
+                                <label>P&eacute;riode <span class="required">*</span></label>
+                                <form:input path="reportPeriod" cssClass="form-control form-control-sm periodSelector" />
+                                <form:errors path="reportPeriod" cssClass="error"/>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-6">
-                        <div class="row mb-2">
-                            <div class="col-10">
-                                <label class="mb-2">Unite de saisie</label> <br>
-                                <form:radiobutton path="distributionQuantityMode" value="RETAIL" label="Dispensation" cssClass="mr-2"/>
-                                <form:radiobutton path="distributionQuantityMode" value="WHOLESALE"  label="Conditionnement" cssClass="mr-2"/>
-                                <form:errors path="distributionQuantityMode" cssClass="error"/>
-                            </div>
+<%--                <div class="row">--%>
+<%--                    <div class="col-6">--%>
+<%--                        <div class="row mb-2">--%>
+<%--                            <div class="col-10">--%>
+<%--                                <label class="mb-2">Type de saisie</label> <br>--%>
+<%--                                <form:radiobutton path="entryType" value="Import" label="Importation" cssClass="mr-2"/>--%>
+<%--                                <form:radiobutton path="entryType" value="Manual"  label="Saisie des lignes" cssClass="mr-2"/>--%>
+<%--                                <form:errors path="entryType" cssClass="error"/>--%>
+<%--                            </div>--%>
 
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-12 mb-2">
-                                <label>
-                                    <c:if test="${productDistributionForm.incidence == 'NEGATIVE'}">
-                                        Motifs de retour de produits
-                                    </c:if>
-                                    <c:if test="${productDistributionForm.incidence == 'POSITIVE'}">
-                                        Obseration
-                                    </c:if>
-                                </label>
-                                <form:textarea path="observation" cssClass="form-control form-control-sm" />
-                                <form:errors path="observation" cssClass="error"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="col-6">--%>
+<%--                        <div class="row">--%>
+<%--                            <div class="col-12 mb-2">--%>
+<%--                                <label>Obseration</label>--%>
+<%--                                <form:textarea path="observation" cssClass="form-control form-control-sm" />--%>
+<%--                                <form:errors path="observation" cssClass="error"/>--%>
+<%--                            </div>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
                 <hr>
 
                 <div class="row">

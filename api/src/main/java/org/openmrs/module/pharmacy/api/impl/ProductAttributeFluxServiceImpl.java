@@ -158,7 +158,7 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product) {
+    public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product, Location location) {
         return dao.getAllProductAttributeOtherFluxByOperationAndProduct(operation, product);
     }
 
@@ -173,8 +173,13 @@ public class ProductAttributeFluxServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label) {
-        return dao.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label);
+    public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location) {
+        return dao.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(product, productOperation, label, location);
+    }
+
+    @Override
+    public List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location) {
+        return dao.getAllProductAttributeOtherFluxByProductAndOperation(product, productOperation, location);
     }
 
 }
