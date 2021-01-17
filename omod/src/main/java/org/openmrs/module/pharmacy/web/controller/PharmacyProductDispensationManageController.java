@@ -429,7 +429,7 @@ public class PharmacyProductDispensationManageController {
             Product product =  productService().getOneProductById(selectedProductId);
             modelMap.addAttribute("selectedProduct", product);
             List<ProductAttributeStock> stocks = stockService().getProductAttributeStocksByProduct(product, OperationUtils.getUserLocation());
-            Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation());
+            Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation(), false);
 
             modelMap.addAttribute("selectedProductQuantityInStock", quantity);
             if (stocks.size() == 0) {

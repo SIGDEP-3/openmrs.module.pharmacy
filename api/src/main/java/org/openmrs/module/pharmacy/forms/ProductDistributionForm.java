@@ -10,10 +10,11 @@ import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.util.UUID;
+
 public class ProductDistributionForm extends ProductReportForm {
     private Integer reportLocationId;
     private Integer childLocationReportId;
-    private String entryType;
 
     public ProductDistributionForm() {
         super();
@@ -37,26 +38,11 @@ public class ProductDistributionForm extends ProductReportForm {
         this.childLocationReportId = childLocationReportId;
     }
 
-    public String getEntryType() {
-        return entryType;
-    }
-
-    public void setEntryType(String entryType) {
-        this.entryType = entryType;
-    }
-
     public void setProductReport(ProductReport productReport) {
         super.setProductReport(productReport);
         setReportLocationId(productReport.getReportLocation().getLocationId());
         if (productReport.getChildLocationReport() != null) {
             setChildLocationReportId(productReport.getChildLocationReport().getProductOperationId());
-        }
-        if (productReport.getChildLocationReport() != null) {
-            if (productReport.getChildLocationReport().getLocation().equals(OperationUtils.getUserLocation())){
-                setEntryType("Import");
-            } else {
-                setEntryType("Manual");
-            }
         }
     }
 
@@ -72,7 +58,8 @@ public class ProductDistributionForm extends ProductReportForm {
             childReport.setOperationDate(getOperationDate());
             childReport.setReportType(getReportType());
             childReport.setProductProgram(programService().getOneProductProgramById(getProductProgramId()));
-            childReport.setUuid(OpenmrsUtil.generateUid());
+            childReport.setUrgent(getUrgent());
+            childReport.setUuid(UUID.randomUUID().toString());
         }
         return childReport;
     }

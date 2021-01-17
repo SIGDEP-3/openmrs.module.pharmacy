@@ -9,7 +9,7 @@ import org.openmrs.module.pharmacy.utils.OperationUtils;
 public class DWRPharmacyService {
     public Integer getProductQuantityInStock(Integer productId) {
         Product product = productService().getOneProductById(productId);
-        return stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation());
+        return stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation(), false);
     }
 
     private ProductAttributeStockService stockService() {

@@ -79,7 +79,9 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("voided", includeVoided))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.ne("operationStatus", OperationStatus.NOT_COMPLETED))
-				.add(Restrictions.isNull("reportLocation")).list();
+				.add(Restrictions.isNull("reportLocation"))
+				.add(Restrictions.isNull("childLocationReport"))
+				.list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -574,9 +576,10 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productOperation", lastReport))
 				.add(Restrictions.eq("product", product))
-				.add(Restrictions.eq("label", label))
-				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+				.add(Restrictions.eq("label", label)).setMaxResults(1).uniqueResult();
 	}
+
+
 
 //	@SuppressWarnings("unchecked")
 //	@Override

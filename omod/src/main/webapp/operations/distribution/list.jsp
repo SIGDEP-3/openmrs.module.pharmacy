@@ -44,7 +44,7 @@
                     <option value="${program.productProgramId}" class="text-left">${program.name}</option>
                 </c:forEach>
             </select>
-<%--            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>--%>
+            <%--            <c:url value="/module/pharmacy/operations/inventory/edit.form" var="url"/>--%>
             <button class="btn btn-primary btn-sm" onclick="create()" title="Créer nouveau">
                 <i class="fa fa-plus"></i> Nouveau
             </button>
@@ -90,7 +90,7 @@
                                         <td>${report.reportLocation.name}</td>
                                             <%--                        <td>${inventory.inventoryType == 'FULL' ? 'COMPLET' : 'PARTIEL'}</td>--%>
                                         <c:choose>
-                                            <c:when test="${fct:length(report.productAttributeFluxes) == 0}">
+                                            <c:when test="${fct:length(report.childLocationReport.otherFluxesProductList) == 0}">
                                                 <c:url value="/module/pharmacy/operations/distribution/editFlux.form" var="addLineUrl">
                                                     <c:param name="distributionId" value="${report.productOperationId}"/>
                                                 </c:url>
@@ -100,11 +100,23 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <td class="text-center">
-                                                        ${fct:length(report.productAttributeFluxes)}
+                                                        ${fct:length(report.childLocationReport.otherFluxesProductList)}
                                                 </td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td>${report.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (report.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
+                                        <td>
+                                            <c:if test="${report.operationStatus == 'NOT_COMPLETED' && report.childLocationReport.operationStatus == 'SUBMITTED'}">
+                                            RAPPORT SOUMIS
+                                            </c:if>
+                                            <c:if test="${report.operationStatus == 'NOT_COMPLETED' && report.childLocationReport.operationStatus == 'NOT_COMPLETED'}">
+                                            EN COURS DE SAISIE
+                                            </c:if>
+                                            <c:if test="${report.operationStatus == 'AWAITING_TREATMENT'}">
+                                            EN ATTENTE DE TRATEMENT
+                                            </c:if>
+                                            <c:if test="${report.operationStatus == 'VALIDATED'}">
+                                            RAPPORT TRAIT&Eacute;
+                                            </c:if>
                                         <td>
                                             <c:url value="/module/pharmacy/operations/distribution/edit.form" var="editUrl">
                                                 <c:param name="id" value="${report.productOperationId}"/>
@@ -112,6 +124,17 @@
                                             <a href="${editUrl}" class="text-${report.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
                                                 <i class="fa fa-${report.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
                                             </a>
+                                            <c:if test="${report.operationStatus == 'VALIDATED'}">
+                                                <c:url value="/module/pharmacy/operations/distribution/editFlux.form"
+                                                       var="deliveryUrl">
+                                                    <c:param name="distributionId" value="${report.productOperationId}"/>
+                                                    <c:param name="slip" value="${report.productOperationId}"/>
+                                                </c:url>
+                                                <a href="${deliveryUrl}"
+                                                   class="text-primary">
+                                                    <i class="fa fa-traffic-light"></i>
+                                                </a>
+                                            </c:if>
                                             <openmrs:hasPrivilege privilege="Delete Report">
                                                 <c:if test="${report.operationStatus != 'VALIDATED'}">
                                                     <c:url value="/module/pharmacy/operations/distribution/delete.form" var="delUrl">
@@ -123,6 +146,7 @@
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 </c:if>
+
                                             </openmrs:hasPrivilege>
                                         </td>
                                     </tr>
@@ -140,16 +164,16 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="h5 text-center text-success">Aucune soumission non trait&eacute;e</div>
-<%--                                    <table class="table table-striped table-sm">--%>
-<%--                                        <thead>--%>
-<%--                                        <tr>--%>
-<%--                                            <th>Site / PPS</th>--%>
-<%--                                            <th>P&eacute;riode</th>--%>
-<%--                                        </tr>--%>
-<%--                                        </thead>--%>
-<%--                                        <tbody>--%>
-<%--                                        </tbody>--%>
-<%--                                    </table>--%>
+                                    <%--                                    <table class="table table-striped table-sm">--%>
+                                    <%--                                        <thead>--%>
+                                    <%--                                        <tr>--%>
+                                    <%--                                            <th>Site / PPS</th>--%>
+                                    <%--                                            <th>P&eacute;riode</th>--%>
+                                    <%--                                        </tr>--%>
+                                    <%--                                        </thead>--%>
+                                    <%--                                        <tbody>--%>
+                                    <%--                                        </tbody>--%>
+                                    <%--                                    </table>--%>
                                 </div>
                             </div>
                         </div>

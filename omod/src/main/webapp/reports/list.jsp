@@ -16,6 +16,11 @@
             })
         });
 
+        function showTooltip() {
+            jQuery('#tooltipdemo').toggleClass("show");
+            //tt.classList.toggle("show");
+        }
+
         function create() {
             const selection = jQuery("#program");
             const programId = selection.val();
@@ -29,10 +34,44 @@
 </script>
 <div class="container-fluid mt-2">
     <div class="row mb-2">
-        <div class="col-4 text-uppercase font-italic text-secondary">
+        <div class="col-3 text-uppercase font-italic text-secondary">
             <div class="h6"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
-        <div class="col-8 text-right">
+        <div class="col-6">
+            <c:if test="${isDirectClient == true}">
+                <openmrs:hasPrivilege privilege="Import Report">
+                    <form method="POST" enctype="multipart/form-data" class="mb-3"
+                          action="${pageContext.request.contextPath}/module/pharmacy/reports/upload.form">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile" name="file" data-toggle="tooltip" data-html="true"
+                                           title="">
+                                    <label class="custom-file-label" for="customFile">Choisir le fichier pour importation</label>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
+                                    Importer
+                                </button>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="arrowpopup" onclick="showTooltip()"><i class="fa fa-question-circle fa-2x text-info"></i>
+                                    <span class="tooltiptext" id="tooltipdemo">
+                                        Format du nom du fichier : prefix_programme_periode[_U].csv <br>
+                                                  Ex : <br><b><u><em>1010-01_PNLSARVIO_Janvier 2020[_U]</em></u></b>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </openmrs:hasPrivilege>
+            </c:if>
+
+        </div>
+
+        <div class="col-3 text-right">
             <span id="selectMe"></span>
             <label for="program">Programme : </label>
             <select name="program" class="s2 form-control-sm mr-3" id="program">

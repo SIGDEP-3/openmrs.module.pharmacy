@@ -13,6 +13,7 @@ import org.openmrs.module.pharmacy.forms.DistributionAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ProductDistributionForm;
 //import org.openmrs.module.pharmacy.models.ProductDistributionFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.models.ProductReportLineExtendedDTO;
 import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -32,10 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class PharmacyProductDistributionManageController {
@@ -173,7 +171,7 @@ public class PharmacyProductDistributionManageController {
                         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
                     }
                     return "redirect:/module/pharmacy/operations/distribution/editFlux.form?distributionId=" +
-                            distribution.getProductOperationId() + "&entryType=" + productDistributionForm.getEntryType();
+                            distribution.getProductOperationId();
                 } else {
                     return "redirect:/module/pharmacy/operations/distribution/list.form";
                 }
@@ -192,6 +190,7 @@ public class PharmacyProductDistributionManageController {
     public String editFlux(ModelMap modelMap,
                          @RequestParam(value = "distributionId") Integer distributionId,
                          @RequestParam(value = "productId", defaultValue = "0", required = false) Integer productId,
+                         @RequestParam(value = "slip", defaultValue = "0", required = false) Integer slip,
                          DistributionAttributeFluxForm distributionAttributeFluxForm) {
         if (Context.isAuthenticated()) {
             ProductReport productDistribution = reportService().getOneProductReportById(distributionId);
@@ -203,7 +202,7 @@ public class PharmacyProductDistributionManageController {
                 distributionAttributeFluxForm = new DistributionAttributeFluxForm();
                 distributionAttributeFluxForm.setProductOperationId(productDistribution.getProductOperationId());
             }
-            modelMappingForView(modelMap, distributionAttributeFluxForm, productDistribution);
+            modelMappingForView(modelMap, distributionAttributeFluxForm, productDistribution, slip);
         }
         return null;
     }
@@ -227,7 +226,7 @@ public class PharmacyProductDistributionManageController {
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Ligne insérées avec succès !");
 
                 return "redirect:/module/pharmacy/operations/distribution/editFlux.form?distributionId="
-                        + distributionAttributeFluxForm.getProductOperationId();
+                        + distributionAttributeFluxForm.getProductOperationId() + "&imported=1";
 //                ProductAttribute productAttribute = attributeService().saveProductAttribute(distributionAttributeFluxForm.getProductAttribute());
 //                if (productAttribute != null) {
 //                    ProductAttributeFlux productAttributeFlux = distributionAttributeFluxForm.getProductAttributeFlux(productAttribute);
@@ -245,27 +244,46 @@ public class PharmacyProductDistributionManageController {
 //                }
             }
 
-            modelMappingForView(modelMap, distributionAttributeFluxForm, productDistribution);
+            modelMappingForView(modelMap, distributionAttributeFluxForm, productDistribution, 0);
         }
 
         return null;
     }
 //
-    private void modelMappingForView(ModelMap modelMap, DistributionAttributeFluxForm distributionAttributeFluxForm, ProductReport productDistribution) {
+    private void modelMappingForView(ModelMap modelMap, DistributionAttributeFluxForm distributionAttributeFluxForm, ProductReport productDistribution, Integer slip) {
         modelMap.addAttribute("distributionAttributeFluxForm", distributionAttributeFluxForm);
         modelMap.addAttribute("productDistribution", productDistribution);
 
-        List<ProductReportLineDTO> reportLineDTOS = reportService().getReportDistributionLines(productDistribution.getChildLocationReport());
-        modelMap.addAttribute("reportData", reportLineDTOS);
+        if (productDistribution.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
 
-        if (productDistribution.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {
-            modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> EN ATTENTE DE VALIDATION");
-        } else if (productDistribution.getOperationStatus().equals(OperationStatus.VALIDATED)) {
-            modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> APPROUVEE");
-        } else if (productDistribution.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)){
+            List<ProductReportLineDTO> reportLineDTOS = reportService().getReportDistributionLines(productDistribution.getChildLocationReport());
+            modelMap.addAttribute("reportData", reportLineDTOS);
+
             modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> ajout de produits");
+
             ProductReport report = productDistribution.getChildLocationReport();
             modelMap.addAttribute("countReports", reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).size() == 0 ? "false" : "true" );
+//            System.out.println("|-----------------------------------> all child reports : " +
+//                    reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).get(0).getProductOperationId());
+
+            boolean asserted = true;
+
+            for (ProductReportLineDTO reportLineDTO : reportLineDTOS) {
+                if (!reportLineDTO.getAsserted()) {
+                    asserted = false;
+                    break;
+                }
+            }
+            modelMap.addAttribute("isAsserted", asserted);
+            if (report.getOperationNumber() != null && report.getOperationNumber().contains("IMPORTED BY PARENT")) {
+                if (asserted) {
+                    ProductReport childReport = productDistribution.getChildLocationReport();
+                    childReport.setOperationStatus(OperationStatus.SUBMITTED);
+                    reportService().saveProductReport(childReport);
+                } else {
+                    modelMap.addAttribute("canImport", true);
+                }
+            }
 
             Set<Product> products = programService().getOneProductProgramById(productDistribution.getProductProgram().getProductProgramId()).getProducts();
             if (reportLineDTOS.size() != 0) {
@@ -274,10 +292,63 @@ public class PharmacyProductDistributionManageController {
                 }
             }
             modelMap.addAttribute("products", products);
+        } else {
+            List<ProductReportLineExtendedDTO> reportLineDTOS = new ArrayList<ProductReportLineExtendedDTO>();
+
+            for (ProductReportLineDTO reportLineDTO : reportService().getReportDistributionLines(productDistribution.getChildLocationReport())) {
+                Product product = productService().getOneProductByCode(reportLineDTO.getCode());
+
+                ProductReportLineExtendedDTO reportLineExtendedDTO = new ProductReportLineExtendedDTO();
+                reportLineExtendedDTO.getProductLineDto(reportLineDTO);
+                reportLineExtendedDTO.setParentQuantityInStock(stockService().getAllProductAttributeStockByProductCount(
+                        product,
+                        productDistribution.getLocation(),
+                        false
+                ));
+                Double cmm = (reportLineExtendedDTO.getDistributedQuantity().doubleValue() +
+                        reportLineExtendedDTO.getQuantityDistributed1monthAgo().doubleValue() +
+                        reportLineExtendedDTO.getQuantityDistributed2monthAgo().doubleValue()) / 3;
+                if (cmm.intValue() != cmm) {
+                    cmm = cmm.intValue() + 1.0;
+                }
+                reportLineExtendedDTO.setCalculatedAverageMonthlyConsumption(cmm);
+                Double stockMax = OperationUtils.getLocationStockMax(productDistribution.getReportLocation());
+                double quantityProposed = ( stockMax * cmm ) - reportLineExtendedDTO.getQuantityInStock();
+                if ((int) quantityProposed != quantityProposed) {
+                    quantityProposed = (int) quantityProposed + 1.0;
+                }
+                reportLineExtendedDTO.setQuantityToOrder(quantityProposed);
+                reportLineExtendedDTO.setAccordedQuantity(attributeFluxService().getAllProductAttributeFluxByOperationAndProductCount(productDistribution, product));
+
+                if (reportLineExtendedDTO.getAccordedQuantity() == 0 && quantityProposed != 0 && reportLineExtendedDTO.getParentQuantityInStock() != 0) {{
+                        List<ProductAttributeFlux> fluxes = OperationUtils.createProductAttributeFluxes(product, productDistribution, (int) quantityProposed);
+                        for (ProductAttributeFlux flux : fluxes) {
+                            flux.setStatus(OperationStatus.NOT_COMPLETED);
+                            attributeFluxService().saveProductAttributeFlux(flux);
+                        }
+                        reportLineExtendedDTO.setAccordedQuantity((int) quantityProposed);
+                    }
+                }
+
+                reportLineDTOS.add(reportLineExtendedDTO);
+            }
+            modelMap.addAttribute("reportData", reportLineDTOS);
+            if (productDistribution.getOperationStatus().equals(OperationStatus.AWAITING_TREATMENT)) {
+                modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> EN COURS DE TRAITEMENT");
+            } else if (productDistribution.getOperationStatus().equals(OperationStatus.VALIDATED)) {
+                if (slip != 0) {
+                    modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> BORDEREAU DE LIVRAISON");
+                    modelMap.addAttribute("slip", "true");
+                    modelMap.addAttribute("productAttributeFluxes", productDistribution.getProductAttributeFluxes());
+                } else
+                modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> APPROUVEE");
+            } else if (productDistribution.getOperationStatus().equals(OperationStatus.TREATED)) {
+                modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> TRAITE");
+            }
         }
     }
 
-    @RequestMapping(value = "/module/pharmacy/reports/upload.form", method = RequestMethod.POST)
+    @RequestMapping(value = "/module/pharmacy/operations/distribution/upload.form", method = RequestMethod.POST)
     public String uploadProduct(HttpServletRequest request,
                                 @RequestParam("file") MultipartFile file,
                                 @RequestParam(value = "distributionId") Integer distributionId) {
@@ -287,11 +358,20 @@ public class PharmacyProductDistributionManageController {
             if (CSVHelper.hasCSVFormat(file)) {
                 try {
                     ProductReport report = reportService().getOneProductReportById(distributionId);
-                    List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), report.getChildLocationReport());
+                    ProductReport childReport = report.getChildLocationReport();
+                    List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), childReport);
 
                     for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
+                        System.out.println("|---------------------------> Product : " + otherFlux.getProduct().getCode() + ", Label : " +
+                                otherFlux.getLabel() + ", Quantity : " + otherFlux.getQuantity() );
                         attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
+                    if (childReport.getOperationNumber() == null || childReport.getOperationNumber().isEmpty()
+                            || !childReport.getOperationNumber().contains("IMPORTED BY PARENT")) {
+                        childReport.setOperationNumber("IMPORTED BY PARENT");
+                        reportService().saveProductReport(childReport);
+                    }
+
                     message = "Données du rapport importés avec succès : " + file.getOriginalFilename();
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
                 } catch (Exception e) {
@@ -300,7 +380,8 @@ public class PharmacyProductDistributionManageController {
                 }
             } else
                 session.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "S'il vous plait importez un fichier CSV !");
-            return "redirect:/module/pharmacy/reports/list.form";
+            return "redirect:/module/pharmacy/operations/distribution/editFlux.form?" +
+                    "distributionId=" + distributionId;
         }
         return null;
     }
@@ -312,9 +393,14 @@ public class PharmacyProductDistributionManageController {
             return null;
         HttpSession session = request.getSession();
         ProductReport distribution = reportService().getOneProductReportById(distributionId);
-        distribution.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
+        distribution.setOperationStatus(OperationStatus.AWAITING_TREATMENT);
         reportService().saveProductReport(distribution);
-        attributeService().purgeUnusedAttributes();
+        if (!distribution.getChildLocationReport().getOperationStatus().equals(OperationStatus.SUBMITTED)) {
+            ProductReport childProductReport = distribution.getChildLocationReport();
+            childProductReport.setOperationStatus(OperationStatus.SUBMITTED);
+            reportService().saveProductReport(childProductReport);
+        }
+        //attributeService().purgeUnusedAttributes();
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La distributiona été enregistrée avec " +
                 "succès et est en attente de traitement !");
         return "redirect:/module/pharmacy/operations/distribution/list.form";
@@ -341,15 +427,28 @@ public class PharmacyProductDistributionManageController {
             return null;
         HttpSession session = request.getSession();
         ProductReport report = reportService().getOneProductReportById(id);
-        for (ProductAttributeOtherFlux otherFlux : attributeFluxService().getAllProductAttributeOtherFluxByOperation(report, false)) {
-            attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
+        ProductReport childReport = report.getChildLocationReport();
+
+//        reportService().removeProductReport(report);
+
+        if (report.getCreator().equals(childReport.getCreator())) {
+            for (ProductAttributeOtherFlux flux : childReport.getProductAttributeOtherFluxes()) {
+                attributeFluxService().removeProductAttributeOtherFlux(flux);
+            }
+            reportService().removeProductReport(report);
+            reportService().removeProductReport(childReport);
+        } else {
+            reportService().removeProductReport(report);
         }
-        for (ProductAttributeFlux flux : attributeFluxService().getAllProductAttributeFluxByOperation(report, false)){
-            attributeFluxService().removeProductAttributeFlux(flux);
-        }
-        reportService().removeProductReport(report);
-        attributeService().purgeUnusedAttributes();
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été supprimé avec succès !");
+
+//        for (ProductAttributeOtherFlux otherFlux : attributeFluxService().getAllProductAttributeOtherFluxByOperation(report, false)) {
+//            attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
+//        }
+//        for (ProductAttributeFlux flux : attributeFluxService().getAllProductAttributeFluxByOperation(report, false)){
+//            attributeFluxService().removeProductAttributeFlux(flux);
+//        }
+
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La distribution a été supprimé avec succès !");
         return "redirect:/module/pharmacy/operations/distribution/list.form";
     }
 
@@ -381,25 +480,15 @@ public class PharmacyProductDistributionManageController {
                            @RequestParam(value = "distributionId") Integer distributionId){
         if (!Context.isAuthenticated())
             return null;
-        ProductOperation operation = service().getOneProductOperationById(distributionId);
+        ProductReport operation = reportService().getOneProductReportById(distributionId);
 
         if (operation != null) {
-            for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
-                ProductAttributeOtherFlux otherFlux = new ProductAttributeOtherFlux();
-                otherFlux.setProductOperation(operation);
-                otherFlux.setProductAttribute(flux.getProductAttribute());
-                otherFlux.setLabel("Gap");
-                otherFlux.setLocation(OperationUtils.getUserLocation());
-                ProductAttributeStock stock = stockService().getOneProductAttributeStockByAttribute(flux.getProductAttribute(), OperationUtils.getUserLocation(), false);
-                if (stock != null) {
-                    otherFlux.setQuantity(flux.getQuantity().doubleValue() - stock.getQuantityInStock());
-                } else {
-                    otherFlux.setQuantity(flux.getQuantity().doubleValue());
-                }
-                attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
-            }
-
             OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
+            operation.setOperationNumber(OperationUtils.generateNumber());
+//            operation.setTreatmentDate(new Date());
+            ProductReport childReport = operation.getChildLocationReport();
+            childReport.setOperationStatus(OperationStatus.TREATED);
+            reportService().saveProductReport(childReport);
 
             if (OperationUtils.validateOperation(operation)) {
                 HttpSession session = request.getSession();

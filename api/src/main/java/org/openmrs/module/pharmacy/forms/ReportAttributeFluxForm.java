@@ -43,8 +43,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
             reportLineDTO.setNumSitesInRupture(createProductAttributeOtherFlux(product, reportService().getChildLocationsThatKnownRupture(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "NSR").getQuantity().intValue());
             reportLineDTO.setAverageMonthlyConsumption(
                     createProductAttributeOtherFlux(product,
-                            reportService().getProductAverageMonthlyConsumption(product, getInventory().getProductProgram(), OperationUtils.getUserLocation(), false),
-                            "CMM").getQuantity());
+                            reportService().getProductAverageMonthlyConsumption(product, getInventory().getProductProgram(), OperationUtils.getUserLocation(), false), "CMM").getQuantity());
             if (reportLineDTO.getDistributedQuantity() > 0 || reportLineDTO.getAverageMonthlyConsumption() > 0) {
                 reportLineDTO.setQuantityToOrder(createProductAttributeOtherFlux(product, (OperationUtils.getUserLocationStockMax() * reportLineDTO.getAverageMonthlyConsumption()) - reportLineDTO.getQuantityInStock(), "QTO").getQuantity());
             }

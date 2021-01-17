@@ -21,7 +21,7 @@ public abstract class ProductOperationForm {
     private OperationStatus operationStatus;
     protected Incidence incidence;
     private String observation;
-    private String uuid = OpenmrsUtil.generateUid();
+    private String uuid = UUID.randomUUID().toString();
 
     public ProductOperationForm() {
         operationStatus = OperationStatus.NOT_COMPLETED;

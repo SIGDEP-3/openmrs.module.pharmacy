@@ -123,6 +123,13 @@
                                 <form:errors path="reportLocationId" cssClass="error"/>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-10">
+                                <label class="mb-2">Type de rapport <span class="required">*</span></label> <br>
+                                <form:checkbox path="urgent" label="Urgent" cssClass="mr-2"/>
+                                <form:errors path="urgent" cssClass="error"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-6">
                         <div class="row mb-2">
@@ -140,7 +147,10 @@
                             </div>
                         </div>
                     </div>
+                    <div></div>
+
                 </div>
+
 
 <%--                <div class="row">--%>
 <%--                    <div class="col-6">--%>

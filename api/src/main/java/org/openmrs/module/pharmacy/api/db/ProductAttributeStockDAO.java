@@ -43,7 +43,7 @@ public interface ProductAttributeStockDAO {
 
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
 
-    Integer getAllProductAttributeStockByProductCount(Product product, Location location);
+    Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren);
 
 	Integer getProductAttributeStocksByProductCount(Product product);
 }

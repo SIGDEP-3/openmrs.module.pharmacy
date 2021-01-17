@@ -337,48 +337,35 @@ public class OperationUtils {
         return cal.getTime();
     }
 
-    public static String getStockMax(String level) {
-        return Context.getAdministrationService().getGlobalProperty("pharmacy.stockMax" + level);
+    public static Double getStockMax(String level) {
+        String stockMaxInProperty = Context.getAdministrationService().getGlobalProperty("pharmacy.stockMax" + level);
+        String unit = stockMaxInProperty.split(" ")[1];
+        double stockMax = 0.0;
+        if (unit.startsWith("M"))
+            stockMax =  Double.parseDouble(stockMaxInProperty.split(" ")[0]);
+        else if (unit.startsWith("D")) {
+            stockMax = Double.parseDouble(stockMaxInProperty.split(" ")[0]) / 30;
+        } else if (unit.startsWith("W")) {
+            stockMax = Double.parseDouble(stockMaxInProperty.split(" ")[0]) / 4;
+        }
+//        System.out.println("--------------------------------------> Stock Max : " + stockMax);
+        return stockMax;
     }
 
-    public static Integer getStockMaxDistrictNumber() {
-        String stockMax = getStockMax("District");
-        return Integer.parseInt(stockMax.split(" ")[0]);
+    public static Double getStockMaxDistrictNumber() {
+        return getStockMax("District");
     }
 
-    public static Integer getStockMaxDistrictUnit() {
-        String stockMax = getStockMax("District");
-        return Integer.parseInt(stockMax.split(" ")[1]);
+    public static Double getStockMaxDirectClientNumber() {
+        return getStockMax("DirectClient");
     }
 
-    public static Integer getStockMaxDirectClientNumber() {
-        String stockMax = getStockMax("DirectClient");
-        return Integer.parseInt(stockMax.split(" ")[0]);
+    public static Double getStockMaxCenterAndNGONumber() {
+        return getStockMax("CenterAndNGOs");
     }
 
-    public static Integer getStockMaxDirectClientUnit() {
-        String stockMax = getStockMax("DirectClient");
-        return Integer.parseInt(stockMax.split(" ")[1]);
-    }
-
-    public static Integer getStockMaxCenterAndNGONumber() {
-        String stockMax = getStockMax("CenterAndNGOs");
-        return Integer.parseInt(stockMax.split(" ")[0]);
-    }
-
-    public static Integer getStockMaxCenterAndNGOUnit() {
-        String stockMax = getStockMax("CenterAndNGOs");
-        return Integer.parseInt(stockMax.split(" ")[1]);
-    }
-
-    public static Integer getStockMaxPointOfServiceDeliveryNumber() {
-        String stockMax = getStockMax("PointOfServiceDelivery");
-        return Integer.parseInt(stockMax.split(" ")[0]);
-    }
-
-    public static Integer getStockMaxPointOfServiceDeliveryUnit() {
-        String stockMax = getStockMax("PointOfServiceDelivery");
-        return Integer.parseInt(stockMax.split(" ")[1]);
+    public static Double getStockMaxPointOfServiceDeliveryNumber() {
+        return getStockMax("PointOfServiceDelivery");
     }
 
     public static String getEmergencyControlPoint(String level) {
@@ -390,9 +377,9 @@ public class OperationUtils {
         return Integer.parseInt(stockMax.split(" ")[0]);
     }
 
-    public static Integer getEmergencyControlPointDistrictUnit() {
+    public static String getEmergencyControlPointDistrictUnit() {
         String stockMax = getEmergencyControlPoint("District");
-        return Integer.parseInt(stockMax.split(" ")[1]);
+        return stockMax.split(" ")[1];
     }
 
     public static Integer getEmergencyControlPointDirectClientNumber() {
@@ -425,17 +412,24 @@ public class OperationUtils {
         return Integer.parseInt(stockMax.split(" ")[1]);
     }
 
-    public static Integer getUserLocationStockMax() {
-        Location location = getUserLocation();
+    public static Double getUserLocationStockMax() {
+        return getLocationStockMax(getUserLocation());
+    }
+
+    public static Double getLocationStockMax(Location location) {
         if (isDirectClient(location)) {
+//            System.out.println("------------------> Is client");
             return getStockMaxDirectClientNumber();
         } else if (location.getName().contains("DISTRICT SANITAIRE")) {
+//            System.out.println("------------------> Is District");
             return getStockMaxDistrictNumber();
         } else {
             if (location.getChildLocations().size() == 0 && !location.getParentLocation().getName().contains("DISTRICT SANITAIRE")) {
+//                System.out.println("------------------> Is PPS");
                 return getStockMaxPointOfServiceDeliveryNumber();
             }
         }
+//        System.out.println("------------------> Is Center");
         return getStockMaxCenterAndNGONumber();
     }
 
@@ -502,13 +496,12 @@ public class OperationUtils {
     public static ProductAttributeOtherFlux getProductAttributeOtherFlux(Product product, Double quantity, String label, ProductReport report, ProductReportService productReportService) {
         ProductAttributeOtherFlux productAttributeOtherFlux;
         productAttributeOtherFlux = new ProductAttributeOtherFlux();
+        productAttributeOtherFlux.setQuantity(quantity);
         switch (label) {
             case "SI": {
                 ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "SDU", report, report.getLocation());
                 if (lastOtherFlux != null) {
                     productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
-                } else {
-                    productAttributeOtherFlux.setQuantity(quantity);
                 }
                 break;
             }
@@ -516,8 +509,6 @@ public class OperationUtils {
                 ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "QD", report, report.getLocation());
                 if (lastOtherFlux != null) {
                     productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
-                } else {
-                    productAttributeOtherFlux.setQuantity(quantity);
                 }
                 break;
             }
@@ -525,15 +516,64 @@ public class OperationUtils {
                 ProductAttributeOtherFlux lastOtherFlux = productReportService.getPreviousReportProductAttributeOtherFluxByLabel(product, "DM1", report, report.getLocation());
                 if (lastOtherFlux != null) {
                     productAttributeOtherFlux.setQuantity(lastOtherFlux.getQuantity());
-                } else {
-                    productAttributeOtherFlux.setQuantity(quantity);
                 }
                 break;
             }
+
         }
         productAttributeOtherFlux.setLabel(label);
         productAttributeOtherFlux.setLocation(report.getLocation());
         productAttributeOtherFlux.setProduct(product);
         return productAttributeOtherFlux;
+    }
+
+    public static List<ProductAttributeFlux> createProductAttributeFluxes(Product product, ProductOperation operation, Integer quantity) {
+        List<ProductAttributeFlux> fluxes = new ArrayList<>();
+        List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(product, operation.getLocation());
+        int countFlux = 0;
+        int countOldFlux = operation.getProductAttributeFluxes().size();
+        for (ProductAttributeStock stock : productAttributeStocks) {
+            if (stock.getQuantityInStock() == 0) {
+                continue;
+            }
+            countFlux ++;
+            ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
+                    stock.getProductAttribute(),
+                    operation
+            );
+            if (productAttributeFlux == null) {
+                productAttributeFlux = new ProductAttributeFlux();
+                productAttributeFlux.setLocation(OperationUtils.getUserLocation());
+                productAttributeFlux.setProductAttribute(stock.getProductAttribute());
+                productAttributeFlux.setOperationDate(operation.getOperationDate());
+                productAttributeFlux.setProductOperation(operation);
+            }
+
+            if (quantity <= stock.getQuantityInStock()){
+                productAttributeFlux.setQuantity(quantity);
+                fluxes.add(productAttributeFlux);
+                break;
+            } else {
+                productAttributeFlux.setQuantity(stock.getQuantityInStock());
+                quantity -= stock.getQuantityInStock();
+                fluxes.add(productAttributeFlux);
+                if (quantity.equals(0)) {
+                    break;
+                }
+            }
+        }
+        if (countOldFlux > countFlux) {
+            int remainFluxesCount = countOldFlux - countFlux;
+            List<ProductAttributeFlux> attributeFluxes =
+                    OperationUtils.getLastElements(
+                            operation.getProductAttributeFluxes(),
+                            remainFluxesCount
+                    );
+            for (ProductAttributeFlux flux : attributeFluxes) {
+                flux.setQuantity(0);
+                fluxes.add(flux);
+            }
+        }
+        return fluxes;
     }
 }

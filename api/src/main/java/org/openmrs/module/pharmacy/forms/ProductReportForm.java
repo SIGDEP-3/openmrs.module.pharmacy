@@ -26,6 +26,7 @@ public class ProductReportForm extends ProductOperationForm {
         setReportType(productReport.getReportType());
         setReportPeriod(productReport.getReportPeriod());
         setReportInfo(productReport.getReportInfo());
+        setUrgent(productReport.getUrgent());
         if (productReport.getTreatmentDate() != null) {
             setTreatmentDate(productReport.getTreatmentDate());
         }
@@ -39,6 +40,7 @@ public class ProductReportForm extends ProductOperationForm {
         productReport.setReportType(getReportType());
         productReport.setReportPeriod(getReportPeriod());
         productReport.setReportInfo(getReportInfo());
+        productReport.setUrgent(getUrgent());
         if (getTreatmentDate() != null) {
             productReport.setTreatmentDate(getTreatmentDate());
         }

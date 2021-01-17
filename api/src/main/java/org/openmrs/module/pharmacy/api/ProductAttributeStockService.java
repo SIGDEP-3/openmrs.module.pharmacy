@@ -68,5 +68,5 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
-    Integer getAllProductAttributeStockByProductCount(Product product, Location location);
+    Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren);
 }

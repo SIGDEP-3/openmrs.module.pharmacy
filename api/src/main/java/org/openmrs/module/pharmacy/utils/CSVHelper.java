@@ -154,7 +154,17 @@ public class CSVHelper {
 
             for (CSVRecord csvRecord : csvRecords) {
                 Product product = productService().getOneProductByCode(csvRecord.get(0));
-                if (product != null) {
+                if (product != null && report.getProductProgram().getProducts().contains(product)) {
+//                    System.out.println("|---------------------------> Code  : " + product.getCode() );
+//                    System.out.println("|---------------------------> SI    : " + Double.parseDouble(csvRecord.get(3)) );
+//                    System.out.println("|---------------------------> QR    : " + Double.parseDouble(csvRecord.get(4)) );
+//                    System.out.println("|---------------------------> QD    : " + Double.parseDouble(csvRecord.get(5)) );
+//                    System.out.println("|---------------------------> QL    : " + Double.parseDouble(csvRecord.get(6)) );
+//                    System.out.println("|---------------------------> QA    : " + Double.parseDouble(csvRecord.get(7)) );
+//                    System.out.println("|---------------------------> SDU   : " + Double.parseDouble(csvRecord.get(8)) );
+//                    System.out.println("|---------------------------> NDR   : " + Double.parseDouble(csvRecord.get(9)) );
+//                    System.out.println("|---------------------------> DM1   : " + Double.parseDouble(csvRecord.get(10)) );
+//                    System.out.println("|---------------------------> DM2   : " + Double.parseDouble(csvRecord.get(11)) );
                     otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(3)), "SI", report));
                     otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(4)), "QR", report));
                     otherFluxes.add(OperationUtils.createProductAttributeOtherFlux(product, Double.parseDouble(csvRecord.get(5)), "QD", report));

@@ -8,7 +8,21 @@
 	if (jQuery) {
 		jQuery(document).ready(function (){
 			jQuery('.s2').select2();
+
+			jQuery('[data-toggle="tooltip"]').tooltip();
+
+			jQuery('#customFile').on('change',function(){
+				//get the file name
+				const fileName = $(this).val();
+				if (fileName) {
+					let tFileName = fileName.split('\\')
+					jQuery(this).next('.custom-file-label').html(tFileName[tFileName.length - 1]);
+				} else {
+					jQuery(this).next('.custom-file-label').html("Choisir le fichier pour importation");
+				}
+			});
 		});
+
 	}
 </script>
 

@@ -26,6 +26,7 @@ import org.openmrs.module.pharmacy.ProductAttribute;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.List;
 
@@ -142,10 +143,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Integer getAllProductAttributeStockByProductCount(Product product, Location location) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
+	public Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location IN :location ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
-				.setParameter("location", location);
+				.setParameter("location", !includeChildren ? location : OperationUtils.getUserLocations());
 		List<ProductAttributeStock> stocks = query.list();
 		Integer quantity = 0;
 		for (ProductAttributeStock stock : stocks) {

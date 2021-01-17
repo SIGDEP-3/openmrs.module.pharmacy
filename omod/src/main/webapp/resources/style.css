@@ -75,3 +75,81 @@ a.text-decoration-none {
 .bg-gray { background-color: lightgray;}
 
 
+/*right position*/
+.tooltipright{
+    position: relative;
+    display: inline-block;
+    border-bottom: 2px dotted blue;
+}
+.tooltipright .toolttext {
+    visibility: hidden;
+    width: 200px;
+    height:100px;
+    background-color:lightsalmon;
+    color: black;
+    text-align: center;
+    border-radius: 4px;
+    padding: 8px ;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 0;
+    left: 110%;
+}
+.tooltipright .toolttext {
+    visibility: visible;
+}
+/*left position*/
+.tooltipleft{
+    position: relative;
+    display: inline-block;
+    border-bottom: 2px dotted blue;
+}
+.tooltipleft .toolttextleft {
+    visibility: hidden;
+    width: 200px;
+    height:50px;
+    background-color:lightsalmon;
+    color: black;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px ;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+}
+.tooltipleft:hover .toolttextleft {
+    visibility: visible;
+}
+
+.arrowpopup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.arrowpopup .tooltiptext {
+    visibility: hidden;
+    width: 280px;
+    background-color: #34ace0;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    padding: 9px ;
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -140px;
+}
+.arrowpopup .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #34ace0 transparent transparent transparent;
+}
+.arrowpopup .show {
+    visibility: visible;
+}

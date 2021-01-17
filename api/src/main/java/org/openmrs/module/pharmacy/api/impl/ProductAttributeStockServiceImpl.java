@@ -113,8 +113,8 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     }
 
     @Override
-    public Integer getAllProductAttributeStockByProductCount(Product product, Location location) {
-        return dao.getAllProductAttributeStockByProductCount(product, location);
+    public Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren) {
+        return dao.getAllProductAttributeStockByProductCount(product, location, includeChildren);
     }
 
 }

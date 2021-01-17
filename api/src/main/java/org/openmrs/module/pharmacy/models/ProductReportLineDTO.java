@@ -3,24 +3,24 @@ package org.openmrs.module.pharmacy.models;
 import java.io.Serializable;
 
 public class ProductReportLineDTO implements Serializable {
-    private Integer productId;
-    private String code;
-    private String retailName;
-    private String retailUnit;
-    private Integer initialQuantity;
-    private Integer receivedQuantity;
-    private Integer distributedQuantity;
-    private Integer lostQuantity;
-    private Integer adjustmentQuantity;
-    private Integer quantityInStock;
-    private Integer numDaysOfRupture;
-    private Integer numSitesInRupture;
-    private Integer quantityDistributed2monthAgo;
-    private Integer quantityDistributed1monthAgo;
-    private Double averageMonthlyConsumption;
-    private Double calculatedAverageMonthlyConsumption;
-    private Double quantityToOrder;
-    private Boolean asserted;
+    protected Integer productId;
+    protected String code;
+    protected String retailName;
+    protected String retailUnit;
+    protected Integer initialQuantity;
+    protected Integer receivedQuantity;
+    protected Integer distributedQuantity;
+    protected Integer lostQuantity;
+    protected Integer adjustmentQuantity;
+    protected Integer quantityInStock;
+    protected Integer numDaysOfRupture;
+    protected Integer numSitesInRupture;
+    protected Integer quantityDistributed2monthAgo;
+    protected Integer quantityDistributed1monthAgo;
+    protected Double averageMonthlyConsumption;
+    protected Double calculatedAverageMonthlyConsumption;
+    protected Double quantityToOrder;
+    protected Boolean asserted;
 
     public ProductReportLineDTO() {
     }

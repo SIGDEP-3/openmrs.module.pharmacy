@@ -139,8 +139,8 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-10">
-                                <label class="mb-2">Urgent ?</label> <br>
-                                <form:checkbox path="urgent" cssClass=""/>
+                                <label class="mb-2">Type de rapport <span class="required">*</span></label> <br>
+                                <form:checkbox path="urgent" label="Urgent" cssClass="mr-2"/>
                                 <form:errors path="urgent" cssClass="error"/>
                             </div>
 

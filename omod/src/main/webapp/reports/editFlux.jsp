@@ -151,7 +151,7 @@
                     <fmt:formatDate value="${productReport.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                 </td>
                 <td>Urgent</td>
-                <td class="font-weight-bold text-info">${productReport.urgent}</td>
+                <td class="font-weight-bold text-info">${productReport.urgent ==true ? 'Oui' : 'Non'}</td>
             </tr>
             <tr>
 

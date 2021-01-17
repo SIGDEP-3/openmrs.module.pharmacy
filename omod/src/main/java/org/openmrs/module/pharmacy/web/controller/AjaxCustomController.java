@@ -231,4 +231,28 @@ public class AjaxCustomController {
 
         return new ResponseEntity<String>("Location is retired successfully", HttpStatus.OK);
     }
+
+
+    @RequestMapping(value = "save-distribution-flux.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> saveDistributionAttributeFluxAjax(
+            @RequestParam("code") String code,
+            @RequestParam("operationId") Integer operationId,
+            @RequestParam("quantity") Integer quantity) {
+
+        Product product = Context.getService(ProductService.class).getOneProductByCode(code);
+
+        List<ProductAttributeFlux> attributeFluxes = OperationUtils.createProductAttributeFluxes(
+                product,
+                service().getOneProductOperationById(operationId),
+                quantity
+        );
+
+        for (ProductAttributeFlux flux : attributeFluxes) {
+            attributeFluxService().saveProductAttributeFlux(flux);
+        }
+
+        return new ResponseEntity<String>("Saved successfully", HttpStatus.OK);
+    }
+
 }
