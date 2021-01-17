@@ -485,7 +485,7 @@ public class PharmacyProductDistributionManageController {
         if (operation != null) {
             OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
             operation.setOperationNumber(OperationUtils.generateNumber());
-//            operation.setTreatmentDate(new Date());
+            operation.setTreatmentDate(new Date());
             ProductReport childReport = operation.getChildLocationReport();
             childReport.setOperationStatus(OperationStatus.TREATED);
             reportService().saveProductReport(childReport);
