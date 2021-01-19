@@ -4,10 +4,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.ProductReportService;
+import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReportType;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
-import java.util.Date;
+import java.util.*;
 
 public class ProductReportForm extends ProductOperationForm {
     private ReportType reportType;
@@ -15,10 +17,11 @@ public class ProductReportForm extends ProductOperationForm {
     private String reportInfo;
     private Date treatmentDate;
     private Boolean isUrgent;
+    private Set<Integer> productIds = new HashSet<Integer>();
 
     public ProductReportForm() {
         super();
-        setIncidence(Incidence.NEGATIVE);
+//        setIncidence(Incidence.NEGATIVE);
     }
 
     public void setProductReport(ProductReport productReport) {
@@ -27,11 +30,17 @@ public class ProductReportForm extends ProductOperationForm {
         setReportPeriod(productReport.getReportPeriod());
         setReportInfo(productReport.getReportInfo());
         setUrgent(productReport.getUrgent());
+        setIncidence(productReport.getIncidence());
         if (productReport.getTreatmentDate() != null) {
             setTreatmentDate(productReport.getTreatmentDate());
         }
         if (productReport.getReportInfo() != null) {
             setReportInfo(productReport.getReportInfo());
+        }
+        if (productReport.getUrgent()) {
+            for (String code : productReport.getReportInfo().split(",")) {
+                getProductIds().add(productService().getOneProductByCode(code).getProductId());
+            }
         }
     }
 
@@ -46,6 +55,13 @@ public class ProductReportForm extends ProductOperationForm {
         }
         if (getReportInfo() != null) {
             productReport.setReportInfo(getReportInfo());
+        }
+        if (getUrgent()) {
+            List<String> codes = new ArrayList<>();
+            for (Integer id : getProductIds()) {
+                codes.add(productService().getOneProductById(id).getCode());
+            }
+            productReport.setReportInfo(OperationUtils.join(",", codes));
         }
         return productReport;
     }
@@ -92,5 +108,17 @@ public class ProductReportForm extends ProductOperationForm {
 
     public Date getTreatmentDate() {
         return treatmentDate;
+    }
+
+    public Set<Integer> getProductIds() {
+        return productIds;
+    }
+
+    public void setProductIds(Set<Integer> productIds) {
+        this.productIds = productIds;
+    }
+
+    private ProductService productService() {
+        return Context.getService(ProductService.class);
     }
 }

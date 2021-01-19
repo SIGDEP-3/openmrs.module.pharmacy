@@ -20,6 +20,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductMovementService;
 import org.openmrs.module.pharmacy.api.db.ProductMovementDAO;
 
@@ -60,6 +61,11 @@ public class ProductMovementServiceImpl extends BaseOpenmrsService implements Pr
     @Override
     public List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
         return dao.getAllProductMovementEntry(location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
+    public List<ProductMovementEntry> getAllProductMovementEntry(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate) {
+        return dao.getAllProductMovementEntry(productProgram, location, includeVoided, startDate, endDate);
     }
 
     @Override
@@ -112,6 +118,11 @@ public class ProductMovementServiceImpl extends BaseOpenmrsService implements Pr
     @Override
     public List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
         return dao.getAllProductMovementOut(location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
+    public List<ProductMovementOut> getAllProductMovementOut(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate) {
+        return dao.getAllProductMovementOut(productProgram, location, includeVoided, startDate, endDate);
     }
 
     @Override

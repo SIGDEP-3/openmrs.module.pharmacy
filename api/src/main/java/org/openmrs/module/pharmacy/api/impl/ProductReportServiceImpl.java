@@ -119,33 +119,33 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
-    public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return dao.getProductReceivedQuantityInLastOperationByProduct(product, inventory, location);
+    public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return dao.getProductReceivedQuantityInLastOperationByProduct(product, inventory, location, isUrgent);
     }
 
     @Override
-    public Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return getDao().getProductInitialQuantityByProduct(product, inventory, location);
+    public Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return getDao().getProductInitialQuantityByProduct(product, inventory, location, isUrgent);
     }
 
     @Override
-    public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return dao.getProductQuantityInStockOperationByProduct(product, inventory, location);
+    public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return dao.getProductQuantityInStockOperationByProduct(product, inventory, location, isUrgent);
     }
 
     @Override
-    public Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return dao.getProductQuantityLostInLastOperationByProduct(product, inventory, location);
+    public Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return dao.getProductQuantityLostInLastOperationByProduct(product, inventory, location, isUrgent);
     }
 
     @Override
-    public Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return dao.getProductQuantityAdjustmentInLastOperationByProduct(product, inventory, location);
+    public Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return dao.getProductQuantityAdjustmentInLastOperationByProduct(product, inventory, location, isUrgent);
     }
 
     @Override
-    public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-        return dao.getProductQuantityDistributedInLastOperationByProduct(product, inventory, location);
+    public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) {
+        return dao.getProductQuantityDistributedInLastOperationByProduct(product, inventory, location, isUrgent);
     }
 
     @Override

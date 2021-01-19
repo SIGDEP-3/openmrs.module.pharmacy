@@ -17,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
+import org.openmrs.module.pharmacy.ProductProgram;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ public interface ProductMovementDAO {
 
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided);
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementEntry> getAllProductMovementEntry(ProductProgram productProgram, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location);
 	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided);
 	ProductMovementEntry getOneProductMovementEntryById(Integer id);
@@ -39,6 +41,7 @@ public interface ProductMovementDAO {
 
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided);
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductMovementOut> getAllProductMovementOut(ProductProgram productProgram, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	List<ProductMovementOut> getAllProductMovementOut(Location location);
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
 	ProductMovementOut getOneProductMovementOutById(Integer id);

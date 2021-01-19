@@ -55,6 +55,8 @@ public interface ProductDispensationService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
 	List<ProductDispensation> getAllProductDispensations(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
+	List<ProductDispensation> getAllProductDispensations(ProductProgram program, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
 	List<ProductDispensation> getAllProductDispensations(Location location) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_DISPENSATION})
 	List<ProductDispensation> getAllProductDispensations(Boolean includeVoided) throws APIException;
@@ -108,5 +110,8 @@ public interface ProductDispensationService extends OpenmrsService {
 	DispensationTransformationResultDTO transformDispensation(Location location);
 	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
+	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
 	Integer countPatientToTransform(Location location);
+	Boolean isDead(Patient patient, Location location);
+	Boolean isTransferred(Patient patient, Location location);
 }

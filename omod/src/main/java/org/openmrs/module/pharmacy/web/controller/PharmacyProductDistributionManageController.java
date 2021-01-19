@@ -275,8 +275,8 @@ public class PharmacyProductDistributionManageController {
                 }
             }
             modelMap.addAttribute("isAsserted", asserted);
-            if (report.getOperationNumber() != null && report.getOperationNumber().contains("IMPORTED BY PARENT")) {
-                if (asserted) {
+            if (report.getReportInfo() != null) {
+                if (asserted && report.getReportInfo().contains("IMPORT COMPLETED")) {
                     ProductReport childReport = productDistribution.getChildLocationReport();
                     childReport.setOperationStatus(OperationStatus.SUBMITTED);
                     reportService().saveProductReport(childReport);
@@ -362,13 +362,11 @@ public class PharmacyProductDistributionManageController {
                     List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), childReport);
 
                     for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
-                        System.out.println("|---------------------------> Product : " + otherFlux.getProduct().getCode() + ", Label : " +
-                                otherFlux.getLabel() + ", Quantity : " + otherFlux.getQuantity() );
                         attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
-                    if (childReport.getOperationNumber() == null || childReport.getOperationNumber().isEmpty()
-                            || !childReport.getOperationNumber().contains("IMPORTED BY PARENT")) {
-                        childReport.setOperationNumber("IMPORTED BY PARENT");
+                    if (childReport.getReportInfo() == null || childReport.getReportInfo().isEmpty()
+                            || !childReport.getReportInfo().contains("IMPORTED BY PARENT")) {
+                        childReport.setReportInfo("IMPORTED BY PARENT");
                         reportService().saveProductReport(childReport);
                     }
 
@@ -397,6 +395,9 @@ public class PharmacyProductDistributionManageController {
         reportService().saveProductReport(distribution);
         if (!distribution.getChildLocationReport().getOperationStatus().equals(OperationStatus.SUBMITTED)) {
             ProductReport childProductReport = distribution.getChildLocationReport();
+            if (childProductReport.getReportInfo() != null) {
+                childProductReport.setReportInfo("IMPORT COMPLETED");
+            }
             childProductReport.setOperationStatus(OperationStatus.SUBMITTED);
             reportService().saveProductReport(childProductReport);
         }
@@ -483,7 +484,7 @@ public class PharmacyProductDistributionManageController {
         ProductReport operation = reportService().getOneProductReportById(distributionId);
 
         if (operation != null) {
-            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
+//            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
             operation.setOperationNumber(OperationUtils.generateNumber());
             operation.setTreatmentDate(new Date());
             ProductReport childReport = operation.getChildLocationReport();

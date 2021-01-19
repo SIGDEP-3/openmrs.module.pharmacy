@@ -43,7 +43,7 @@
                     <form method="POST" enctype="multipart/form-data" class="mb-3"
                           action="${pageContext.request.contextPath}/module/pharmacy/reports/upload.form">
                         <div class="row align-items-center">
-                            <div class="col-8">
+                            <div class="col-6">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="customFile" name="file" data-toggle="tooltip" data-html="true"
                                            title="">
@@ -59,9 +59,14 @@
                                 <div class="arrowpopup" onclick="showTooltip()"><i class="fa fa-question-circle fa-2x text-info"></i>
                                     <span class="tooltiptext" id="tooltipdemo">
                                         Format du nom du fichier : prefix_programme_periode[_U].csv <br>
-                                                  Ex : <br><b><u><em>1010-01_PNLSARVIO_Janvier 2020[_U]</em></u></b>
+                                                  Ex : <br><b>1010-01_PNLSARVIO_Janvier 2020[_U]</b>
                                     </span>
                                 </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
+                                    Saisie du rapport
+                                </button>
                             </div>
 
                         </div>
@@ -154,7 +159,21 @@
                                 <td><fmt:formatDate value="${report.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${report.reportPeriod}</td>
                                 <td>${report.productProgram.name}</td>
-                                <td>${report.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (report.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
+                                <td>
+                                    <c:if test="${report.operationStatus == 'NOT_COMPLETED'}">
+                                        EN COURS DE SAISIE
+                                    </c:if>
+                                    <c:if test="${report.operationStatus == 'VALIDATED'}">
+                                        RAPPORT VALID&Eacute;
+                                    </c:if>
+                                    <c:if test="${report.operationStatus == 'SUBMITTED'}">
+                                        SOUMIS
+                                    </c:if>
+                                    <c:if test="${report.operationStatus == 'TREATED'}">
+                                        RAPPORT TRAIT&Eacute;
+                                    </c:if>
+<%--                                        ${report.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (report.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}--%>
+                                </td>
                                 <td>
                                     <c:url value="/module/pharmacy/reports/editFlux.form" var="editUrl">
                                         <c:param name="id" value="${report.productOperationId}"/>

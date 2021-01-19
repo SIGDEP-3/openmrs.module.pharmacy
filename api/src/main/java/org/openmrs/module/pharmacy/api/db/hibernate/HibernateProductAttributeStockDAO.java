@@ -125,7 +125,7 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location AND s.quantityInStock <> 0 ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product);
 		query.setParameter("location", userLocation);
 

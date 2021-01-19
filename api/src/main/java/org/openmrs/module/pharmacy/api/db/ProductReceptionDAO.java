@@ -15,6 +15,7 @@ package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductAttribute;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
@@ -30,6 +31,7 @@ public interface ProductReceptionDAO {
 
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductReception> getAllProductReceptions(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
 	List<ProductReception> getAllProductReceptions(Location location);
 	List<ProductReception> getAllProductReceptions(Boolean includeVoided);
 	ProductReception getOneProductReceptionById(Integer id);

@@ -38,6 +38,7 @@ public interface ProductDispensationDAO {
 	 */
 	List<ProductDispensation> getAllProductDispensations(Location location, Boolean includeVoided);
 	List<ProductDispensation> getAllProductDispensations(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+	List<ProductDispensation> getAllProductDispensations(ProductProgram program, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	List<ProductDispensation> getAllProductDispensations(Location location);
 	List<ProductDispensation> getAllProductDispensations(Boolean includeVoided);
 	ProductDispensation getOneProductDispensationById(Integer id);
@@ -76,4 +77,7 @@ public interface ProductDispensationDAO {
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
 
     Integer countPatientToTransform(Location location);
+
+	Boolean isDead(Patient patient, Location location);
+	Boolean isTransferred(Patient patient, Location location);
 }

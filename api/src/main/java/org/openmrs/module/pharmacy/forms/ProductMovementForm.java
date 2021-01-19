@@ -55,6 +55,7 @@ public class ProductMovementForm extends ProductOperationForm {
         super.setProductOperation(productMovementOut);
         this.setStockOutType(productMovementOut.getStockOutType());
         this.setProductProgramId(productMovementOut.getProductProgram().getProductProgramId());
+        this.setIncidence(productMovementOut.getIncidence());
         if (productMovementOut.getRecipient() != null){
             this.setEntityId(productMovementOut.getRecipient().getProductExchangeEntityId());
         }
@@ -65,6 +66,7 @@ public class ProductMovementForm extends ProductOperationForm {
         this.setEntityId(productMovementEntry.getSender().getProductExchangeEntityId());
         this.setProductProgramId(productMovementEntry.getProductProgram().getProductProgramId());
         this.setStockEntryType(productMovementEntry.getStockEntryType());
+        this.setIncidence(productMovementEntry.getIncidence());
     }
     public ProductMovementOut getProductMovementOut() {
         ProductMovementOut productMovementOut = (ProductMovementOut) getProductOperation(new ProductMovementOut());

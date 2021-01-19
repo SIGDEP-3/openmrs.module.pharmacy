@@ -19,7 +19,7 @@ public class ProductDistributionForm extends ProductReportForm {
     public ProductDistributionForm() {
         super();
         setIncidence(Incidence.NEGATIVE);
-        setReportType(ReportType.CLIENT_REPORT);
+        setReportType(ReportType.NOT_CLIENT_REPORT);
     }
 
     public Integer getReportLocationId() {

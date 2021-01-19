@@ -43,22 +43,6 @@ public class DispensationAttributeFluxForm {
         this.productOperationId = productOperationId;
     }
 
-//
-//    public Integer getLocationId() {
-//        return locationId;
-//    }
-//
-//    public void setLocationId(Integer locationId) {
-//        this.locationId = locationId;
-//    }
-//
-//    public String getUuid() {
-//        return uuid;
-//    }
-//
-//    public void setUuid(String uuid) {
-//        this.uuid = uuid;
-//    }
 
     public Integer getDispensingQuantity() {
         return dispensingQuantity;
@@ -91,51 +75,6 @@ public class DispensationAttributeFluxForm {
                     dispensationService().getOneProductDispensationById(getProductOperationId()),
                     getDispensingQuantity()
             );
-//            List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(productService().getOneProductById(productId), OperationUtils.getUserLocation());
-//            Integer quantity = getDispensingQuantity();
-//            int countFlux = 0;
-//            int countOldFlux = dispensationService().getOneProductDispensationById(getProductOperationId()).getProductAttributeFluxes().size();
-//            for (ProductAttributeStock stock : productAttributeStocks) {
-//                countFlux ++;
-//                ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
-//                        stock.getProductAttribute(),
-//                        dispensationService().getOneProductDispensationById(getProductOperationId())
-//                );
-//                if (productAttributeFlux == null) {
-//                    productAttributeFlux = new ProductAttributeFlux();
-////                    productAttributeFlux.setQuantity(getDispensingQuantity());
-//                    productAttributeFlux.setLocation(OperationUtils.getUserLocation());
-//                    productAttributeFlux.setProductAttribute(stock.getProductAttribute());
-//                    productAttributeFlux.setOperationDate(dispensationService().getOneProductDispensationById(getProductOperationId()).getOperationDate());
-//                    productAttributeFlux.setProductOperation(dispensationService().getOneProductDispensationById(getProductOperationId()));
-//                }
-//
-//                if (quantity <= stock.getQuantityInStock()){
-//                    productAttributeFlux.setQuantity(quantity);
-//                    fluxes.add(productAttributeFlux);
-//                    break;
-//                } else {
-//                    productAttributeFlux.setQuantity(stock.getQuantityInStock());
-//                    quantity -= stock.getQuantityInStock();
-//                    fluxes.add(productAttributeFlux);
-//                    if (quantity.equals(0)) {
-//                        break;
-//                    }
-//                }
-//            }
-//            if (countOldFlux > countFlux) {
-//                int remainFluxesCount = countOldFlux - countFlux;
-//                List<ProductAttributeFlux> attributeFluxes =
-//                        OperationUtils.getLastElements(
-//                                dispensationService().getOneProductDispensationById(
-//                                        getProductOperationId()).getProductAttributeFluxes(),
-//                                remainFluxesCount
-//                        );
-//                for (ProductAttributeFlux flux : attributeFluxes) {
-//                    flux.setQuantity(0);
-//                    fluxes.add(flux);
-//                }
-//            }
         }
 
         return fluxes;
@@ -214,10 +153,6 @@ public class DispensationAttributeFluxForm {
 
     private ProductAttributeFluxService fluxService() {
         return Context.getService(ProductAttributeFluxService.class);
-    }
-
-    private ProductAttributeService attributeService() {
-        return Context.getService(ProductAttributeService.class);
     }
 
     private ProductAttributeStockService stockService() {

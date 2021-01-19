@@ -164,6 +164,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("reportPeriod", reportPeriod))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("location", location))
+//				.add(Restrictions.ne("operationStatus", OperationStatus.NOT_COMPLETED))
+				.add(Restrictions.isNull("reportLocation"))
 				.add(Restrictions.eq("voided", includeVoided))
 				.uniqueResult();
 	}
@@ -194,62 +196,65 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReportLineDTO> getProductReportFluxDTOs(ProductReport productReport) {
-		String sqlQuery =
-				"SELECT " +
-						"ppaf.product_attribute_flux_id as productAttributeFluxId, " +
-						"ppr.product_operation_id as productOperationId, " +
-						"pp.product_id as productId, " +
-						"pp.code as code, " +
-						"pp.retail_name as retailName, " +
-						"pp.wholesale_name as wholesaleName, " +
-						"pp.unit_conversion as unitConversion, " +
-						"ppu.name as retailUnit, " +
-						"ppu2.name as wholesaleUnit, " +
-						"ppa.batch_number as batchNumber, " +
-						"ppa.expiry_date as expiryDate, " +
-						"ppaf.quantity as quantity, " +
-						"ppaof.quantity as quantityToDeliver, " +
-						"ppaf.observation as observation, " +
-						"ppaf.date_created as dateCreated " +
-						"FROM pharmacy_product_reception ppr " +
-						"LEFT JOIN pharmacy_product_operation ppo on ppr.product_operation_id = ppo.product_operation_id " +
-						"LEFT JOIN pharmacy_product_attribute_flux ppaf on ppo.product_operation_id = ppaf.operation_id " +
-						"LEFT JOIN pharmacy_product_attribute ppa on ppaf.product_attribute_id = ppa.product_attribute_id " +
-						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof on ppo.product_operation_id = ppaof.operation_id AND ppaof.product_attribute_id = ppa.product_attribute_id " +
-						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
-						"LEFT JOIN pharmacy_product_unit ppu on pp.product_retail_unit = ppu.product_unit_id " +
-						"LEFT JOIN pharmacy_product_unit ppu2 on pp.product_wholesale_unit = ppu2.product_unit_id " +
-						"WHERE ppr.product_operation_id = :productOperationId AND product_attribute_flux_id IS NOT NULL " +
-						"ORDER BY ppaf.date_created DESC ";
-
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
-				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
-				.addScalar("productOperationId", StandardBasicTypes.INTEGER)
-				.addScalar("productId", StandardBasicTypes.INTEGER)
-				.addScalar("code", StandardBasicTypes.STRING)
-				.addScalar("retailName", StandardBasicTypes.STRING)
-				.addScalar("wholesaleName", StandardBasicTypes.STRING)
-				.addScalar("retailUnit", StandardBasicTypes.STRING)
-				.addScalar("wholesaleUnit", StandardBasicTypes.STRING)
-				.addScalar("batchNumber", StandardBasicTypes.STRING)
-				.addScalar("expiryDate", StandardBasicTypes.DATE)
-				.addScalar("quantityToDeliver", StandardBasicTypes.INTEGER)
-				.addScalar("unitConversion", StandardBasicTypes.DOUBLE)
-				.addScalar("quantity", StandardBasicTypes.INTEGER)
-				.addScalar("observation", StandardBasicTypes.STRING)
-				.addScalar("dateCreated", StandardBasicTypes.DATE)
-				.setParameter("productOperationId", productReport.getProductOperationId())
-				.setResultTransformer(new AliasToBeanResultTransformer(ProductReportLineDTO.class));
-		try {
-			return query.list();
-		} catch (HibernateException e) {
-			System.out.println(e.getMessage());
-		}
+//		String sqlQuery =
+//				"SELECT " +
+//						"ppaf.product_attribute_flux_id as productAttributeFluxId, " +
+//						"ppr.product_operation_id as productOperationId, " +
+//						"pp.product_id as productId, " +
+//						"pp.code as code, " +
+//						"pp.retail_name as retailName, " +
+//						"pp.wholesale_name as wholesaleName, " +
+//						"pp.unit_conversion as unitConversion, " +
+//						"ppu.name as retailUnit, " +
+//						"ppu2.name as wholesaleUnit, " +
+//						"ppa.batch_number as batchNumber, " +
+//						"ppa.expiry_date as expiryDate, " +
+//						"ppaf.quantity as quantity, " +
+//						"ppaof.quantity as quantityToDeliver, " +
+//						"ppaf.observation as observation, " +
+//						"ppaf.date_created as dateCreated " +
+//						"FROM pharmacy_product_reception ppr " +
+//						"LEFT JOIN pharmacy_product_operation ppo on ppr.product_operation_id = ppo.product_operation_id " +
+//						"LEFT JOIN pharmacy_product_attribute_flux ppaf on ppo.product_operation_id = ppaf.operation_id " +
+//						"LEFT JOIN pharmacy_product_attribute ppa on ppaf.product_attribute_id = ppa.product_attribute_id " +
+//						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof on ppo.product_operation_id = ppaof.operation_id AND ppaof.product_attribute_id = ppa.product_attribute_id " +
+//						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
+//						"LEFT JOIN pharmacy_product_unit ppu on pp.product_retail_unit = ppu.product_unit_id " +
+//						"LEFT JOIN pharmacy_product_unit ppu2 on pp.product_wholesale_unit = ppu2.product_unit_id " +
+//						"WHERE ppr.product_operation_id = :productOperationId AND product_attribute_flux_id IS NOT NULL " +
+//						"ORDER BY ppaf.date_created DESC ";
+//
+//		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+//				.addScalar("productAttributeFluxId", StandardBasicTypes.INTEGER)
+//				.addScalar("productOperationId", StandardBasicTypes.INTEGER)
+//				.addScalar("productId", StandardBasicTypes.INTEGER)
+//				.addScalar("code", StandardBasicTypes.STRING)
+//				.addScalar("retailName", StandardBasicTypes.STRING)
+//				.addScalar("wholesaleName", StandardBasicTypes.STRING)
+//				.addScalar("retailUnit", StandardBasicTypes.STRING)
+//				.addScalar("wholesaleUnit", StandardBasicTypes.STRING)
+//				.addScalar("batchNumber", StandardBasicTypes.STRING)
+//				.addScalar("expiryDate", StandardBasicTypes.DATE)
+//				.addScalar("quantityToDeliver", StandardBasicTypes.INTEGER)
+//				.addScalar("unitConversion", StandardBasicTypes.DOUBLE)
+//				.addScalar("quantity", StandardBasicTypes.INTEGER)
+//				.addScalar("observation", StandardBasicTypes.STRING)
+//				.addScalar("dateCreated", StandardBasicTypes.DATE)
+//				.setParameter("productOperationId", productReport.getProductOperationId())
+//				.setResultTransformer(new AliasToBeanResultTransformer(ProductReportLineDTO.class));
+//		try {
+//			return query.list();
+//		} catch (HibernateException e) {
+//			System.out.println(e.getMessage());
+//		}
 		return null;
 	}
 
 	@Override
-	public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
+	public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
+		if (isUrgent) {
+			return getCurrentMonthReceivedQuantity(product, inventory);
+		}
 		List<ProductReception> productReceptions = Context.getService(ProductReceptionService.class).getAllProductReceptions(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
 		Integer quantity = 0;
 		for (ProductReception reception :
@@ -260,7 +265,10 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location) {
+	public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
+		if (isUrgent) {
+			return Context.getService(ProductAttributeStockService.class).getAllProductAttributeStockByProductCount(product, location, false);
+		}
 		Double quantity = 0.0;
 		for (ProductAttributeFlux flux : inventory.getProductAttributeFluxes()) {
 			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
@@ -272,9 +280,13 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location) {
-		ProductInventory inventoryBeforeLatest = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+	public Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
 		Double quantity = 0.0;
+		if (isUrgent) {
+			return getCurrentMonthInitialQuantity(product, inventory);
+		}
+		ProductInventory inventoryBeforeLatest = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+
 		for (ProductAttributeFlux flux : inventoryBeforeLatest.getProductAttributeFluxes()) {
 			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
 				quantity += flux.getQuantity();
@@ -284,9 +296,12 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-		List<ProductMovementOut> productMovementOuts = Context.getService(ProductMovementService.class).getAllProductMovementOut(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+	public Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
 		Double quantity = 0.0;
+		if (isUrgent) {
+			return getCurrentMonthLostQuantity(product, inventory);
+		}
+		List<ProductMovementOut> productMovementOuts = Context.getService(ProductMovementService.class).getAllProductMovementOut(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
 		for (ProductMovementOut movementOut :
 				productMovementOuts) {
 			if (!movementOut.getStockOutType().equals(StockOutType.BACK_TO_SUPPLIER)) {
@@ -301,9 +316,13 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-		List<ProductTransfer> productTransfers = Context.getService(ProductTransferService.class).getAllProductTransfers(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+	public Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
+		if (isUrgent) {
+			return getCurrentMonthAdjustmentQuantity(product, inventory);
+		}
 		Double quantity = 0.0;
+		List<ProductTransfer> productTransfers = Context.getService(ProductTransferService.class).getAllProductTransfers(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
+
 		for (ProductTransfer productTransfer : productTransfers) {
 			quantity += getFluxQuantity(productTransfer, product);
 		}
@@ -321,7 +340,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return getChildLocationReportProductQuantity(location, product, inventory, "QA", quantity);
 	}
 
-	private Integer getFluxQuantity(ProductOperation operation, Product product) {
+	private Integer getFluxQuantity(ProductOperation operation, Product product) throws HibernateException {
 		Integer quantity = 0;
 		for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
 			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
@@ -336,7 +355,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) {
+	public Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) throws HibernateException {
 		if (location.getChildLocations().size() != 0) {
 			Integer quantity = 0;
 			String reportPeriod = inventory.getOperationNumber().split("-")[1];
@@ -362,14 +381,89 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location) {
-		Double quantity = getDistributionQuantity(product, inventory, location);
-		System.out.println("--------------------------------------> getDistributionQuantity " + quantity);
+	public Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
+//		System.out.println("--------------------------------------> getDistributionQuantity " + quantity);
+		if (isUrgent) {
+			return getCurrentMonthQuantityDistributed(product, inventory);
+		}
+		Double quantity = 0.;
+		quantity = getDistributionQuantity(product, inventory, location);
 		return getChildLocationReportProductQuantity(location, product, inventory, "QD", quantity);
 	}
 
+	private Integer getCurrentMonthQuantityDistributed(Product product, ProductInventory inventory) {
+		Integer quantity = 0;
+		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class)
+				.getAllProductDispensations(inventory.getProductProgram(),
+						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+		for (ProductDispensation dispensation : dispensations) {
+			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product))
+					quantity += flux.getQuantity();
+			}
+		}
+
+		return quantity;
+	}
+
+	private Integer getCurrentMonthInitialQuantity(Product product, ProductInventory inventory) throws HibernateException {
+		Integer quantity = 0;
+		for (ProductAttributeFlux flux : inventory.getProductAttributeFluxes()) {
+			if (flux.getProductAttribute().getProduct().equals(product))
+				quantity += flux.getQuantity();
+		}
+
+		return quantity;
+	}
+
+	private Integer getCurrentMonthReceivedQuantity(Product product, ProductInventory inventory) throws HibernateException {
+		Integer quantity = 0;
+		List<ProductReception> receptions = Context.getService(ProductReceptionService.class)
+				.getAllProductReceptions(inventory.getProductProgram(),
+						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+		for (ProductReception reception : receptions) {
+			for (ProductAttributeFlux flux : reception.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product))
+					quantity += flux.getQuantity();
+			}
+		}
+
+		return quantity;
+	}
+
+	private Integer getCurrentMonthLostQuantity(Product product, ProductInventory inventory) throws HibernateException {
+		Integer quantity = 0;
+		List<ProductMovementOut> movementOuts = Context.getService(ProductMovementService.class)
+				.getAllProductMovementOut(inventory.getProductProgram(),
+						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+		for (ProductMovementOut movementOut : movementOuts) {
+			for (ProductAttributeFlux flux : movementOut.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product))
+					quantity += flux.getQuantity();
+			}
+		}
+
+		return quantity;
+	}
+
+	private Integer getCurrentMonthAdjustmentQuantity(Product product, ProductInventory inventory) throws HibernateException {
+		Integer quantity = 0;
+		List<ProductMovementEntry> movementEntries = Context.getService(ProductMovementService.class)
+				.getAllProductMovementEntry(inventory.getProductProgram(),
+						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+		for (ProductMovementEntry movementEntry : movementEntries) {
+			for (ProductAttributeFlux flux : movementEntry.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product))
+					quantity += flux.getQuantity();
+			}
+		}
+
+		return quantity;
+	}
+
 	@Override
-	public Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+	public Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) throws HibernateException {
+		ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
 		if (report != null) {
 			return getReportQuantityDistributed(report, product, "QD").intValue();
 		}
@@ -378,7 +472,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location) {
+	public Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location) throws HibernateException {
 		ProductReport report = getLastProductReportByDate(location, inventory.getProductProgram(), inventory.getInventoryStartDate());
 		if (report != null) {
 			return getReportQuantityDistributed(report, product, "DM1").intValue();
@@ -391,13 +485,13 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return getDistributionQuantity(product, inventoryBeforeAntLast, location).intValue();
 	}
 
-	private Double getDistributionQuantity(Product product, ProductInventory inventory, Location location) {
+	private Double getDistributionQuantity(Product product, ProductInventory inventory, Location location) throws HibernateException {
 		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class).getAllProductDispensations(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
 		Double quantity = 0.0;
 		for (ProductDispensation dispensation : dispensations) {
 			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
 				if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
-					System.out.println("--------------------------------------> flux.getQuantity() " + flux.getQuantity());
+//					System.out.println("--------------------------------------> flux.getQuantity() " + flux.getQuantity());
 					quantity += flux.getQuantity();
 				}
 			}
@@ -405,7 +499,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return quantity;
 	}
 
-	private Double getReportQuantityDistributed(ProductReport report, Product product, String label) {
+	private Double getReportQuantityDistributed(ProductReport report, Product product, String label) throws HibernateException {
 		ProductAttributeOtherFlux otherFlux = Context.getService(ProductAttributeFluxService.class)
 				.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 						product,
@@ -420,7 +514,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return 0.0;
 	}
 
-	private Integer getChildLocationReportProductQuantity(Location location, Product product, ProductInventory inventory, String label, Double quantity) {
+	private Integer getChildLocationReportProductQuantity(Location location, Product product, ProductInventory inventory, String label, Double quantity) throws HibernateException {
 		if (location.getChildLocations().size() != 0) {
 			String reportPeriod = inventory.getOperationNumber().split("-")[1];
 			for (Location childLocation : location.getChildLocations()) {
@@ -444,7 +538,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided) {
+	public Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided) throws HibernateException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
 		int months = OperationUtils.getMonthsForCMM();
 		List<ProductReport> reports = criteria

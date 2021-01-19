@@ -87,6 +87,17 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<ProductDispensation> getAllProductDispensations(ProductProgram program, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductDispensation.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("productProgram", program))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<ProductDispensation> getAllProductDispensations(Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductDispensation.class);
 		return criteria.add(Restrictions.eq("location", location)).list();
@@ -588,4 +599,27 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		return encounter;
 	}
 
+	@Override
+	public Boolean isTransferred(Patient patient, Location location) {
+		Patient transferredPatient = (Patient) sessionFactory.getCurrentSession().createQuery(
+				"SELECT p FROM Patient p, Obs o " +
+						"WHERE p.patient = :patient AND o.person.personId = p.patient.patientId AND o.concept.conceptId = 164595 AND " +
+						" o.valueDatetime >= (SELECT MAX(e.encounterDatetime) FROM Encounter e WHERE e.patient = :patient AND e.encounterType.uuid = '' AND e.voided = false GROUP BY e.patient) AND " +
+						" o.voided = false AND o.location = :location"
+		)
+				.setParameter("patient", patient)
+				.setParameter("location", location).uniqueResult();
+		return transferredPatient != null;
+	}
+
+	@Override
+	public Boolean isDead(Patient patient, Location location) {
+		Patient deadPatient = (Patient) sessionFactory.getCurrentSession().createQuery("SELECT p FROM Patient p, Obs o " +
+				"WHERE o.person.personId = p.patient.patientId AND o.concept.conceptId = 1543 AND  p.patient = :patient AND " +
+				"o.voided = false AND o.location = :location")
+				.setParameter("patient", patient)
+				.setParameter("location", location)
+				.uniqueResult();
+		return deadPatient != null;
+	}
 }

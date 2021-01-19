@@ -4,7 +4,7 @@
 
 <%@ include file="../template/operationHeader.jsp"%>
 
-<openmrs:require privilege="Save Report" otherwise="/login.htm" redirect="/module/pharmacy/reports/client/edit.form" />
+<openmrs:require privilege="Save Report" otherwise="/login.htm" redirect="/module/pharmacy/reports/edit.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){
@@ -20,6 +20,24 @@
                 console.log(e);
                 console.log(jQuery(this).val());
                 jQuery(this).val(getNumber(jQuery(this).val()));
+            });
+
+            const urgent = jQuery('input[name=urgent]');
+            const urgentProduct = jQuery('#urgentProduct');
+            urgentProduct.hide();
+
+            if (urgent.is(':checked')) {
+                urgentProduct.show();
+            }
+
+            urgent.click(function (e) {
+                console.log('clicked')
+                if (jQuery(this).is(':checked')) {
+                    console.log('is checked')
+                    urgentProduct.show();
+                } else {
+                    urgentProduct.hide();
+                }
             });
         });
 
@@ -74,6 +92,9 @@
                     form.setAttribute('action', form.getAttribute('action') + '?action=addLine');
                 }
             }
+            <c:if test="${isPlatformUser == false}">
+                form.setAttribute('action', form.getAttribute('action').replace('editFlux', 'editFluxOther'));
+            </c:if>
             form.submit();
         }
     }
@@ -86,14 +107,15 @@
         </div>
         <div class="col-6 text-right">
             <c:url value="/module/pharmacy/reports/list.form" var="url"/>
-            <button class="btn btn-primary" onclick="window.location='${url}'" title="Voir la liste">
+            <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">
                 <i class="fa fa-list"></i> Voir la liste
             </button>
         </div>
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
-            <form:form modelAttribute="productReportForm" method="post" action="" id="form">
+            <form:form modelAttribute="productReportForm" method="post"
+                       action="${isPlatformUser == false ? '' : ''}" id="form">
                 <form:hidden path="productOperationId"/>
                 <form:hidden path="uuid"/>
                 <form:hidden path="locationId"/>
@@ -138,12 +160,19 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <div class="col-10">
-                                <label class="mb-2">Type de rapport <span class="required">*</span></label> <br>
-                                <form:checkbox path="urgent" label="Urgent" cssClass="mr-2"/>
+                            <div class="col-3">
+                                <label class="mb-2">Rapport urgent </label> <br>
+                                <form:checkbox path="urgent" cssClass="mr-2"/>
                                 <form:errors path="urgent" cssClass="error"/>
                             </div>
-
+                            <div class="col-9" id="urgentProduct">
+                                <label>Produits <span class="required">*</span></label>
+                                <form:select path="productIds" cssClass="form-control s2" multiple="true">
+                                    <form:option value="" label=""/>
+                                    <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
+                                </form:select>
+                                <form:errors path="productIds" cssClass="error"/>
+                            </div>
                         </div>
                     </div>
                 </div>

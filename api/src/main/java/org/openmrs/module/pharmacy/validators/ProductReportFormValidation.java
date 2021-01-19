@@ -6,6 +6,8 @@ import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductReportService;
+import org.openmrs.module.pharmacy.forms.ProductOperationForm;
 import org.openmrs.module.pharmacy.forms.ProductReportForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
@@ -27,9 +29,29 @@ public class ProductReportFormValidation extends ProductOperationFormValidation 
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-//            ValidationUtils.rejectIfEmpty(errors, "productSupplierId", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "reportPeriod", null, "Ce champ est requis");
 //            ValidationUtils.rejectIfEmpty(errors, "receptionQuantityMode", null, "Ce champ est requis");
 //            ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
+
+            if (form.getUrgent()) {
+                if (form.getProductIds().size() == 0 || form.getProductIds().size() > 5) {
+                    errors.rejectValue("productIds", null, "Renseigner au moins un (1) et au plus cinq (5) produits ");
+                }
+            } else {
+                if (form.getReportPeriod() != null) {
+                    ProductReport otherReport = reportService().getOneProductReportByReportPeriodAndProgram(
+                            form.getReportPeriod(),
+                            programService().getOneProductProgramById(form.getProductProgramId()),
+                            OperationUtils.getUserLocation(),
+                            false
+                    );
+
+                    if (otherReport != null &&
+                            (form.getProductOperationId() == null || (!otherReport.getProductOperationId().equals(form.getProductOperationId())))) {
+                        errors.rejectValue("reportPeriod", null, "Un rapport de cette période existe déjà !");
+                    }
+                }
+            }
 
 //            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
 //                ProductReport reception = (ProductReport) service().getOneProductOperationByOperationNumber(form.getOperationNumber(), form.getIncidence());
@@ -54,6 +76,14 @@ public class ProductReportFormValidation extends ProductOperationFormValidation 
 //                }
 //            }
         }
+    }
+
+    @Override
+    protected void lastInventoryCheck(ProductOperationForm form, Errors errors) {
+
+    }
+    private ProductReportService reportService() {
+        return Context.getService(ProductReportService.class);
     }
 
 }

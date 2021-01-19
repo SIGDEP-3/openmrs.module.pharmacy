@@ -40,12 +40,12 @@ public interface ProductReportDAO {
 	void removeProductReport(ProductReport productReport);
 	ProductReport getOneProductReportByUuid(String uuid);
 	List<ProductReportLineDTO> getProductReportFluxDTOs(ProductReport productReport);
-	Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
-	Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location);
+	Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
+	Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
+	Integer getProductInitialQuantityByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
+	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
+	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
+	Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent);
 	Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location);
 	Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
 	Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location);

@@ -132,7 +132,7 @@
                                                 </c:url>
                                                 <a href="${deliveryUrl}"
                                                    class="text-primary">
-                                                    <i class="fa fa-traffic-light"></i>
+                                                    <i class="fa fa-file"></i>
                                                 </a>
                                             </c:if>
                                             <openmrs:hasPrivilege privilege="Delete Report">

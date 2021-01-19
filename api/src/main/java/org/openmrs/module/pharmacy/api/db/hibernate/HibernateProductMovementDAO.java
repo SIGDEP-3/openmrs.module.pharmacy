@@ -22,6 +22,7 @@ import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductMovementDAO;
 
@@ -65,6 +66,17 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
 		return criteria
 				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementEntry> getAllProductMovementEntry(ProductProgram productProgram, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementEntry.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("voided", includeVoided))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
 	}
@@ -127,6 +139,17 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
 		return criteria
 				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductMovementOut> getAllProductMovementOut(ProductProgram productProgram, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductMovementOut.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("voided", includeVoided))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
 	}

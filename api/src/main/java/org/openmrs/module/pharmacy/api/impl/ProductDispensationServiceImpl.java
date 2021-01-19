@@ -67,6 +67,11 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     }
 
     @Override
+    public List<ProductDispensation> getAllProductDispensations(ProductProgram program, Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException {
+        return dao.getAllProductDispensations(program, location, includeVoided, operationStartDate, operationEndDate);
+    }
+
+    @Override
     public List<ProductDispensation> getAllProductDispensations(Location location) {
         return dao.getAllProductDispensations(location);
     }
@@ -204,5 +209,15 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     @Override
     public Integer countPatientToTransform(Location location) {
         return dao.countPatientToTransform(location);
+    }
+
+    @Override
+    public Boolean isDead(Patient patient, Location location) {
+        return dao.isDead(patient, location);
+    }
+
+    @Override
+    public Boolean isTransferred(Patient patient, Location location) {
+        return dao.isTransferred(patient, location);
     }
 }

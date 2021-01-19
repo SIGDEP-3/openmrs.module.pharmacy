@@ -71,7 +71,7 @@
                       productReport.operationStatus != 'DISABLED'}">
                 <c:if test="${invalidReport != true}">
                     <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
-                        <c:url value="/module/pharmacy/rports/complete.form" var="completeUrl">
+                        <c:url value="/module/pharmacy/reports/complete.form" var="completeUrl">
                             <c:param name="reportId" value="${productReport.productOperationId}"/>
                         </c:url>
                         <button class="btn btn-success btn-sm mr-2" onclick="window.location='${completeUrl}'">
@@ -151,10 +151,9 @@
                     <fmt:formatDate value="${productReport.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                 </td>
                 <td>Urgent</td>
-                <td class="font-weight-bold text-info">${productReport.urgent ==true ? 'Oui' : 'Non'}</td>
+                <td class="font-weight-bold text-info">${productReport.urgent == true ? 'Oui' : 'Non'}</td>
             </tr>
             <tr>
-
                 <td colspan="2">Observation</td>
                 <td class="font-weight-bold text-info">${productReport.observation}</td>
             </tr>
@@ -205,11 +204,6 @@
                             <input id="${reportLine.code}-NDR" value="${reportLine.numDaysOfRupture}"
                                                                                type="text" name="${reportLine.numDaysOfRupture}-NDR"
                                                                                class=".input-value-flux form-control form-control-sm text-center">
-<%--                            <c:if test="${reportLine.numDaysOfRupture == 0 }">--%>
-<%--                            </c:if>--%>
-<%--                            <c:if test="${reportLine.numDaysOfRupture != 0}">--%>
-<%--                                ${reportLine.numDaysOfRupture}--%>
-<%--                            </c:if>--%>
                         </c:if>
                         <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
                             ${reportLine.numDaysOfRupture}
@@ -218,27 +212,42 @@
                     <c:if test="${productReport.reportType == 'CLIENT_REPORT'}">
                         <td class="text-center align-middle">
                             <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
-                                <c:if test="${reportLine.numSitesInRupture == 0}">
-                                    <label for="${reportLine.code}-NSR" class="sr-only"></label>
-                                    <input id="${reportLine.code}-NSR" type="text"
-                                           name="${reportLine.code}-NSR"
-                                           value="${reportLine.numSitesInRupture}"
-                                           class="input-value-flux form-control form-control-sm text-center">
-                                </c:if>
-                                <c:if test="${reportLine.numSitesInRupture != 0}">
-                                    ${reportLine.numSitesInRupture}
-                                </c:if>
+                                <label for="${reportLine.code}-NSR" class="sr-only"></label>
+                                <input id="${reportLine.code}-NSR" type="text"
+                                       name="${reportLine.code}-NSR"
+                                       value="${reportLine.numSitesInRupture}"
+                                       class="input-value-flux form-control form-control-sm text-center">
                             </c:if>
                             <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
                                 ${reportLine.numSitesInRupture}
                             </c:if>
                         </td>
+                        <td class="text-center align-middle">
+                            <label for="${reportLine.code}-CMM" class="sr-only">CMM</label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-primary text-white" id="${reportLine.code}" title="CMM auto">
+                                        <fmt:formatNumber type = "number" value = "${reportLine.calculatedAverageMonthlyConsumption}" maxFractionDigits="0" />
+                                    </span>
+                                </div>
+                                <input type="text"
+                                       id="${reportLine.code}-CMM"
+                                       class="input-value-flux form-control form-control-sm text-center"
+                                       value="${reportLine.averageMonthlyConsumption}" size="15"
+                                       aria-describedby="${reportLine.code}-CMM">
+                            </div>
+                        </td>
+                        <td class="text-center align-middle" id="${reportLine.code}-MSD"><fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" /></td>
+                        <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.quantityToOrder}</span></td>
                     </c:if>
                     <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
                         <td class="text-center align-middle">
                             <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
                                 <c:if test="${reportLine.quantityDistributed1monthAgo == 0}">
-                                    <input id="${reportLine.code}-DM1" type="text" name="${reportLine.code}-DM1" class="input-value-flux form-control form-control-sm text-center">
+                                    <input id="${reportLine.code}-DM1"
+                                           type="text"
+                                           name="${reportLine.code}-DM1"
+                                           class="input-value-flux form-control form-control-sm text-center">
                                 </c:if>
                                 <c:if test="${reportLine.quantityDistributed1monthAgo != 0}">
                                     ${reportLine.quantityDistributed1monthAgo}
@@ -261,23 +270,6 @@
                                 ${reportLine.quantityDistributed2monthAgo}
                             </c:if>
                         </td>
-                    </c:if>
-                    <c:if test="${productReport.reportType == 'CLIENT_REPORT'}">
-                        <td class="text-center align-middle">
-                            <label for="${reportLine.code}-CMM" class="sr-only">CMM</label>
-                            <div class="input-group input-group-sm">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-primary text-white" id="${reportLine.code}" title="CMM auto">${reportLine.calculatedAverageMonthlyConsumption}</span>
-                                </div>
-                                <input type="text"
-                                       id="${reportLine.code}-CMM"
-                                       class="input-value-flux form-control form-control-sm text-center"
-                                       value="${reportLine.averageMonthlyConsumption}" size="15"
-                                       aria-describedby="${reportLine.code}-CMM">
-                            </div>
-                        </td>
-                        <td class="text-center align-middle" id="${reportLine.code}-MSD"><fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" /></td>
-                        <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.quantityToOrder}</span></td>
                     </c:if>
                 </tr>
             </c:forEach>

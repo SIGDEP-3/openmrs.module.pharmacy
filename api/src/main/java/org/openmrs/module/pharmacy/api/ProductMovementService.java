@@ -19,6 +19,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.ProductMovementEntry;
 import org.openmrs.module.pharmacy.ProductMovementOut;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,8 @@ public interface ProductMovementService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
+	List<ProductMovementEntry> getAllProductMovementEntry(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) throws APIException;
@@ -60,6 +63,8 @@ public interface ProductMovementService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
+	List<ProductMovementOut> getAllProductMovementOut(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
@@ -73,5 +78,4 @@ public interface ProductMovementService extends OpenmrsService {
 	void removeProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut getOneProductMovementOutByUuid(String uuid) throws APIException;
-
 }

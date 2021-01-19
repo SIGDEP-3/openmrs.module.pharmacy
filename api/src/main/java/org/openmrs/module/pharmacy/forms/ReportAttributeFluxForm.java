@@ -1,8 +1,10 @@
 package org.openmrs.module.pharmacy.forms;
 
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
@@ -24,43 +26,186 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
     }
 
     public ProductReportLineDTO createProductReportOtherFluxes(Product product) {
+        ProductReport report = reportService().getOneProductReportById(getProductOperationId());
+
         ProductReportLineDTO reportLineDTO = new ProductReportLineDTO();
         reportLineDTO.setCode(product.getCode());
         reportLineDTO.setRetailName(product.getRetailName());
         reportLineDTO.setRetailUnit(product.getProductRetailUnit().getName());
-        reportLineDTO.setInitialQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityInStockInLastOperationByProduct(product, getInventory(),OperationUtils.getUserLocation()).doubleValue(), "SI").getQuantity().intValue());
-        reportLineDTO.setReceivedQuantity(createProductAttributeOtherFlux(product, reportService().getProductReceivedQuantityInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QR").getQuantity().intValue());
+
+        System.out.println("-----------------------------> Product information collected ");
+
+
+        reportLineDTO.setInitialQuantity(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductQuantityInStockInLastOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "SI"
+                ).getQuantity().intValue());
+
+        reportLineDTO.setReceivedQuantity(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductReceivedQuantityInLastOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "QR"
+                ).getQuantity().intValue());
+
         reportLineDTO.setDistributedQuantity(
                 createProductAttributeOtherFlux(
                         product,
-                        reportService().getProductQuantityDistributedInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(),
-                        "QD").getQuantity().intValue());
-        reportLineDTO.setLostQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityLostInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QL").getQuantity().intValue());
-        reportLineDTO.setAdjustmentQuantity(createProductAttributeOtherFlux(product, reportService().getProductQuantityAdjustmentInLastOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "QA").getQuantity().intValue());
-        reportLineDTO.setQuantityInStock(createProductAttributeOtherFlux(product, reportService().getProductQuantityInStockOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "SDU").getQuantity().intValue());
-        reportLineDTO.setNumDaysOfRupture(createProductAttributeOtherFlux(product, 0.0, "NDR").getQuantity().intValue());
-        if (OperationUtils.isDirectClient(OperationUtils.getUserLocation())) {
-            reportLineDTO.setNumSitesInRupture(createProductAttributeOtherFlux(product, reportService().getChildLocationsThatKnownRupture(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "NSR").getQuantity().intValue());
-            reportLineDTO.setAverageMonthlyConsumption(
-                    createProductAttributeOtherFlux(product,
-                            reportService().getProductAverageMonthlyConsumption(product, getInventory().getProductProgram(), OperationUtils.getUserLocation(), false), "CMM").getQuantity());
-            if (reportLineDTO.getDistributedQuantity() > 0 || reportLineDTO.getAverageMonthlyConsumption() > 0) {
-                reportLineDTO.setQuantityToOrder(createProductAttributeOtherFlux(product, (OperationUtils.getUserLocationStockMax() * reportLineDTO.getAverageMonthlyConsumption()) - reportLineDTO.getQuantityInStock(), "QTO").getQuantity());
-            }
-            reportLineDTO.setCalculatedAverageMonthlyConsumption(reportService().getProductAverageMonthlyConsumption(product, getInventory().getProductProgram(), OperationUtils.getUserLocation(), false));
-        }
-        if (!OperationUtils.isDirectClient(OperationUtils.getUserLocation())) {
-            reportLineDTO.setQuantityDistributed1monthAgo(createProductAttributeOtherFlux(product, reportService().getProductQuantityDistributedInAgo1MonthOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "DM1").getQuantity().intValue());
-            reportLineDTO.setQuantityDistributed2monthAgo(createProductAttributeOtherFlux(product, reportService().getProductQuantityDistributedInAgo2MonthOperationByProduct(product, getInventory(), OperationUtils.getUserLocation()).doubleValue(), "DM2").getQuantity().intValue());
-        }
+                        reportService().getProductQuantityDistributedInLastOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "QD"
+                ).getQuantity().intValue());
+        reportLineDTO.setLostQuantity(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductQuantityLostInLastOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "QL"
+                ).getQuantity().intValue());
+        reportLineDTO.setAdjustmentQuantity(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductQuantityAdjustmentInLastOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "QA"
+                ).getQuantity().intValue());
 
+        reportLineDTO.setQuantityInStock(
+                createProductAttributeOtherFlux(
+                        product,
+                        reportService().getProductQuantityInStockOperationByProduct(
+                                product,
+                                getInventory(),
+                                OperationUtils.getUserLocation(),
+                                report.getUrgent()
+                        ).doubleValue(),
+                        "SDU"
+                ).getQuantity().intValue());
+
+        reportLineDTO.setNumDaysOfRupture(
+                createProductAttributeOtherFlux(
+                        product,
+                        0.0,
+                        "NDR"
+                ).getQuantity().intValue());
+
+//        System.out.println("-----------------------------> In old ProductAttributeOtherFlux : null ");
+
+
+        if (report.getReportType().equals(ReportType.CLIENT_REPORT)) {
+            reportLineDTO.setNumSitesInRupture(
+                    createProductAttributeOtherFlux(
+                            product,
+                            reportService().getChildLocationsThatKnownRupture(
+                                    product,
+                                    getInventory(),
+                                    OperationUtils.getUserLocation()
+                            ).doubleValue(),
+                            "NSR"
+                    ).getQuantity().intValue());
+
+            reportLineDTO.setAverageMonthlyConsumption(
+                    createProductAttributeOtherFlux(
+                            product,
+                            reportService().getProductAverageMonthlyConsumption(
+                                    product,
+                                    getInventory().getProductProgram(),
+                                    OperationUtils.getUserLocation(),
+                                    false),
+                            "CMM"
+                    ).getQuantity());
+
+            if (reportLineDTO.getDistributedQuantity() > 0 || reportLineDTO.getAverageMonthlyConsumption() > 0) {
+                reportLineDTO.setQuantityToOrder(
+                        createProductAttributeOtherFlux(
+                                product,
+                                (OperationUtils.getUserLocationStockMax() * reportLineDTO.getAverageMonthlyConsumption()) - reportLineDTO.getQuantityInStock(),
+                                "QTO"
+                        ).getQuantity());
+            }
+            reportLineDTO.setCalculatedAverageMonthlyConsumption(
+                    reportService().getProductAverageMonthlyConsumption(
+                            product,
+                            getInventory().getProductProgram(),
+                            OperationUtils.getUserLocation(),
+                            false));
+        } else {
+            reportLineDTO.setQuantityDistributed1monthAgo(
+                    createProductAttributeOtherFlux(
+                            product,
+                            reportService().getProductQuantityDistributedInAgo1MonthOperationByProduct(
+                                    product,
+                                    getInventory(),
+                                    OperationUtils.getUserLocation()).doubleValue(),
+                            "DM1"
+                    ).getQuantity().intValue());
+
+            reportLineDTO.setQuantityDistributed2monthAgo(
+                    createProductAttributeOtherFlux(
+                            product,
+                            reportService().getProductQuantityDistributedInAgo2MonthOperationByProduct(
+                                    product,
+                                    getInventory(),
+                                    OperationUtils.getUserLocation()
+                            ).doubleValue(),
+                            "DM2"
+                    ).getQuantity().intValue());
+        }
+//        System.out.println("-----------------------------> All Product quantity information collected and created ");
         return reportLineDTO;
     }
 
     public List<ProductReportLineDTO> createProductReportOtherFluxMap() {
         List<ProductReportLineDTO> productListMap = new ArrayList<>();
-        List<Product> products = reportService().getAllActivityProducts(getInventory());
+        List<Product> products = new ArrayList<>();
+        ProductReport report = reportService().getOneProductReportById(getProductOperationId());
+        if (report.getUrgent()) {
+            for (String code : report.getReportInfo().split(",")) {
+                products.add(productService().getOneProductByCode(code));
+            }
+        } else {
+//            System.out.println("-----------------------------> In Client product collection ");
+
+            products = reportService().getAllActivityProducts(getInventory());
+            for (Location location : OperationUtils.getUserLocation().getChildLocations()) {
+                List<Product> tmpProducts = reportService().getOneProductReportByReportPeriodAndProgram(
+                        report.getReportPeriod(),
+                        report.getProductProgram(),
+                        location, false
+                ).getOtherFluxesProductList();
+                for (Product product : tmpProducts) {
+                    if (!products.contains(product)) {
+                        products.add(product);
+                    }
+                }
+            }
+        }
         for (Product product : products) {
+//            System.out.println("-----------------------------> In creating ProductAttributeOtherFluxes Function ");
             productListMap.add(createProductReportOtherFluxes(product));
         }
         return productListMap;
@@ -74,13 +219,8 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
                 OperationUtils.getUserLocation()
         );
         if (productAttributeOtherFlux != null){
+//            System.out.println("-----------------------------> In old ProductAttributeOtherFlux : " + productAttributeOtherFlux.getProductAttributeOtherFluxId());
             return productAttributeOtherFlux;
-//            if (!productAttributeOtherFlux.getQuantity().equals(quantity) && quantity > 0) {
-//                productAttributeOtherFlux.setQuantity(quantity);
-//                return fluxService().saveProductAttributeOtherFlux(productAttributeOtherFlux);
-//            } else {
-//                return productAttributeOtherFlux;
-//            }
         } else {
             productAttributeOtherFlux = new ProductAttributeOtherFlux();
             productAttributeOtherFlux.setQuantity(quantity);
@@ -88,6 +228,8 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
             productAttributeOtherFlux.setLocation(OperationUtils.getUserLocation());
             productAttributeOtherFlux.setProduct(product);
             productAttributeOtherFlux.setProductOperation(reportService().getOneProductReportById(getProductOperationId()));
+//            System.out.println("-----------------------------> In old ProductAttributeOtherFlux : null ");
+
             return  fluxService().saveProductAttributeOtherFlux(productAttributeOtherFlux);
         }
     }
@@ -100,8 +242,8 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
         return Context.getService(ProductAttributeFluxService.class);
     }
 
-    private ProductAttributeService attributeService() {
-        return Context.getService(ProductAttributeService.class);
+    private ProductService productService() {
+        return Context.getService(ProductService.class);
     }
 
     private ProductInventoryService inventoryService() {

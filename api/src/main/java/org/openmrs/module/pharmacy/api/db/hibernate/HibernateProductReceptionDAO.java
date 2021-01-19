@@ -24,6 +24,7 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.ProductAttribute;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductReceptionDAO;
@@ -73,6 +74,17 @@ public class HibernateProductReceptionDAO implements ProductReceptionDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("voided", includeVoided))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReception> getAllProductReceptions(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReception.class);
+		return criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.between("operationDate", startDate, endDate)).list();
 	}
 
 	@SuppressWarnings("unchecked")

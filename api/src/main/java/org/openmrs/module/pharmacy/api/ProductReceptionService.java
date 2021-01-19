@@ -44,6 +44,8 @@ public interface ProductReceptionService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
+	List<ProductReception> getAllProductReceptions(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Boolean includeVoided);

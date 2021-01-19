@@ -61,6 +61,11 @@ public class ProductReceptionServiceImpl extends BaseOpenmrsService implements P
     }
 
     @Override
+    public List<ProductReception> getAllProductReceptions(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate) {
+        return dao.getAllProductReceptions(productProgram, location, includeVoided, startDate, endDate);
+    }
+
+    @Override
     public List<ProductReception> getAllProductReceptions(Location location) {
         return dao.getAllProductReceptions(location);
     }
