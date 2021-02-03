@@ -33,10 +33,13 @@
 <spring:htmlEscape defaultHtmlEscape="true" />
 
 <div class="container-fluid mb-0 pb-0">
-	<h5>
-		<spring:message code="pharmacy.title" /> :
-		Dispensation & Gestion de Stock
-	</h5>
+	<div class="row mb-0 bg-green-sea align-items-center">
+		<div class="col-12 h5 text-white">
+			<spring:message code="pharmacy.title" /> :
+			Dispensation & Gestion de Stock
+		</div>
+	</div>
+
 	<div class="row bg-info border-top border-bottom border-secondary align-items-center">
 		<div class="col-11 pl-0">
 			<div class="btn-toolbar m-1 pl-0">
@@ -69,21 +72,6 @@
 							Dispensation
 						</button>
 					</openmrs:hasPrivilege>
-                    <c:if test="${canDistribute == true}">
-                        <openmrs:hasPrivilege privilege="View Distribution">
-                            <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
-                                    <c:choose>
-                                        <c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
-                                            class=" btn btn-secondary btn-sm"
-                                        </c:when>
-                                        <c:otherwise>
-                                            class="btn btn-outline-secondary text-white btn-sm"
-                                        </c:otherwise>
-                                    </c:choose>>
-                                Distribution
-                            </button>
-                        </openmrs:hasPrivilege>
-                    </c:if>
 				</div>
 
 				<div class="btn-group mr-3">
@@ -113,6 +101,9 @@
 							Pertes & ajustements
 						</button>
 					</openmrs:hasPrivilege>
+				</div>
+
+				<div class="btn-group">
 					<openmrs:hasPrivilege privilege="View Inventory">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form'"
 								<c:choose>
@@ -126,22 +117,21 @@
 							Inventaire
 						</button>
 					</openmrs:hasPrivilege>
-				</div>
-
-				<div class="btn-group">
-					<openmrs:hasPrivilege privilege="View Stock">
-						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
-								<c:choose>
-									<c:when test='<%= request.getRequestURI().contains("/stock") %>'>
-										class="btn btn-secondary"
-									</c:when>
-									<c:otherwise>
-										class="btn btn-outline-secondary text-white btn-sm"
-									</c:otherwise>
-								</c:choose>>
-							Etat du stock
-						</button>
-					</openmrs:hasPrivilege>
+					<c:if test="${canDistribute == true}">
+						<openmrs:hasPrivilege privilege="View Distribution">
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/distribution/list.form'"
+									<c:choose>
+										<c:when test='<%= request.getRequestURI().contains("/distribution") %>'>
+											class=" btn btn-secondary btn-sm"
+										</c:when>
+										<c:otherwise>
+											class="btn btn-outline-secondary text-white btn-sm"
+										</c:otherwise>
+									</c:choose>>
+								Distribution
+							</button>
+						</openmrs:hasPrivilege>
+					</c:if>
 					<openmrs:hasPrivilege privilege="View Report">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/reports/list.form'"
 								<c:choose>
@@ -156,7 +146,21 @@
 						</button>
 					</openmrs:hasPrivilege>
 				</div>
-
+				<div class="btn-group">
+					<openmrs:hasPrivilege privilege="View Stock">
+						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
+								<c:choose>
+									<c:when test='<%= request.getRequestURI().contains("/stock") %>'>
+										class="btn btn-secondary"
+									</c:when>
+									<c:otherwise>
+										class="btn btn-outline-secondary text-white btn-sm"
+									</c:otherwise>
+								</c:choose>>
+							Mes Etats
+						</button>
+					</openmrs:hasPrivilege>
+				</div>
 			</div>
 		</div>
 		<div class="col-1 text-right">

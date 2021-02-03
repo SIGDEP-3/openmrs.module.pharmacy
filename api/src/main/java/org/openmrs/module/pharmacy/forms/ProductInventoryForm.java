@@ -16,7 +16,7 @@ public class ProductInventoryForm extends ProductOperationForm {
     public ProductInventoryForm() {
         super();
         setIncidence(Incidence.EQUAL);
-        setInventoryType(InventoryType.MONTHLY);
+        setInventoryType(InventoryType.TOTAL);
     }
 
     public Date getInventoryStartDate() {
@@ -49,7 +49,8 @@ public class ProductInventoryForm extends ProductOperationForm {
         if (getInventoryStartDate() == null) {
             ProductInventory previousInventory = service().getLastProductInventory(
                     Context.getLocationService().getLocation(getLocationId()),
-                    programService().getOneProductProgramById(getProductProgramId())
+                    programService().getOneProductProgramById(getProductProgramId()),
+                    InventoryType.TOTAL
             );
             if (previousInventory != null) {
                 setInventoryStartDate(previousInventory.getOperationDate());

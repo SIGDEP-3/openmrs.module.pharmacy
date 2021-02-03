@@ -78,9 +78,9 @@ public class HibernateProductProgramDAO implements ProductProgramDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductProgram> getAllProductProgram() {
-		if (OperationUtils.getUserLocationPrograms().size() != 0) {
-			return OperationUtils.getUserLocationPrograms();
-		}
+//		if (OperationUtils.getUserLocationPrograms().size() != 0) {
+//			return OperationUtils.getUserLocationPrograms();
+//		}
 		return sessionFactory.getCurrentSession().createCriteria(ProductProgram.class).list();
 	}
 

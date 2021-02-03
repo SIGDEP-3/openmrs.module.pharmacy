@@ -101,14 +101,11 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						Context.getService(ProductAttributeFluxService.class).saveProductAttributeFlux(flux);
 					}
 				}
-				operation.setOperationStatus(OperationStatus.VALIDATED);
-				saveProductOperation(operation);
 
-				return true;
 			}
 		}
-
-		return false;
+		operation.setOperationStatus(OperationStatus.VALIDATED);
+		return saveProductOperation(operation) != null;
 	}
 
 	@Override
@@ -133,13 +130,10 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						}
 					}
 				}
-				operation.setOperationStatus(OperationStatus.DISABLED);
-				saveProductOperation(operation);
-
-				return true;
 			}
 		}
-		return false;
+		operation.setOperationStatus(OperationStatus.DISABLED);
+		return saveProductOperation(operation) != null;
 	}
 
 	@Override

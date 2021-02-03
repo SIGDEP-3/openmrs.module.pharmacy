@@ -21,7 +21,6 @@
                 }
             });
 
-
             <c:if test="${findPatientForm.dispensationType != 'HIV_PATIENT'}">
             jQuery("#patientIdentifier").attr('disabled', 'disabled');
             </c:if>
@@ -32,7 +31,11 @@
                 } else {
                     jQuery("#patientIdentifier").removeAttr('disabled');
                 }
-            })
+            });
+
+            // jQuery('#form').on('submit', function (e){
+            //     e.preventDefault();
+            // });
         });
 
         function create() {
@@ -146,10 +149,10 @@
                 <div class="row align-items-center">
                     <div class="col-11">
                         <div class="form-row">
-                            <div class="col-8">
-                                <div class="row">
-                                    <label class="col-2 pt-1">Programme : </label>
-                                    <div class="col-4">
+                            <div class="col-4 bg-summer-sky">
+                                <div class="row align-items-center">
+                                    <label class="col-4 pt-2">Programme : </label>
+                                    <div class="col-8 pt-1">
                                         <form:select path="productProgramId" cssClass="form-control s2">
                                             <form:option value="" label=""/>
                                             <form:options items="${programs}" itemValue="productProgramId"
@@ -158,34 +161,34 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-row mt-2">
-                            <div class="col-8 pt-1 pb-1 bg-gray">
-                                <div class="row">
-                                    <div class="col-2 pt-1">
-                                        <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="Patient VIH" cssClass="mr-2"/>
+<%--                        </div>--%>
+<%--                        <div class="form-row align-items-center">--%>
+                            <div class="col-5 bg-gray">
+                                <div class="row align-items-center">
+                                    <div class="col-2 pt-2">
+                                        <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="VIH" cssClass="mr-2"/>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-5">
                                         <form:input path="patientIdentifier" cssClass="form-control form-control-sm" />
                                     </div>
-                                    <div class="col-2 pt-1">
-                                        <form:radiobutton path="patientType" value="ON_SITE" label="Site" cssClass="form-check-input mr-2"/>
+                                    <div class="col-2 pt-2">
+                                        <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="form-check-input mr-2"/>
                                     </div>
-                                    <div class="col-2 pt-1">
-                                        <form:radiobutton path="patientType" value="MOBILE" label="Mobile" cssClass="mr-2"/>
-                                    </div>
-                                    <div class="col-2 pt-1">
+<%--                                    <div class="col-2 pt-1">--%>
+<%--                                        <form:radiobutton path="patientType" value="MOBILE" label="Mobile" cssClass="mr-2"/>--%>
+<%--                                    </div>--%>
+                                    <div class="col-3 pt-2">
                                         <form:radiobutton path="patientType" value="OTHER_HIV" label="Autre VIH" cssClass="mr-2"/>
                                     </div>
 
                                 </div>
                             </div>
-                            <div class="col-4 mb-1 align-items-center">
-                                <div class="row">
-                                    <div class="offset-2 col-4 pt-2">
+                            <div class="col-3 align-items-center bg-cyanite">
+                                <div class="row align-items-center text-center">
+                                    <div class="col-6 pt-2">
                                         <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2"/>
                                     </div>
-                                    <div class="col-4 pt-2">
+                                    <div class="col-6 pt-2">
                                         <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre vente" cssClass="mr-2"/>
                                     </div>
                                 </div>
@@ -194,7 +197,7 @@
                     </div>
                     <div class="col-1 text-right">
                         <button type="submit" class="btn btn-primary btn-sm" title="Creer nouveau">
-                            <i class="fa fa-plus"></i> Dispenser
+                            <i class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>

@@ -1,5 +1,10 @@
 package org.openmrs.module.pharmacy.models;
 
+import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.ProductReport;
+import org.openmrs.module.pharmacy.api.ProductReportService;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
+
 public class ProductReportLineExtendedDTO extends ProductReportLineDTO {
     private Integer parentQuantityInStock;
     private Integer accordedQuantity;
@@ -27,6 +32,7 @@ public class ProductReportLineExtendedDTO extends ProductReportLineDTO {
         this.setRetailName(lineDTO.getRetailName());
         this.setRetailUnit(lineDTO.getRetailUnit());
         this.setInitialQuantity(lineDTO.getInitialQuantity());
+
         this.setReceivedQuantity(lineDTO.getReceivedQuantity());
         this.setDistributedQuantity(lineDTO.getDistributedQuantity());
         this.setLostQuantity(lineDTO.getLostQuantity());

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ReportEntryAttributeFluxForm {
     private Integer productId;
+    private Integer locationId;
     private Integer productOperationId;
     private Integer initialQuantity;
     private Integer receivedQuantity;
@@ -24,6 +25,7 @@ public class ReportEntryAttributeFluxForm {
     private Integer quantityDistributed1monthAgo;
 
     public ReportEntryAttributeFluxForm() {
+        locationId = OperationUtils.getUserLocation().getLocationId();
     }
 
     public Integer getProductId() {
@@ -42,6 +44,14 @@ public class ReportEntryAttributeFluxForm {
     public ReportEntryAttributeFluxForm setProductOperationId(Integer productOperationId) {
         this.productOperationId = productOperationId;
         return this;
+    }
+
+    public Integer getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Integer locationId) {
+        this.locationId = locationId;
     }
 
     public Integer getInitialQuantity() {

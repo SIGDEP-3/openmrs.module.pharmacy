@@ -3,11 +3,11 @@ package org.openmrs.module.pharmacy.validators;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductOperation;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductInventoryService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.ProductOperationForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -82,7 +82,7 @@ public class ProductOperationFormValidation implements Validator {
         if (form.getProductProgramId()!= null) {
             ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
             if (productProgram != null) {
-                ProductInventory productInventory = inventoryService().getLastProductInventory(OperationUtils.getUserLocation(), productProgram);
+                ProductInventory productInventory = inventoryService().getLastProductInventory(OperationUtils.getUserLocation(), productProgram, InventoryType.TOTAL);
                 if (productInventory != null) {
                     if (productInventory.getOperationStatus().equals(OperationStatus.NOT_COMPLETED) ||
                             productInventory.getOperationStatus().equals(OperationStatus.AWAITING_VALIDATION)) {

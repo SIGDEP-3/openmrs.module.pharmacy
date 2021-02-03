@@ -57,7 +57,11 @@
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-4 text-uppercase font-italic text-secondary">
-            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}
+                <c:if test="${slip == null}">
+                    ${productDistribution.urgent == true ? '<span class="text-danger">(URGENT)</span>' : ''}
+                </c:if>
+            </div>
         </div>
         <div class="col-8 text-right">
 
@@ -88,23 +92,23 @@
 
 
                 <c:if test="${productDistribution.operationStatus != 'NOT_COMPLETED'}">
-<%--                    <c:url value="/module/pharmacy/operations/distribution/incomplete.form" var="incompleteUrl">--%>
-<%--                        <c:param name="reportId" value="${productDistribution.productOperationId}"/>--%>
-<%--                    </c:url>--%>
-<%--                    <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">--%>
-<%--                        <i class="fa fa-pen"></i> Editer le rapport--%>
-<%--                    </button>--%>
-<%--                    <c:if test="${productDistribution.operationStatus == 'AWAITING_VALIDATION'}">--%>
-<%--                        <openmes:hasPrivilege privilege="Validate Report">--%>
+                    <%--                    <c:url value="/module/pharmacy/operations/distribution/incomplete.form" var="incompleteUrl">--%>
+                    <%--                        <c:param name="reportId" value="${productDistribution.productOperationId}"/>--%>
+                    <%--                    </c:url>--%>
+                    <%--                    <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">--%>
+                    <%--                        <i class="fa fa-pen"></i> Editer le rapport--%>
+                    <%--                    </button>--%>
+                    <%--                    <c:if test="${productDistribution.operationStatus == 'AWAITING_VALIDATION'}">--%>
+                    <%--                        <openmes:hasPrivilege privilege="Validate Report">--%>
 
-<%--                            <c:url value="/module/pharmacy/operations/distribution/validate.form" var="validationUrl">--%>
-<%--                                <c:param name="reportId" value="${productDistribution.productOperationId}"/>--%>
-<%--                            </c:url>--%>
-<%--                            <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">--%>
-<%--                                <i class="fa fa-pen"></i> Valider--%>
-<%--                            </button>--%>
-<%--                        </openmes:hasPrivilege>--%>
-<%--                    </c:if>--%>
+                    <%--                            <c:url value="/module/pharmacy/operations/distribution/validate.form" var="validationUrl">--%>
+                    <%--                                <c:param name="reportId" value="${productDistribution.productOperationId}"/>--%>
+                    <%--                            </c:url>--%>
+                    <%--                            <button class="btn btn-success btn-sm mr-2" onclick="window.location='${validationUrl}'">--%>
+                    <%--                                <i class="fa fa-pen"></i> Valider--%>
+                    <%--                            </button>--%>
+                    <%--                        </openmes:hasPrivilege>--%>
+                    <%--                    </c:if>--%>
                 </c:if>
             </c:if>
             <c:if test="${productDistribution.operationStatus == 'AWAITING_TREATMENT' }">
@@ -131,7 +135,7 @@
             </button>
         </div>
     </div>
-    <div class="row bg-light pt-2 pb-2 border border-secondary">
+    <div class="row bg-light pt-2 pb-2 border ${productDistribution.urgent == true ? 'border-danger' : 'border-secondary'}">
         <div class="col-12">
             <table class="bg-light table table-borderless table-light border">
                 <thead class="thead-light">
@@ -168,13 +172,13 @@
                         </td>
                     </c:if>
                 </tr>
-                <tr>
-                    <c:if test="${slip == null}">
-                        <td>Urgent</td>
-                        <td class="font-weight-bold text-info">${productReport.urgent ==true ? 'Oui' : 'Non'}</td>
-                    </c:if>
+<%--                <tr>--%>
+<%--                    <c:if test="${slip == null}">--%>
+<%--                        <td>Urgent</td>--%>
+<%--                        <td class="font-weight-bold text-info">${productDistribution.urgent == true ? 'Oui' : 'Non'}</td>--%>
+<%--                    </c:if>--%>
 
-                </tr>
+<%--                </tr>--%>
                 </thead>
             </table>
             <c:if test="${(fct:length(reportData) == 0 || canImport == true)
@@ -257,7 +261,7 @@
                                     </form:select>
                                 </td>
                                 <td><form:input path="initialQuantity" cssClass="text-center form-control form-control-sm" readonly="${countReports}" /></td>
-                                <td><form:input path="receivedQuantity" cssClass="text-center form-control form-control-sm"/></td>
+                                <td><form:input path="receivedQuantity" cssClass="text-center form-control form-control-sm" readonly="${hasPreviousTreatment}"/></td>
                                 <td><form:input path="distributedQuantity" cssClass="text-center form-control form-control-sm"/></td>
                                 <td><form:input path="lostQuantity" cssClass="text-center form-control form-control-sm"/></td>
                                 <td><form:input path="adjustmentQuantity" cssClass="text-center form-control form-control-sm"/></td>
@@ -362,7 +366,7 @@
                                     <fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" />
                                 </td>
                                 <td class="text-center align-middle">
-                                    <fmt:formatNumber type = "number" value = "${reportLine.quantityToOrder}" maxFractionDigits="0" />
+                                    <fmt:formatNumber type = "number" value = "${reportLine.proposedQuantity}" maxFractionDigits="0" />
                                 </td>
                                 <td class="text-center align-middle">
                                     <c:if test="${productDistribution.operationStatus != 'VALIDATED'}">

@@ -33,7 +33,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
         reportLineDTO.setRetailName(product.getRetailName());
         reportLineDTO.setRetailUnit(product.getProductRetailUnit().getName());
 
-        System.out.println("-----------------------------> Product information collected ");
+//        System.out.println("-----------------------------> Product information collected ");
 
 
         reportLineDTO.setInitialQuantity(
@@ -115,7 +115,6 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
 
 //        System.out.println("-----------------------------> In old ProductAttributeOtherFlux : null ");
 
-
         if (report.getReportType().equals(ReportType.CLIENT_REPORT)) {
             reportLineDTO.setNumSitesInRupture(
                     createProductAttributeOtherFlux(
@@ -140,7 +139,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
                     ).getQuantity());
 
             if (reportLineDTO.getDistributedQuantity() > 0 || reportLineDTO.getAverageMonthlyConsumption() > 0) {
-                reportLineDTO.setQuantityToOrder(
+                reportLineDTO.setProposedQuantity(
                         createProductAttributeOtherFlux(
                                 product,
                                 (OperationUtils.getUserLocationStockMax() * reportLineDTO.getAverageMonthlyConsumption()) - reportLineDTO.getQuantityInStock(),
@@ -192,14 +191,17 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
 
             products = reportService().getAllActivityProducts(getInventory());
             for (Location location : OperationUtils.getUserLocation().getChildLocations()) {
-                List<Product> tmpProducts = reportService().getOneProductReportByReportPeriodAndProgram(
+                ProductReport childReport = reportService().getOneProductReportByReportPeriodAndProgram(
                         report.getReportPeriod(),
                         report.getProductProgram(),
                         location, false
-                ).getOtherFluxesProductList();
-                for (Product product : tmpProducts) {
-                    if (!products.contains(product)) {
-                        products.add(product);
+                );
+                if (childReport != null) {
+                    List<Product> tmpProducts = childReport.getOtherFluxesProductList();
+                    for (Product product : tmpProducts) {
+                        if (!products.contains(product)) {
+                            products.add(product);
+                        }
                     }
                 }
             }

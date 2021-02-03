@@ -81,7 +81,7 @@ public class PharmacyProductBackSupplierManageController {
     public void listSite(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("siteBacks", backSupplierService().getAllProductBackSuppliers(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("subTitle", "Liste des retours au fournisseur");
         }
     }

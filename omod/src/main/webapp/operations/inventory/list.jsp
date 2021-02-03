@@ -80,7 +80,7 @@
                         <td><fmt:formatDate value="${inventory.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${inventory.operationNumber}</td>
                         <td>${inventory.productProgram.name}</td>
-                        <td>${inventory.inventoryType == 'MONTHLY' ? 'MENSUEL' : 'INTERMEDIAIRE'}</td>
+                        <td>${inventory.inventoryType == 'TOTAL' ? 'TOTAL' : 'PARTIEL'}</td>
                         <c:choose>
                             <c:when test="${fct:length(inventory.productAttributeFluxes) == 0}">
                                 <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="addLineUrl">

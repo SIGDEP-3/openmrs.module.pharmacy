@@ -73,7 +73,7 @@
                         <%--            <spring:message code="pharmacy.program"/>--%>
                         Type de saisie
                     </th>
-                    <th>Nombre de produits</th>
+                    <th>Lignes de produit</th>
                     <th>
                         <%--            <spring:message code="pharmacy.status"/>--%>
                         Etat
@@ -104,7 +104,7 @@
                                         <div class="btn btn-sm btn-primary">
                                                 ${reception.numberOfLine}
                                         </div>
-                                        <c:if test="${reception.operationStatus == 'VALIDATED'}">
+                                        <c:if test="${reception.operationStatus == 'VALIDATED' && isDirectClient == true}">
                                             <c:if test="${reception.canReturn == true || reception.productReturnedOperationId != null}">
                                                 <c:url value="/module/pharmacy/operations/reception/edit.form" var="backUrl">
                                                     <c:param name="receptionId" value="${reception.productReturnedOperationId != null ? reception.productReturnedOperationId : reception.productOperationId}"/>

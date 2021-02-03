@@ -84,7 +84,7 @@ public class PharmacyProductTransferManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("transfers", transferService().getAllProductTransfers(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("subTitle", "Liste des Transferts");
         }
     }

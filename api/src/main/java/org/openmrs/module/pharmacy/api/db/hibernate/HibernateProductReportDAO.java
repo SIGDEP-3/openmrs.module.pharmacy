@@ -17,18 +17,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.StockOutType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
@@ -127,6 +125,63 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public ProductReport getLastTreatedChildProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return (ProductReport) criteria
+				.add(Restrictions.eq("reportLocation", location))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.lt("treatmentDate", operationDate))
+				.addOrder(Order.desc("operationDate")).setMaxResults(1)
+				.uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return criteria
+				.add(Restrictions.eq("reportLocation", location))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("productProgram", inventory.getProductProgram()))
+				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("treatmentDate", inventory.getOperationDate(), operationDate))
+				.addOrder(Order.desc("operationDate"))
+				.list();
+	}
+
+	@Override
+	public Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product) {
+		ProductReport productReport = getLastTreatedChildProductReports(location, includeVoided, productProgram, operationDate);
+		if (productReport != null) {
+			for (ProductAttributeFlux flux : productReport.getProductAttributeFluxes()) {
+				if (flux.getProductAttribute().getProduct().equals(product)) {
+					return flux.getQuantity();
+				}
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate, Product product) {
+		List<ProductReport> productReports = getPeriodTreatedChildProductReports(location, inventory, includeVoided, operationDate);
+		if (productReports != null) {
+			Integer quantity = 0;
+			for (ProductReport report : productReports) {
+				for (ProductAttributeFlux flux : report.getProductAttributeFluxes()) {
+					if (flux.getProductAttribute().getProduct().equals(product)) {
+						quantity += flux.getQuantity();
+					}
+				}
+			}
+			return quantity;
+		}
+		return 0;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
@@ -164,7 +219,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("reportPeriod", reportPeriod))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("location", location))
-//				.add(Restrictions.ne("operationStatus", OperationStatus.NOT_COMPLETED))
+//				.add(Restrictions.ne("urgent", false))
 				.add(Restrictions.isNull("reportLocation"))
 				.add(Restrictions.eq("voided", includeVoided))
 				.uniqueResult();
@@ -285,7 +340,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		if (isUrgent) {
 			return getCurrentMonthInitialQuantity(product, inventory);
 		}
-		ProductInventory inventoryBeforeLatest = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(location, inventory.getProductProgram(), inventory.getOperationDate());
+		ProductInventory inventoryBeforeLatest = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(location, inventory.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
 
 		for (ProductAttributeFlux flux : inventoryBeforeLatest.getProductAttributeFluxes()) {
 			if (flux.getProductAttribute().getProduct().equals(product) && flux.getStatus().equals(OperationStatus.VALIDATED)) {
@@ -393,9 +448,19 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	private Integer getCurrentMonthQuantityDistributed(Product product, ProductInventory inventory) {
 		Integer quantity = 0;
+		ProductInventory lastPartialInventory = Context.getService(ProductInventoryService.class).getLastProductInventory(
+				inventory.getLocation(),
+				inventory.getProductProgram(),
+				InventoryType.PARTIAL
+		);
 		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class)
-				.getAllProductDispensations(inventory.getProductProgram(),
-						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+				.getAllProductDispensations(
+						inventory.getProductProgram(),
+						inventory.getLocation(),
+						false,
+						OperationUtils.addDayToDate(inventory.getOperationDate(), 1),
+						lastPartialInventory.getOperationDate()
+				);
 		for (ProductDispensation dispensation : dispensations) {
 			for (ProductAttributeFlux flux : dispensation.getProductAttributeFluxes()) {
 				if (flux.getProductAttribute().getProduct().equals(product))
@@ -418,9 +483,18 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	private Integer getCurrentMonthReceivedQuantity(Product product, ProductInventory inventory) throws HibernateException {
 		Integer quantity = 0;
+		ProductInventory lastPartialInventory = Context.getService(ProductInventoryService.class).getLastProductInventory(
+				inventory.getLocation(),
+				inventory.getProductProgram(),
+				InventoryType.PARTIAL
+		);
 		List<ProductReception> receptions = Context.getService(ProductReceptionService.class)
-				.getAllProductReceptions(inventory.getProductProgram(),
-						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+				.getAllProductReceptions(
+						inventory.getProductProgram(),
+						inventory.getLocation(), false,
+						OperationUtils.addDayToDate(inventory.getOperationDate(), 1),
+						lastPartialInventory.getOperationDate()
+				);
 		for (ProductReception reception : receptions) {
 			for (ProductAttributeFlux flux : reception.getProductAttributeFluxes()) {
 				if (flux.getProductAttribute().getProduct().equals(product))
@@ -433,9 +507,19 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	private Integer getCurrentMonthLostQuantity(Product product, ProductInventory inventory) throws HibernateException {
 		Integer quantity = 0;
+		ProductInventory lastPartialInventory = Context.getService(ProductInventoryService.class).getLastProductInventory(
+				inventory.getLocation(),
+				inventory.getProductProgram(),
+				InventoryType.PARTIAL
+		);
 		List<ProductMovementOut> movementOuts = Context.getService(ProductMovementService.class)
-				.getAllProductMovementOut(inventory.getProductProgram(),
-						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+				.getAllProductMovementOut(
+						inventory.getProductProgram(),
+						inventory.getLocation(),
+						false,
+						OperationUtils.addDayToDate(inventory.getOperationDate(), 1),
+						lastPartialInventory.getOperationDate()
+				);
 		for (ProductMovementOut movementOut : movementOuts) {
 			for (ProductAttributeFlux flux : movementOut.getProductAttributeFluxes()) {
 				if (flux.getProductAttribute().getProduct().equals(product))
@@ -448,9 +532,18 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	private Integer getCurrentMonthAdjustmentQuantity(Product product, ProductInventory inventory) throws HibernateException {
 		Integer quantity = 0;
+		ProductInventory lastPartialInventory = Context.getService(ProductInventoryService.class).getLastProductInventory(
+				inventory.getLocation(),
+				inventory.getProductProgram(),
+				InventoryType.PARTIAL
+		);
 		List<ProductMovementEntry> movementEntries = Context.getService(ProductMovementService.class)
-				.getAllProductMovementEntry(inventory.getProductProgram(),
-						inventory.getLocation(), false,inventory.getOperationDate(), new Date());
+				.getAllProductMovementEntry(
+						inventory.getProductProgram(),
+						inventory.getLocation(), false,
+						OperationUtils.addDayToDate(inventory.getOperationDate(), 1),
+						lastPartialInventory.getOperationDate()
+				);
 		for (ProductMovementEntry movementEntry : movementEntries) {
 			for (ProductAttributeFlux flux : movementEntry.getProductAttributeFluxes()) {
 				if (flux.getProductAttribute().getProduct().equals(product))
@@ -467,7 +560,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		if (report != null) {
 			return getReportQuantityDistributed(report, product, "QD").intValue();
 		}
-		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate());
+		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate(), InventoryType.TOTAL);
 		return getDistributionQuantity(product, inventoryBefore, location).intValue();
 	}
 
@@ -477,8 +570,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		if (report != null) {
 			return getReportQuantityDistributed(report, product, "DM1").intValue();
 		}
-		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate());
-		ProductInventory inventoryBeforeAntLast = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventoryBefore.getProductProgram(),inventoryBefore.getOperationDate());
+		ProductInventory inventoryBefore = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventory.getProductProgram(),inventory.getOperationDate(), InventoryType.TOTAL);
+		ProductInventory inventoryBeforeAntLast = Context.getService(ProductInventoryService.class).getLastProductInventoryByDate(inventory.getLocation(), inventoryBefore.getProductProgram(),inventoryBefore.getOperationDate(), InventoryType.TOTAL);
 		if (inventoryBeforeAntLast == null) {
 			return 0;
 		}

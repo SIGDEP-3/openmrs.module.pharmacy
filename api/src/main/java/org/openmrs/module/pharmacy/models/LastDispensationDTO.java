@@ -53,7 +53,7 @@ public class LastDispensationDTO implements Serializable {
         if (dispensation.getEncounter() != null) {
             for (Obs obs : dispensation.getEncounter().getAllObs()) {
                 if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("Regimen"))) {
-                    setRegimen(obs.getConcept().getName().getName());
+                    setRegimen(obs.getValueCoded().getName().getName());
                 } else if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("TreatmentDays"))) {
                     setTreatmentDays(obs.getValueNumeric().intValue());
                 } else if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("TreatmentEndDate"))) {

@@ -18,7 +18,7 @@ public class DispensationTransformationResultDTO {
     }
 
     public void setTotalPatient(Integer totalPatient) {
-        this.totalPatient = totalPatient;
+        this.totalPatient += totalPatient;
     }
 
     public Integer getTransformed() {
@@ -26,7 +26,7 @@ public class DispensationTransformationResultDTO {
     }
 
     public void setTransformed(Integer transformed) {
-        this.transformed = transformed;
+        this.transformed += transformed;
     }
 
     public Integer getNotTransformed() {
@@ -34,7 +34,7 @@ public class DispensationTransformationResultDTO {
     }
 
     public void setNotTransformed(Integer notTransformed) {
-        this.notTransformed = notTransformed;
+        this.notTransformed += notTransformed;
     }
 
     public Integer getTotalDispensation() {
@@ -42,7 +42,7 @@ public class DispensationTransformationResultDTO {
     }
 
     public void setTotalDispensation(Integer totalDispensation) {
-        this.totalDispensation = totalDispensation;
+        this.totalDispensation += totalDispensation;
     }
 
     @Override

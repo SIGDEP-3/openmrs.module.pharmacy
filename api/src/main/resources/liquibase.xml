@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
- 
+<?xml version="1.1" encoding="UTF-8"?>
+
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
@@ -835,7 +835,7 @@
         </preConditions>
         <dropForeignKeyConstraint baseTableName="pharmacy_product_dispensing" constraintName="pharmacy_product_dispensing_product_regimen"/>
     </changeSet>
-    
+
     <changeSet id="pharmacy-edit-dispensing-to-dispensation" author="BOGUI SERGE">
         <dropColumn tableName="pharmacy_product_dispensing" columnName="regimen_id"/>
         <dropColumn tableName="pharmacy_product_dispensing" columnName="treatment_days"/>
@@ -848,8 +848,8 @@
         </preConditions>
         <dropTable tableName="pharmacy_mobile_patient_product_dispensation_members"/>
     </changeSet>
-    
-    <changeSet id="pharmacy-mobile-patient-dispensation-info" author="BOGUI SERGE"> 
+
+    <changeSet id="pharmacy-mobile-patient-dispensation-info" author="BOGUI SERGE">
         <preConditions>
             <not>
                 <tableExists tableName="pharmacy_mobile_patient_dispensation_info"/>
@@ -1128,7 +1128,7 @@
             REPLACE INTO pharmacy_product_regimen (product_regimen_id, concept_id, uuid) VALUES (104, 105281, '105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
         </sql>
     </changeSet>
-    
+
     <changeSet id="pharmacy-attribute-stock-audit-info" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -1167,7 +1167,7 @@
     <changeSet id="pharmacy-mobile-info-treatment-end-date-not-null" author="BOGUI SERGE">
         <dropNotNullConstraint tableName="pharmacy_mobile_patient_dispensation_info" columnName="treatment_end_date" columnDataType="date"/>
     </changeSet>
-    
+
     <changeSet id="pharmacy-product-transfer-create" author="BOGUI SERGE">
         <preConditions>
             <not>
@@ -1457,6 +1457,12 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Import Product');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Import Regimen');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Delete Exchange Entity');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'View Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Save Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Delete Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Import Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Submit Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN', 'Treat Report');
         </sql>
     </changeSet>
 
@@ -1507,4 +1513,102 @@
         <dropNotNullConstraint tableName="pharmacy_product_movement_out" columnName="recipient" columnDataType="int"/>
     </changeSet>
 
+    <changeSet id="pharmacy-create-role-pharmacist-anonymous" author="BOGUI SERGE">
+        <preConditions>
+            <sqlCheck expectedResult="0">SELECT COUNT(role) FROM role WHERE role = 'PHARMACIEN ANONYME'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO role (role, description, uuid) VALUE ('PHARMACIEN ANONYME', 'Pharmacien non utilisateur de SIGDEP', 'PHARMACIENANONYMERRRRRRRRRRRRRRRRRRR');
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-add-pharmacist-anonymous-privileges-0" author="BOGUI SERGE" runOnChange="true">
+        <preConditions onFail="CONTINUE" onError="CONTINUE">
+            <and>
+                <not>
+                    <sqlCheck expectedResult="38">SELECT COUNT(*) FROM role_privilege WHERE role = 'PHARMACIEN ANONYME'
+                    </sqlCheck>
+                </not>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'Save Report'</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Flux');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Pharmacy');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Operation');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Product');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Product Attribute');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Program');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Stock');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Manage Unit');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Locations');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Navigation Menu');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Users');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Flux');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Save Flux');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Operation');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Inventory');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Product');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Product Attribute');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Program');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Stock');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Unit');
+
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'View Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Save Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Delete Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Import Report');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PHARMACIEN ANONYME', 'Submit Report');
+        </sql>
+    </changeSet>
+<!--    <changeSet id="pharmacy-reset-data-procedure" author="BOGUI SERGE" runOnChange="true">-->
+<!--        <createProcedure>-->
+<!--            <![CDATA[-->
+<!--            CREATE OR REPLACE PROCEDURE reset_pharmacy_data-->
+<!--            IS-->
+<!--            BEGIN-->
+<!--                SET FOREIGN_KEY_CHECKS = 0;-->
+<!--                truncate table pharmacy_mobile_patient_dispensation_info;-->
+<!--                truncate table pharmacy_mobile_patient_product_dispensing_members;-->
+<!--                truncate table pharmacy_mobile_patient;-->
+<!--                truncate table pharmacy_product_attribute_flux;-->
+<!--                truncate table pharmacy_product_attribute_other_flux;-->
+<!--                truncate table pharmacy_product_attribute_stock;-->
+<!--                truncate table pharmacy_product_attribute;-->
+<!--                truncate table pharmacy_product_back_supplier;-->
+<!--                truncate table pharmacy_product_dispensation;-->
+<!--                truncate table pharmacy_product_inventory;-->
+<!--                truncate table pharmacy_product_movement_entry;-->
+<!--                truncate table pharmacy_product_movement_out;-->
+<!--                truncate table pharmacy_product_report;-->
+<!--                truncate table pharmacy_product_operation;-->
+<!--                truncate table pharmacy_product_transfer;-->
+<!--                TRUNCATE table pharmacy_product_reception;-->
+<!--                SET FOREIGN_KEY_CHECKS = 1;-->
+<!--            END;-->
+<!--            ]]>-->
+<!--        </createProcedure>-->
+<!--    </changeSet>-->
+
+    <changeSet id="pharmacy-drop-mobile-dispensing-members" author="BOGUI SERGE">
+        <preConditions>
+            <tableExists tableName="pharmacy_mobile_patient_product_dispensing_members"/>
+        </preConditions>
+        <dropTable tableName="pharmacy_mobile_patient_product_dispensing_members"/>
+    </changeSet>
+
+    <changeSet id="pharmacy-mobile-dispensation-info-add-column" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="patient_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_mobile_patient_dispensation_info">
+            <column name="patient_id" type="int"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="pharmacy_mobile_patient_dispensation_info" baseColumnNames="patient_id"
+                                 constraintName="pharmacy_mobile_patient_dispensation_info_patient_patient"
+                                 referencedTableName="patient"
+                                 referencedColumnNames="patient_id"/>
+    </changeSet>
 </databaseChangeLog>

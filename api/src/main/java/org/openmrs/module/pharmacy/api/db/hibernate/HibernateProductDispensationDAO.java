@@ -25,6 +25,7 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.MobilePatient;
@@ -258,7 +259,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"       e.encounter_id encounterId,  " +
 				"       IF(conceptRegimen IS NOT NULL, conceptRegimen,  " +
 				"           IF(mobileRegimen IS NOT NULL, mobileRegimen, 'N/A')) regimen,  " +
-				"       IF(treamentDaysConcept IS NOT NULL, treamentDaysConcept,  " +
+				"       IF(treatmentDaysConcept IS NOT NULL, treatmentDaysConcept,  " +
 				"           IF(treatment_days IS NOT NULL, treatment_days, NULL)) treatmentDays,  " +
 				"       IF(identifierMobilePatient IS NOT NULL, identifierMobilePatient,  " +
 				"           IF(identifierPatientRegistered IS NOT NULL, identifierPatientRegistered, 'PAS DE PATIENT')) patientIdentifier,  " +
@@ -274,7 +275,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"LEFT JOIN encounter e on e.encounter_id = ppd.encounter_id  " +
 				"LEFT JOIN (SELECT name conceptRegimen, encounter_id FROM obs o LEFT JOIN concept_name cn ON o.concept_id = cn.concept_id WHERE o.concept_id = 165033 AND o.voided = 0) R on e.encounter_id = R.encounter_id  " +
 				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
-				"LEFT JOIN (SELECT encounter_id, value_numeric treamentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
+				"LEFT JOIN (SELECT encounter_id, value_numeric treatmentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
 				"LEFT JOIN (SELECT mobile_patient_id, identifier identifierMobilePatient, patient_type FROM pharmacy_mobile_patient) pmp ON pmpdi.mobile_patient_id = pmp.mobile_patient_id  " +
 				"LEFT JOIN (SELECT patient_id, identifier identifierPatientRegistered FROM patient_identifier) pi on e.patient_id = pi.patient_id  " +
 				"WHERE ppo.location_id = :locationId";
@@ -312,7 +313,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"       e.encounter_id encounterId,  " +
 				"       IF(conceptRegimen IS NOT NULL, conceptRegimen,  " +
 				"           IF(mobileRegimen IS NOT NULL, mobileRegimen, 'N/A')) regimen,  " +
-				"       IF(treamentDaysConcept IS NOT NULL, treamentDaysConcept,  " +
+				"       IF(treatmentDaysConcept IS NOT NULL, treatmentDaysConcept,  " +
 				"           IF(treatment_days IS NOT NULL, treatment_days, NULL)) treatmentDays,  " +
 				"       IF(identifierMobilePatient IS NOT NULL, identifierMobilePatient,  " +
 				"           IF(identifierPatientRegistered IS NOT NULL, identifierPatientRegistered, 'PAS DE PATIENT')) patientIdentifier,  " +
@@ -326,9 +327,9 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"LEFT JOIN pharmacy_product_program ppp ON ppo.program_id = ppp.product_program_id  " +
 				"LEFT JOIN pharmacy_mobile_patient_dispensation_info pmpdi on ppd.product_operation_id = pmpdi.mobile_dispensation_info_id  " +
 				"LEFT JOIN encounter e on e.encounter_id = ppd.encounter_id  " +
-				"LEFT JOIN (SELECT name conceptRegimen, encounter_id FROM obs o LEFT JOIN concept_name cn ON o.concept_id = cn.concept_id WHERE o.concept_id = 165033 AND o.voided = 0) R on e.encounter_id = R.encounter_id  " +
+				"LEFT JOIN (SELECT name conceptRegimen, encounter_id FROM obs o LEFT JOIN concept_name cn ON o.value_coded = cn.concept_id WHERE o.concept_id = 165033 AND o.voided = 0) R on e.encounter_id = R.encounter_id  " +
 				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
-				"LEFT JOIN (SELECT encounter_id, value_numeric treamentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
+				"LEFT JOIN (SELECT encounter_id, value_numeric treatmentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
 				"LEFT JOIN (SELECT mobile_patient_id, identifier identifierMobilePatient, patient_type FROM pharmacy_mobile_patient) pmp ON pmpdi.mobile_patient_id = pmp.mobile_patient_id  " +
 				"LEFT JOIN (SELECT patient_id, identifier identifierPatientRegistered FROM patient_identifier) pi on e.patient_id = pi.patient_id  " +
 				"WHERE ppo.location_id = :locationId";
@@ -517,7 +518,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	public DispensationTransformationResultDTO transformDispensation(Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
 		List<MobilePatient> mobilePatients = criteria.add(Restrictions.eq("location", location))
-				.add(Restrictions.eq("patientType", PatientType.ON_SITE)).list();
+				.add(Restrictions.eq("patientType", PatientType.MOBILE)).list();
 
 		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
 		transformationResultDTO.setTotalPatient(mobilePatients.size());
@@ -561,17 +562,33 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
 		transformationResultDTO.setTotalPatient(1);
 		Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
-		Integer patientTotalDispensation = 0;
-		Integer patientTotalDispensationTransformed = 0;
+
 		if (patient != null) {
-			Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
-			patientTotalDispensation = dispensationInfos.size();
-			transformationResultDTO.setTotalDispensation(dispensationInfos.size());
-			transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
-			if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
+
+			Date transferDate = transferDate(patient, mobilePatient.getLocation());
+			Date admissionDate = admissionDate(patient, mobilePatient.getLocation());
+
+			if (admissionDate != null) {
+				Integer patientTotalDispensationTransformed = 0;
+				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
+				Set<MobilePatientDispensationInfo> tempInfos = mobilePatient.getMobilePatientDispensationInfos();
+				for (MobilePatientDispensationInfo info : tempInfos) {
+					if (info.getDispensation().getOperationDate().before(admissionDate)) {
+						dispensationInfos.remove(info);
+					} else if (transferDate != null &&
+							(info.getDispensation().getOperationDate().after(transferDate))) {
+						dispensationInfos.remove(info);
+					}
+				}
+				int patientTotalDispensation = tempInfos.size();
+
+				transformationResultDTO.setTotalDispensation(patientTotalDispensation);
+				transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
+
 				removeMobilePatient(mobilePatient);
 			}
 		}
+
 		return transformationResultDTO;
 	}
 
@@ -579,8 +596,9 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	public Integer countPatientToTransform(Location location) {
 		int quantity = 0;
 		List<MobilePatient> mobilePatients = getAllMobilePatients(location);
-		for (MobilePatient patient : mobilePatients) {
-			if (getPatientByIdentifier(patient.getIdentifier()) != null) {
+		for (MobilePatient mobilePatient : mobilePatients) {
+			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
+			if (patient != null) {
 				quantity = quantity + 1;
 			}
 		}
@@ -601,25 +619,68 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 
 	@Override
 	public Boolean isTransferred(Patient patient, Location location) {
-		Patient transferredPatient = (Patient) sessionFactory.getCurrentSession().createQuery(
-				"SELECT p FROM Patient p, Obs o " +
-						"WHERE p.patient = :patient AND o.person.personId = p.patient.patientId AND o.concept.conceptId = 164595 AND " +
-						" o.valueDatetime >= (SELECT MAX(e.encounterDatetime) FROM Encounter e WHERE e.patient = :patient AND e.encounterType.uuid = '' AND e.voided = false GROUP BY e.patient) AND " +
+//		Patient transferredPatient = (Patient) sessionFactory.getCurrentSession().createQuery(
+//				"SELECT p FROM Patient p, Obs o " +
+//						"WHERE p.patient = :patient AND o.person.personId = p.patient.patientId AND o.concept.conceptId = 164595 AND " +
+//						" o.valueDatetime >= (SELECT MAX(e.encounterDatetime) FROM Encounter e WHERE e.patient = :patient AND e.encounterType.name = 'PEC - Ouverture de dossier' AND e.voided = false AND e.location = :location GROUP BY e.patient) AND " +
+//						" o.voided = false AND o.location = :location"
+//		)
+//				.setParameter("patient", patient)
+//				.setParameter("location", location).uniqueResult();
+		return transferDate(patient, location) != null;
+	}
+
+	@Override
+	public Date transferDate(Patient patient, Location location) {
+		Obs obs = (Obs) sessionFactory.getCurrentSession().createQuery(
+				"SELECT o FROM Obs o " +
+						"WHERE o.person = :patient AND o.concept.conceptId = 164595 AND " +
+						" o.valueDatetime >= (SELECT MAX(e.encounterDatetime) FROM Encounter e WHERE e.patient = :patient AND e.encounterType.uuid = '8d5b27bc-c2cc-11de-8d13-0010c6dffd0f' AND e.voided = false AND e.location = :location GROUP BY e.patient) AND " +
 						" o.voided = false AND o.location = :location"
 		)
 				.setParameter("patient", patient)
 				.setParameter("location", location).uniqueResult();
-		return transferredPatient != null;
+		if (obs != null) {
+			return obs.getValueDate() != null ? obs.getValueDate() : obs.getValueDatetime();
+		}
+		return null;
 	}
 
 	@Override
 	public Boolean isDead(Patient patient, Location location) {
-		Patient deadPatient = (Patient) sessionFactory.getCurrentSession().createQuery("SELECT p FROM Patient p, Obs o " +
-				"WHERE o.person.personId = p.patient.patientId AND o.concept.conceptId = 1543 AND  p.patient = :patient AND " +
+//		Patient deadPatient = (Patient) sessionFactory.getCurrentSession().createQuery("SELECT p FROM Patient p, Obs o " +
+//				"WHERE o.person.personId = p.patient.patientId AND o.concept.conceptId = 1543 AND  p.patient = :patient AND " +
+//				"o.voided = false AND o.location = :location")
+//				.setParameter("patient", patient)
+//				.setParameter("location", location)
+//				.uniqueResult();
+		return deathDate(patient, location) != null;
+	}
+
+	@Override
+	public Date deathDate(Patient patient, Location location) {
+		Obs obs = (Obs) sessionFactory.getCurrentSession().createQuery("SELECT o FROM Obs o " +
+				"WHERE o.person = :patient AND o.concept.conceptId = 1543 AND " +
 				"o.voided = false AND o.location = :location")
 				.setParameter("patient", patient)
 				.setParameter("location", location)
 				.uniqueResult();
-		return deadPatient != null;
+		if (obs != null) {
+			return obs.getValueDate() != null ? obs.getValueDate() : obs.getValueDatetime();
+		}
+		return null;
+	}
+
+	@Override
+	public Date admissionDate(Patient patient, Location location) {
+		Encounter encounter = (Encounter) sessionFactory.getCurrentSession().createQuery(
+				"SELECT e FROM Encounter e " +
+						"WHERE e.patient = :patient AND " +
+						" e.encounterDatetime >= (SELECT MAX(em.encounterDatetime) FROM Encounter em WHERE em.patient = :patient AND em.encounterType.uuid = '8d5b27bc-c2cc-11de-8d13-0010c6dffd0f' AND em.voided = false AND em.location = :location GROUP BY em.patient) AND " +
+						" e.voided = false AND e.location = :location AND e.encounterType.uuid = '8d5b27bc-c2cc-11de-8d13-0010c6dffd0f'"
+		)
+				.setParameter("patient", patient)
+				.setParameter("location", location).uniqueResult();
+		return encounter != null ? encounter.getEncounterDatetime() : null;
 	}
 }

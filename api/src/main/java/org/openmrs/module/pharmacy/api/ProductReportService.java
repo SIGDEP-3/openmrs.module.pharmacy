@@ -52,6 +52,16 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductReport getLastTreatedProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory productProgram, Boolean includeVoided, Date operationDate, Product product);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location) throws APIException;

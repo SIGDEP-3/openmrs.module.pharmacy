@@ -77,7 +77,7 @@ public class PharmacyProductReceptionManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("receptions", receptionService().getProductReceptionListDTOs());
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("subTitle", "Liste des Réceptions");
         }
     }

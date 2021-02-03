@@ -40,7 +40,9 @@ public class ProductDistributionForm extends ProductReportForm {
 
     public void setProductReport(ProductReport productReport) {
         super.setProductReport(productReport);
-        setReportLocationId(productReport.getReportLocation().getLocationId());
+        if (productReport.getReportLocation() != null) {
+            setReportLocationId(productReport.getReportLocation().getLocationId());
+        }
         if (productReport.getChildLocationReport() != null) {
             setChildLocationReportId(productReport.getChildLocationReport().getProductOperationId());
         }

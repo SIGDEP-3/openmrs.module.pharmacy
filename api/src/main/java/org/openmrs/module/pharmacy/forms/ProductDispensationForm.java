@@ -169,6 +169,7 @@ public class ProductDispensationForm extends ProductOperationForm {
         if (patient.getIdentifier() != null) {
             setPatientIdentifier(patient.getIdentifier());
         }
+        setPatientId(patient.getMobilePatientId());
         setAge(patient.getAge());
         setGender(patient.getGender());
         setMobilePatientId(patient.getMobilePatientId());
@@ -361,5 +362,9 @@ public class ProductDispensationForm extends ProductOperationForm {
         setPatientIdentifier(patient.getPatientIdentifier().getIdentifier());
         setPatientId(patient.getPatientId());
         setPatientType(PatientType.ON_SITE);
+    }
+
+    public Patient getPatient() {
+        return Context.getPatientService().getPatient(getPatientId());
     }
 }

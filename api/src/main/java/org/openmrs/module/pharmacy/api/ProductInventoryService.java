@@ -62,9 +62,9 @@ public interface ProductInventoryService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryByUuid(String uuid);
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
-	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
+	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram, InventoryType inventoryType);
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
-	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
+	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate, InventoryType inventoryType);
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})

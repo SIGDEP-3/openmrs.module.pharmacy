@@ -53,7 +53,7 @@ public class PharmacyProductDispensationManageController {
     private ProductRegimenService regimenService() {
         return Context.getService(ProductRegimenService.class);
     }
-    
+
     private ProductProgramService programService(){
         return Context.getService(ProductProgramService.class);
     }
@@ -88,7 +88,7 @@ public class PharmacyProductDispensationManageController {
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
                     OperationUtils.getCurrentMonthRange().getStartDate(),
@@ -172,7 +172,6 @@ public class PharmacyProductDispensationManageController {
                     startDate,
                     endDate,
                     OperationUtils.getUserLocation()));
-
             modelMap.addAttribute("subTitle", "Liste des Dispensations du " +
                     OperationUtils.dateToDdMmYyyy(startDate) + " au " + OperationUtils.dateToDdMmYyyy(endDate));
         }
@@ -187,7 +186,7 @@ public class PharmacyProductDispensationManageController {
             mobilePatient = new MobilePatient();
             mobilePatient.setLocation(OperationUtils.getUserLocation());
             mobilePatient.setIdentifier(findPatientForm.getPatientIdentifier());
-            mobilePatient.setPatientType(findPatientForm.getPatientType());
+            mobilePatient.setPatientType(PatientType.MOBILE);
             mobilePatient.setAge(0);
             patientId = dispensationService().saveMobilePatient(mobilePatient).getMobilePatientId().toString();
         }
@@ -210,7 +209,7 @@ public class PharmacyProductDispensationManageController {
                 if (productDispensation != null) {
                     if (!productDispensation.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
                         return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId=" +
-                            productDispensation.getProductOperationId();
+                                productDispensation.getProductOperationId();
                     }
                     productDispensationForm.setProductDispensation(productDispensation);
                     if (productDispensation.getEncounter() == null) {
@@ -256,20 +255,21 @@ public class PharmacyProductDispensationManageController {
                 ProductDispensation dispensation = productDispensationForm.getProductDispensation();
                 if (dispensation != null) {
                     //dispensation.setIncidence(Incidence.NEGATIVE);
-                    if (mob == 0) {
+                    if (productDispensationForm.getPatientType().equals(PatientType.ON_SITE) && programId == 1) {
                         Encounter encounter = productDispensationForm.getEncounter();
                         dispensation.setEncounter(Context.getEncounterService().saveEncounter(encounter));
-                        dispensationService().saveProductDispensation(dispensation);
-
                     } else {
-                        MobilePatient mobilePatient = dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient());
-                        dispensationService().saveProductDispensation(dispensation);
                         MobilePatientDispensationInfo info = productDispensationForm.getMobileDispensationInfo();
-                        info.setMobilePatient(mobilePatient);
                         info.setDispensation(dispensation);
+                        Patient patient = productDispensationForm.getPatient();
+                        if (patient != null) {
+                            info.setPatient(patient);
+                        } else {
+                            info.setMobilePatient(dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient()));
+                        }
                         dispensationService().saveMobilePatientDispensationInfo(info);
-
                     }
+                    dispensationService().saveProductDispensation(dispensation);
 
 //                    if (dispensation.getProductAttributeFluxes().size() == 0) {
 //                    } else {
@@ -303,6 +303,7 @@ public class PharmacyProductDispensationManageController {
                             ProductDispensationForm productDispensationForm) {
 
         String patientIdentifier = "";
+
         if (mob != 0) {
             MobilePatient mobilePatient = dispensationService().getOneMobilePatientById(patientId);
             if (mobilePatient != null) {
@@ -313,17 +314,27 @@ public class PharmacyProductDispensationManageController {
         } else {
             Patient patient = Context.getPatientService().getPatient(patientId);
             if (patient != null) {
+                if (dispensationService().isDead(patient, OperationUtils.getUserLocation())) {
+                    modelMap.addAttribute("patientAlert", "<span class=\"text-danger\">Décédé le : <span class=\"font-weight-bold\">" +
+                            dispensationService().deathDate(patient, OperationUtils.getUserLocation())+ "</span></span>");
+                } else if (dispensationService().isDead(patient, OperationUtils.getUserLocation())) {
+                    productDispensationForm.setPatientType(PatientType.MOBILE);
+                    modelMap.addAttribute("patientAlert", "<span class=\"text-warning\">Transféré le : <span class=\"font-weight-bold\">" +
+                            dispensationService().transferDate(patient, OperationUtils.getUserLocation())+ "</span></span>");
+                }
                 productDispensationForm.setPatient(Context.getPatientService().getPatient(patientId));
                 patientIdentifier = patient.getPatientIdentifier().getIdentifier();
             }
         }
+
         if (patientIdentifier != null) {
             ProductProgram program = programService().getOneProductProgramById(productDispensationForm.getProductProgramId());
             if (program != null) {
                 ProductDispensation lastDispensation = dispensationService().getLastProductDispensationByPatient(
                         patientIdentifier,
                         program,
-                        OperationUtils.getUserLocation());
+                        OperationUtils.getUserLocation()
+                );
 
                 if (lastDispensation != null) {
                     LastDispensationDTO lastDispensationDTO = new LastDispensationDTO();
@@ -336,26 +347,28 @@ public class PharmacyProductDispensationManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/deletePatient.form", method = RequestMethod.GET)
     public String deletePatient(HttpServletRequest request,
-                                  @RequestParam(value = "patientId", defaultValue = "0", required = false) Integer patientId){
+                                @RequestParam(value = "patientId", defaultValue = "0", required = false) Integer patientId){
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
 
         if (patientId != 0) {
             MobilePatient mobilePatient = dispensationService().getOneMobilePatientById(patientId);
-            if (mobilePatient != null && mobilePatient.getMobilePatientDispensationInfos().size() == 0) {
-                dispensationService().removeMobilePatient(mobilePatient);
+            if (mobilePatient != null) {
+                if (mobilePatient.getMobilePatientDispensationInfos() != null && mobilePatient.getMobilePatientDispensationInfos().size() == 0)
+                    dispensationService().removeMobilePatient(mobilePatient);
             }
         }
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La dispensation a été annulée !");
         return "redirect:/module/pharmacy/operations/dispensation/list.form";
     }
+
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/editFlux.form", method = RequestMethod.GET)
     public String editFlux(ModelMap modelMap,
-                         @RequestParam(value = "dispensationId") Integer dispensationId,
-                         @RequestParam(value = "productId", defaultValue = "0", required = false) Integer productId,
-                         @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
-                         DispensationAttributeFluxForm dispensationAttributeFluxForm) {
+                           @RequestParam(value = "dispensationId") Integer dispensationId,
+                           @RequestParam(value = "productId", defaultValue = "0", required = false) Integer productId,
+                           @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,
+                           DispensationAttributeFluxForm dispensationAttributeFluxForm) {
         if (Context.isAuthenticated()) {
             ProductDispensation productDispensation = dispensationService().getOneProductDispensationById(dispensationId);
             if (productDispensation != null) {
@@ -461,7 +474,25 @@ public class PharmacyProductDispensationManageController {
             MobilePatientDispensationInfo info = dispensationService().
                     getOneMobilePatientDispensationInfoId(productDispensation.getProductOperationId());
             if (info != null) {
-                if (info.getMobilePatient() != null) {
+                if (info.getPatient() != null) {
+                    headerDTO.setAge(info.getPatient().getAge());
+                    headerDTO.setGender(info.getPatient().getGender());
+                    headerDTO.setPatientIdentifier(info.getPatient().getPatientIdentifier().getIdentifier());
+                    if (dispensationService().isTransferred(info.getPatient(), OperationUtils.getUserLocation())) {
+                        if (dispensationService().transferDate(info.getPatient(), OperationUtils.getUserLocation()).after(productDispensation.getOperationDate())) {
+                            modelMap.addAttribute("patientAlert", "<span class=\"text-warning\">Transféré le : <span class=\"font-weight-bold\">" +
+                                    dispensationService().transferDate(info.getPatient(), OperationUtils.getUserLocation()) + "</span></span>");
+                            headerDTO.setPatientType(PatientType.MOBILE);
+                        } else {
+                            headerDTO.setPatientType(PatientType.ON_SITE);
+                        }
+                    } else if (dispensationService().isDead(info.getPatient(), OperationUtils.getUserLocation())){
+                        modelMap.addAttribute("patientAlert", "<span class=\"text-danger\">Décédé le : <span class=\"font-weight-bold\">" +
+                                dispensationService().deathDate(info.getPatient(), OperationUtils.getUserLocation())+ "</span></span>");
+                    }
+
+                    modelMap.addAttribute("mobilePatient", info.getPatient());
+                } else if (info.getMobilePatient() != null) {
                     headerDTO.setAge(info.getMobilePatient().getAge());
                     headerDTO.setGender(info.getMobilePatient().getGender());
                     headerDTO.setPatientIdentifier(info.getMobilePatient().getIdentifier());
@@ -550,7 +581,6 @@ public class PharmacyProductDispensationManageController {
         else {
             modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Ajout de prosuits");
         }
-
     }
 
 //    public DispensationHeaderDTO getHeaderDTO (ProductDispensation productDispensation) {
@@ -718,7 +748,7 @@ public class PharmacyProductDispensationManageController {
 
     @RequestMapping(value = "/module/pharmacy/operations/dispensation/cancel.form", method = RequestMethod.GET)
     public String cancel(HttpServletRequest request,
-                           @RequestParam(value = "dispensationId") Integer dispensationId){
+                         @RequestParam(value = "dispensationId") Integer dispensationId){
         if (!Context.isAuthenticated())
             return null;
         HttpSession session = request.getSession();
@@ -738,4 +768,22 @@ public class PharmacyProductDispensationManageController {
         DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
         return new ResponseEntity<String>(resultDTO.toString(), HttpStatus.OK);
     }
+
+//
+//    @RequestMapping(value = "patient-dead.form", method = RequestMethod.GET)
+//    @ResponseBody
+//    public ResponseEntity<String> patientDeadAjax() {
+//        DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
+//        return new ResponseEntity<String>(resultDTO.toString(), HttpStatus.OK);
+//    }
+//
+//    @RequestMapping(value = "patient-transferred.form", method = RequestMethod.GET)
+//    @ResponseBody
+//    public ResponseEntity<String> patientTransferredAjax() {
+//
+//        DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
+//        return new ResponseEntity<String>(resultDTO.toString(), HttpStatus.OK);
+//    }
+
+
 }

@@ -1,11 +1,13 @@
 package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductDispensation;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.api.ProductDispensationService;
 import org.openmrs.module.pharmacy.forms.ProductDispensationForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
@@ -27,10 +29,32 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-//            ValidationUtils.rejectIfEmpty(errors, "productSupplierId", null, "Ce champ est requis");
-//            ValidationUtils.rejectIfEmpty(errors, "receptionQuantityMode", null, "Ce champ est requis");
+
+//            ValidationUtils.rejectIfEmpty(errors, "goal", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "treatmentDays", null, "Ce champ est requis");
 //            ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
 
+            if (form.getOperationDate() != null){
+                if (dispensationService().isDead(patientService().getPatient(form.getPatientId()), OperationUtils.getUserLocation())) {
+                    if (form.getOperationDate().after(dispensationService().deathDate(patientService().getPatient(form.getPatientId()), OperationUtils.getUserLocation() ))) {
+                        errors.rejectValue("operationDate", null, "Le patient est décédé au moment de cette dispensation ! ");
+                    }
+                }
+            }
+
+            if (form.getProductProgramId() != null) {
+                if (programService().getOneProductProgramById(form.getProductProgramId()).getName().equals("PNLSARVIO")) {
+                    if (form.getGoal() == null) {
+                        errors.rejectValue("goal", null, "Ce champ est requis");
+                    }
+                    if (form.getAge() == null) {
+                        errors.rejectValue("age", null, "Ce champ est requis");
+                    }
+                    if (form.getProductRegimenId() == null) {
+                        errors.rejectValue("productRegimenId", null, "Ce champ est requis");
+                    }
+                }
+            }
 //            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
 //                ProductDispensation reception = (ProductDispensation) service().getOneProductOperationByOperationNumber(form.getOperationNumber());
 //                if (reception != null) {
@@ -60,5 +84,13 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 //                    }
 
         }
+    }
+
+    private PatientService patientService() {
+        return Context.getPatientService();
+    }
+
+    private ProductDispensationService dispensationService() {
+        return Context.getService(ProductDispensationService.class);
     }
 }

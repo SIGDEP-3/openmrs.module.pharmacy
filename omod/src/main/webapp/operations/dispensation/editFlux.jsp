@@ -44,6 +44,15 @@
             }
         }
 
+        function getDate(stringDate) {
+            console.log(stringDate);
+            if (stringDate) {
+                const parts = stringDate.split('/');
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return null;
+        }
+
         function getRemainingQuantity() {
             let dispensingQuantity = parseInt(jQuery('#dispensingQuantity').val());
             let quantityRemaining = jQuery('#quantityRemaining');
@@ -70,18 +79,16 @@
         }
 
         function goToSelectedProduct() {
-            let productId = jQuery('#selectedProductId').val();
-            if (productId) {
+            let productId = '', input = jQuery('#selectedProductId').val().match(/\d+/g);
+            if (input.length > 0) {
+                for (let i = 0; i < input.length; i++) {
+                    productId += input[i];
+                }
                 location.href = '${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/editFlux.form?' +
-                    'dispensationId=' + ${dispensationId} + '&selectedProductId=' + productId
+                    'dispensationId=' + ${dispensationId} + '&selectedProductId=' + productId;
             }
         }
-        //jQuery.ajax('/')
     }
-</script>
-
-<script>
-
 </script>
 <div class="container-fluid mt-2">
     <div class="row mb-2">
@@ -97,9 +104,15 @@
                         <legend>
                             <div class="row">
                                 <div class="col-8">
-                                    Programme : <span class="text-success text-lg-left font-italic">${headerDTO.productProgram.name}</span> |
-                                    Patient (<span class="text-info font-italic">${headerDTO.patientType == 'ON_SITE' ?
+                                    Programme : <span class="text-success text-lg-left font-italic">${headerDTO.productProgram.name}</span>
+                                    <c:if test="${headerDTO.productProgram.name == 'PNLSARVIO'}">
+                                       | Patient (<span class="text-info font-italic">${headerDTO.patientType == 'ON_SITE' ?
                                         'PEC SUR LE SITE' : (headerDTO.patientType == 'MOBILE' ? 'MOBILE' : 'PREVENTION')}</span>)
+                                    </c:if>
+
+                                    <c:if test="${patientAlert != null}">
+                                        <span class="badge"><i class="fa fa-warning"></i> ${patientAlert}</span>
+                                    </c:if>
                                     <c:if test="${headerDTO.operationStatus != 'NOT_COMPLETED'}">
                                         &nbsp;&nbsp;
                                         <c:if test="${headerDTO.operationStatus == 'VALIDATED'}">
@@ -218,14 +231,14 @@
                                                         </div>
                                                     </div>
                                                 </c:if>
-                                                <c:if test="${headerDTO.patientType == 'MOBILE'}">
-                                                    <div class="row align-items-center">
-                                                        Ce patient mobile a d&eacute;j&agrave; effectu&eacute;
-                                                        <span class="font-weight-bold text-primary">${fct:length(mobilePatient.mobilePatientDispensationInfos)}</span>
-                                                        visite(s)
-                                                    </div>
-                                                </c:if>
-                                                <c:if test="${headerDTO.patientType == 'ON_SITE'}">
+                                                <c:if test="${headerDTO.patientType == 'MOBILE' || headerDTO.patientType == 'ON_SITE'}">
+<%--                                                    <div class="row align-items-center">--%>
+<%--                                                        Ce patient mobile a d&eacute;j&agrave; effectu&eacute;--%>
+<%--                                                        <span class="font-weight-bold text-primary">${fct:length(mobilePatient.mobilePatientDispensationInfos)}</span>--%>
+<%--                                                        visite(s)--%>
+<%--                                                    </div>--%>
+<%--                                                </c:if>--%>
+<%--                                                <c:if test="${headerDTO.patientType == 'ON_SITE'}">--%>
                                                     <c:if test="${lastDispensation == null}">
                                                         <div class="row align-items-center">
                                                             <div class="col-12">
@@ -302,28 +315,31 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-12">
-                                                        <label class="mb-1">But</label>
-                                                        <br>
-                                                        <c:if test="${headerDTO.patientType == 'ON_SITE' || headerDTO.patientType == 'MOBILE'}">
+                                                <c:if test="${headerDTO.productProgram.name == 'PNLSARVIO'}">
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <label class="mb-1">But</label>
+                                                            <br>
+                                                            <c:if test="${headerDTO.patientType == 'ON_SITE' || headerDTO.patientType == 'MOBILE'}">
                                                         <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'NOT_APPLICABLE' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;Non Applicable </span>
-                                                            <span class="mr-3 text-info">
+                                                                <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'PEC' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PEC </span>
-                                                            <span class="mr-3 text-info">
+                                                                <span class="mr-3 text-info">
                                                             ${headerDTO.goal == 'PTME' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PTME </span>
-                                                        </c:if>
-                                                        <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
+                                                            </c:if>
+                                                            <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
                                                         <span class="text-info">
                                                             ${headerDTO.goal == 'AES' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;AES</span>
-                                                            <span class="text-info">
+                                                                <span class="text-info">
                                                             ${headerDTO.goal == 'PREP' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;PREP</span>
-                                                        </c:if>
+                                                            </c:if>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </c:if>
                                                 <div class="row mb-2">
-                                                    <c:if test="${headerDTO.patientType == 'ON_SITE'}">
+                                                    <c:if test="${headerDTO.patientType == 'ON_SITE' || headerDTO.patientType == 'MOBILE'}">
                                                         <div class="col-5">
                                                             <label class="">Date de dispensation</label>
                                                             <div class="form-control form-control-sm bg-info text-white">
@@ -343,7 +359,7 @@
                                                             </div>
                                                         </div>
                                                     </c:if>
-                                                    <c:if test="${headerDTO.patientType == 'OTHER_HIV' || headerDTO.patientType == 'MOBILE'}">
+                                                    <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
                                                         <div class="col-5">
                                                             <label class="">Date de dispensation</label>
                                                             <div class="form-control form-control-sm bg-info text-white">
@@ -385,6 +401,10 @@
                                             <td>
                                                 <form:select path="selectedProductId" cssClass="form-control s2">
                                                     <form:option value="" label=""/>
+<%--                                                    <c:forEach var="product" items="${products}">--%>
+<%--                                                        <fmt:formatNumber type = "number" var="id" value = "${product.productId}" maxFractionDigits="0" />--%>
+<%--                                                        <form:option value="${fct:replace(id,' ', '')}" label="${product.retailNameWithCode}"/>--%>
+<%--                                                    </c:forEach>--%>
                                                     <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
                                                 </form:select>
                                             </td>

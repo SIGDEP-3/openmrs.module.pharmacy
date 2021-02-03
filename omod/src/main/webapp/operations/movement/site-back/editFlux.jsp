@@ -38,8 +38,11 @@
             }
         }
         function goToSelectedProduct() {
-            let productId = jQuery('#selectedProductStockId').val();
-            if (productId) {
+            let productId = '', input = jQuery('#selectedProductStockId').val().match(/\d+/g);
+            if (input.length > 0) {
+                for (let i = 0; i < input.length; i++) {
+                    productId += input[i];
+                }
                 location.href = '${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/editFlux.form?' +
                     'transferId=' + ${productBackSupplier.productOperationId} + '&selectedProductId=' + productId
             }

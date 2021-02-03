@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacy;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.module.pharmacy.enumerations.Goal;
 
@@ -35,6 +36,10 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
     @ManyToOne
     @JoinColumn(name = "mobile_patient_id")
     private MobilePatient mobilePatient;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
     @Column(name = "goal")
     private Goal goal;
@@ -83,6 +88,14 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
 
     public void setDispensation(ProductDispensation dispensation) {
         this.dispensation = dispensation;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public Goal getGoal() {

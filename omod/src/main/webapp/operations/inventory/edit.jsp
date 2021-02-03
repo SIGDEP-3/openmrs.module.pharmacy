@@ -18,10 +18,29 @@
             });
 
             jQuery('.periodSelector').on('change',function (e) {
-                console.log(e);
-                console.log(jQuery(this).val());
-                jQuery(this).val(getNumber(jQuery(this).val()));
+                // console.log(e);
+                // console.log(jQuery(this).val());
+                let inventoryType = jQuery('input[name=inventoryType]:checked');
+                let periodNumber = getNumber(jQuery(this).val());
+                if (inventoryType.val() === 'PARTIAL')
+                    jQuery(this).val(periodNumber + ' P');
+                else
+                    jQuery(this).val(periodNumber);
             });
+
+            jQuery('input[name=inventoryType]').on('change', function () {
+                let periodSelector = jQuery('.periodSelector');
+                let period = periodSelector.val();
+                if (period) {
+                    if (jQuery(this).val() === 'PARTIAL') {
+                        periodSelector.val(period + " P");
+                    } else {
+                        if (period.includes(" P")) {
+                            periodSelector.val(period.replace(" P", ""))
+                        }
+                    }
+                }
+            })
         });
 
         function getNumber(period) {
@@ -169,8 +188,8 @@
                         <div class="row">
                             <div class="col-10">
                                 <label class="mb-2">Type d'inventaire</label> <br>
-                                <form:radiobutton path="inventoryType" value="INTERMEDIATE" label="Intermediaire" cssClass="mr-2"/>
-                                <form:radiobutton path="inventoryType" value="MONTHLY" label="Mensuel" cssClass="mr-2"/>
+                                <form:radiobutton path="inventoryType" value="TOTAL" label="Total" cssClass="mr-2"/>
+                                <form:radiobutton path="inventoryType" value="PARTIAL" label="Partiel" cssClass="mr-2"/>
                                 <form:errors path="inventoryType" cssClass="error"/>
                             </div>
 

@@ -145,7 +145,7 @@
                 </tr>
                 <tr>
                     <td>Type d'inventaire</td>
-                    <td class="font-weight-bold text-info">${productInventory.inventoryType == 'MONTHLY' ? 'MENSUEL' : 'INTERMEDIARE'}</td>
+                    <td class="font-weight-bold text-info">${productInventory.inventoryType == 'TOTAL' ? 'TOTAL' : 'PARTIEL'}</td>
                     <td>Observation</td>
                     <td class="font-weight-bold text-info">${productInventory.observation}</td>
                 </tr>
@@ -174,7 +174,8 @@
                             <th style="width: 50px"></th>
                         </tr>
                         </thead>
-                        <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED'}">
+                        <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED'
+                                        && productInventory.inventoryType == 'TOTAL'}">
                             <tr>
                                 <td colspan="3">
                                     <form:select path="productId" cssClass="form-control s2" >
@@ -221,14 +222,14 @@
                         </tr>
                         <c:forEach var="productFlux" items="${productAttributeFluxes}">
                             <tr>
-                                <td>${productFlux.productAttribute.product.code}</td>
-                                <td>${ productFlux.productAttribute.product.retailName}</td>
-                                <td>${productFlux.productAttribute.product.productRetailUnit.name}</td>
-                                <td class="text-center">${productFlux.productAttribute.batchNumber}</td>
-                                <td class="text-center">
+                                <td class="align-middle">${productFlux.productAttribute.product.code}</td>
+                                <td class="align-middle">${ productFlux.productAttribute.product.retailName}</td>
+                                <td class="align-middle">${productFlux.productAttribute.product.productRetailUnit.name}</td>
+                                <td class="text-center align-middle">${productFlux.productAttribute.batchNumber}</td>
+                                <td class="text-center align-middle">
                                     <fmt:formatDate value="${productFlux.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                                 </td>
-                                <td class="text-center ">
+                                <td class="text-center align-middle">
                                     <c:if test="${productFlux.quantity == 0}">
                                         <input type="text"
                                                class="form-control form-control-sm text-center input-value-flux"
@@ -239,8 +240,8 @@
                                         ${productFlux.quantity}
                                     </c:if>
                                 </td>
-                                <td>${productFlux.observation}</td>
-                                <td>
+                                <td class="align-middle">${productFlux.observation}</td>
+                                <td class="align-middle text-center">
                                     <c:if test="${productInventory.operationStatus == 'NOT_COMPLETED'}">
                                         <c:url value="/module/pharmacy/operations/inventory/editFlux.form" var="editUrl">
                                             <c:param name="inventoryId" value="${productInventory.productOperationId}"/>
@@ -278,8 +279,8 @@
                     </thead>
                     <tbody>
                     <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                        <c:if test="${productInventory.productOperationId == productFlux.operationId && productInventory.inventoryType == 'MONTHLY' ||
-                    (productInventory.inventoryType == 'INTERMEDIATE' && productFlux.physicalQuantity != null)}">
+                        <c:if test="${productInventory.productOperationId == productFlux.operationId && productInventory.inventoryType == 'TOTAL' ||
+                    (productInventory.inventoryType == 'PARTIAL' && productFlux.physicalQuantity != 0)}">
 
                             <tr
                                     <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null} ">
@@ -300,17 +301,17 @@
                                         </c:if>
                                     </c:if>
                             >
-                                <td>${productFlux.code}</td>
-                                <td>${productFlux.retailName}</td>
-                                <td>${productFlux.retailUnit}</td>
-                                <td class="text-center">${productFlux.batchNumber}</td>
-                                <td class="text-center">
+                                <td class="align-middle">${productFlux.code}</td>
+                                <td class="align-middle">${productFlux.retailName}</td>
+                                <td class="align-middle">${productFlux.retailUnit}</td>
+                                <td class="text-center align-middle">${productFlux.batchNumber}</td>
+                                <td class="text-center align-middle">
                                     <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy"
                                                     type="DATE"/>
                                 </td>
-                                <td class="text-center">${productFlux.physicalQuantity}</td>
-                                <td class="text-center">${productFlux.theoreticalQuantity}</td>
-                                <td class="text-center">
+                                <td class="text-center align-middle">${productFlux.physicalQuantity}</td>
+                                <td class="text-center align-middle">${productFlux.theoreticalQuantity}</td>
+                                <td class="text-center align-middle">
                                     <c:if test="${productFlux.physicalQuantity != null && productFlux.theoreticalQuantity != null}">
                                         <c:if test="${ productFlux.physicalQuantity != productFlux.theoreticalQuantity}">
                                             <span class="badge badge-danger">${productFlux.physicalQuantity - productFlux.theoreticalQuantity}</span>
@@ -334,7 +335,7 @@
                                         </c:if>
                                     </c:if>
                                 </td>
-                                <td>
+                                <td class="align-middle">
                                     <c:if test="${productInventory.operationStatus == 'AWAITING_VALIDATION'}">
                                         <c:if test="${ productFlux.physicalQuantity != productFlux.theoreticalQuantity}">
                                             <input type="text" name="${productFlux.batchNumber}"

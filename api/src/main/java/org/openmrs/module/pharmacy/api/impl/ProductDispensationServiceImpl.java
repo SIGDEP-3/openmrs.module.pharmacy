@@ -220,4 +220,20 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     public Boolean isTransferred(Patient patient, Location location) {
         return dao.isTransferred(patient, location);
     }
+
+    @Override
+    public Date admissionDate(Patient patient, Location location) {
+        return dao.admissionDate(patient, location);
+    }
+
+    @Override
+    public Date deathDate(Patient patient, Location location) {
+        return dao.deathDate(patient, location);
+    }
+
+    @Override
+    public Date transferDate(Patient patient, Location location) {
+        return dao.transferDate(patient, location);
+    }
+
 }

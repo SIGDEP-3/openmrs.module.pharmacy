@@ -40,8 +40,11 @@
         }
 
         function goToSelectedProduct() {
-            let productId = jQuery('#selectedProductFluxId').val();
-            if (productId) {
+            let productId = '', input = jQuery('#selectedProductFluxId').val().match(/\d+/g);
+            if (input.length > 0) {
+                for (let i = 0; i < input.length; i++) {
+                    productId += input[i];
+                }
                 location.href = '${pageContext.request.contextPath}/module/pharmacy/operations/reception/editFlux.form?' +
                     'receptionId=' + ${productReception.productOperationId} + '&selectedProductId=' + productId
             }

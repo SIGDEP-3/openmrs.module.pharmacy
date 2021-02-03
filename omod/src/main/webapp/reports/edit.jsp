@@ -16,12 +16,6 @@
                 //pattern: "mm/yyyy"
             });
 
-            jQuery('.periodSelector').on('change',function (e) {
-                console.log(e);
-                console.log(jQuery(this).val());
-                jQuery(this).val(getNumber(jQuery(this).val()));
-            });
-
             const urgent = jQuery('input[name=urgent]');
             const urgentProduct = jQuery('#urgentProduct');
             urgentProduct.hide();
@@ -30,13 +24,36 @@
                 urgentProduct.show();
             }
 
+            jQuery('.periodSelector').on('change',function (e) {
+                let periodNumber = getNumber(jQuery(this).val());
+                if (urgent.is(":checked"))
+                    jQuery(this).val(periodNumber + ' U');
+                else
+                    jQuery(this).val(periodNumber);
+                // jQuery(this).val(getNumber(jQuery(this).val()));
+            });
+
             urgent.click(function (e) {
-                console.log('clicked')
-                if (jQuery(this).is(':checked')) {
-                    console.log('is checked')
-                    urgentProduct.show();
+                // console.log('clicked')
+                let periodSelector = jQuery('.periodSelector');
+                let period = periodSelector.val();
+
+                if (period) {
+                    if (jQuery(this).is(':checked')) {
+                        periodSelector.val(period + " U");
+                        urgentProduct.show();
+                    } else {
+                        if (period.includes(" U")) {
+                            periodSelector.val(period.replace(" U", ""))
+                        }
+                        urgentProduct.hide();
+                    }
                 } else {
-                    urgentProduct.hide();
+                    if (jQuery(this).is(':checked')) {
+                        urgentProduct.show();
+                    } else {
+                        urgentProduct.hide();
+                    }
                 }
             });
         });
@@ -152,8 +169,8 @@
                     <div class="col-6">
                         <div class="row mb-2">
                             <div class="col-4">
-                                <label>Date de rapport <span class="required">*</span></label>
-                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" />
+                                <label>Date de soumission <span class="required">*</span></label>
+                                <form:input path="operationDate" cssClass="form-control form-control-sm picker" readonly="true" />
                                 <form:errors path="operationDate" cssClass="error"/>
                             </div>
                         </div>
@@ -172,6 +189,9 @@
                                     <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
                                 </form:select>
                                 <form:errors path="productIds" cssClass="error"/>
+                                <c:if test="${fct:length(products) == 0}">
+                                    <span class="text-danger">Vous devez faire un inventaire partiel avant SVP</span>
+                                </c:if>
                             </div>
                         </div>
                     </div>

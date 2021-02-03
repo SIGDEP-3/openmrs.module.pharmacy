@@ -97,13 +97,13 @@ public class ProductInventoryServiceImpl extends BaseOpenmrsService implements P
     }
 
     @Override
-    public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram) {
-        return dao.getLastProductInventory(location, productProgram);
+    public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram, InventoryType inventoryType) {
+        return dao.getLastProductInventory(location, productProgram, inventoryType);
     }
 
     @Override
-    public ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate) {
-        return dao.getLastProductInventoryByDate(location, productProgram, inventoryDate);
+    public ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate, InventoryType inventoryType) {
+        return dao.getLastProductInventoryByDate(location, productProgram, inventoryDate, inventoryType);
     }
 
     @Override

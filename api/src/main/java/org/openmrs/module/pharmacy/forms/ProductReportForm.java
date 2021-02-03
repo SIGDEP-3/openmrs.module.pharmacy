@@ -1,11 +1,10 @@
 package org.openmrs.module.pharmacy.forms;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductReception;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.api.ProductService;
-import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
@@ -21,6 +20,7 @@ public class ProductReportForm extends ProductOperationForm {
 
     public ProductReportForm() {
         super();
+        setOperationDate(DateUtils.truncate(new Date(), java.util.Calendar.DAY_OF_MONTH));
 //        setIncidence(Incidence.NEGATIVE);
     }
 
@@ -38,8 +38,10 @@ public class ProductReportForm extends ProductOperationForm {
             setReportInfo(productReport.getReportInfo());
         }
         if (productReport.getUrgent()) {
-            for (String code : productReport.getReportInfo().split(",")) {
-                getProductIds().add(productService().getOneProductByCode(code).getProductId());
+            if (productReport.getReportInfo() != null) {
+                for (String code : productReport.getReportInfo().split(",")) {
+                    getProductIds().add(productService().getOneProductByCode(code).getProductId());
+                }
             }
         }
     }

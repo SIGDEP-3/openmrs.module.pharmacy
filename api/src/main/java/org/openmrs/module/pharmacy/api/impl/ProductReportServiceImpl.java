@@ -69,6 +69,31 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
+    public List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided) {
+        return dao.getAllTreatedChildProductReports(location, includeVoided);
+    }
+
+    @Override
+    public ProductReport getLastTreatedProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
+        return dao.getLastTreatedChildProductReports(location, includeVoided, productProgram, operationDate);
+    }
+
+    @Override
+    public List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate) {
+        return dao.getPeriodTreatedChildProductReports(location, inventory, includeVoided, operationDate);
+    }
+
+    @Override
+    public Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product) {
+        return dao.getCountProductQuantityInLastTreatment(location, includeVoided, productProgram, operationDate, product);
+    }
+
+    @Override
+    public Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory productProgram, Boolean includeVoided, Date operationDate, Product product) {
+        return dao.getCountProductQuantityInPeriodTreatment(location, productProgram, includeVoided, operationDate, product);
+    }
+
+    @Override
     public List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) {
         return dao.getAllProductReports(location, includeVoided, operationStartDate, operationEndDate);
     }

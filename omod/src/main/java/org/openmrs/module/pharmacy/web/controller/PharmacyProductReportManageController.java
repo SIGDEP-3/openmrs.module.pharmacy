@@ -6,17 +6,15 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.ReportType;
-import org.openmrs.module.pharmacy.forms.DistributionAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ProductReportForm;
 import org.openmrs.module.pharmacy.forms.ReportAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ReportEntryAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
-import org.openmrs.module.pharmacy.models.ProductReportLineExtendedDTO;
 import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
-import org.openmrs.module.pharmacy.validators.ProductDistributionAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductReportEntryAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductReportFormValidation;
 import org.openmrs.web.WebConstants;
@@ -91,12 +89,12 @@ public class PharmacyProductReportManageController {
     @RequestMapping(value = "/module/pharmacy/reports/list.form", method = RequestMethod.GET)
     public String list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("reports", reportService().getAllProductReports(
                     OperationUtils.getUserLocation(),
-                    false,
+                    false/*,
                     OperationUtils.getCurrentMonthRange().getStartDate(),
-                    OperationUtils.getCurrentMonthRange().getEndDate()
+                    OperationUtils.getCurrentMonthRange().getEndDate()*/
             ));
             modelMap.addAttribute("lastMonthReports", reportService().getAllProductReports(
                     OperationUtils.getUserLocation(),
@@ -108,7 +106,6 @@ public class PharmacyProductReportManageController {
         }
         return null;
     }
-
 
     @RequestMapping(value = "/module/pharmacy/reports/upload.form", method = RequestMethod.POST)
     public String uploadProduct(HttpServletRequest request,
@@ -123,6 +120,47 @@ public class PharmacyProductReportManageController {
                     List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), report);
 
                     for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
+                        double quantity = 0.;
+                        if (otherFlux.getLabel().equals("QR")) {
+                            ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
+
+                            List<ProductReport> treatedProductReports;
+                            if (report.getUrgent()) {
+                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                                        report.getLocation(), inventory, false, report.getOperationDate()
+                                );
+                            } else {
+                                ProductInventory inventoryBeforeLast = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
+                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                                        report.getLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
+                                );
+                            }
+                            if (treatedProductReports != null) {
+                                for (ProductReport productReport : treatedProductReports) {
+                                    quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), otherFlux.getProduct()).doubleValue();
+                                }
+                                otherFlux.setQuantity(quantity);
+                            }
+
+                        } else if (otherFlux.getLabel().equals("DM1")) {
+                            ProductReport lastProductReport = reportService().getLastProductReport(
+                                    report.getReportLocation(), report.getProductProgram());
+                            if (lastProductReport != null) {
+                                ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+                                        otherFlux.getProduct(), lastProductReport, "QD", lastProductReport.getLocation()
+                                );
+                                otherFlux.setQuantity(lastOtherFlux.getQuantity());
+                            }
+                        } else if (otherFlux.getLabel().equals("DM2")) {
+                            ProductReport lastProductReport = reportService().getLastProductReport(
+                                    report.getReportLocation(), report.getProductProgram());
+                            if (lastProductReport != null) {
+                                ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+                                        otherFlux.getProduct(), lastProductReport, "DM1", lastProductReport.getLocation()
+                                );
+                                otherFlux.setQuantity(lastOtherFlux.getQuantity());
+                            }
+                        }
                         attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
                     if (report.getReportInfo() == null || report.getReportInfo().isEmpty()
@@ -153,8 +191,13 @@ public class PharmacyProductReportManageController {
                        @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
                        ProductReportForm productReportForm) {
         if (Context.isAuthenticated()) {
+            ProductProgram program = programService().getOneProductProgramById(programId);
+
             if (id != 0) {
                 ProductReport productReport = reportService().getOneProductReportById(id);
+                if (program == null) {
+                    program = productReport.getProductProgram();
+                }
                 if (productReport != null) {
                     if (!productReport.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
                         String fluxLink = isPlatformUser() ? "editFlux" : "editFluxOther";
@@ -165,25 +208,37 @@ public class PharmacyProductReportManageController {
                     modelMap.addAttribute("program", productReport.getProductProgram());
                 }
             } else {
-                ProductProgram program = programService().getOneProductProgramById(programId);
-                if (program == null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez sélectionner un programme !");
-                    return "redirect:/module/pharmacy/reports/list.form";
-                }
+
                 productReportForm = new ProductReportForm();
                 productReportForm.setProductProgramId(programId);
                 productReportForm.setIncidence(Incidence.NONE);
                 productReportForm.setProductProgramId(program.getProductProgramId());
                 productReportForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
-                productReportForm.setReportType(ReportType.NOT_CLIENT_REPORT);
                 if (isDirectClient()) {
                     productReportForm.setReportType(ReportType.CLIENT_REPORT);
+                } else {
+                    productReportForm.setReportType(ReportType.NOT_CLIENT_REPORT);
                 }
-                modelMap.addAttribute("program", program);
-                modelMap.addAttribute("products", program.getProducts());
             }
 
+            List<Product> urgentProducts = new ArrayList<Product>();
+
+            if (isPlatformUser()) {
+                ProductInventory lastIntermediateInventory = inventoryService().getLastProductInventory(
+                        OperationUtils.getUserLocation(), program, InventoryType.PARTIAL);
+
+                ProductInventory lastInventory = inventoryService().getLastProductInventory(
+                        OperationUtils.getUserLocation(), program, InventoryType.TOTAL);
+
+                if (lastIntermediateInventory != null && lastInventory != null
+                        && lastIntermediateInventory.getOperationDate().after(lastInventory.getOperationDate())) {
+                    urgentProducts = lastIntermediateInventory.getFluxesProductList();
+                }
+            } else {
+                urgentProducts.addAll(program.getProducts());
+            }
+            modelMap.addAttribute("program", program);
+            modelMap.addAttribute("products", urgentProducts);
             modelMap.addAttribute("productReport", reportService().getOneProductReportById(id));
             modelMap.addAttribute("subTitle", "Raport mensuel <i class=\"fa fa-play\"></i> Saisie entête");
 
@@ -205,15 +260,24 @@ public class PharmacyProductReportManageController {
 
             if (!result.hasErrors()) {
                 ProductReport report = productReportForm.getProductReport();
-                ProductInventory lastInventory = inventoryService().getLastProductInventory(report.getLocation(), report.getProductProgram());
-                if (lastInventory.getOperationNumber().contains(report.getReportPeriod())) {
+                boolean canSave = true;
+                if (isPlatformUser() && !productReportForm.getUrgent()) {
+                    ProductInventory lastInventory = inventoryService().getLastProductInventory(report.getLocation(), report.getProductProgram(), InventoryType.TOTAL);
+                    if (lastInventory == null) {
+                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez effectuer un inventaire de \"" + report.getReportPeriod() + "\" avant le rapport de cette période !");
+                        canSave = false;
+                    } else {
+                        if (!lastInventory.getOperationNumber().contains(report.getReportPeriod())) {
+                            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez effectuer un inventaire de \"" + report.getReportPeriod() + "\" avant le rapport de cette période !");
+                            canSave = false;
+                        }
+                    }
+                }
+                if (canSave) {
                     reportService().saveProductReport(report);
                     if (action.equals("addLine")) {
-                        if (report.getProductAttributeFluxes().size() == 0) {
-                            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
-                        } else {
-                            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez continuer à ajouter les produits !");
-                        }
+                        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le rapport est généré avec succès !");
+
                         String fluxLink = isPlatformUser() ? "editFlux" : "editFluxOther";
                         return "redirect:/module/pharmacy/reports/" + fluxLink + ".form?reportId=" +
                                 report.getProductOperationId();
@@ -221,10 +285,27 @@ public class PharmacyProductReportManageController {
                         return "redirect:/module/pharmacy/reports/list.form";
                     }
                 } else {
-                    session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous devez effectuer un inventaire de \"" + report.getReportPeriod() + "\" avant le rapport de cette période !");
                     modelMap.addAttribute("productReport", report);
                 }
             }
+            List<Product> urgentProducts = new ArrayList<Product>();
+
+            if (isPlatformUser()) {
+                ProductInventory lastIntermediateInventory = inventoryService().getLastProductInventory(
+                        OperationUtils.getUserLocation(), productReportForm.getProductReport().getProductProgram(), InventoryType.PARTIAL);
+
+                ProductInventory lastInventory = inventoryService().getLastProductInventory(
+                        OperationUtils.getUserLocation(), productReportForm.getProductReport().getProductProgram(), InventoryType.TOTAL);
+
+                if (lastIntermediateInventory != null && lastInventory != null
+                        && lastIntermediateInventory.getOperationDate().after(lastInventory.getOperationDate())) {
+                    urgentProducts = lastIntermediateInventory.getFluxesProductList();
+                }
+            } else {
+                urgentProducts.addAll(productReportForm.getProductReport().getProductProgram().getProducts());
+            }
+
+            modelMap.addAttribute("products", urgentProducts);
 
             modelMap.addAttribute("program", programService().getOneProductProgramById(productReportForm.getProductProgramId()));
             if (isDirectClient()) {
@@ -245,22 +326,27 @@ public class PharmacyProductReportManageController {
                          ReportAttributeFluxForm reportAttributeFluxForm) {
         if (Context.isAuthenticated()) {
             ProductReport productReport = reportService().getOneProductReportById(reportId);
-            reportAttributeFluxForm.setProductOperationId(productReport.getProductOperationId());
-            reportAttributeFluxForm.setInventory(inventoryService().getLastProductInventory(productReport.getLocation(), productReport.getProductProgram()));
-            List<ProductReportLineDTO> reportLineDTOS = reportAttributeFluxForm.createProductReportOtherFluxMap();
-            for (ProductReportLineDTO dto : reportLineDTOS) {
-                if (!dto.getAsserted()) {
-                    modelMap.addAttribute("invalidReport", true);
-                    break;
+            if (productReport != null) {
+                reportAttributeFluxForm.setProductOperationId(productReport.getProductOperationId());
+                reportAttributeFluxForm.setInventory(inventoryService().getLastProductInventory(productReport.getLocation(), productReport.getProductProgram(), InventoryType.TOTAL));
+//                System.out.println("-----------------------------> Last inventory  period ");
+
+                List<ProductReportLineDTO> reportLineDTOS = reportAttributeFluxForm.createProductReportOtherFluxMap();
+                for (ProductReportLineDTO dto : reportLineDTOS) {
+                    if (!dto.getAsserted()) {
+                        modelMap.addAttribute("invalidReport", true);
+                        break;
+                    }
                 }
-            }
-            modelMap.addAttribute("productReport", productReport);
-            modelMap.addAttribute("stockMax", OperationUtils.getUserLocationStockMax());
-            modelMap.addAttribute("reportData", reportLineDTOS);
-            if (productReport.getReportType().equals(ReportType.CLIENT_REPORT)) {
-                modelMap.addAttribute("subTitle", "Rapport commande mensuel <i class=\"fa fa-play\"></i> Visualisation");
-            } else {
-                modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Visualisation");
+//                System.out.println("-----------------------------> Last inventory  period ");
+                modelMap.addAttribute("productReport", productReport);
+                modelMap.addAttribute("stockMax", OperationUtils.getUserLocationStockMax());
+                modelMap.addAttribute("reportData", reportLineDTOS);
+                if (productReport.getReportType().equals(ReportType.CLIENT_REPORT)) {
+                    modelMap.addAttribute("subTitle", "Rapport commande mensuel <i class=\"fa fa-play\"></i> Visualisation");
+                } else {
+                    modelMap.addAttribute("subTitle", "Rapport mensuel <i class=\"fa fa-play\"></i> Visualisation");
+                }
             }
         }
         return null;
@@ -316,7 +402,7 @@ public class PharmacyProductReportManageController {
     }
     //
     private void modelMappingForView(ModelMap modelMap, ReportEntryAttributeFluxForm reportEntryAttributeFluxForm, ProductReport report) {
-        modelMap.addAttribute("distributionAttributeFluxForm", reportEntryAttributeFluxForm);
+        modelMap.addAttribute("reportEntryAttributeFluxForm", reportEntryAttributeFluxForm);
         modelMap.addAttribute("productReport", report);
 
         if (report.getOperationStatus().equals(OperationStatus.NOT_COMPLETED)) {
@@ -445,8 +531,10 @@ public class PharmacyProductReportManageController {
     @RequestMapping(value = "/module/pharmacy/reports/validate.form", method = RequestMethod.GET)
     public String validate(HttpServletRequest request,
                            @RequestParam(value = "reportId") Integer reportId){
-        if (!Context.isAuthenticated())
+        if (!Context.isAuthenticated()) {
             return null;
+        }
+        System.out.println("------------------------ Entered in validation !!!!");
         HttpSession session = request.getSession();
         ProductReport report = reportService().getOneProductReportById(reportId);
         if (OperationUtils.validateOperation(report)) {

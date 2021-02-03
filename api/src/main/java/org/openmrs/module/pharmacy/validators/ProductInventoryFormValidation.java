@@ -1,16 +1,11 @@
 package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductOperation;
-import org.openmrs.module.pharmacy.api.ProductInventoryService;
-import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
 import org.openmrs.module.pharmacy.forms.ProductOperationForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -33,9 +28,9 @@ public class ProductInventoryFormValidation extends ProductOperationFormValidati
             ValidationUtils.rejectIfEmpty(errors, "inventoryType", null, "Ce champ est requis");
 
             if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
-                if (form.getInventoryType().equals(InventoryType.MONTHLY)) {
+                if (form.getInventoryType().equals(InventoryType.TOTAL)) {
                     ProductInventory inventory = inventoryService().getOneProductInventoryByOperationNumber(OperationUtils.getUserLocation(),
-                            programService().getOneProductProgramById(form.getProductProgramId()), form.getOperationNumber(), InventoryType.MONTHLY);
+                            programService().getOneProductProgramById(form.getProductProgramId()), form.getOperationNumber(), InventoryType.TOTAL);
 
                     if (inventory != null) {
 //                    System.out.println("-------------------------------> inventory operationNumber : " + inventory.toString());

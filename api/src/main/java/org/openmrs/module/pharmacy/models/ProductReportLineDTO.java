@@ -19,7 +19,7 @@ public class ProductReportLineDTO implements Serializable {
     protected Integer quantityDistributed1monthAgo;
     protected Double averageMonthlyConsumption;
     protected Double calculatedAverageMonthlyConsumption;
-    protected Double quantityToOrder;
+    protected Double proposedQuantity;
     protected Boolean asserted;
 
     public ProductReportLineDTO() {
@@ -157,8 +157,8 @@ public class ProductReportLineDTO implements Serializable {
         return getQuantityInStock() / getAverageMonthlyConsumption();
     }
 
-    public Double getQuantityToOrder(){
-        return this.quantityToOrder;
+    public Double getProposedQuantity(){
+        return this.proposedQuantity;
     }
 
     public void setAsserted(Boolean asserted) {
@@ -173,7 +173,7 @@ public class ProductReportLineDTO implements Serializable {
         return this.asserted;
     }
 
-    public void setQuantityToOrder(Double quantity) {
-        this.quantityToOrder = quantity;
+    public void setProposedQuantity(Double quantity) {
+        this.proposedQuantity = quantity;
     }
 }

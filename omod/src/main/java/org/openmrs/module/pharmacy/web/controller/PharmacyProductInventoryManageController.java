@@ -5,10 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
-import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.enumerations.StockEntryType;
-import org.openmrs.module.pharmacy.enumerations.StockOutType;
+import org.openmrs.module.pharmacy.enumerations.*;
 import org.openmrs.module.pharmacy.forms.ProductInventoryForm;
 import org.openmrs.module.pharmacy.forms.InventoryAttributeFluxForm;
 import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
@@ -16,8 +13,6 @@ import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductInventoryAttributeFluxFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductInventoryFormValidation;
 import org.openmrs.web.WebConstants;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -78,7 +73,7 @@ public class PharmacyProductInventoryManageController {
     public void list(ModelMap modelMap) {
         if (Context.isAuthenticated()) {
             modelMap.addAttribute("inventories", inventoryService().getAllProductInventories(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("subTitle", "Liste des Inventaires");
         }
     }
@@ -291,12 +286,26 @@ public class PharmacyProductInventoryManageController {
             return null;
         HttpSession session = request.getSession();
         ProductInventory inventory = inventoryService().getOneProductInventoryById(inventoryId);
-        inventory.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
-        inventoryService().saveProductInventory(inventory);
-        attributeService().purgeUnusedAttributes();
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été enregistré avec " +
-                "succès et est en attente de validation !");
-        return "redirect:/module/pharmacy/operations/inventory/list.form";
+        if (inventory != null) {
+            if (inventory.getInventoryType().equals(InventoryType.PARTIAL)) {
+                for (ProductAttributeFlux flux : attributeFluxService().getAllProductAttributeFluxByOperation(inventory, false)) {
+                    if (flux.getQuantity().equals(0)) {
+                        System.out.println("-------------------------> : In flux = " + flux.getQuantity());
+                        attributeFluxService().removeProductAttributeFlux(flux);
+//                    inventory.removeProductAttributeFlux(flux);
+                        System.out.println("-------------------------> :  after flux = 0");
+                    }
+                }
+            }
+            inventory.setOperationStatus(OperationStatus.AWAITING_VALIDATION);
+            inventoryService().saveProductInventory(inventory);
+            attributeService().purgeUnusedAttributes();
+            session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été enregistré avec " +
+                    "succès et est en attente de validation !");
+            return "redirect:/module/pharmacy/operations/inventory/list.form";
+        }
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire n'a pas pu être enregistré !");
+        return "redirect:/module/pharmacy/operations/inventory/editFlux.form";
     }
 
     @RequestMapping(value = "/module/pharmacy/operations/inventory/incomplete.form", method = RequestMethod.GET)
@@ -352,9 +361,10 @@ public class PharmacyProductInventoryManageController {
                            @RequestParam(value = "inventoryId") Integer inventoryId){
         if (!Context.isAuthenticated())
             return null;
-        ProductOperation operation = service().getOneProductOperationById(inventoryId);
+        ProductInventory operation = inventoryService().getOneProductInventoryById(inventoryId);
 
         if (operation != null) {
+
             ProductMovementOut movementOut = new ProductMovementOut();
             ProductMovementEntry movementEntry = new ProductMovementEntry();
 
@@ -392,17 +402,17 @@ public class PharmacyProductInventoryManageController {
                     otherFlux.setQuantity(flux.getQuantity().doubleValue());
                 }
                 attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
+
                 if (movementEntry.getProductAttributeFluxes().size() != 0) {
                     movementEntry.setOperationDate(operation.getOperationDate());
                     movementEntry.setStockEntryType(StockEntryType.POSITIVE_INVENTORY_ADJUSTMENT);
-                    movementEntry.setIncidence(Incidence.NEGATIVE);
+                    movementEntry.setIncidence(Incidence.POSITIVE);
                     movementEntry.setProductProgram(operation.getProductProgram());
                     movementEntry.setOperationStatus(OperationStatus.VALIDATED);
                     movementEntry.setLocation(operation.getLocation());
                     Context.getService(ProductMovementService.class).saveProductMovementEntry(movementEntry);
                 }
                 if (movementOut.getProductAttributeFluxes().size() != 0) {
-                    Context.getService(ProductMovementService.class).saveProductMovementOut(movementOut);
                     movementOut.setOperationDate(operation.getOperationDate());
                     movementOut.setStockOutType(StockOutType.NEGATIVE_INVENTORY_ADJUSTMENT);
                     movementOut.setIncidence(Incidence.NEGATIVE);
@@ -413,7 +423,9 @@ public class PharmacyProductInventoryManageController {
                 }
             }
 
-            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
+            if (operation.getInventoryType().equals(InventoryType.TOTAL)) {
+                OperationUtils.emptyStock(operation.getLocation(), operation.getProductProgram());
+            }
 
             if (OperationUtils.validateOperation(operation)) {
                 HttpSession session = request.getSession();
@@ -429,12 +441,12 @@ public class PharmacyProductInventoryManageController {
         if (productInventory.getProductOperationId() == null) {
             lastProductInventory = inventoryService().getLastProductInventory(
                     Context.getLocationService().getDefaultLocation(),
-                    productInventory.getProductProgram());
+                    productInventory.getProductProgram(), InventoryType.TOTAL);
         } else {
             lastProductInventory = inventoryService().getLastProductInventoryByDate(
                     OperationUtils.getUserLocation(),
                     productInventory.getProductProgram(),
-                    productInventory.getOperationDate());
+                    productInventory.getOperationDate(), InventoryType.TOTAL);
         }
         if (lastProductInventory != null) {
             if (lastProductInventory.getProductOperationId().equals(productInventory.getProductOperationId())) {
@@ -449,7 +461,7 @@ public class PharmacyProductInventoryManageController {
     ProductInventory latestInventory(ProductInventory productInventory) {
         ProductInventory inventory = inventoryService().getLastProductInventory(
                 Context.getLocationService().getDefaultLocation(),
-                productInventory.getProductProgram());
+                productInventory.getProductProgram(),InventoryType.TOTAL);
         if (inventory != null) {
             if (inventory.getProductOperationId().equals(productInventory.getProductOperationId())) {
                 return null;
@@ -457,7 +469,7 @@ public class PharmacyProductInventoryManageController {
                 return inventory;
             }
         } else {
-            inventory = inventoryService().getLastProductInventoryByDate(OperationUtils.getUserLocation(), productInventory.getProductProgram(), productInventory.getOperationDate());
+            inventory = inventoryService().getLastProductInventoryByDate(OperationUtils.getUserLocation(), productInventory.getProductProgram(), productInventory.getOperationDate(), InventoryType.TOTAL);
             return inventory;
         }
     }

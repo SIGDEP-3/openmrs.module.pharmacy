@@ -33,6 +33,10 @@ public interface ProductReportDAO {
 	List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided);
 	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided);
 	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
+	ProductReport getLastTreatedChildProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+	List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate);
+	Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product);
+	Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory productInventory, Boolean includeVoided, Date operationDate, Product product);
 	ProductReport getOneProductReportById(Integer id);
 	ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided);
 	ProductReport saveProductReport(ProductReport productReport);

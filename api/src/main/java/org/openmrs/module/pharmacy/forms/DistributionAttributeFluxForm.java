@@ -3,8 +3,10 @@ package org.openmrs.module.pharmacy.forms;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.Product;
 import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
+import org.openmrs.module.pharmacy.ProductInventory;
 import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
@@ -100,9 +102,33 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
         List<ProductAttributeOtherFlux> otherFluxes = new ArrayList<>();
         Product product = productService().getOneProductById(getProductId());
         if (product != null) {
-
             otherFluxes.add(createProductAttributeOtherFlux(product, getInitialQuantity() == null ? 0.0 : getInitialQuantity().doubleValue(), "SI"));
-            otherFluxes.add(createProductAttributeOtherFlux(product, getReceivedQuantity().doubleValue(), "QR"));
+
+            if (getReceivedQuantity() == null) {
+                ProductReport report = reportService().getOneProductReportById(getProductOperationId());
+                ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
+                List<ProductReport> treatedProductReports;
+                if (report.getUrgent()) {
+                    treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                            report.getReportLocation(), inventory, false, report.getOperationDate()
+                    );
+                } else {
+                    ProductInventory inventoryBeforeLast = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
+                    treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                            report.getReportLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
+                    );
+                }
+                if (treatedProductReports != null) {
+                    double quantity = 0.;
+                    for (ProductReport productReport : treatedProductReports) {
+                        quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), product).doubleValue();
+                    }
+                    otherFluxes.add(createProductAttributeOtherFlux(product, quantity, "QR"));
+                }
+            } else {
+                otherFluxes.add(createProductAttributeOtherFlux(product, getReceivedQuantity().doubleValue(), "QR"));
+            }
+
             otherFluxes.add(createProductAttributeOtherFlux(product, getDistributedQuantity().doubleValue(), "QD"));
             otherFluxes.add(createProductAttributeOtherFlux(product, getLostQuantity().doubleValue(), "QL"));
             otherFluxes.add(createProductAttributeOtherFlux(product, getAdjustmentQuantity().doubleValue(), "QA"));

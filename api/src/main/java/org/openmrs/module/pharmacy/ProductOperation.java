@@ -171,4 +171,14 @@ public abstract class ProductOperation extends AbstractPharmacyData {
         }
         return products;
     }
+
+    public List<Product> getFluxesProductList() {
+        List<Product> products = new ArrayList<>();
+        for (ProductAttributeFlux flux : productAttributeFluxes) {
+            if (!products.contains(flux.getProductAttribute().getProduct())) {
+                products.add(flux.getProductAttribute().getProduct());
+            }
+        }
+        return products;
+    }
 }

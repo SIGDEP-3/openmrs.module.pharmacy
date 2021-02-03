@@ -172,22 +172,22 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 	}
 
 	@Override
-	public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram) {
+	public ProductInventory getLastProductInventory(Location location, ProductProgram productProgram, InventoryType inventoryType) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductInventory.class);
 		return (ProductInventory) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
-				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
+				.add(Restrictions.eq("inventoryType", inventoryType))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
 	@Override
-	public ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate) {
+	public ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate, InventoryType inventoryType) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductInventory.class);
 		return (ProductInventory) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
-				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
+				.add(Restrictions.eq("inventoryType", inventoryType))
 				.add(Restrictions.lt("operationDate", inventoryDate))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
@@ -251,7 +251,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 		return (ProductInventory) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", program))
-				.add(Restrictions.eq("inventoryType", InventoryType.MONTHLY))
+				.add(Restrictions.eq("inventoryType", InventoryType.TOTAL))
 				.add(Restrictions.eq("operationDate", operationDate)).uniqueResult();
 	}
 

@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class OperationUtils {
     public static Boolean validateOperation(ProductOperation operation) {
@@ -204,6 +205,19 @@ public class OperationUtils {
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
+    }
+
+    public static long getDifferenceDays(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    public static Date addDayToDate(Date date, Integer numberOfDays) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, numberOfDays);
+
+        return calendar.getTime();
     }
 
     public static Date StringToDate(String dob) throws ParseException {

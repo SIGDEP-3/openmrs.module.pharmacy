@@ -62,10 +62,10 @@
 
 <div class="container-fluid mt-2">
     <div class="row mb-2">
-        <div class="col-4 text-uppercase font-italic text-secondary">
-            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+        <div class="col-5 text-uppercase font-italic text-secondary">
+            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle} ${productReport.urgent == true ? '<span class="text-danger">(URGENT)</span>' : ''}</div>
         </div>
-        <div class="col-8 text-right">
+        <div class="col-7 text-right">
 
             <c:if test="${productReport.operationStatus != 'VALIDATED' &&
                       productReport.operationStatus != 'DISABLED'}">
@@ -83,7 +83,7 @@
                 <openmrs:hasPrivilege privilege="Delete Report">
                     <c:url value="/module/pharmacy/reports/delete.form"
                            var="delUrl">
-                        <c:param name="id" value="${headerDTO.productOperationId}"/>
+                        <c:param name="id" value="${productReport.productOperationId}"/>
                     </c:url>
                     <button type="button" class="btn btn-warning btn-sm"
                             onclick="window.location='${delUrl}'" tabindex="-1">
@@ -136,7 +136,7 @@
             </button>
         </div>
     </div>
-    <div class="row bg-light pt-2 pb-2 border border-secondary">
+    <div class="row bg-light pt-2 pb-2 border ${productReport.urgent == true ? 'border-danger' : 'border-secondary'}">
         <table class="bg-light table table-borderless table-light border">
             <thead class="thead-light">
             <tr>
@@ -150,13 +150,13 @@
                 <td class="font-weight-bold text-info">
                     <fmt:formatDate value="${productReport.operationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                 </td>
-                <td>Urgent</td>
-                <td class="font-weight-bold text-info">${productReport.urgent == true ? 'Oui' : 'Non'}</td>
+                <td></td>
+                <td class=""></td>
             </tr>
-            <tr>
-                <td colspan="2">Observation</td>
-                <td class="font-weight-bold text-info">${productReport.observation}</td>
-            </tr>
+<%--            <tr>--%>
+<%--                <td colspan="2">Observation</td>--%>
+<%--                <td class="font-weight-bold text-info">${productReport.observation}</td>--%>
+<%--            </tr>--%>
             </thead>
         </table>
         <table class="table table-condensed table-striped table-sm table-bordered">
@@ -238,7 +238,7 @@
                             </div>
                         </td>
                         <td class="text-center align-middle" id="${reportLine.code}-MSD"><fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" /></td>
-                        <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.quantityToOrder}</span></td>
+                        <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.proposedQuantity}</span></td>
                     </c:if>
                     <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
                         <td class="text-center align-middle">

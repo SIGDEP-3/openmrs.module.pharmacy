@@ -19,9 +19,7 @@
                     jQuery(this).next('.custom-file-label').html("Choisir le fichier pour importation");
                 }
             });
-
         });
-
     }
 </script>
 
@@ -36,7 +34,9 @@
                       productReport.operationStatus != 'DISABLED'}">
                 <c:if test="${invalidReport != true}">
                     <c:if test="${productReport.operationStatus == 'NOT_COMPLETED' &&
-                                    isAsserted == true && fct:length(reportData) != 0 }">
+                                    isAsserted == true && fct:length(reportData) != 0 &&
+                                    ((productReport.urgent == true && fct:length(reportData) <= 5) ||
+                                        productReport.urgent == false)}">
                         <c:url value="/module/pharmacy/reports/complete.form" var="completeUrl">
                             <c:param name="reportId" value="${productReport.productOperationId}"/>
                         </c:url>
@@ -112,7 +112,7 @@
                 </thead>
             </table>
             <c:if test="${((fct:length(reportData) == 0 || canImport == true)
-                            && productReport.operationStatus == 'NOT_COMPLETED') && isPlatformUser == true}">
+                            && productReport.operationStatus == 'NOT_COMPLETED') && isPlatformUser == false}">
                 <openmrs:hasPrivilege privilege="Import Report">
                     <form method="POST" enctype="multipart/form-data" class="mb-3"
                           action="${pageContext.request.contextPath}/module/pharmacy/reports/upload.form">
@@ -132,7 +132,7 @@
                 </openmrs:hasPrivilege>
             </c:if>
             <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
-                <form:form modelAttribute="reportAttributeFluxForm" method="post" action="" id="form">
+                <form:form modelAttribute="reportEntryAttributeFluxForm" method="post" action="" id="form">
                     <form:hidden path="productOperationId"/>
                     <form:hidden path="locationId"/>
                     <table class="table table-condensed table-striped table-sm table-bordered">
@@ -201,7 +201,7 @@
                                     <td><form:input path="numSitesInRupture" cssClass="text-center form-control form-control-sm"/></td>
                                     <td><form:input path="calculatedAverageMonthlyConsumption" cssClass="text-center form-control form-control-sm"/></td>
                                     <td><form:input path="monthOfStockAvailable" cssClass="text-center form-control form-control-sm"/></td>
-                                    <td><form:input path="quantityToOrder" cssClass="text-center form-control form-control-sm"/></td>
+                                    <td><form:input path="proposedQuantity" cssClass="text-center form-control form-control-sm"/></td>
                                 </c:if>
                                 <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
                                     <td><form:input path="quantityDistributed1monthAgo" cssClass="text-center form-control form-control-sm" readonly="${countReports}"/></td>
@@ -209,10 +209,10 @@
                                 </c:if>
                                 <td>
                                     <button class="btn btn-success">
-                                        <c:if test="${not empty reportAttributeFluxForm.productId}">
+                                        <c:if test="${not empty reportEntryAttributeFluxForm.productId}">
                                             <i class="fa fa-edit"></i>
                                         </c:if>
-                                        <c:if test="${empty reportAttributeFluxForm.productId}">
+                                        <c:if test="${empty reportEntryAttributeFluxForm.productId}">
                                             <i class="fa fa-plus"></i>
                                         </c:if>
                                     </button>
@@ -237,7 +237,7 @@
                                         <fmt:formatNumber type = "number" value = "${reportLine.calculatedAverageMonthlyConsumption}" maxFractionDigits="0" />
                                     </td>
                                     <td class="text-center align-middle" id="${reportLine.code}-MSD"><fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" /></td>
-                                    <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.quantityToOrder}</span></td>
+                                    <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.proposedQuantity}</span></td>
                                 </c:if>
                                 <c:if test="${productReport.reportType == 'NOT_CLIENT_REPORT'}">
                                     <td class="text-center align-middle">${reportLine.quantityDistributed1monthAgo}</td>

@@ -3,24 +3,21 @@ package org.openmrs.module.pharmacy.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
-import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.forms.DistributionAttributeFluxForm;
 import org.openmrs.module.pharmacy.forms.ProductDistributionForm;
 //import org.openmrs.module.pharmacy.models.ProductDistributionFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.models.ProductReportLineExtendedDTO;
-import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.openmrs.module.pharmacy.validators.ProductDistributionAttributeFluxFormValidation;
 //import org.openmrs.module.pharmacy.validators.ProductDistributionFormValidation;
 import org.openmrs.module.pharmacy.validators.ProductDistributionFormValidation;
-import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -59,6 +56,10 @@ public class PharmacyProductDistributionManageController {
         return Context.getService(ProductService.class);
     }
 
+    private ProductInventoryService inventoryService(){
+        return Context.getService(ProductInventoryService.class);
+    }
+
     private ProductAttributeFluxService attributeFluxService(){
         return Context.getService(ProductAttributeFluxService.class);
     }
@@ -94,7 +95,7 @@ public class PharmacyProductDistributionManageController {
 
             modelMap.addAttribute("reports", reportService().getAllProductDistributionReports(OperationUtils.getUserLocation(), false));
             modelMap.addAttribute("submittedReports", reportService().getAllSubmittedChildProductReports(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("programs", programService().getAllProductProgram());
+            modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("childrenLocation", OperationUtils.getUserLocation().getChildLocations());
             modelMap.addAttribute("totalReportsToSubmit", totalReportsToSubmit);
             modelMap.addAttribute("subTitle", "Liste des Distributions");
@@ -118,7 +119,6 @@ public class PharmacyProductDistributionManageController {
                     }
                     productDistributionForm.setProductReport(productDistribution);
                     program = productDistribution.getProductProgram();
-                    modelMap.addAttribute("program", productDistribution.getProductProgram());
                 }
             } else {
                 program = programService().getOneProductProgramById(programId);
@@ -134,7 +134,6 @@ public class PharmacyProductDistributionManageController {
             }
 
             modelMap.addAttribute("program", program);
-
 //            modelMap.addAttribute("latestDistribution", latestDistribution(productDistributionForm.getProductDistribution()));
             modelMap.addAttribute("productDistributionForm", productDistributionForm);
 //            modelMap.addAttribute("productDistribution", reportService().getOneProductReportById(id));
@@ -263,6 +262,12 @@ public class PharmacyProductDistributionManageController {
 
             ProductReport report = productDistribution.getChildLocationReport();
             modelMap.addAttribute("countReports", reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).size() == 0 ? "false" : "true" );
+            modelMap.addAttribute("hasPreviousTreatment", reportService().getLastTreatedProductReports(
+                            report.getLocation(),
+                            false,
+                            report.getProductProgram(),
+                            report.getOperationDate()) != null
+            );
 //            System.out.println("|-----------------------------------> all child reports : " +
 //                    reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).get(0).getProductOperationId());
 
@@ -300,11 +305,13 @@ public class PharmacyProductDistributionManageController {
 
                 ProductReportLineExtendedDTO reportLineExtendedDTO = new ProductReportLineExtendedDTO();
                 reportLineExtendedDTO.getProductLineDto(reportLineDTO);
+
                 reportLineExtendedDTO.setParentQuantityInStock(stockService().getAllProductAttributeStockByProductCount(
                         product,
                         productDistribution.getLocation(),
                         false
                 ));
+
                 Double cmm = (reportLineExtendedDTO.getDistributedQuantity().doubleValue() +
                         reportLineExtendedDTO.getQuantityDistributed1monthAgo().doubleValue() +
                         reportLineExtendedDTO.getQuantityDistributed2monthAgo().doubleValue()) / 3;
@@ -317,17 +324,16 @@ public class PharmacyProductDistributionManageController {
                 if ((int) quantityProposed != quantityProposed) {
                     quantityProposed = (int) quantityProposed + 1.0;
                 }
-                reportLineExtendedDTO.setQuantityToOrder(quantityProposed);
+                reportLineExtendedDTO.setProposedQuantity(quantityProposed);
                 reportLineExtendedDTO.setAccordedQuantity(attributeFluxService().getAllProductAttributeFluxByOperationAndProductCount(productDistribution, product));
 
-                if (reportLineExtendedDTO.getAccordedQuantity() == 0 && quantityProposed != 0 && reportLineExtendedDTO.getParentQuantityInStock() != 0) {{
-                        List<ProductAttributeFlux> fluxes = OperationUtils.createProductAttributeFluxes(product, productDistribution, (int) quantityProposed);
-                        for (ProductAttributeFlux flux : fluxes) {
-                            flux.setStatus(OperationStatus.NOT_COMPLETED);
-                            attributeFluxService().saveProductAttributeFlux(flux);
-                        }
-                        reportLineExtendedDTO.setAccordedQuantity((int) quantityProposed);
+                if (reportLineExtendedDTO.getAccordedQuantity() == 0 && quantityProposed != 0 && reportLineExtendedDTO.getParentQuantityInStock() != 0) {
+                    List<ProductAttributeFlux> fluxes = OperationUtils.createProductAttributeFluxes(product, productDistribution, (int) (quantityProposed >= 0 ? quantityProposed : 0));
+                    for (ProductAttributeFlux flux : fluxes) {
+                        flux.setStatus(OperationStatus.NOT_COMPLETED);
+                        attributeFluxService().saveProductAttributeFlux(flux);
                     }
+                    reportLineExtendedDTO.setAccordedQuantity((int) quantityProposed);
                 }
 
                 reportLineDTOS.add(reportLineExtendedDTO);
@@ -360,10 +366,51 @@ public class PharmacyProductDistributionManageController {
                     ProductReport report = reportService().getOneProductReportById(distributionId);
                     ProductReport childReport = report.getChildLocationReport();
                     List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), childReport);
-
                     for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
+                        double quantity = 0.;
+                        if (otherFlux.getLabel().equals("QR")) {
+                            ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
+
+                            List<ProductReport> treatedProductReports;
+                            if (report.getUrgent()) {
+                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                                        report.getReportLocation(), inventory, false, report.getOperationDate()
+                                );
+                            } else {
+                                ProductInventory inventoryBeforeLast = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
+                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
+                                        report.getReportLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
+                                );
+                            }
+                            if (treatedProductReports != null) {
+                                for (ProductReport productReport : treatedProductReports) {
+                                    quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), otherFlux.getProduct()).doubleValue();
+                                }
+                                otherFlux.setQuantity(quantity);
+                            }
+
+                        } else if (otherFlux.getLabel().equals("DM1")) {
+                            ProductReport lastProductReport = reportService().getLastProductReport(
+                                    report.getReportLocation(), report.getProductProgram());
+                            if (lastProductReport != null) {
+                                ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+                                        otherFlux.getProduct(), lastProductReport, "QD", lastProductReport.getLocation()
+                                );
+                                otherFlux.setQuantity(lastOtherFlux.getQuantity());
+                            }
+                        } else if (otherFlux.getLabel().equals("DM2")) {
+                            ProductReport lastProductReport = reportService().getLastProductReport(
+                                    report.getReportLocation(), report.getProductProgram());
+                            if (lastProductReport != null) {
+                                ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
+                                        otherFlux.getProduct(), lastProductReport, "DM1", lastProductReport.getLocation()
+                                );
+                                otherFlux.setQuantity(lastOtherFlux.getQuantity());
+                            }
+                        }
                         attributeFluxService().saveProductAttributeOtherFlux(otherFlux);
                     }
+
                     if (childReport.getReportInfo() == null || childReport.getReportInfo().isEmpty()
                             || !childReport.getReportInfo().contains("IMPORTED BY PARENT")) {
                         childReport.setReportInfo("IMPORTED BY PARENT");
@@ -486,7 +533,11 @@ public class PharmacyProductDistributionManageController {
         if (operation != null) {
 //            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
             operation.setOperationNumber(OperationUtils.generateNumber());
-            operation.setTreatmentDate(new Date());
+            if (OperationUtils.getDifferenceDays(operation.getOperationDate(), new Date()) < 10) {
+                operation.setTreatmentDate(new Date());
+            } else {
+                operation.setTreatmentDate(operation.getOperationDate());
+            }
             ProductReport childReport = operation.getChildLocationReport();
             childReport.setOperationStatus(OperationStatus.TREATED);
             reportService().saveProductReport(childReport);

@@ -72,6 +72,7 @@
 
         function saveAndAddProducts(e) {
             e.preventDefault();
+
             const forms = document.getElementsByTagName('form');
             let form = forms[0];
             if (form.getAttribute('action').includes('action=save')) {
@@ -84,6 +85,23 @@
                 }
             }
             form.submit();
+        }
+
+        function checkPatientInfo() {
+            jQuery.ajax({
+                type: 'GET',
+                url: '${pageContext.request.contextPath}/transform-dispensation.form',
+                dataType : "text",
+                crossDomain:true,
+                success : function(data) {
+                    console.log(data);
+                    //jQuery('.' + batchNumber).parent().html(data.quantity)
+                    //alert(data.toString());
+                },
+                error : function(data) {
+                    console.log(data)
+                }
+            })
         }
 
         function getDate(stringDate) {
@@ -184,7 +202,7 @@
         function removeDays(date, days) {
             console.log('date to remove', date);
             console.log('days to remove', days);
-                // return date.setDate(date.getDate() - days);
+            // return date.setDate(date.getDate() - days);
             return date.getTime() - (days * 24 * 60 * 60 * 1000);
         }
 
@@ -195,12 +213,12 @@
         <div class="col-6 text-uppercase font-italic text-secondary">
             <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
         </div>
-<%--        <div class="col-6 text-right">--%>
-<%--            <c:url value="/module/pharmacy/operations/dispensation/list.form" var="url"/>--%>
-<%--            <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">--%>
-<%--                <i class="fa fa-list"></i> Voir la liste--%>
-<%--            </button>--%>
-<%--        </div>--%>
+        <%--        <div class="col-6 text-right">--%>
+        <%--            <c:url value="/module/pharmacy/operations/dispensation/list.form" var="url"/>--%>
+        <%--            <button class="btn btn-primary btn-sm" onclick="window.location='${url}'" title="Voir la liste">--%>
+        <%--                <i class="fa fa-list"></i> Voir la liste--%>
+        <%--            </button>--%>
+        <%--        </div>--%>
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
@@ -224,9 +242,15 @@
                             <legend>
                                 <div class="row">
                                     <div class="col-8">
-                                        Programme : <span class="text-success text-lg-left font-italic">${program.name}</span> |
-                                        Patient (<span class="text-info font-italic">${productDispensationForm.patientType == 'ON_SITE' ?
+                                        Programme : <span class="text-success text-lg-left font-italic">${program.name}</span>
+                                        <c:if test="${program.name == 'PNLSARVIO'}">
+                                            | Patient (<span class="text-info font-italic">${productDispensationForm.patientType == 'ON_SITE' ?
                                             'PEC SUR LE SITE' : (productDispensationForm.patientType == 'MOBILE' ? 'MOBILE' : 'PREVENTION')}</span>)
+                                        </c:if>
+
+                                        <c:if test="${patientAlert != null}">
+                                            <span class="badge"><i class="fa fa-warning"></i> ${patientAlert}</span>
+                                        </c:if>
                                     </div>
                                     <div class="col-4 text-right">
                                         <c:if test="${productDispensationForm.operationStatus == 'AWAITING_VALIDATION'}">
@@ -266,15 +290,26 @@
                                                     <div class="row mb-1">
                                                         <div class="col-4">
                                                             <label class="">Age <span class="required">*</span> </label>
-                                                            <form:input path="age" cssClass="form-control form-control-sm" readonly="${productDispensationForm.patientId != null}" />
+                                                            <form:input path="age" cssClass="form-control form-control-sm" readonly="${productDispensationForm.patientType == 'ON_SITE'}" />
                                                             <form:errors path="age" cssClass="error"/>
                                                         </div>
                                                         <div class="col-8">
                                                             <label class="mb-2">Genre <span class="required">*</span></label>
                                                             <br>
-                                                            <form:radiobutton path="gender" value="M" label=" Masculin" cssClass="mr-2"/>
-                                                            <form:radiobutton path="gender" value="F" label=" Feminin" cssClass="ml-2 mr-2"/>
-                                                            <form:errors path="gender" cssClass="error"/>
+                                                            <c:if test="${productDispensationForm.patientType != 'ON_SITE'}">
+                                                                <form:radiobutton path="gender" value="M" label=" Masculin" cssClass="mr-2"/>
+                                                                <form:radiobutton path="gender" value="F" label=" Feminin" cssClass="ml-2 mr-2"/>
+                                                                <form:errors path="gender" cssClass="error"/>
+                                                            </c:if>
+                                                            <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                                <span class="mr-3 text-info">
+                                                                    ${productDispensationForm.gender == 'M' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp; Masculin
+                                                                </span>
+                                                                <span class="text-info">
+                                                                    ${productDispensationForm.gender == 'F' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp; F&eacute;minin
+                                                                </span>
+                                                                <form:hidden path="gender"/>
+                                                            </c:if>
                                                         </div>
                                                     </div>
                                                     <c:if test="${regimens != null && fct:length(regimens) != 0}">
@@ -289,6 +324,7 @@
                                                                                   itemValue="productRegimenId"
                                                                                   itemLabel="concept.name.name"/>
                                                                 </form:select>
+                                                                <form:errors path="productRegimenId" cssClass="error"/>
                                                             </div>
                                                         </div>
                                                     </c:if>
@@ -308,17 +344,16 @@
                                                             </div>
                                                         </div>
                                                     </c:if>
-                                                    <c:if test="${productDispensationForm.patientType == 'MOBILE'}">
-                                                        <div class="row align-items-center">
-                                                            <div class="col-12">
-                                                                Ce patient a d&eacute;j&agrave; effectu&eacute;
-                                                                <span class="font-weight-bold text-primary"> ${fct:length(mobilePatient.mobilePatientDispensationInfos) }</span>
-                                                                visite(s)
-                                                            </div>
-
-                                                        </div>
-                                                    </c:if>
-                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                    <c:if test="${productDispensationForm.patientType == 'MOBILE' || productDispensationForm.patientType == 'ON_SITE'}">
+                                                        <%--                                                        <div class="row align-items-center">--%>
+                                                        <%--                                                            <div class="col-12">--%>
+                                                        <%--                                                                Ce patient a d&eacute;j&agrave; effectu&eacute;--%>
+                                                        <%--                                                                <span class="font-weight-bold text-primary"> ${fct:length(mobilePatient.mobilePatientDispensationInfos) }</span>--%>
+                                                        <%--                                                                visite(s)--%>
+                                                        <%--                                                            </div>--%>
+                                                        <%--                                                        </div>--%>
+                                                        <%--                                                    </c:if>--%>
+                                                        <%--                                                    <c:if test="${}">--%>
                                                         <c:if test="${lastDispensation == null}">
                                                             <div class="row align-items-center">
                                                                 <div class="col-12">
@@ -329,48 +364,48 @@
                                                             </div>
                                                         </c:if>
                                                         <c:if test="${lastDispensation != null}">
-                                                                <div class="row mb-1">
-                                                                    <div class="col-12">
-                                                                        <label>Date</label>
-                                                                        <div class="form-control form-control-sm bg-info text-white">
-                                                                            <fmt:formatDate value="${lastDispensation.dispensationDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                                                                        </div>
+                                                            <div class="row mb-1">
+                                                                <div class="col-12">
+                                                                    <label>Date</label>
+                                                                    <div class="form-control form-control-sm bg-info text-white">
+                                                                        <fmt:formatDate value="${lastDispensation.dispensationDate}" pattern="dd/MM/yyyy" type="DATE"/>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row mb-2">
-                                                                    <div class="col-6">
-                                                                        <label>R&eacute;gime</label>
-                                                                        <div class="form-control form-control-sm bg-info text-white">
+                                                            </div>
+                                                            <div class="row mb-2">
+                                                                <div class="col-6">
+                                                                    <label>R&eacute;gime</label>
+                                                                    <div class="form-control form-control-sm bg-info text-white">
                                                                             ${lastDispensation.regimen}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label>Nb jrs TTT perdus</label>
-                                                                        <form:input path="treatmentDaysLost" cssClass="form-control form-control-sm" onchange="getTreatmentEndDate()" />
-                                                                        <form:errors path="treatmentDaysLost" cssClass="error"/>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row mb-2">
-                                                                    <div class="col-5">
-                                                                        <label>Nb jours TTT</label>
-                                                                        <div class="form-control form-control-sm bg-info text-white">
+                                                                <div class="col-6">
+                                                                    <label>Nb jrs TTT perdus</label>
+                                                                    <form:input path="treatmentDaysLost" cssClass="form-control form-control-sm" onchange="getTreatmentEndDate()" />
+                                                                    <form:errors path="treatmentDaysLost" cssClass="error"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-2">
+                                                                <div class="col-5">
+                                                                    <label>Nb jours TTT</label>
+                                                                    <div class="form-control form-control-sm bg-info text-white">
                                                                             ${lastDispensation.treatmentDays}
-                                                                        </div>
                                                                     </div>
-                                                                    <div class="col-7">
-                                                                        <label>Date de fin de TTT</label>
-                                                                        <div class="form-control form-control-sm bg-info text-white">
+                                                                </div>
+                                                                <div class="col-7">
+                                                                    <label>Date de fin de TTT</label>
+                                                                    <div class="form-control form-control-sm bg-info text-white">
                                                                             <span class="" id="lastTreatmentEndDate">
                                                                                 <fmt:formatDate
-                                                                                    value="${lastDispensation.treatmentEndDate}"
-                                                                                    pattern="dd/MM/yyyy"
-                                                                                    type="DATE"/>
+                                                                                        value="${lastDispensation.treatmentEndDate}"
+                                                                                        pattern="dd/MM/yyyy"
+                                                                                        type="DATE"/>
                                                                             </span>
-                                                                            (<span id="remainingDaysToTreatmentEndDate" class=""></span>)
-                                                                        </div>
+                                                                        (<span id="remainingDaysToTreatmentEndDate" class=""></span>)
                                                                     </div>
                                                                 </div>
-                                                            </c:if>
+                                                            </div>
+                                                        </c:if>
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -395,24 +430,27 @@
                                                             <form:errors path="prescriptionDate" cssClass="error"/>
                                                         </div>
                                                     </div>
-<%--                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">--%>
-<%--                                                    </c:if>--%>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12">
-                                                            <label class="mb-1">But <span class="required">*</span></label>
-                                                            <br>
-                                                            <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
-                                                                <form:radiobutton path="goal" tabindex="true" value="NOT_APPLICABLE" label=" Non Applicable" cssClass="mr-2"/>
-                                                                <form:radiobutton path="goal" value="PEC" label=" PEC" cssClass="ml-1 mr-2"/>
-                                                                <form:radiobutton path="goal" value="PTME" label="PTME" cssClass="mr-2"/>
-                                                            </c:if>
-                                                            <c:if test="${productDispensationForm.patientType == 'OTHER_HIV'}">
-                                                                <form:radiobutton path="goal" value="AES" label=" AES" cssClass="ml-1 mr-2"/>
-                                                                <form:radiobutton path="goal" value="PREP" label=" PREP" cssClass="ml-1 mr-2"/>
-                                                            </c:if>
-                                                            <form:errors path="goal" cssClass="error"/>
+                                                        <%--                                                    <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">--%>
+                                                        <%--                                                    </c:if>--%>
+                                                    <c:if test="${program.name == 'PNLSARVIO'}">
+                                                        <div class="row mb-2">
+                                                            <div class="col-12">
+                                                                <label class="mb-1">But <span class="required">*</span></label>
+                                                                <br>
+                                                                <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
+                                                                    <form:radiobutton path="goal" tabindex="true" value="NOT_APPLICABLE" label=" Non Applicable" cssClass="mr-2"/>
+                                                                    <form:radiobutton path="goal" value="PEC" label=" PEC" cssClass="ml-1 mr-2"/>
+                                                                    <form:radiobutton path="goal" value="PTME" label="PTME" cssClass="mr-2"/>
+                                                                </c:if>
+                                                                <c:if test="${productDispensationForm.patientType == 'OTHER_HIV'}">
+                                                                    <form:radiobutton path="goal" value="AES" label=" AES" cssClass="ml-1 mr-2"/>
+                                                                    <form:radiobutton path="goal" value="PREP" label=" PREP" cssClass="ml-1 mr-2"/>
+                                                                </c:if>
+                                                                <form:errors path="goal" cssClass="error"/>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </c:if>
+
                                                     <div class="row mb-2">
                                                         <c:if test="${productDispensationForm.patientType == 'OTHER_HIV' || productDispensationForm.patientType == 'MOBILE' || productDispensationForm.patientType == 'ON_SITE'}">
                                                             <div class="col-5">
@@ -426,7 +464,7 @@
                                                                 <form:errors path="treatmentDays" cssClass="error"/>
                                                             </div>
                                                         </c:if>
-                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE'}">
+                                                        <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
                                                             <div class="col-4">
                                                                 <label class="">Date de fin de TTT <span class="required">*</span> </label>
                                                                 <form:input path="treatmentEndDate" tabindex="-1" cssClass="form-control form-control-sm" readonly="true"/>

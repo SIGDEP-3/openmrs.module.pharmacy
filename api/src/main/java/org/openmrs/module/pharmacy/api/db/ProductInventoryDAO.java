@@ -40,8 +40,8 @@ public interface ProductInventoryDAO {
 	void removeProductInventory(ProductInventory productInventory);
 	ProductInventory getOneProductInventoryByUuid(String uuid);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
-	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram);
-    ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate);
+	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram, InventoryType inventoryType);
+    ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate, InventoryType inventoryType);
 	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
     ProductInventory getProductInventoryByDate(Location location, ProductProgram program, Date operationDate);
 	ProductInventory getOneProductInventoryByOperationNumber(Location location, ProductProgram program, String operationNumber, InventoryType inventoryType);

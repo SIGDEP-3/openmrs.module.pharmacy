@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <div class="col-4 text-right">
-                    <button class="btn btn-primary btn-sm" onclick="openMovementForm()" title="Créer nouveau">
+                    <button class="btn btn-primary" onclick="openMovementForm()" title="">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
@@ -208,13 +208,13 @@
                                     </c:if>
 
                                     <c:if test="${entry.operationStatus != 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/other/edit.form" var="editUrl">
-                                            <c:param name="id" value="${entry.productOperationId}"/>
-                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                        <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="editUrl">
+                                            <c:param name="movementId" value="${entry.productOperationId}"/>
+                                            <c:param name="type" value="entry"/>
                                         </c:url>
                                         <c:url value="/module/pharmacy/operations/movement/other/delete.form" var="delUrl">
                                             <c:param name="id" value="${entry.productOperationId}"/>
-                                            <c:param name="type" value="${entry.stockEntryType}"/>
+                                            <c:param name="type" value="entry"/>
                                         </c:url>
                                         <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
                                         <a href="${delUrl}" onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')" class="text-danger">
@@ -280,16 +280,16 @@
                                         <a href="${addLineUrl}" class="text-success primary"><i class="fa fa-eye"></i></a>
                                     </c:if>
                                     <c:if test="${out.operationStatus != 'VALIDATED'}">
-                                        <c:url value="/module/pharmacy/operations/movement/other/edit.form" var="editUrl">
-                                            <c:param name="id" value="${out.productOperationId}"/>
-                                            <c:param name="type" value="${out.stockOutType}"/>
+                                        <c:url value="/module/pharmacy/operations/movement/other/editFlux.form" var="editUrl">
+                                            <c:param name="movementId" value="${out.productOperationId}"/>
+                                            <c:param name="type" value="out"/>
                                         </c:url>
                                         <a href="${editUrl}" class="text-info primary"><i class="fa fa-edit"></i></a>
                                         <openmrs:hasPrivilege privilege="Delete Movement">
                                             <c:url value="/module/pharmacy/operations/movement/other/delete.form"
                                                    var="delUrl">
                                                 <c:param name="id" value="${out.productOperationId}"/>
-                                                <c:param name="type" value="${out.stockOutType}"/>
+                                                <c:param name="type" value="out"/>
                                             </c:url>
                                             <a href="${delUrl}"
                                                onclick="return confirm('Vous etes sur le point de supprimer le mouvement, Voulez-vous continuer ?')"

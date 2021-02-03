@@ -114,4 +114,7 @@ public interface ProductDispensationService extends OpenmrsService {
 	Integer countPatientToTransform(Location location);
 	Boolean isDead(Patient patient, Location location);
 	Boolean isTransferred(Patient patient, Location location);
+	Date admissionDate(Patient patient, Location location);
+	Date deathDate(Patient patient, Location location);
+	Date transferDate(Patient patient, Location location);
 }

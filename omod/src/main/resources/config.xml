@@ -429,11 +429,11 @@
 		<description>Can View Report</description>
 	</privilege>
 	<privilege>
-		<name>Save Flux</name>
+		<name>Save Report</name>
 		<description>Can Save and Edit Report</description>
 	</privilege>
 	<privilege>
-		<name>Delete Flux</name>
+		<name>Delete Report</name>
 		<description>Can Delete Report</description>
 	</privilege>
 	<privilege>
@@ -447,6 +447,10 @@
 	<privilege>
 		<name>Import Report</name>
 		<description>Can Import Report</description>
+	</privilege>
+	<privilege>
+		<name>Submit Report</name>
+		<description>Can Submit Report</description>
 	</privilege>
 
 	<privilege>

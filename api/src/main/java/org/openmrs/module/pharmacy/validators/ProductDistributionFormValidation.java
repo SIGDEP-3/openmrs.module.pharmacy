@@ -1,12 +1,18 @@
 package org.openmrs.module.pharmacy.validators;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.ProductReport;
+import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.forms.ProductDistributionForm;
+import org.openmrs.module.pharmacy.forms.ProductOperationForm;
 import org.openmrs.module.pharmacy.forms.ProductReportForm;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 @Handler(supports = {ProductDistributionForm.class}, order = 50)
-public class ProductDistributionFormValidation extends ProductReportFormValidation  {
+public class ProductDistributionFormValidation extends ProductOperationFormValidation  {
     @Override
     public boolean supports(Class<?> aClass) {
         return aClass.equals(ProductDistributionForm.class);
@@ -21,11 +27,25 @@ public class ProductDistributionFormValidation extends ProductReportFormValidati
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-//            ValidationUtils.rejectIfEmpty(errors, "productSupplierId", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "reportPeriod", null, "Ce champ est requis");
 //            ValidationUtils.rejectIfEmpty(errors, "receptionQuantityMode", null, "Ce champ est requis");
 //            ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
-
-//            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
+            if (!form.getUrgent()) {
+                ProductReport otherReport = reportService().getOneProductReportByReportPeriodAndProgram(
+                        form.getReportPeriod(),
+                        programService().getOneProductProgramById(form.getProductProgramId()),
+                        OperationUtils.getUserLocation(),
+                        false
+                );
+                if (form.getReportPeriod() != null) {
+                    if (otherReport != null &&
+                            (form.getProductOperationId() == null || (!otherReport.getProductOperationId().equals(form.getProductOperationId())))) {
+                        if (!otherReport.getUrgent()) {
+                            errors.rejectValue("reportPeriod", null, "Un rapport de cette période existe déjà !");
+                        }
+                    }
+                }
+            }//            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
 //                ProductReport reception = (ProductReport) service().getOneProductOperationByOperationNumber(form.getOperationNumber(), form.getIncidence());
 //                if (reception != null) {
 //                    if (form.getProductSupplierId() != null) {
@@ -48,6 +68,14 @@ public class ProductDistributionFormValidation extends ProductReportFormValidati
 //                }
 //            }
         }
+    }
+
+    @Override
+    protected void lastInventoryCheck(ProductOperationForm form, Errors errors) {
+
+    }
+    private ProductReportService reportService() {
+        return Context.getService(ProductReportService.class);
     }
 
 }
