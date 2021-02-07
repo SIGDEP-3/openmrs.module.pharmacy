@@ -261,13 +261,21 @@ public class PharmacyProductDistributionManageController {
             modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> ajout de produits");
 
             ProductReport report = productDistribution.getChildLocationReport();
+//            ProductInventory lastInventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
+//            List<ProductReport> lastDistributions = new ArrayList<ProductReport>();
+
+//            if (report.getUrgent()) {
+//                lastDistributions = reportService().getPeriodTreatedChildProductReports(productDistribution.getLocation(), lastInventory, false, report.getOperationDate());
+//            } else {
+//                lastDistributions = reportService().getPeriodTreatedChildProductReports(productDistribution.getLocation(), lastInventory, false, lastInventory.getInventoryStartDate());
+//            }
             modelMap.addAttribute("countReports", reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).size() == 0 ? "false" : "true" );
+
             modelMap.addAttribute("hasPreviousTreatment", reportService().getLastTreatedProductReports(
-                            report.getLocation(),
-                            false,
-                            report.getProductProgram(),
-                            report.getOperationDate()) != null
-            );
+                    report.getLocation(),
+                    false,
+                    report.getProductProgram(),
+                    report.getOperationDate()) != null);
 //            System.out.println("|-----------------------------------> all child reports : " +
 //                    reportService().getAllProductReports(report.getLocation(), report.getProductProgram(), false).get(0).getProductOperationId());
 
@@ -367,28 +375,13 @@ public class PharmacyProductDistributionManageController {
                     ProductReport childReport = report.getChildLocationReport();
                     List<ProductAttributeOtherFlux> otherFluxes = CSVHelper.csvReport(file.getInputStream(), childReport);
                     for (ProductAttributeOtherFlux otherFlux : otherFluxes) {
-                        double quantity = 0.;
+                        double quantity;
                         if (otherFlux.getLabel().equals("QR")) {
                             ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
-
-                            List<ProductReport> treatedProductReports;
-                            if (report.getUrgent()) {
-                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
-                                        report.getReportLocation(), inventory, false, report.getOperationDate()
-                                );
-                            } else {
-                                ProductInventory inventoryBeforeLast = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
-                                treatedProductReports = reportService().getPeriodTreatedChildProductReports(
-                                        report.getReportLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
-                                );
-                            }
-                            if (treatedProductReports != null) {
-                                for (ProductReport productReport : treatedProductReports) {
-                                    quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), otherFlux.getProduct()).doubleValue();
-                                }
+                            quantity = reportService().getProductReceivedQuantityInLastOperationByProduct(otherFlux.getProduct(), inventory, report.getReportLocation(), report.getUrgent());
+                            if (quantity != 0) {
                                 otherFlux.setQuantity(quantity);
                             }
-
                         } else if (otherFlux.getLabel().equals("DM1")) {
                             ProductReport lastProductReport = reportService().getLastProductReport(
                                     report.getReportLocation(), report.getProductProgram());

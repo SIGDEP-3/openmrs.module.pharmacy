@@ -107,6 +107,7 @@ public class PharmacyManageController {
 			allLocations.removeAll(OperationUtils.getUserLocations());
 
 			modelMap.addAttribute("locations", locations);
+			modelMap.addAttribute("code", OperationUtils.getUserLocationCode());
 			modelMap.addAttribute("userLocation", OperationUtils.getUserLocation());
 			modelMap.addAttribute("title", "Gestion du centre / District");
 			modelMap.addAttribute("locationPrograms", locationPrograms);

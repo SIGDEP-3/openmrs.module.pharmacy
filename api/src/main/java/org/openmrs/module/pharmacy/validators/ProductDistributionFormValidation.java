@@ -6,7 +6,6 @@ import org.openmrs.module.pharmacy.ProductReport;
 import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.forms.ProductDistributionForm;
 import org.openmrs.module.pharmacy.forms.ProductOperationForm;
-import org.openmrs.module.pharmacy.forms.ProductReportForm;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -45,28 +44,21 @@ public class ProductDistributionFormValidation extends ProductOperationFormValid
                         }
                     }
                 }
-            }//            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
-//                ProductReport reception = (ProductReport) service().getOneProductOperationByOperationNumber(form.getOperationNumber(), form.getIncidence());
-//                if (reception != null) {
-//                    if (form.getProductSupplierId() != null) {
-//                        if (!reception.getProductOperationId().equals(form.getProductOperationId())) {
-//                            errors.rejectValue("operationNumber", null, "Une réception avec ce BL existe déjà ");
-//                        }
-//                    }
-//                }
-//            }
+            }
+            if (form.getReportPeriod() != null && !form.getReportPeriod().isEmpty()) {
+                ProductReport existingDistribution = reportService().getPeriodTreatedProductReportsByReportPeriodAndLocation(
+                        form.getReportPeriod(),
+                        programService().getOneProductProgramById(form.getProductProgramId()),
+                        Context.getLocationService().getLocation(form.getReportLocationId()),
+                        false
+                );
 
-//            if (form.getOperationDate() != null) {
-//                ProductProgram productProgram = programService().getOneProductProgramById(form.getProductProgramId());
-//                if (productProgram != null) {
-//                    ProductInventory productInventory = inventoryService().getLastProductInventory(
-//                            OperationUtils.getUserLocation(), productProgram);
-//                    if (productInventory == null) {
-//                        createAlert("Vous devez avant toute opération réaliser le premier inventaire complet de votre centre !");
-//                        errors.rejectValue("productProgramId", null, "Premier Inventaire complet non réalisé");
-//                    }
-//                }
-//            }
+                if (existingDistribution != null) {
+                    if (form.getProductOperationId() == null || !form.getProductOperationId().equals(existingDistribution.getProductOperationId())) {
+                        errors.rejectValue("reportPeriod", null, "Une distribution pour ce Site ou PPS à cette période existe déjà !");
+                    }
+                }
+            }
         }
     }
 

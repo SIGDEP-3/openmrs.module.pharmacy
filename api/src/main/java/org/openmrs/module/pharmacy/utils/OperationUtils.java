@@ -86,6 +86,7 @@ public class OperationUtils {
         }
         return childLocations;
     }
+
     public static List<ProductProgram> getLocationPrograms(Location location) {
         List<ProductProgram> productPrograms = new ArrayList<>();
         for (LocationAttribute attribute : location.getActiveAttributes()) {
@@ -101,6 +102,22 @@ public class OperationUtils {
             }
         }
         return productPrograms;
+    }
+
+    public static String getLocationCode(Location location) {
+        for (LocationAttribute attribute : location.getActiveAttributes()) {
+            if (attribute.getAttributeType().getName().equals("CODE NPSP")) {
+                String code = attribute.getValue().toString();
+                if (code != null) {
+                    return code;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String getUserLocationCode() {
+        return getLocationCode(getUserLocation());
     }
 
     public static <T> List<T> getLastElements(final Iterable<T> elements, Integer numberOfLast) {

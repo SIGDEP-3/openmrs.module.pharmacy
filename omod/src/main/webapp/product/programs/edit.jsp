@@ -30,6 +30,13 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-2 mb-2">
+                <labe>Num&eacute;ro unique</labe>
+                <form:input path="programNumber" cssClass="form-control" />
+                <form:errors path="programNumber" cssClass="error"/>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-8 mb-2">
                 <labe><spring:message code="pharmacy.description"/></labe>
                 <form:textarea path="description" cssClass="form-control" />

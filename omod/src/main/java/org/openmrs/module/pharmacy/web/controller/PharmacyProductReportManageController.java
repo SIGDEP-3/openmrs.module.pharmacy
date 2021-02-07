@@ -135,6 +135,7 @@ public class PharmacyProductReportManageController {
                                         report.getLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
                                 );
                             }
+
                             if (treatedProductReports != null) {
                                 for (ProductReport productReport : treatedProductReports) {
                                     quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), otherFlux.getProduct()).doubleValue();

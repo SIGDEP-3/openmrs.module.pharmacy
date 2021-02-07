@@ -223,19 +223,25 @@
                             </c:if>
                         </td>
                         <td class="text-center align-middle">
-                            <label for="${reportLine.code}-CMM" class="sr-only">CMM</label>
-                            <div class="input-group input-group-sm">
-                                <div class="input-group-prepend">
+                            <c:if test="${productReport.operationStatus == 'NOT_COMPLETED'}">
+                                <label for="${reportLine.code}-CMM" class="sr-only">CMM</label>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
                                     <span class="input-group-text bg-primary text-white" id="${reportLine.code}" title="CMM auto">
                                         <fmt:formatNumber type = "number" value = "${reportLine.calculatedAverageMonthlyConsumption}" maxFractionDigits="0" />
                                     </span>
+                                    </div>
+                                    <input type="text"
+                                           id="${reportLine.code}-CMM"
+                                           class="input-value-flux form-control form-control-sm text-center"
+                                           value="${reportLine.averageMonthlyConsumption}" size="15"
+                                           aria-describedby="${reportLine.code}-CMM">
                                 </div>
-                                <input type="text"
-                                       id="${reportLine.code}-CMM"
-                                       class="input-value-flux form-control form-control-sm text-center"
-                                       value="${reportLine.averageMonthlyConsumption}" size="15"
-                                       aria-describedby="${reportLine.code}-CMM">
-                            </div>
+                            </c:if>
+                            <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
+                                <fmt:formatNumber type = "number" value = "${reportLine.averageMonthlyConsumption}" maxFractionDigits="0" />
+                            </c:if>
+
                         </td>
                         <td class="text-center align-middle" id="${reportLine.code}-MSD"><fmt:formatNumber type = "number" value = "${reportLine.monthOfStockAvailable}" maxFractionDigits="1" /></td>
                         <td class="text-center align-middle"><span id="${reportLine.code}-QTO" class="badge badge-primary" style="font-size: 13px">${reportLine.proposedQuantity}</span></td>

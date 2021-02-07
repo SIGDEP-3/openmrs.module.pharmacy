@@ -12,6 +12,12 @@
                 saveLocationPrograms(id, value);
             });
 
+            jQuery("input[name=code]").on('change', function () {
+                let locationId = jQuery(this).attr('id').split('-')[1];
+                let code =  jQuery(this).val();
+                saveLocationCode(locationId, code);
+            });
+
             jQuery(".mySelect2").select2({
                 dropdownParent: jQuery("#dialog-form")
             })
@@ -138,6 +144,24 @@
             }
         }
 
+        function saveLocationCode(locationId, code) {
+            if (locationId) {
+                jQuery.ajax({
+                    type: 'GET',
+                    url: '${pageContext.request.contextPath}/save-location-code.form?locationId=' +
+                        locationId + '&code='+ code,
+                    dataType : "json",
+                    crossDomain:true,
+                    success : function(data) {
+                        console.log(data);
+                    },
+                    error : function(data) {
+                        console.log(data)
+                    }
+                });
+            }
+        }
+
         function saveLocationClientInfo(locationId, value) {
             if (locationId && value) {
                 console.log('locationId', locationId);
@@ -242,6 +266,8 @@
                                 <label for="clientInfo-${location.locationId}-true">
                                     <input type="radio" name="clientInfo" id="clientInfo-${location.locationId}-true" value="true" <c:if test="${isDirectClient == true }">checked</c:if>> Oui
                                 </label>
+                                <label for="code${location.locationId}" class="sr-only">Code NPSP</label>
+                                <input placeholder="Code NPSP" type="text" id="code-${location.locationId}" name="code" class="form-control form-control-sm" size="5" value="${code}">
                             </c:if>
                             <c:if test="${location.name != userLocation.name}">
                                 <button type="button" class="btn btn-sm btn-danger"

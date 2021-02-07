@@ -233,6 +233,39 @@ public class AjaxCustomController {
     }
 
 
+
+    @RequestMapping(value = "save-location-code.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> saveLocationCodeNPSPAjax(
+            @RequestParam("code") String code,
+            @RequestParam("locationId") Integer locationId) {
+        Location location = locationService().getLocation(locationId);
+
+        if (location != null) {
+            LocationAttribute locationAttribute = null;
+            for (LocationAttribute attribute : location.getActiveAttributes()) {
+                if (attribute.getAttributeType().getName().equals("CODE NPSP")) {
+                    locationAttribute = attribute;
+                    break;
+                }
+            }
+            if (locationAttribute == null) {
+                locationAttribute = new LocationAttribute();
+                locationAttribute.setAttributeType(Context.getLocationService()
+                        .getLocationAttributeTypeByUuid("CODENPSPCCCCCCCCCCCCCCCCCCCCCCCCCCCC"));
+            }
+//            if (value.equals("true"))
+//                locationAttribute.setValue(value);
+//            else
+                locationAttribute.setValue(code);
+            location.addAttribute(locationAttribute);
+            locationService().saveLocation(location);
+        }
+
+        return new ResponseEntity<String>("Location is retired successfully", HttpStatus.OK);
+    }
+
+
     @RequestMapping(value = "save-distribution-flux.form", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> saveDistributionAttributeFluxAjax(

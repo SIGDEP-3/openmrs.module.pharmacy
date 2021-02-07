@@ -146,7 +146,7 @@
 						</button>
 					</openmrs:hasPrivilege>
 				</div>
-				<div class="btn-group">
+				<div class="btn-group ml-3">
 					<openmrs:hasPrivilege privilege="View Stock">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
 								<c:choose>

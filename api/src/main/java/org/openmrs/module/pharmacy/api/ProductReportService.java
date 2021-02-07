@@ -111,6 +111,8 @@ public interface ProductReportService extends OpenmrsService {
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) throws APIException;
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+    ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String operationNumber, ProductProgram program, Location childLocation, boolean isUrgent);
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport) throws APIException;
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute) throws APIException;
 //	List<ProductReportListDTO> getProductReportListDTOs() throws APIException;

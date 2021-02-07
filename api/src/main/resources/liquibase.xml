@@ -1297,6 +1297,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="location_attribute_npsp_code" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(name) FROM location_attribute_type WHERE name = 'CODE NPSP'; </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO
+            location_attribute_type
+            (name, datatype, min_occurs, creator, date_created, retired, uuid)
+            VALUES
+            ('CODE NPSP', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 0, 1, '2021-02-06 13:00:00', 0, 'CODENPSPCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
+        </sql>
+    </changeSet>
+
     <changeSet id="pharmacy-create-role-auxiliary" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(role) FROM role WHERE role = 'AUXILIAIRE'</sqlCheck>
@@ -1309,7 +1324,8 @@
         <preConditions onFail="CONTINUE" onError="CONTINUE">
             <and>
                 <not>
-                    <sqlCheck expectedResult="44">SELECT COUNT(*) FROM role_privilege WHERE role = 'AUXILIAIRE'
+                    <sqlCheck expectedResult="44">
+                        SELECT COUNT(*) FROM role_privilege WHERE role = 'AUXILIAIRE'
                     </sqlCheck>
                 </not>
                 <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Dispensation'</sqlCheck>
@@ -1364,7 +1380,7 @@
         </sql>
     </changeSet>
     <changeSet id="pharmacy-create-role-pgp" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="CONTINUE">
             <sqlCheck expectedResult="0">SELECT COUNT(role) FROM role WHERE role = 'PGP'</sqlCheck>
         </preConditions>
         <sql>
@@ -1611,4 +1627,30 @@
                                  referencedTableName="patient"
                                  referencedColumnNames="patient_id"/>
     </changeSet>
+
+    <changeSet id="pharmacy-add-program-number-program" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <columnExists tableName="pharmacy_product_program" columnName="program_number"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_program">
+            <column name="program_number" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            UPDATE pharmacy_product_program SET program_number = 0 WHERE name = 'PNLSARVIO';
+            UPDATE pharmacy_product_program SET program_number = 1 WHERE name = 'PNLSLAB';
+            UPDATE pharmacy_product_program SET program_number = 2 WHERE name = 'ME_REC';
+            UPDATE pharmacy_product_program SET program_number = 3 WHERE name = 'GTC';
+            UPDATE pharmacy_product_program SET program_number = 4 WHERE name = 'PNSME';
+            UPDATE pharmacy_product_program SET program_number = 5 WHERE name = 'PNLT';
+            UPDATE pharmacy_product_program SET program_number = 6 WHERE name = 'PNLP';
+            UPDATE pharmacy_product_program SET program_number = 7 WHERE name = 'CONSO';
+            UPDATE pharmacy_product_program SET program_number = 8 WHERE name = 'PNLSTRC';
+            UPDATE pharmacy_product_program SET program_number = 9 WHERE name = 'PNLS_CHARGE VIRALE';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

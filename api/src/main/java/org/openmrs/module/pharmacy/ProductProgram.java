@@ -24,6 +24,9 @@ public class ProductProgram extends AbstractPharmacyObject {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "program_number", nullable = false, unique = true)
+    private Integer programNumber;
+
     @ManyToMany(mappedBy="productPrograms", fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<Product>();
 
@@ -59,6 +62,14 @@ public class ProductProgram extends AbstractPharmacyObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getProgramNumber() {
+        return programNumber;
+    }
+
+    public void setProgramNumber(Integer programNumber) {
+        this.programNumber = programNumber;
     }
 
     public Set<Product> getProducts() {

@@ -307,11 +307,31 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	@Override
 	public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
+		List<ProductReport> lastDistributions = new ArrayList<ProductReport>();
+		Integer quantity = 0;
+
+		if (isUrgent) {
+			lastDistributions = getPeriodTreatedChildProductReports(location, inventory, false, new Date());
+		} else {
+			lastDistributions = getPeriodTreatedChildProductReports(location, inventory, false, inventory.getInventoryStartDate());
+		}
+
+		if (lastDistributions != null && lastDistributions.size() != 0) {
+
+			for (ProductReport report : lastDistributions) {
+				for (ProductAttributeFlux flux : report.getProductAttributeFluxes()) {
+					quantity += flux.getQuantity();
+				}
+			}
+			return quantity;
+		}
+
 		if (isUrgent) {
 			return getCurrentMonthReceivedQuantity(product, inventory);
 		}
+
 		List<ProductReception> productReceptions = Context.getService(ProductReceptionService.class).getAllProductReceptions(location, false, inventory.getInventoryStartDate(), inventory.getOperationDate());
-		Integer quantity = 0;
+
 		for (ProductReception reception :
 				productReceptions) {
 			quantity += getFluxQuantity(reception, product);
@@ -392,7 +412,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 			quantity += getFluxQuantity(movementEntry, product);
 		}
 
-		return getChildLocationReportProductQuantity(location, product, inventory, "QA", quantity);
+		return quantity.intValue();
 	}
 
 	private Integer getFluxQuantity(ProductOperation operation, Product product) throws HibernateException {
@@ -766,6 +786,16 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("label", label)).setMaxResults(1).uniqueResult();
 	}
 
+	@Override
+	public ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String reportPeriod, ProductProgram program, Location childLocation, boolean isUrgent) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		return (ProductReport) criteria
+				.add(Restrictions.eq("reportLocation", childLocation))
+				.add(Restrictions.eq("productProgram", program))
+				.add(Restrictions.eq("reportPeriod", reportPeriod))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("isUrgent", isUrgent)).setMaxResults(1).uniqueResult();
+	}
 
 
 //	@SuppressWarnings("unchecked")

@@ -218,6 +218,11 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
         return dao.getPreviousReportProductAttributeOtherFluxByLabel(product, label, report, location);
     }
 
+    @Override
+    public ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String reportPeriod, ProductProgram program, Location childLocation, boolean isUrgent) {
+        return dao.getPeriodTreatedProductReportsByReportPeriodAndLocation(reportPeriod, program, childLocation, isUrgent);
+    }
+
 //
 //    @Override
 //    public List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport) {

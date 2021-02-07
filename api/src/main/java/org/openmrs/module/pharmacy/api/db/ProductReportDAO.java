@@ -59,6 +59,7 @@ public interface ProductReportDAO {
 	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report);
 	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location);
+    ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String reportPeriod, ProductProgram program, Location childLocation, boolean isUrgent);
 //	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport);
 //	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute);
 //	List<ProductReportListDTO> getProductReportListDTOs();

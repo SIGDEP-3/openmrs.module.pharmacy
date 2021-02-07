@@ -107,24 +107,9 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
             if (getReceivedQuantity() == null) {
                 ProductReport report = reportService().getOneProductReportById(getProductOperationId());
                 ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
-                List<ProductReport> treatedProductReports;
-                if (report.getUrgent()) {
-                    treatedProductReports = reportService().getPeriodTreatedChildProductReports(
-                            report.getReportLocation(), inventory, false, report.getOperationDate()
-                    );
-                } else {
-                    ProductInventory inventoryBeforeLast = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), inventory.getOperationDate(), InventoryType.TOTAL);
-                    treatedProductReports = reportService().getPeriodTreatedChildProductReports(
-                            report.getReportLocation(), inventoryBeforeLast, false, inventory.getOperationDate()
-                    );
-                }
-                if (treatedProductReports != null) {
-                    double quantity = 0.;
-                    for (ProductReport productReport : treatedProductReports) {
-                        quantity += reportService().getCountProductQuantityInPeriodTreatment(report.getReportLocation(), inventory, false, productReport.getOperationDate(), product).doubleValue();
-                    }
-                    otherFluxes.add(createProductAttributeOtherFlux(product, quantity, "QR"));
-                }
+
+                double quantity = reportService().getProductReceivedQuantityInLastOperationByProduct(product, inventory, report.getReportLocation(), report.getUrgent());
+                otherFluxes.add(createProductAttributeOtherFlux(product, quantity, "QR"));
             } else {
                 otherFluxes.add(createProductAttributeOtherFlux(product, getReceivedQuantity().doubleValue(), "QR"));
             }
