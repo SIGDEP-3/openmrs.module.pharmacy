@@ -2,10 +2,34 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../template/operationHeader.jsp"%>
+<script>
+    if (jQuery) {
+        jQuery(document).ready(function (){
+            jQuery('.table').DataTable();
+        });
+    }
+</script>
 <div class="container-fluid mt-2">
+    <div class="row border-bottom border-secondary mb-2 pb-2">
+        <div class="col-12">
+            <form action="" method="get">
+                <div class="form-row">
+                    <div class="col-5">
+                        <label for="programId">Programme</label>
+                        <select name="programId" id="programId" class="s2">
+                            <c:forEach var="program" items="${programs}">
+                                <option value="${program.productProgramId}">${program.name}</option>
+                            </c:forEach>
+                        </select>
+                        <button class="btn btn-primary btn-sm">Afficher</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12">
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-sm">
                 <thead>
                 <tr>
                     <th>Code du produit</th>

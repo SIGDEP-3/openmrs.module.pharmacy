@@ -230,7 +230,7 @@ public class PharmacyProductDispensationManageController {
 
             modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
             modelMap.addAttribute("productDispensationForm", productDispensationForm);
-            modelMap.addAttribute("providers", Context.getProviderService().getAllProviders());
+            modelMap.addAttribute("providers", OperationUtils.getLocationPrescribers(OperationUtils.getUserLocation()));
             modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Saisie entête");
         }
         return null;
@@ -289,7 +289,7 @@ public class PharmacyProductDispensationManageController {
             setPatient(modelMap, mob, patientId, productDispensationForm);
 
             modelMap.addAttribute("program", programService().getOneProductProgramById(programId));
-            modelMap.addAttribute("providers", Context.getProviderService().getAllProviders());
+            modelMap.addAttribute("providers", OperationUtils.getLocationPrescribers(OperationUtils.getUserLocation()));
             modelMap.addAttribute("dispensationHeaderForm", productDispensationForm);
             modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Saisie entête");
         }
@@ -315,12 +315,15 @@ public class PharmacyProductDispensationManageController {
             Patient patient = Context.getPatientService().getPatient(patientId);
             if (patient != null) {
                 if (dispensationService().isDead(patient, OperationUtils.getUserLocation())) {
-                    modelMap.addAttribute("patientAlert", "<span class=\"text-danger\">Décédé le : <span class=\"font-weight-bold\">" +
-                            dispensationService().deathDate(patient, OperationUtils.getUserLocation())+ "</span></span>");
-                } else if (dispensationService().isDead(patient, OperationUtils.getUserLocation())) {
+                    String deathDate = OperationUtils.formatDate(dispensationService().deathDate(patient, OperationUtils.getUserLocation()));
+
+                    modelMap.addAttribute("patientAlert", "<span class=\"text-danger\"><i class=\"fa fa-exclamation-triangle\"></i> Décédé le : <span class=\"font-weight-bold\">" +
+                            deathDate + "</span></span>");
+                } else if (dispensationService().isTransferred(patient, OperationUtils.getUserLocation())) {
                     productDispensationForm.setPatientType(PatientType.MOBILE);
-                    modelMap.addAttribute("patientAlert", "<span class=\"text-warning\">Transféré le : <span class=\"font-weight-bold\">" +
-                            dispensationService().transferDate(patient, OperationUtils.getUserLocation())+ "</span></span>");
+                    String transferDate = OperationUtils.formatDate(dispensationService().transferDate(patient, OperationUtils.getUserLocation()));
+                    modelMap.addAttribute("patientAlert", "<span class=\"text-warning\"><i class=\"fa fa-exclamation-triangle\"></i> Transféré le : <span class=\"font-weight-bold\">" +
+                            transferDate + "</span></span>");
                 }
                 productDispensationForm.setPatient(Context.getPatientService().getPatient(patientId));
                 patientIdentifier = patient.getPatientIdentifier().getIdentifier();
@@ -499,8 +502,9 @@ public class PharmacyProductDispensationManageController {
                     headerDTO.setPatientType(info.getMobilePatient().getPatientType());
                     modelMap.addAttribute("mobilePatient", info.getMobilePatient());
                 }
-
-                headerDTO.setProvider(info.getProvider());
+                if (info.getProvider() != null) {
+                    headerDTO.setProvider(info.getProvider());
+                }
                 headerDTO.setTreatmentDays(info.getTreatmentDays());
                 headerDTO.setGoal(info.getGoal());
                 headerDTO.setTreatmentEndDate(info.getTreatmentEndDate());

@@ -180,7 +180,9 @@ public class ProductDispensationForm extends ProductOperationForm {
         setMobileDispensationInfoId(mobileDispensationInfo.getMobileDispensationInfoId());
         setGoal(mobileDispensationInfo.getGoal());
         setProductRegimenId(mobileDispensationInfo.getProductRegimen().getProductRegimenId());
-        setProviderId(mobileDispensationInfo.getProvider().getProviderId());
+        if (mobileDispensationInfo.getProvider().getProviderId() != null) {
+            setProviderId(mobileDispensationInfo.getProvider().getProviderId());
+        }
         setTreatmentEndDate(mobileDispensationInfo.getTreatmentEndDate());
 
         setMobilePatientId(mobileDispensationInfo.getMobilePatient().getMobilePatientId());
@@ -228,8 +230,9 @@ public class ProductDispensationForm extends ProductOperationForm {
             encounter.setPatient(Context.getPatientService().getPatient(getPatientId()));
             encounter.setLocation(OperationUtils.getUserLocation());
             encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
-            encounter.addProvider(Context.getEncounterService().getEncounterRole(1), Context.getProviderService().getProvider(getProviderId()));
-
+            if (getProviderId() != null) {
+                encounter.addProvider(Context.getEncounterService().getEncounterRole(1), Context.getProviderService().getProvider(getProviderId()));
+            }
             encounter.addObs(getDispensationDateObs());
             encounter.addObs(getDispensationGoalObs());
             encounter.addObs(getDispensationRegimenObs());
@@ -239,7 +242,9 @@ public class ProductDispensationForm extends ProductOperationForm {
         } else {
             encounter = Context.getEncounterService().getEncounter(getEncounterId());
             if (encounter != null) {
-                encounter.addProvider(null, Context.getProviderService().getProvider(getProviderId()));
+                if (getProviderId() != null) {
+                    encounter.addProvider(null, Context.getProviderService().getProvider(getProviderId()));
+                }
                 Set<Obs> obsSet = new HashSet<Obs>();
                 for (Obs obs : encounter.getAllObs()) {
                     if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Regimen"))) {

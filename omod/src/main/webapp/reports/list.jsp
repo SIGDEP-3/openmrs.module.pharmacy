@@ -37,7 +37,7 @@
         <div class="col-3 text-uppercase font-italic text-secondary">
             <div class="h6"><i class="fa fa-list"></i> ${subTitle}</div>
         </div>
-        <div class="col-6">
+        <div class="col-3">
 <%--            <c:if test="${isDirectClient == true}">--%>
 <%--                <openmrs:hasPrivilege privilege="Import Report">--%>
 <%--                    <form method="POST" enctype="multipart/form-data" class="mb-3"--%>
@@ -76,7 +76,7 @@
 
         </div>
 
-        <div class="col-3 text-right">
+        <div class="col-6 text-right">
             <span id="selectMe"></span>
             <label for="program">Programme : </label>
             <select name="program" class="s2 form-control-sm mr-3" id="program">

@@ -412,7 +412,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 			quantity += getFluxQuantity(movementEntry, product);
 		}
 
-		return quantity.intValue();
+		return getChildLocationReportProductQuantity(location, product, inventory, "QA", quantity);
 	}
 
 	private Integer getFluxQuantity(ProductOperation operation, Product product) throws HibernateException {

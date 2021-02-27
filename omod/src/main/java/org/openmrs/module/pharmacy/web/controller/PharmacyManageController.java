@@ -27,11 +27,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The main controller.
@@ -64,8 +62,59 @@ public class PharmacyManageController {
 	}
 
 	@RequestMapping(value = "/module/pharmacy/operations/stock/list.form", method = RequestMethod.GET)
-	public void stock(ModelMap modelMap) {
+	public void stock(ModelMap modelMap,
+					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId) {
 		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Stock des produits par lots");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+			List<ProductAttributeStock> stocks = new ArrayList<ProductAttributeStock>();
+			if (programId != 0) {
+				ProductProgram productProgram = programService().getOneProductProgramById(programId);
+				if (productProgram != null) {
+					List<ProductAttributeStock> tmpStocks = stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false);
+					for (ProductAttributeStock stock : tmpStocks) {
+						if (stock.getProductAttribute().getProduct().getProductPrograms().contains(productProgram)){
+							stocks.add(stock);
+						}
+					}
+				}
+			}
+			modelMap.addAttribute("stocks", stocks);
+		}
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/stock/operationStatus.form", method = RequestMethod.GET)
+	public void operations(ModelMap modelMap,
+					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+					  @RequestParam(value = "startDade", defaultValue = "", required = false) Date startDate,
+					  @RequestParam(value = "endDade", defaultValue = "", required = false) Date endDade) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Etats des mouvenents de stock");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+			modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
+		}
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/stock/transferStatus.form", method = RequestMethod.GET)
+	public void transfer(ModelMap modelMap,
+					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+					  @RequestParam(value = "startDade", defaultValue = "", required = false) Date startDate,
+					  @RequestParam(value = "endDade", defaultValue = "", required = false) Date endDade) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Etat de transfert");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+			modelMap.addAttribute("transfers", null);
+		}
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/stock/stockStatus.form", method = RequestMethod.GET)
+	public void stocks(ModelMap modelMap,
+					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+					  @RequestParam(value = "startDade", defaultValue = "", required = false) Date startDate,
+					  @RequestParam(value = "endDade", defaultValue = "", required = false) Date endDade) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Etat de Stock");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
 			modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
 		}
 	}

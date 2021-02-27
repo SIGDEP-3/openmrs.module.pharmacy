@@ -269,7 +269,7 @@
                 <tbody>
                 <c:forEach var="dispensation" items="${ dispensations }">
                     <tr class="${dispensation.operationStatus == 'DISABLED' ? 'bg-warning' : ''}">
-                        <td><fmt:formatDate value="${dispensation.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                        <td class="align-middle"><fmt:formatDate value="${dispensation.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td><fmt:formatDate value="${dispensation.prescriptionDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                         <td>${dispensation.programName}</td>
                         <td>${dispensation.patientType}</td>

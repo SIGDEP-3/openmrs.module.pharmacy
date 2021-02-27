@@ -625,4 +625,44 @@ public class OperationUtils {
         return sb.toString();
 
     }
+
+    public static List<Provider> getLocationPrescribers(Location location) {
+        List<Provider> providers = new ArrayList<>();
+        List<Provider> allProviders = Context.getProviderService().getAllProviders(false);
+        for (Provider provider : allProviders) {
+            if (provider.getActiveAttributes() != null && provider.getActiveAttributes().size() != 0) {
+                for (ProviderAttribute attribute : provider.getActiveAttributes()) {
+                    if (attribute.getAttributeType().getName().equals("Location")
+                            && attribute.getValueReference().equals(location.getName())) {
+                        providers.add(provider);
+                    }
+                }
+            }
+        }
+        return providers;
+    }
+
+    public static Location getPrescriberLocation(Provider provider) {
+        for (ProviderAttribute attribute : provider.getActiveAttributes()) {
+            if (attribute.getAttributeType().getName().equals("Location")) {
+                return Context.getLocationService().getLocation(attribute.getValueReference());
+            }
+        }
+        return null;
+    }
+
+    public static ProviderAttribute getPrescriberLocationAttribute(Provider provider) {
+        for (ProviderAttribute attribute : provider.getActiveAttributes()) {
+            if (attribute.getAttributeType().getName().equals("Location")) {
+                return attribute;
+            }
+        }
+        return null;
+    }
+
+    public static String formatDate(Date date) {
+        Locale locale = new Locale("fr", "FR");
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+        return  dateFormat.format(date);
+    }
 }

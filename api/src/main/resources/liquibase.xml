@@ -1653,4 +1653,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="pharmacy-provider-attribute-location" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(name) FROM provider_attribute_type WHERE name = 'Location'; </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO
+            provider_attribute_type
+            (name, datatype, min_occurs, creator, date_created, retired, uuid)
+            VALUES
+            ('Location', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 0, 1, '2021-02-27 21:10:08', 0, 'LOCATIONPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

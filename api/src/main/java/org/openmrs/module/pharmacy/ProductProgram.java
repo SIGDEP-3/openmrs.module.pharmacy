@@ -24,7 +24,7 @@ public class ProductProgram extends AbstractPharmacyObject {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "program_number", nullable = false, unique = true)
+    @Column(name = "program_number", nullable = false)
     private Integer programNumber;
 
     @ManyToMany(mappedBy="productPrograms", fetch = FetchType.LAZY)

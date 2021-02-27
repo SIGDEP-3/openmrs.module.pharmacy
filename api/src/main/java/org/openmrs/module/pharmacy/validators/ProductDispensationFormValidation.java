@@ -32,6 +32,7 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 
 //            ValidationUtils.rejectIfEmpty(errors, "goal", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "treatmentDays", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "providerId", null, "Sélectionnez un prescripteur SVP !");
 //            ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null){

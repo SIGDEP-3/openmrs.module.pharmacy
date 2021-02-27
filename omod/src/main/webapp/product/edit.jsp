@@ -3,7 +3,7 @@
 
 <%@ include file="../template/localHeader.jsp"%>
 <openmrs:require privilege="Save Product"
-                 otherwise="/login.htm" redirect="/module/pharmacy/product/units/edit.form" />
+                 otherwise="/login.htm" redirect="/module/pharmacy/product/edit.form" />
 
 <hr>
 <div class="row">

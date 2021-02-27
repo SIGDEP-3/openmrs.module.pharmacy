@@ -6,7 +6,7 @@
 
 <script type="application/javascript" >
 	if (jQuery) {
-		jQuery(document).ready(function (){
+		jQuery(document).ready(function () {
 			jQuery('.s2').select2();
 
 			jQuery('[data-toggle="tooltip"]').tooltip();
@@ -82,6 +82,11 @@
 			Gestion du centre / district
 		</a>
 	</li>
+	<li <c:if test='<%= request.getRequestURI().contains("/prescriber") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/pharmacy/prescriber/list.form">
+			Prescripteurs
+		</a>
+	</li>
 	<li>
 		<a href="${pageContext.request.contextPath}/module/pharmacy/manage.form">
 			Retour &agrave; la pharmacie
@@ -90,6 +95,6 @@
 	
 	<!-- Add further links here -->
 </ul>
-<h2>
+<h2 class="pt-2">
 	<spring:message code="pharmacy.title" />
 </h2>

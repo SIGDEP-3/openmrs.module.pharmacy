@@ -368,6 +368,10 @@
 		<name>Validate Operation</name>
 		<description>Can Validate Operation</description>
 	</privilege>
+	<privilege>
+		<name>Cancel Operation</name>
+		<description>Can Cancel Operation</description>
+	</privilege>
 
 	<privilege>
 		<name>Manage Flux</name>

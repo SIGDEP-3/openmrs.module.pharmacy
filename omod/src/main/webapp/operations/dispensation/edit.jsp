@@ -249,7 +249,7 @@
                                         </c:if>
 
                                         <c:if test="${patientAlert != null}">
-                                            <span class="badge"><i class="fa fa-warning"></i> ${patientAlert}</span>
+                                            <span class="badge">${patientAlert}</span>
                                         </c:if>
                                     </div>
                                     <div class="col-4 text-right">

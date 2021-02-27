@@ -3,38 +3,11 @@
 
 <%@ include file="includeStyle.jsp"%>
 
-<script type="application/javascript" >
-	if (jQuery) {
-		jQuery(document).ready(function (){
-			jQuery('.s2').select2();
-
-			jQuery.datepicker.setDefaults({
-				showOn: "both",
-				buttonImageOnly: false,
-				//buttonImage: "${pageContext.request.contextPath}/moduleResources/ptme/images/calendar.gif",
-				//buttonText: "Calendar"
-			});
-
-			jQuery.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
-
-			jQuery(".picker").datepicker({
-				dateFormat: 'dd/mm/yy',
-				dayNamesShort: [ "Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam" ],
-				monthNamesShort: [ "Jan", "Fev", "Mar", "Avr", "Mai", "Jui", "Juil", "Aou", "Sep", "Oct", "Nov", "Dec" ],
-				changeMonth: true,
-				changeYear: true,
-			});
-
-			jQuery('.ui-datepicker-trigger').css("display","none");
-		});
-	}
-</script>
-
 <spring:htmlEscape defaultHtmlEscape="true" />
 
 <div class="container-fluid mb-0 pb-0">
 	<div class="row mb-0 bg-green-sea align-items-center">
-		<div class="col-12 h5 text-white">
+		<div class="col-12 h6 text-white pt-2">
 			<spring:message code="pharmacy.title" /> :
 			Dispensation & Gestion de Stock
 		</div>
@@ -43,7 +16,7 @@
 	<div class="row bg-info border-top border-bottom border-secondary align-items-center">
 		<div class="col-11 pl-0">
 			<div class="btn-toolbar m-1 pl-0">
-				<div class="btn-group mr-3 ml-0">
+				<div class="btn-group btn-group-sm mr-3 ml-0">
 					<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/manage.form'"
 						<c:choose>
 							<c:when test='<%= request.getRequestURI().contains("/manage") %>'>
@@ -58,7 +31,7 @@
 					</button>
 				</div>
 
-				<div class="btn-group mr-3">
+				<div class="btn-group btn-group-sm mr-3">
 					<openmrs:hasPrivilege privilege="View Dispensation">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/list.form'"
 								<c:choose>
@@ -74,7 +47,7 @@
 					</openmrs:hasPrivilege>
 				</div>
 
-				<div class="btn-group mr-3">
+				<div class="btn-group btn-group-sm mr-3">
 					<openmrs:hasPrivilege privilege="View reception">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/reception/list.form'"
 								<c:choose>
@@ -103,7 +76,7 @@
 					</openmrs:hasPrivilege>
 				</div>
 
-				<div class="btn-group">
+				<div class="btn-group btn-group-sm">
 					<openmrs:hasPrivilege privilege="View Inventory">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/inventory/list.form'"
 								<c:choose>
@@ -146,7 +119,7 @@
 						</button>
 					</openmrs:hasPrivilege>
 				</div>
-				<div class="btn-group ml-3">
+				<div class="btn-group btn-group-sm ml-3">
 					<openmrs:hasPrivilege privilege="View Stock">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
 								<c:choose>
@@ -183,12 +156,12 @@
 					</div>
 					<c:if test='<%= request.getRequestURI().contains("/movement") %>'>
 						<div class="col-7 text-right">
-							<div class="btn-group">
+							<div class="btn-group btn-group-sm">
                                 <c:if test="${isDirectClient}">
                                     <openmrs:hasPrivilege privilege="View Transfer">
                                         <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/transfer/list.form'"
                                                 <c:choose>
-                                                    <c:when test='<%= request.getRequestURI().contains("/transfer") %>'>
+                                                    <c:when test='<%= request.getRequestURI().contains("/transfer/") %>'>
                                                         class=" btn btn-secondary btn-sm"
                                                     </c:when>
                                                     <c:otherwise>
@@ -242,6 +215,45 @@
 								</openmrs:hasPrivilege>
 							</div>
 						</div>
+					</c:if>
+					<c:if test='<%= request.getRequestURI().contains("/stock") %>'>
+					<div class="col-7 text-right">
+						<div class="btn-group btn-group-sm">
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/stockStatus.form'"
+									<c:choose>
+										<c:when test='<%= request.getRequestURI().contains("/stockStatus") %>'>
+											class="btn btn-secondary btn-sm"
+										</c:when>
+										<c:otherwise>
+											class="btn btn-outline-secondary btn-sm"
+										</c:otherwise>
+									</c:choose>>
+								Etat de Stock
+							</button>
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/operationStatus.form'"
+									<c:choose>
+										<c:when test='<%= request.getRequestURI().contains("/operationStatus") %>'>
+											class="btn btn-secondary btn-sm"
+										</c:when>
+										<c:otherwise>
+											class="btn btn-outline-secondary btn-sm"
+										</c:otherwise>
+									</c:choose>>
+								Etat des Operations
+							</button>
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/transferStatus.form'"
+								<c:choose>
+									<c:when test='<%= request.getRequestURI().contains("/transferStatus") %>'>
+										class="btn btn-secondary btn-sm"
+									</c:when>
+									<c:otherwise>
+										class="btn btn-outline-secondary btn-sm"
+									</c:otherwise>
+								</c:choose>>
+								Etat de transfert
+							</button>
+						</div>
+					</div>
 					</c:if>
 				</div>
 				<h5 class="m-0"></h5>

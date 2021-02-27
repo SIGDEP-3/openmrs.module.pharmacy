@@ -149,7 +149,7 @@
                                         </openmrs:hasPrivilege>
                                     </c:if>
                                     <c:if test="${headerDTO.operationStatus != 'NOT_COMPLETED'}">
-                                        <openmrs:hasPrivilege privilege="Cancel Dispensation">
+                                        <openmrs:hasPrivilege privilege="Cancel Operation">
                                             <c:if test="${headerDTO.operationStatus != 'DISABLED'}">
                                                 <c:url value="/module/pharmacy/operations/dispensation/cancel.form"
                                                        var="cancelUrl">

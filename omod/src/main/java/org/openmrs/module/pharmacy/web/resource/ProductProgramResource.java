@@ -21,6 +21,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         supportedClass = ProductProgram.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.11.*", "1.12.*", "2.*"})
 public class ProductProgramResource extends DelegatingCrudResource<ProductProgram> {
 
+    public ProductProgramResource() {
+    }
+
     ProductProgramService getService() {
         return Context.getService(ProductProgramService.class);
     }
