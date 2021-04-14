@@ -15,6 +15,7 @@ package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 
 import java.util.Date;
@@ -34,6 +35,7 @@ public interface ProductReportDAO {
 	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided);
 	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
 	ProductReport getLastTreatedChildProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+	ProductReport getLastTreatedChildProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
 	List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate);
 	Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product);
 	Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory productInventory, Boolean includeVoided, Date operationDate, Product product);
@@ -55,7 +57,7 @@ public interface ProductReportDAO {
 	Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location);
 	Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided);
 	List<Product> getAllActivityProducts(ProductInventory inventory);
-	ProductReport getLastProductReport(Location location, ProductProgram productProgram);
+	ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent);
 	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report);
 	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location);

@@ -32,7 +32,7 @@
         });
 
         function saveFlux(code, quantity) {
-            if (quantity !== 0) {
+            if (quantity >= 0) {
                 jQuery.ajax({
                     type: 'GET',
                     url: '${pageContext.request.contextPath}/save-distribution-flux.form?code=' +

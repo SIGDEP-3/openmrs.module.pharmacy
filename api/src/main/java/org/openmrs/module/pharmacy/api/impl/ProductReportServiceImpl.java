@@ -20,6 +20,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductReportService;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
+import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 
 import java.util.Date;
@@ -76,6 +77,11 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     @Override
     public ProductReport getLastTreatedProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
         return dao.getLastTreatedChildProductReports(location, includeVoided, productProgram, operationDate);
+    }
+
+    @Override
+    public ProductReport getLastTreatedProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
+        return dao.getLastTreatedChildProductReportsByProduct(product, location, includeVoided, productProgram, operationDate);
     }
 
     @Override
@@ -199,8 +205,8 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
-    public ProductReport getLastProductReport(Location location, ProductProgram productProgram) {
-        return dao.getLastProductReport(location, productProgram);
+    public ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) {
+        return dao.getLastProductReport(location, productProgram, urgent);
     }
 
     @Override

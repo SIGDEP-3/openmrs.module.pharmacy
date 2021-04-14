@@ -145,7 +145,7 @@ public class PharmacyProductReportManageController {
 
                         } else if (otherFlux.getLabel().equals("DM1")) {
                             ProductReport lastProductReport = reportService().getLastProductReport(
-                                    report.getReportLocation(), report.getProductProgram());
+                                    report.getReportLocation(), report.getProductProgram(), report.getUrgent());
                             if (lastProductReport != null) {
                                 ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                                         otherFlux.getProduct(), lastProductReport, "QD", lastProductReport.getLocation()
@@ -154,7 +154,7 @@ public class PharmacyProductReportManageController {
                             }
                         } else if (otherFlux.getLabel().equals("DM2")) {
                             ProductReport lastProductReport = reportService().getLastProductReport(
-                                    report.getReportLocation(), report.getProductProgram());
+                                    report.getReportLocation(), report.getProductProgram(), report.getUrgent());
                             if (lastProductReport != null) {
                                 ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                                         otherFlux.getProduct(), lastProductReport, "DM1", lastProductReport.getLocation()
@@ -562,7 +562,7 @@ public class PharmacyProductReportManageController {
                 } else {
                     report.setOperationStatus(OperationStatus.SUBMITTED);
                     reportService().saveProductReport(report);
-                    message = "Le rapport a été soumis au fournisseur veuillez patienter pour que le rapport soit traité !";
+                    message = "Le rapport a été soumis au fournisseur. Veuillez patienter pour que le rapport soit traité !";
                 }
             }
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);

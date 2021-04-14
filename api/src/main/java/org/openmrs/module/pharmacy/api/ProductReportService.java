@@ -18,6 +18,7 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.enumerations.ReportType;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,8 @@ public interface ProductReportService extends OpenmrsService {
 	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastTreatedProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
+	ProductReport getLastTreatedProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
@@ -104,7 +107,7 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<Product> getAllActivityProducts(ProductInventory inventory) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
-	ProductReport getLastProductReport(Location location, ProductProgram productProgram) throws APIException;
+	ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})

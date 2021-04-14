@@ -50,11 +50,20 @@ public class ProductInventoryForm extends ProductOperationForm {
             ProductInventory previousInventory = service().getLastProductInventory(
                     Context.getLocationService().getLocation(getLocationId()),
                     programService().getOneProductProgramById(getProductProgramId()),
-                    InventoryType.TOTAL
+                    getInventoryType()
             );
             if (previousInventory != null) {
                 setInventoryStartDate(previousInventory.getOperationDate());
             } else {
+                if (getInventoryType().equals(InventoryType.PARTIAL)) {
+                    previousInventory = service().getLastProductInventory(
+                            Context.getLocationService().getLocation(getLocationId()),
+                            programService().getOneProductProgramById(getProductProgramId()),
+                            InventoryType.TOTAL);
+                    if (previousInventory != null) {
+                        setInventoryStartDate(previousInventory.getOperationDate());
+                    }
+                }
                 setInventoryStartDate(getOperationDate());
             }
         }

@@ -341,7 +341,7 @@ public class PharmacyProductDistributionManageController {
                         flux.setStatus(OperationStatus.NOT_COMPLETED);
                         attributeFluxService().saveProductAttributeFlux(flux);
                     }
-                    reportLineExtendedDTO.setAccordedQuantity((int) quantityProposed);
+                    reportLineExtendedDTO.setAccordedQuantity(quantityProposed >= 0 ? (int) quantityProposed : 0);
                 }
 
                 reportLineDTOS.add(reportLineExtendedDTO);
@@ -384,7 +384,7 @@ public class PharmacyProductDistributionManageController {
                             }
                         } else if (otherFlux.getLabel().equals("DM1")) {
                             ProductReport lastProductReport = reportService().getLastProductReport(
-                                    report.getReportLocation(), report.getProductProgram());
+                                    report.getReportLocation(), report.getProductProgram(), report.getUrgent());
                             if (lastProductReport != null) {
                                 ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                                         otherFlux.getProduct(), lastProductReport, "QD", lastProductReport.getLocation()
@@ -393,7 +393,7 @@ public class PharmacyProductDistributionManageController {
                             }
                         } else if (otherFlux.getLabel().equals("DM2")) {
                             ProductReport lastProductReport = reportService().getLastProductReport(
-                                    report.getReportLocation(), report.getProductProgram());
+                                    report.getReportLocation(), report.getProductProgram(), report.getUrgent());
                             if (lastProductReport != null) {
                                 ProductAttributeOtherFlux lastOtherFlux = attributeFluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                                         otherFlux.getProduct(), lastProductReport, "DM1", lastProductReport.getLocation()
@@ -502,11 +502,11 @@ public class PharmacyProductDistributionManageController {
 
         ProductReport report = reportService().getOneProductReportById(distributionId).getChildLocationReport();
         Product product = productService().getOneProductById(productId);
-        System.out.println("Location ID :------------------------------------> " + report.getLocation().getLocationId());
+//        System.out.println("Location ID :------------------------------------> " + report.getLocation().getLocationId());
 
         List<ProductAttributeOtherFlux> fluxes = attributeFluxService().getAllProductAttributeOtherFluxByProductAndOperation(product, report, report.getLocation());
         for (ProductAttributeOtherFlux otherFlux : fluxes) {
-            System.out.println("Ligne trouvée :------------------------------------> " + otherFlux.getProductAttributeOtherFluxId());
+//            System.out.println("Ligne trouvée :------------------------------------> " + otherFlux.getProductAttributeOtherFluxId());
             attributeFluxService().removeProductAttributeOtherFlux(otherFlux);
         }
 

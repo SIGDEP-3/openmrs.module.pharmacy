@@ -13,7 +13,7 @@
                 } else {
                     jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
                 }
-            })
+            });
         });
 
         function showTooltip() {

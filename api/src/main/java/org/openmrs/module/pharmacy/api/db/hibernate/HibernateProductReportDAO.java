@@ -25,10 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
-import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.enumerations.InventoryType;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.enumerations.StockOutType;
+import org.openmrs.module.pharmacy.enumerations.*;
 import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
@@ -138,17 +135,58 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.uniqueResult();
 	}
 
+	@Override
+	public ProductReport getLastTreatedChildProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
+		return (ProductReport) sessionFactory.getCurrentSession().createQuery(
+				"SELECT r FROM ProductReport r JOIN r.productAttributeFluxes f " +
+				"WHERE r.reportLocation = :location " +
+				"AND r.operationStatus = :operationStatus " +
+				"AND r.voided = :voided " +
+				"AND r.productProgram = :productProgram " +
+				"AND f.productAttribute.product = :product " +
+				"AND r.treatmentDate < :operationDate " +
+				"ORDER BY r.operationDate DESC ")
+				.setParameter("location", location)
+				.setParameter("operationStatus", OperationStatus.VALIDATED)
+				.setParameter("productProgram", productProgram)
+				.setParameter("product", product)
+				.setParameter("operationDate", operationDate)
+				.setParameter("voided", includeVoided)
+				.setMaxResults(1).uniqueResult();
+
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class, "R");
+//		criteria.createAlias("R.productAttributeOtherFluxes", "F");
+////		criteria.createAlias("F.product", "P");
+//
+//		return (ProductReport) criteria
+//				.add(Restrictions.eq("R.reportLocation", location))
+//				.add(Restrictions.eq("R.operationStatus", OperationStatus.VALIDATED))
+//				.add(Restrictions.eq("R.productProgram", productProgram))
+//				.add(Restrictions.eq("R.voided", includeVoided))
+//				.add(Restrictions.eq("F.product", product))
+//				.add(Restrictions.lt("R.treatmentDate", operationDate))
+//				.addOrder(Order.desc("R.operationDate")).setMaxResults(1)
+//				.uniqueResult();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate) {
+	public List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate) throws HibernateException {
+//		System.out.println("------------------------------> Inventor.getInventoryStartDate() : " + inventory.getInventoryStartDate());
+//		System.out.println("------------------------------> Inventor.getOperationDate() : " + inventory.getOperationDate());
+//		System.out.println("------------------------------> location : " + location.getName());
+		Date startDate = inventory.getOperationDate().before(operationDate) ? inventory.getOperationDate() : operationDate;
+		Date endDate = inventory.getOperationDate().before(operationDate) ? operationDate : inventory.getOperationDate();
+//		System.out.println("------------------------------> Start date : " + startDate);
+//		System.out.println("------------------------------> End date : " + endDate);
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
 		return criteria
 				.add(Restrictions.eq("reportLocation", location))
 				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
 				.add(Restrictions.eq("productProgram", inventory.getProductProgram()))
-				.add(Restrictions.eq("voided", includeVoided))
-				.add(Restrictions.between("treatmentDate", inventory.getOperationDate(), operationDate))
-				.addOrder(Order.desc("operationDate"))
+				 .add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.between("treatmentDate", startDate, endDate))
+				// .addOrder(Order.desc("operationDate"))
 				.list();
 	}
 
@@ -307,22 +345,21 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	@Override
 	public Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
-		List<ProductReport> lastDistributions = new ArrayList<ProductReport>();
 		Integer quantity = 0;
+		List<ProductReport> lastDistributions = getPeriodTreatedChildProductReports(
+				location,
+				inventory, false,
+				inventory.getInventoryStartDate());
 
-		if (isUrgent) {
-			lastDistributions = getPeriodTreatedChildProductReports(location, inventory, false, new Date());
-		} else {
-			lastDistributions = getPeriodTreatedChildProductReports(location, inventory, false, inventory.getInventoryStartDate());
-		}
-
-		if (lastDistributions != null && lastDistributions.size() != 0) {
-
+		if (lastDistributions != null &&lastDistributions.size() > 0) {
 			for (ProductReport report : lastDistributions) {
 				for (ProductAttributeFlux flux : report.getProductAttributeFluxes()) {
-					quantity += flux.getQuantity();
+					if (flux.getProductAttribute().getProduct().equals(product)) {
+						quantity += flux.getQuantity();
+					}
 				}
 			}
+//			System.out.println("-------------------------------> Returning the distribution quantity");
 			return quantity;
 		}
 
@@ -335,6 +372,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 		for (ProductReception reception :
 				productReceptions) {
 			quantity += getFluxQuantity(reception, product);
+//			System.out.println("-----------------------------> Returning the all quantity received");
 		}
 		return quantity;
 	}
@@ -699,11 +737,25 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	}
 
 	@Override
-	public ProductReport getLastProductReport(Location location, ProductProgram productProgram) {
+	public ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		ProductReport report;
+		if (urgent) {
+			report = (ProductReport) criteria
+					.add(Restrictions.eq("location", location))
+					.add(Restrictions.eq("productProgram", productProgram))
+					.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+					.add(Restrictions.eq("isUrgent", true))
+					.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
+			if (report != null) {
+				return report;
+			}
+		}
 		return (ProductReport) criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("isUrgent", false))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 

@@ -562,7 +562,7 @@ public class OperationUtils {
         List<ProductAttributeFlux> fluxes = new ArrayList<>();
         List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(product, operation.getLocation());
         int countFlux = 0;
-        int countOldFlux = operation.getProductAttributeFluxes().size();
+        // int countOldFlux = operation.getProductAttributeFluxes().size();
         for (ProductAttributeStock stock : productAttributeStocks) {
             countFlux ++;
             ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
@@ -577,7 +577,7 @@ public class OperationUtils {
                 productAttributeFlux.setProductOperation(operation);
             }
 
-            if (quantity <= stock.getQuantityInStock()){
+            if (quantity <= stock.getQuantityInStock()) {
                 productAttributeFlux.setQuantity(quantity);
                 fluxes.add(productAttributeFlux);
                 break;
@@ -590,18 +590,18 @@ public class OperationUtils {
                 }
             }
         }
-        if (countOldFlux > countFlux) {
-            int remainFluxesCount = countOldFlux - countFlux;
-            List<ProductAttributeFlux> attributeFluxes =
-                    OperationUtils.getLastElements(
-                            operation.getProductAttributeFluxes(),
-                            remainFluxesCount
-                    );
-            for (ProductAttributeFlux flux : attributeFluxes) {
-                flux.setQuantity(0);
-                fluxes.add(flux);
-            }
-        }
+//        if (countOldFlux > countFlux) {
+//            int remainFluxesCount = countOldFlux - countFlux;
+//            List<ProductAttributeFlux> attributeFluxes =
+//                    OperationUtils.getLastElements(
+//                            operation.getProductAttributeFluxes(),
+//                            remainFluxesCount
+//                    );
+//            for (ProductAttributeFlux flux : attributeFluxes) {
+//                flux.setQuantity(0);
+//                fluxes.add(flux);
+//            }
+//        }
         return fluxes;
     }
 

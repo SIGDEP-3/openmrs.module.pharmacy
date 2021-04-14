@@ -1,10 +1,7 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductAttributeOtherFlux;
-import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductReport;
+import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -106,11 +103,26 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
 
             if (getReceivedQuantity() == null) {
                 ProductReport report = reportService().getOneProductReportById(getProductOperationId());
-                ProductInventory inventory = inventoryService().getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
-
-                double quantity = reportService().getProductReceivedQuantityInLastOperationByProduct(product, inventory, report.getReportLocation(), report.getUrgent());
+                double quantity = 0;
+                if (report.getUrgent()) {
+                    ProductReport reportByDate = reportService().getLastTreatedProductReportsByProduct(product, report.getReportLocation(), false, report.getProductProgram(), report.getOperationDate());
+                    for (ProductAttributeFlux flux : reportByDate.getProductAttributeFluxes()) {
+                        if (flux.getProductAttribute().getProduct().equals(product)) {
+                            quantity = flux.getQuantity();
+                            break;
+                        }
+                    }
+                } else {
+                    ProductInventory inventory = inventoryService()
+                            .getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
+                    quantity = reportService().getProductReceivedQuantityInLastOperationByProduct(product, inventory, report.getReportLocation(), report.getUrgent());
+                }
+                System.out.println("-------------------------------> Quantity Received : " + quantity);
                 otherFluxes.add(createProductAttributeOtherFlux(product, quantity, "QR"));
+//                System.out.println("-------------------------------> Received form old received quantity");
+
             } else {
+//                System.out.println("-------------------------------> Received written quantity");
                 otherFluxes.add(createProductAttributeOtherFlux(product, getReceivedQuantity().doubleValue(), "QR"));
             }
 
@@ -128,6 +140,7 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
 
     private ProductAttributeOtherFlux createProductAttributeOtherFlux(Product product, Double quantity, String label) {
         ProductReport report = reportService().getOneProductReportById(getProductOperationId()).getChildLocationReport();
+//        ProductReport locationLastReport = reportService().getLastProductReport(report.getReportLocation(), report.getProductProgram(), report.getUrgent());
         ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                 product,
                 report,
