@@ -58,7 +58,7 @@ public interface ProductReportDAO {
 	Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided);
 	List<Product> getAllActivityProducts(ProductInventory inventory);
 	ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent);
-	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate);
+	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate, Boolean urgent);
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report);
 	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location);
     ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String reportPeriod, ProductProgram program, Location childLocation, boolean isUrgent);

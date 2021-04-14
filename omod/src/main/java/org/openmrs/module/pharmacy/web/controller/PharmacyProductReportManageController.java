@@ -333,6 +333,7 @@ public class PharmacyProductReportManageController {
 //                System.out.println("-----------------------------> Last inventory  period ");
 
                 List<ProductReportLineDTO> reportLineDTOS = reportAttributeFluxForm.createProductReportOtherFluxMap();
+                System.out.println("-----------------------------> Created report line dto ");
                 for (ProductReportLineDTO dto : reportLineDTOS) {
                     if (!dto.getAsserted()) {
                         modelMap.addAttribute("invalidReport", true);

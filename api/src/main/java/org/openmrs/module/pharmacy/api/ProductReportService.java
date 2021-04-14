@@ -109,7 +109,7 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
-	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) throws APIException;
+	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate, Boolean urgent) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})

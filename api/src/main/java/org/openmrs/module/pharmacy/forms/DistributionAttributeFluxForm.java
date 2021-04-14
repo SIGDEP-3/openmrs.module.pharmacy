@@ -117,7 +117,7 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
                             .getLastProductInventoryByDate(report.getLocation(), report.getProductProgram(), report.getOperationDate(), InventoryType.TOTAL);
                     quantity = reportService().getProductReceivedQuantityInLastOperationByProduct(product, inventory, report.getReportLocation(), report.getUrgent());
                 }
-                System.out.println("-------------------------------> Quantity Received : " + quantity);
+//                System.out.println("-------------------------------> Quantity Received : " + quantity);
                 otherFluxes.add(createProductAttributeOtherFlux(product, quantity, "QR"));
 //                System.out.println("-------------------------------> Received form old received quantity");
 
@@ -140,16 +140,16 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
 
     private ProductAttributeOtherFlux createProductAttributeOtherFlux(Product product, Double quantity, String label) {
         ProductReport report = reportService().getOneProductReportById(getProductOperationId()).getChildLocationReport();
-//        ProductReport locationLastReport = reportService().getLastProductReport(report.getReportLocation(), report.getProductProgram(), report.getUrgent());
         ProductAttributeOtherFlux productAttributeOtherFlux = fluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                 product,
                 report,
                 label,
                 report.getLocation()
         );
-        if (productAttributeOtherFlux != null){
+        if (productAttributeOtherFlux != null) {
             productAttributeOtherFlux.setQuantity(quantity);
         } else {
+            System.out.println("-------------------------------> ProductAttributeOtherFlux not found ");
             productAttributeOtherFlux = OperationUtils.getProductAttributeOtherFlux(product, quantity, label, report, reportService());
             productAttributeOtherFlux.setProductOperation(reportService().getOneProductReportById(getProductOperationId()).getChildLocationReport());
         }
@@ -173,7 +173,12 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
     }
 
     private Integer getProductAttributeOtherFlux(Product product, String label) {
-        ProductReport report = reportService().getOneProductReportById(getProductOperationId()).getChildLocationReport();
+//        ProductReport report = reportService().getOneProductReportById(getProductOperationId()).getChildLocationReport();
+        ProductReport currentReport = reportService().getOneProductReportById(getProductOperationId());
+        ProductReport report = reportService().getLastProductReportByDate(currentReport.getReportLocation(),
+                currentReport.getProductProgram(), currentReport.getOperationDate(), currentReport.getUrgent());
+//        ProductAttributeOtherFlux report = reportService().getPreviousReportProductAttributeOtherFluxByLabel(product, label, currentReport, currentReport.getReportLocation());
+
         return fluxService().getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
                 product,
                 report,
@@ -198,7 +203,7 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
         return Context.getService(ProductInventoryService.class);
     }
 
-    private ProductAttributeStockService stockService() {
-        return Context.getService(ProductAttributeStockService.class);
-    }
+//    private ProductAttributeStockService stockService() {
+//        return Context.getService(ProductAttributeStockService.class);
+//    }
 }

@@ -174,7 +174,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
                             "DM2"
                     ).getQuantity().intValue());
         }
-//        System.out.println("-----------------------------> All Product quantity information collected and created ");
+        System.out.println("-----------------------------> All Product quantity information collected and created ");
         return reportLineDTO;
     }
 
@@ -187,7 +187,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
                 products.add(productService().getOneProductByCode(code));
             }
         } else {
-//            System.out.println("-----------------------------> In Client product collection ");
+            System.out.println("-----------------------------> In Client product collection ");
 
             products = reportService().getAllActivityProducts(getInventory());
             for (Location location : OperationUtils.getUserLocation().getChildLocations()) {
@@ -207,7 +207,7 @@ public class ReportAttributeFluxForm extends ProductAttributeFluxForm {
             }
         }
         for (Product product : products) {
-//            System.out.println("-----------------------------> In creating ProductAttributeOtherFluxes Function ");
+            System.out.println("-----------------------------> In creating ProductAttributeOtherFluxes Function ");
             productListMap.add(createProductReportOtherFluxes(product));
         }
         return productListMap;

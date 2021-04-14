@@ -210,8 +210,8 @@ public class ProductReportServiceImpl extends BaseOpenmrsService implements Prod
     }
 
     @Override
-    public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate) {
-        return dao.getLastProductReportByDate(location, productProgram, reportDate);
+    public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate, Boolean urgent) {
+        return dao.getLastProductReportByDate(location, productProgram, reportDate, urgent);
     }
 
     @Override
