@@ -4,7 +4,7 @@
 
 <%@ include file="../../../template/operationHeader.jsp"%>
 
-<openmrs:require privilege="Save Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/supplier-back/edit.form" />
+<openmrs:require privilege="Save Edit Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/supplier-back/edit.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){

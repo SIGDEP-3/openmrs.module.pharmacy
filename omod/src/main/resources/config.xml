@@ -399,11 +399,15 @@
 		<description>Can Manage Product Back Supplier</description>
 	</privilege>
 	<privilege>
-		<name>View Edit Product Back Supplier</name>
+		<name>View Product Back Supplier</name>
 		<description>Can View Product Back Supplier</description>
 	</privilege>
 	<privilege>
-		<name>Save Edit Product Back Supplier</name>
+		<name>View Product Back Supplier</name>
+		<description>Can View Product Back Supplier</description>
+	</privilege>
+	<privilege>
+		<name>Save Product Back Supplier</name>
 		<description>Can Save and Edit Product Back Supplier</description>
 	</privilege>
 	<privilege>

@@ -90,7 +90,7 @@
                         <td>${reception.programName}</td>
                         <td>${reception.receptionMode == 'RETAIL' ? 'DETAIL' : 'EN GROS'}</td>
                         <c:choose>
-                            <c:when test="${reception.numberOfLine == 0}">
+                            <c:when test="${reception.operationStatus == 'NOT_COMPLETED'}">
                                 <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="addLineUrl">
                                     <c:param name="receptionId" value="${reception.productOperationId}"/>
                                 </c:url>

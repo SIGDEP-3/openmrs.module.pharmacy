@@ -443,6 +443,11 @@
                                                                     <form:radiobutton path="goal" value="PTME" label="PTME" cssClass="mr-2"/>
                                                                 </c:if>
                                                                 <c:if test="${productDispensationForm.patientType == 'OTHER_HIV'}">
+<%--                                                                    <span class="font-weight-bold">AES : </span>--%>
+<%--                                                                    <form:radiobutton path="goal" value="AES_HEALTH_STAFF" label=" Personnel de sante " cssClass="ml-1 mr-2"/>--%>
+<%--                                                                    <form:radiobutton path="goal" value="AES_CONDOM_RUPTURE" label=" Rupture preservatif" cssClass="ml-1 mr-2"/>--%>
+<%--                                                                    <form:radiobutton path="goal" value="AES_RAPE" label=" Viol" cssClass="ml-1 mr-2"/>--%>
+<%--                                                                    <span class="m-3 font-weight-bold">|</span>--%>
                                                                     <form:radiobutton path="goal" value="AES" label=" AES" cssClass="ml-1 mr-2"/>
                                                                     <form:radiobutton path="goal" value="PREP" label=" PREP" cssClass="ml-1 mr-2"/>
                                                                 </c:if>

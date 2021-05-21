@@ -473,7 +473,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"               IF(pmpdi.goal = 0, 'NOT_APPLICABLE', " +
 				"                  IF(pmpdi.goal = 1, 'PEC', " +
 				"                     IF(pmpdi.goal = 2, 'PTME', " +
-				"                        IF(pmpdi.goal = 3, 'AES', " +
+				"                        IF(pmpdi.goal IN (3,5,6,7), 'AES', " +
 				"                           IF(pmpdi.goal = 4, 'PREP', NULL))))) mobileGoal, " +
 				"               o.value_text patientGoal, " +
 				"               patient_type " +

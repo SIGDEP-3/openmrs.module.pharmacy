@@ -452,7 +452,7 @@ public class PharmacyProductReportManageController {
             } else if (report.getOperationStatus().equals(OperationStatus.VALIDATED)) {
                 modelMap.addAttribute("subTitle", "RAPPORT MENSUEL <i class=\"fa fa-play\"></i> APPROUVEE");
             } else if (report.getOperationStatus().equals(OperationStatus.TREATED)) {
-                modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> TRAITE");
+                modelMap.addAttribute("subTitle", "RAPPORT MENSUEL <i class=\"fa fa-play\"></i> TRAITE");
             }
         }
     }

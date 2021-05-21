@@ -107,7 +107,7 @@
                     </label>
                 </div>
                 <div class="col-2">
-                    <label for="program">Programme</label>
+                    <label for="program">Programme</label> <br>
                     <select name="program" class="s2 form-control form-control-sm" id="program" onchange="checkTypeValue()">
                         <option value="Choisir Programme"></option>
                         <c:forEach var="program" items="${programs}">
@@ -116,27 +116,25 @@
                     </select>
                 </div>
                 <div class="col-3">
-                    <div class="row p-0" id="entry-type-selector">
-                        <div class="col-12 p-0 m-0">
-                            <label for="stockEntryType">Type d'entr&eacute;e</label>
-                            <select name="stockEntryType" id="stockEntryType" class="s2 form-control form-control-sm">
-                                <option value=""></option>
-                                <c:forEach var="stockEntryType"  items="${stockEntryTypes}">
-                                    <option value="${stockEntryType.key}">${stockEntryType.value}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
+                    <div id="entry-type-selector">
+                        <label for="stockEntryType">Type d'entr&eacute;e</label> <br>
+                        <select name="stockEntryType" id="stockEntryType" class="s2 form-control form-control-sm"
+                                style="width: 150px;">
+                            <option value=""></option>
+                            <c:forEach var="stockEntryType"  items="${stockEntryTypes}">
+                                <option value="${stockEntryType.key}">${stockEntryType.value}</option>
+                            </c:forEach>
+                        </select>
                     </div>
-                    <div class="row p-0 m-0" id="out-type-selector">
-                        <div class="col-12 p-0 m-0">
-                            <label for="stockOutType">Type de sortie</label>
-                            <select name="stockOutType" id="stockOutType" class="s2 form-control form-control-sm">
-                                <option value=""></option>
-                                <c:forEach var="stockOutType" items="${stockOutTypes}">
-                                    <option value="${stockOutType.key}">${stockOutType.value}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
+                    <div id="out-type-selector">
+                        <label for="stockOutType">Type de sortie</label> <br>
+                        <select name="stockOutType" id="stockOutType" class="s2 form-control form-control-sm"
+                                style="width: 250px;">
+                            <option value=""></option>
+                            <c:forEach var="stockOutType" items="${stockOutTypes}">
+                                <option value="${stockOutType.key}">${stockOutType.value}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
                 <div class="col-4 text-right">

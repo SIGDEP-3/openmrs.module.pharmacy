@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="View Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/list.form" />
+<openmrs:require privilege="View Edit Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/list.form" />
 
 <script>
     if (jQuery) {

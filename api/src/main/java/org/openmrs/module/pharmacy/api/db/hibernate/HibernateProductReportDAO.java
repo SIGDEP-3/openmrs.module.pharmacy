@@ -79,33 +79,76 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.list();
 	}
 
+	private ProductInventory getFirstInventoryDateOfLastPeriod(Location location) {
+		ProductInventory returnedInventory = null;
+		for (ProductProgram program : OperationUtils.getUserLocationPrograms()) {
+			ProductInventory inventory = Context.getService(ProductInventoryService.class).getLastProductInventory(location, program, InventoryType.TOTAL);
+			if (inventory != null) {
+				if (returnedInventory == null) {
+					returnedInventory = inventory;
+				} else {
+					if (returnedInventory.getOperationDate().before(inventory.getOperationDate())) {
+						returnedInventory = inventory;
+					}
+				}
+			}
+		}
+		return returnedInventory;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		return criteria
-				.add(Restrictions.eq("location", location))
-				.add(Restrictions.eq("voided", includeVoided))
-				.add(Restrictions.isNotNull("reportLocation")).list();
+		ProductInventory inventory = getFirstInventoryDateOfLastPeriod(location);
+		if (inventory == null) {
+			return null;
+		} else {
+			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+			return criteria
+					.add(Restrictions.eq("location", location))
+					.add(Restrictions.eq("voided", includeVoided))
+					.add(Restrictions.ge("operationDate", inventory.getOperationDate()))
+					.add(Restrictions.isNotNull("reportLocation")).list();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
-		if (location.getChildLocations() != null) {
-			return criteria
-					.add(
-							Restrictions.and(
-									Restrictions.and(
-											Restrictions.eq("voided", includeVoided),
-											Restrictions.eq("operationStatus", OperationStatus.SUBMITTED)
-									),
-									Restrictions.in("location", location.getChildLocations())
-							)
-					).list();
+		ProductInventory inventory = getFirstInventoryDateOfLastPeriod(location);
+		if (inventory == null) {
+			return null;
+		} else {
+//			System.out.println("------------------------------------> Inventory date : " + OperationUtils.formatDate(inventory.getOperationDate()));
+			return (List<ProductReport>) sessionFactory.getCurrentSession().createQuery(
+					"SELECT r FROM ProductReport r " +
+							"WHERE r.operationDate >= :operationDate " +
+							"AND ((r.location = :location AND r.reportLocation IS NOT NULL AND r.reportLocation IN (:locations)) OR (r.location IN (:locations))) " +
+							"AND (r.operationStatus = :submitted OR r.operationStatus = :validated OR r.operationStatus = :treated) " +
+							"AND r.voided = :voided")
+					.setParameter("operationDate", inventory.getOperationDate())
+					.setParameter("location", location)
+					.setParameterList("locations", location.getChildLocations())
+					.setParameter("submitted", OperationStatus.SUBMITTED)
+					.setParameter("validated", OperationStatus.VALIDATED)
+					.setParameter("treated", OperationStatus.TREATED)
+					.setParameter("voided", includeVoided)
+					.list();
 		}
-		return new ArrayList<>();
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+//		if (location.getChildLocations() != null) {
+//			return criteria
+//					.add(
+//							Restrictions.and(
+//									Restrictions.and(
+//											Restrictions.eq("voided", includeVoided),
+//											Restrictions.eq("operationStatus", OperationStatus.SUBMITTED)
+//									),
+//									Restrictions.in("location", location.getChildLocations())
+//							)
+//					).list();
+//		}
+//		return new ArrayList<>();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -139,9 +182,9 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	public ProductReport getLastTreatedChildProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate) {
 		return (ProductReport) sessionFactory.getCurrentSession().createQuery(
 				"SELECT r FROM ProductReport r JOIN r.productAttributeFluxes f " +
-				"WHERE r.reportLocation = :location " +
+				"WHERE r.reportLocation = :location AND f.productAttribute.product = :product " +
 				"AND r.operationStatus = :operationStatus AND r.voided = :voided AND r.productProgram = :productProgram " +
-				"AND f.productAttribute.product = :product AND r.treatmentDate < :operationDate " +
+				"AND r.treatmentDate < :operationDate " +
 				"ORDER BY r.operationDate DESC ")
 				.setParameter("location", location)
 				.setParameter("operationStatus", OperationStatus.VALIDATED)
@@ -254,7 +297,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 				.add(Restrictions.eq("reportPeriod", reportPeriod))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("location", location))
-//				.add(Restrictions.ne("urgent", false))
+				.add(Restrictions.ne("isUrgent", false))
 				.add(Restrictions.isNull("reportLocation"))
 				.add(Restrictions.eq("voided", includeVoided))
 				.uniqueResult();
@@ -476,7 +519,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 							.getOneProductAttributeOtherFluxByProductAndOperationAndLabel(
 									product,
 									report,
-									"QL",
+									"NDR",
 									childLocation
 							);
 					if (otherFlux != null && otherFlux.getQuantity() > 0) {
@@ -739,16 +782,19 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	@Override
 	public ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) {
-		// Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		ProductInventory inventory = Context.getService(ProductInventoryService.class).getLastProductInventory(location, productProgram, InventoryType.TOTAL);
+// Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
 		ProductReport report;
 		if (urgent) {
 			report = (ProductReport) sessionFactory.getCurrentSession().createQuery(
 					"SELECT r FROM ProductReport r " +
 							"WHERE r.location = :location " +
 							"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
+							"AND r.operationDate >= :operationDate " +
 							"AND r.voided = false AND r.productProgram = :productProgram AND r.isUrgent = true " +
 							"ORDER BY r.operationDate DESC")
 					.setParameter("location", location)
+					.setParameter("operationDate", inventory.getOperationDate())
 					.setParameter("operationValidated", OperationStatus.VALIDATED)
 					.setParameter("operationTreated", OperationStatus.TREATED)
 					.setParameter("productProgram", productProgram)
@@ -775,22 +821,25 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate, Boolean urgent) {
 		ProductReport report;
+		ProductInventory inventory = Context.getService(ProductInventoryService.class).getLastProductInventory(location, productProgram, InventoryType.TOTAL);
 
 		// Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
 		if (urgent == null) {
-			System.out.println("------------------------------------> Urgent is null !");
+//			System.out.println("------------------------------------> Urgent is null !");
 			return (ProductReport) sessionFactory.getCurrentSession().createQuery(
 					"SELECT r FROM ProductReport r " +
 							"WHERE r.location = :location " +
 							"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
 							"AND r.voided = false AND r.productProgram = :productProgram " +
 							"AND r.operationDate < :operationDate " +
+							"AND r.operationDate >= :inventoryDate " +
 							"ORDER BY r.operationDate DESC "
 			).setParameter("location", location)
 					.setParameter("operationValidated", OperationStatus.VALIDATED)
 					.setParameter("operationTreated", OperationStatus.TREATED)
 					.setParameter("productProgram", productProgram)
 					.setParameter("operationDate", reportDate)
+					.setParameter("inventoryDate", inventory.getOperationDate())
 					.setMaxResults(1).uniqueResult();
 		}
 		if (urgent) {
@@ -800,6 +849,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 							"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
 							"AND r.voided = false AND r.productProgram = :productProgram " +
 							"AND r.operationDate < :operationDate " +
+							"AND r.operationDate >= :inventoryDate " +
 							"AND r.isUrgent = true " +
 							"ORDER BY r.operationDate DESC "
 			).setParameter("location", location)
@@ -807,6 +857,7 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 					.setParameter("operationTreated", OperationStatus.TREATED)
 					.setParameter("productProgram", productProgram)
 					.setParameter("operationDate", reportDate)
+					.setParameter("inventoryDate", inventory.getOperationDate())
 					.setMaxResults(1).uniqueResult();
 			if (report != null) {
 				return report;
@@ -889,13 +940,83 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 
 	@Override
 	public ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) {
-		ProductReport lastReport = getLastProductReportByDate(location, report.getProductProgram(), report.getOperationDate(), report.getUrgent());
+		ProductReport lastReport = getLastProductReportByProductAndByDate(location, report.getProductProgram(), product, report.getOperationDate(), report.getUrgent());
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
 		return (ProductAttributeOtherFlux) criteria
 //				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productOperation", lastReport))
 				.add(Restrictions.eq("product", product))
 				.add(Restrictions.eq("label", label)).setMaxResults(1).uniqueResult();
+	}
+
+
+	@Override
+	public ProductReport getLastProductReportByProductAndByDate(Location location, ProductProgram productProgram, Product product, Date reportDate, Boolean urgent) {
+		ProductInventory inventory = Context.getService(ProductInventoryService.class).getLastProductInventory(location, productProgram, InventoryType.TOTAL);
+
+		ProductReport report;
+
+		// Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductReport.class);
+		if (urgent == null) {
+//			System.out.println("------------------------------------> Urgent is null !");
+			return (ProductReport) sessionFactory.getCurrentSession().createQuery(
+					"SELECT r FROM ProductReport r JOIN r.productAttributeOtherFluxes f " +
+							"WHERE r.location = :location " +
+							"AND f.product = :product " +
+							"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
+							"AND r.voided = false AND r.productProgram = :productProgram " +
+							"AND r.operationDate < :operationDate " +
+							"AND r.operationDate >= :inventoryDate " +
+							"ORDER BY r.operationDate DESC "
+			).setParameter("location", location)
+					.setParameter("operationValidated", OperationStatus.VALIDATED)
+					.setParameter("product", product)
+					.setParameter("operationTreated", OperationStatus.TREATED)
+					.setParameter("productProgram", productProgram)
+					.setParameter("operationDate", reportDate)
+					.setParameter("inventoryDate", inventory.getOperationDate())
+					.setMaxResults(1).uniqueResult();
+		}
+		if (urgent) {
+			report = (ProductReport) sessionFactory.getCurrentSession().createQuery(
+					"SELECT r FROM ProductReport r JOIN r.productAttributeOtherFluxes f " +
+							"WHERE r.location = :location " +
+							"AND f.product = :product " +
+							"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
+							"AND r.voided = false AND r.productProgram = :productProgram " +
+							"AND r.operationDate < :operationDate " +
+							"AND r.operationDate >= :inventoryDate " +
+							"AND r.isUrgent = true " +
+							"ORDER BY r.operationDate DESC "
+			).setParameter("location", location)
+					.setParameter("product", product)
+					.setParameter("operationValidated", OperationStatus.VALIDATED)
+					.setParameter("operationTreated", OperationStatus.TREATED)
+					.setParameter("productProgram", productProgram)
+					.setParameter("operationDate", reportDate)
+					.setParameter("inventoryDate", inventory.getOperationDate())
+					.setMaxResults(1).uniqueResult();
+			if (report != null) {
+				return report;
+			}
+		}
+
+		return  (ProductReport) sessionFactory.getCurrentSession().createQuery(
+				"SELECT r FROM ProductReport r JOIN r.productAttributeOtherFluxes f " +
+						"WHERE r.location = :location " +
+						"AND f.product = :product " +
+						"AND (r.operationStatus = :operationValidated OR r.operationStatus = :operationTreated) " +
+						"AND r.voided = false AND r.productProgram = :productProgram " +
+						"AND r.operationDate < :operationDate " +
+						"AND r.isUrgent = false " +
+						"ORDER BY r.operationDate DESC ")
+				.setParameter("location", location)
+				.setParameter("product", product)
+				.setParameter("operationValidated", OperationStatus.VALIDATED)
+				.setParameter("operationTreated", OperationStatus.TREATED)
+				.setParameter("productProgram", productProgram)
+				.setParameter("operationDate", reportDate)
+				.setMaxResults(1).uniqueResult();
 	}
 
 	@Override

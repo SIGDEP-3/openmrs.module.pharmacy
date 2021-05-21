@@ -93,8 +93,44 @@ public class PharmacyProductDistributionManageController {
                 }
             }
 
+            int submittedReportCount = 0;
+            int treatedReportCount = 0;
+            int submittedOnTimeReportCount = 0;
+            List<ProductReport> submittedReportsNotTreated = new ArrayList<ProductReport>();
+
+            List<ProductReport> submittedReports = reportService().getAllSubmittedChildProductReports(OperationUtils.getUserLocation(), false);
+            if (submittedReports != null) {
+                for (ProductReport report : submittedReports) {
+    //                System.out.println("----------------------------------------------> Report date : " + OperationUtils.formatDate(report.getOperationDate()));
+                    if (!report.getUrgent()) {
+                        submittedReportCount += 1;
+//                        System.out.println("----------------------------------------------> Report period : " + report.getReportPeriod());
+
+                        Date date = OperationUtils.getLimitDateFromPeriod(report.getReportPeriod());
+//                        assert date != null;
+//                        System.out.println("----------------------------------------------> Report period : " +report.getOperationDate().toString());
+
+                        if (report.getOperationDate().before(date)) {
+//                            System.out.println("----------------------------------------------> On time report");
+                            submittedOnTimeReportCount += 1;
+                        }
+
+                        if (report.getTreatmentDate() != null) {
+                            treatedReportCount += 1;
+                        }
+
+                        if (report.getOperationStatus().equals(OperationStatus.SUBMITTED)) {
+                            submittedReportsNotTreated.add(report);
+                        }
+                    }
+                }
+            }
             modelMap.addAttribute("reports", reportService().getAllProductDistributionReports(OperationUtils.getUserLocation(), false));
-            modelMap.addAttribute("submittedReports", reportService().getAllSubmittedChildProductReports(OperationUtils.getUserLocation(), false));
+            modelMap.addAttribute("submittedReports", submittedReports);
+            modelMap.addAttribute("submittedReportCount", submittedReportCount);
+            modelMap.addAttribute("treatedReportCount", treatedReportCount);
+            modelMap.addAttribute("submittedOnTimeReportCount", submittedOnTimeReportCount);
+            modelMap.addAttribute("submittedReportsNotTreated", submittedReportsNotTreated);
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("childrenLocation", OperationUtils.getUserLocation().getChildLocations());
             modelMap.addAttribute("totalReportsToSubmit", totalReportsToSubmit);

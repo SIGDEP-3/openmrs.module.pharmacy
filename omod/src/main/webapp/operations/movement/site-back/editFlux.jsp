@@ -3,7 +3,7 @@
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Save Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/editFlux.form" />
+<openmrs:require privilege="Save Edit Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/editFlux.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function () {
@@ -44,7 +44,7 @@
                     productId += input[i];
                 }
                 location.href = '${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/editFlux.form?' +
-                    'transferId=' + ${productBackSupplier.productOperationId} + '&selectedProductId=' + productId
+                    'backSupplierId=' + ${productBackSupplier.productOperationId} + '&selectedProductId=' + productId
             }
         }
     }
@@ -181,16 +181,16 @@
                         <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
                             <c:if test="${backSupplierAttributeFluxForm.selectedProductStockId != null && productMessage == null}">
                                 <tr>
-                                    <td colspan="">${stock.productAttribute.product.code}</td>
-                                    <td colspan="">${stock.productAttribute.product.retailName}</td>
-                                    <td colspan="">${stock.productAttribute.product.productRetailUnit.name}</td>
-                                    <td>${stock.productAttribute.batchNumber}</td>
-                                    <td>${stock.productAttribute.expiryDate}</td>
-                                    <td id="quantityInStock">${stock.quantityInStock}</td>
-                                    <td id="returnedQuantity"><form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
-                                    <td class="text-center"><span class="text-success" id="quantityRemaining">0</span></td>
-                                    <td><form:input path="observation" cssClass="form-control form-control-sm" /></td>
-                                    <td>
+                                    <td colspan="" class="text-center align-middle">${stock.productAttribute.product.code}</td>
+                                    <td colspan="" class="align-middle">${stock.productAttribute.product.retailName}</td>
+                                    <td colspan="" class="text-center align-middle">${stock.productAttribute.product.productRetailUnit.name}</td>
+                                    <td class="text-center align-middle">${stock.productAttribute.batchNumber}</td>
+                                    <td class="text-center align-middle"><fmt:formatDate value="${stock.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
+                                    <td id="quantityInStock" class="text-center align-middle">${stock.quantityInStock}</td>
+                                    <td id="returnedQuantity" class="text-center align-middle"><form:input path="quantity" cssClass="form-control form-control-sm text-center" /></td>
+                                    <td class="text-center align-middle"><span class="text-success" id="quantityRemaining">0</span></td>
+                                    <td class="text-center align-middle"><form:input path="observation" cssClass="form-control form-control-sm" /></td>
+                                    <td class="text-center align-middle">
                                         <button class="btn btn-success" id="button-submit">
                                             <c:if test="${not empty backSupplierAttributeFluxForm.productAttributeFluxId}">
                                                 <i class="fa fa-edit"></i>
@@ -206,20 +206,21 @@
                                 </tr>
                             </c:if>
                             <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                                <tr><td>${productFlux.code}</td>
-                                    <td>${productFlux.retailName}</td>
-                                    <td>${productFlux.retailUnit}</td>
-                                    <td class="text-center">
+                                <tr>
+                                    <td class="text-center align-middle">${productFlux.code}</td>
+                                    <td class="text-center align-middle">${productFlux.retailName}</td>
+                                    <td class="text-center align-middle">${productFlux.retailUnit}</td>
+                                    <td class="text-center align-middle">
                                         <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                                     </td>
-                                    <td class="text-center">${productFlux.batchNumber}</td>
-                                    <td class="text-center">${productFlux.quantityInStock}</td>
-                                    <td class="text-center">${productFlux.quantity}</td>
-                                    <td class="text-center">
+                                    <td class="text-center align-middle">${productFlux.batchNumber}</td>
+                                    <td class="text-center align-middle">${productFlux.quantityInStock}</td>
+                                    <td class="text-center align-middle">${productFlux.quantity}</td>
+                                    <td class="text-center align-middle">
                                             ${productFlux.quantityInStock - productFlux.quantity}
                                     </td>
-                                    <td>${productFlux.observation}</td>
-                                    <td>
+                                    <td class="text-center align-middle">${productFlux.observation}</td>
+                                    <td class="text-center align-middle">
                                         <c:if test="${productBackSupplier.operationStatus == 'NOT_COMPLETED'}">
                                             <c:url value="/module/pharmacy/operations/movement/site-back/editFlux.form" var="editUrl">
                                                 <c:param name="backSupplierId" value="${productBackSupplier.productOperationId}"/>

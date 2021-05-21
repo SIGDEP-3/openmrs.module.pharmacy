@@ -5,5 +5,8 @@ public enum Goal {
     PEC,
     PTME,
     AES,
-    PREP
+    PREP,
+    AES_CONDOM_RUPTURE,
+    AES_HEALTH_STAFF,
+    AES_RAPE
 }

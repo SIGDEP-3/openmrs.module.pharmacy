@@ -111,16 +111,22 @@
                                 <td><fmt:formatDate value="${report.operationDate}" pattern="dd/MM/yyyy" type="DATE"/></td>
                                 <td>${report.reportPeriod}</td>
                                 <td>${report.productProgram.name}</td>
-                                <td>${report.operationStatus == 'NOT_COMPLETED' ? 'EN COURS DE SAISIE' : (report.operationStatus == 'VALIDATED' ? 'VALIDE' : 'EN ATTENTE DE VALIDATION')}</td>
+                                <td>
+                                    <c:if test="${report.operationStatus == 'NOT_COMPLETED'}">EN COURS DE SAISIE</c:if>
+                                    <c:if test="${report.operationStatus == 'VALIDATED'}">VALID&Eacute;</c:if>
+                                    <c:if test="${report.operationStatus == 'AWAITING_VALIDATION'}">EN ATTENTE DE VALIDATION</c:if>
+                                    <c:if test="${report.operationStatus == 'TREATED'}">TRAIT&Eacute;</c:if>
+                                    <c:if test="${report.operationStatus == 'SUBMITTED'}">SOUMIS</c:if>
+                                </td>
                                 <td>
                                     <c:url value="/module/pharmacy/reports/editFlux${isPlatformUser == false ? 'Other' : ''}.form" var="editUrl">
                                         <c:param name="reportId" value="${report.productOperationId}"/>
                                     </c:url>
-                                    <a href="${editUrl}" class="text-${report.operationStatus == 'VALIDATED' ? 'info': 'primary'}">
-                                        <i class="fa fa-${report.operationStatus == 'VALIDATED' ? 'eye': 'edit'}"></i>
+                                    <a href="${editUrl}" class="text-${report.operationStatus == 'VALIDATED' || report.operationStatus == 'SUBMITTED' || report.operationStatus == 'TREATED' ? 'info': 'primary'}">
+                                        <i class="fa fa-${report.operationStatus == 'VALIDATED' || report.operationStatus == 'SUBMITTED' || report.operationStatus == 'TREATED' ? 'eye': 'edit'}"></i>
                                     </a>
                                     <openmrs:hasPrivilege privilege="Delete report">
-                                        <c:if test="${report.operationStatus != 'VALIDATED'}">
+                                        <c:if test="${report.operationStatus != 'VALIDATED' && report.operationStatus != 'SUBMITTED' && report.operationStatus != 'TREATED'}">
                                             <c:url value="/module/pharmacy/reports/delete.form" var="delUrl">
                                                 <c:param name="id" value="${report.productOperationId}"/>
                                             </c:url>

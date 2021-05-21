@@ -48,7 +48,7 @@
 				</div>
 
 				<div class="btn-group btn-group-sm mr-3">
-					<openmrs:hasPrivilege privilege="View reception">
+					<openmrs:hasPrivilege privilege="View Reception">
 						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/reception/list.form'"
 								<c:choose>
 									<c:when test='<%= request.getRequestURI().contains("/reception") %>'>
@@ -172,7 +172,7 @@
                                         </button>
                                     </openmrs:hasPrivilege>
                                 </c:if>
-								<openmrs:hasPrivilege privilege="View Product Back Supplier">
+								<openmrs:hasPrivilege privilege="View Edit Product Back Supplier">
                                     <c:if test="${!isDirectClient}">
                                         <button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/movement/site-back/list.form'"
                                                 <c:choose>

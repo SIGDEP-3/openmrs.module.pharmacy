@@ -153,7 +153,7 @@ public class ReportEntryAttributeFluxForm {
                 label,
                 report.getLocation()
         );
-        if (productAttributeOtherFlux != null){
+        if (productAttributeOtherFlux != null) {
             productAttributeOtherFlux.setQuantity(quantity);
         } else {
             productAttributeOtherFlux = OperationUtils.getProductAttributeOtherFlux(product, quantity, label, report, reportService());

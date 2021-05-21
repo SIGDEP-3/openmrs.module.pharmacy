@@ -3,7 +3,7 @@
 <%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
-<openmrs:require privilege="Save Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/supplier-back/editFlux.form" />
+<openmrs:require privilege="Save Edit Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/supplier-back/editFlux.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function () {

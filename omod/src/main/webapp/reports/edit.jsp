@@ -184,7 +184,7 @@
                             </div>
                             <div class="col-9" id="urgentProduct">
                                 <label>Produits <span class="required">*</span></label>
-                                <form:select path="productIds" cssClass="form-control s2" multiple="true">
+                                <form:select path="productIds" cssClass="form-control s2" multiple="true" cssStyle="width: 100%">
                                     <form:option value="" label=""/>
                                     <form:options items="${products}" itemValue="productId" itemLabel="retailNameWithCode" />
                                 </form:select>

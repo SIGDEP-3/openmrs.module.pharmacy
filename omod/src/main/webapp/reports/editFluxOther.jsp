@@ -57,7 +57,7 @@
                     </c:if>
                 </c:if>
 
-                <c:if test="${productReport.operationStatus != 'NOT_COMPLETED'}">
+                <c:if test="${productReport.operationStatus != 'NOT_COMPLETED' && productReport.operationStatus != 'TREATED'}">
                     <c:url value="/module/pharmacy/reports/incomplete.form" var="incompleteUrl">
                         <c:param name="reportId" value="${productReport.productOperationId}"/>
                     </c:url>
@@ -277,7 +277,6 @@
                             <th class="text-center">Ajustments</th>
                             <th class="text-center">Stock <br>Disponible</th>
                             <th class="text-center">Nombre de <br>jours de <br>rupture</th>
-                            <th class="text-center">Nombre de <br>Sites ayant <br>connu une <br>rupture</th>
                             <c:if test="${productReport.reportType == 'CLIENT_REPORT'}">
                                 <th style="width: 50px" class="text-center">Nombre de <br>sites ayant <br>connu une<br> rupture</th>
                                 <th style="width: 50px" class="text-center">Consommation <br>Moyenne <br>Mensuelle<br> (CMM)</th>

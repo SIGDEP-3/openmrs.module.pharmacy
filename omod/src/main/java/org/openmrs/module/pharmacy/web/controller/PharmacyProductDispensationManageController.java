@@ -125,15 +125,16 @@ public class PharmacyProductDispensationManageController {
                                 }
                                 patientId = patient.getPatientId().toString();
                             } else {
+                                findPatientForm.setPatientType(PatientType.MOBILE);
                                 patientId = getPatientInfo(findPatientForm);
                                 mobile = "1";
                             }
                         } else {
-                            if (findPatientForm.getPatientType().equals(PatientType.MOBILE)) {
-                                mobile = "1";
-                            } else {
-                                mobile = "2";
-                            }
+//                            if (findPatientForm.getPatientType().equals(PatientType.MOBILE)) {
+//                                mobile = "1";
+//                            } else {
+//                            }
+                            mobile = "2";
                             patientId = getPatientInfo(findPatientForm);
                         }
                     }
@@ -186,7 +187,7 @@ public class PharmacyProductDispensationManageController {
             mobilePatient = new MobilePatient();
             mobilePatient.setLocation(OperationUtils.getUserLocation());
             mobilePatient.setIdentifier(findPatientForm.getPatientIdentifier());
-            mobilePatient.setPatientType(PatientType.MOBILE);
+            mobilePatient.setPatientType(findPatientForm.getPatientType());
             mobilePatient.setAge(0);
             patientId = dispensationService().saveMobilePatient(mobilePatient).getMobilePatientId().toString();
         }
@@ -279,7 +280,6 @@ public class PharmacyProductDispensationManageController {
                     return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId=" +
                             dispensation.getProductOperationId();
                 }
-
             }
 
             if (reg != 0) {
@@ -583,7 +583,7 @@ public class PharmacyProductDispensationManageController {
         if (productDispensation.getOperationStatus().equals(OperationStatus.VALIDATED))
             modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> APPROUVEE");
         else {
-            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Ajout de prosuits");
+            modelMap.addAttribute("subTitle", "Dispensation <i class=\"fa fa-play\"></i> Ajout de produits");
         }
     }
 

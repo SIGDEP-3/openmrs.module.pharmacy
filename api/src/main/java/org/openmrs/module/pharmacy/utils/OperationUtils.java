@@ -11,6 +11,7 @@ import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.models.PharmacyDateRange;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -336,6 +337,71 @@ public class OperationUtils {
         cal.setTime(date);
         cal.add(Calendar.MONTH, -1);
         return cal.getTime();
+    }
+
+    public static Date getLimitDateFromPeriod(String period) {
+        String month = period.split(" ")[0].toLowerCase();
+//        System.out.println("-------------------------------------------> Months of period : " + month);
+        int year = Integer.parseInt(period.split(" ")[1]);
+//        System.out.println("-------------------------------------------> Year of period : " + year);
+        DateFormatSymbols french_dfs = new DateFormatSymbols(Locale.FRENCH);
+        String[] frenchMonths = french_dfs.getMonths();
+//        System.out.println("-------------------------------------------> Months got before here !");
+        for (int i = 0; i < frenchMonths.length; i++) {
+            String monthName = frenchMonths[i].replace("é", "e").replace("û", "u").toLowerCase();
+//            System.out.println("---------------------------------------> Month name in for iteration : " + monthName);
+            if (month.equals(monthName)) {
+                Calendar calendar = Calendar.getInstance();
+                int count = i + 1;
+                if (count == 12) {
+                    count = 0;
+                    year += 1;
+                }
+                switch (count) {
+                    case Calendar.JANUARY:
+                        calendar.set(year, Calendar.JANUARY, 6, 0, 0, 0);
+                        break;
+                    case Calendar.FEBRUARY:
+                        calendar.set(year, Calendar.FEBRUARY, 6, 0, 0, 0);
+                        break;
+                    case Calendar.MARCH:
+                        calendar.set(year, Calendar.MARCH, 6, 0, 0, 0);
+                        break;
+                    case Calendar.APRIL:
+                        calendar.set(year, Calendar.APRIL, 6, 0, 0, 0);
+                        break;
+                    case Calendar.MAY:
+                        calendar.set(year, Calendar.MAY, 6, 0, 0, 0);
+                        break;
+                    case Calendar.JUNE:
+                        calendar.set(year, Calendar.JUNE, 6, 0, 0, 0);
+                        break;
+                    case Calendar.JULY:
+                        calendar.set(year, Calendar.JULY, 6, 0, 0, 0);
+                        break;
+                    case Calendar.AUGUST:
+                        calendar.set(year, Calendar.AUGUST, 6, 0, 0, 0);
+                        break;
+                    case Calendar.SEPTEMBER:
+                        calendar.set(year, Calendar.SEPTEMBER, 6, 0, 0, 0);
+                        break;
+                    case Calendar.OCTOBER:
+                        calendar.set(year, Calendar.OCTOBER, 6, 0, 0, 0);
+                        break;
+                    case Calendar.NOVEMBER:
+                        calendar.set(year, Calendar.NOVEMBER, 6, 0, 0, 0);
+                        break;
+                    case Calendar.DECEMBER:
+                        calendar.set(year, Calendar.DECEMBER, 6, 0, 0, 0);
+                        break;
+                }
+                System.out.println("-------------------------------------------> Report Limit date : " + calendar.getTime().toString());
+
+                return calendar.getTime();
+            }
+        }
+
+        return null;
     }
 
     public static Date getFirstDateFromStockMax(Location location, Date endDate) {

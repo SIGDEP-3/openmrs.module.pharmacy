@@ -74,63 +74,103 @@
     </div>
     <div class="row mt-1 mb-3 pb-2 pt-2 border-bottom border-top border-secondary">
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">Total</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.total}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.total}
+                    </div>
+                    <div class="card-title text-info text-center small">Total</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">Patients du Site</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.onSite}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.onSite}
+                    </div>
+                    <div class="card-title text-info text-center small">Patients du Site</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">Adultes</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.adult}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.adult}
+                    </div>
+                    <div class="card-title text-info text-center small">Adultes</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">Enfants</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.child}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.child}
+                    </div>
+                    <div class="card-title text-info text-center small mb-0">Enfants</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">Masculin</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.male}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.male}
+                    </div>
+                    <div class="card-title text-info text-center small">Masculin</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">F&eacute;minin</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.female}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.female}
+                    </div>
+                    <div class="card-title text-info text-center small">F&eacute;minin</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">PEC</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.pec}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.pec}
+                    </div>
+                    <div class="card-title text-info text-center small">PEC</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">PTME</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.ptme}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.ptme}
+                    </div>
+                    <div class="card-title text-info text-center small">PTME</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">AES & PREP</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.aes + dispensationResult.prep}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.aes + dispensationResult.prep}
+                    </div>
+                    <div class="card-title text-info text-center small">AES & PREP</div>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="card m-0 text-info">
-                <div class="card-header text-center m-0 p-0">NA</div>
-                <div class="card-body m-0 p-0 h1 text-center">${dispensationResult.notApplicable}</div>
+            <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
+                <div class="card-body m-0 p-1">
+                    <div class="h2 text-center mb-0 text-primary">
+                        ${dispensationResult.notApplicable}
+                    </div>
+                    <div class="card-title text-info text-center small">NA</div>
+                </div>
             </div>
         </div>
     </div>

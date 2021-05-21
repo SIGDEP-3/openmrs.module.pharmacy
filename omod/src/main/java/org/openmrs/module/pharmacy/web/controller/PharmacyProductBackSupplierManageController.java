@@ -115,6 +115,7 @@ public class PharmacyProductBackSupplierManageController {
                 productBackSupplierForm.setOperationNumber(OperationUtils.generateNumber());
                 productBackSupplierForm.setProductProgramId(program.getProductProgramId());
                 productBackSupplierForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
+                productBackSupplierForm.setExchangeLocationId(OperationUtils.getUserLocation().getParentLocation().getLocationId());
                 modelMap.addAttribute("program", program);
             }
 
@@ -155,12 +156,12 @@ public class PharmacyProductBackSupplierManageController {
 //            modelMap.addAttribute("latestBackSupplier", latestBackSupplier(productBackSupplierForm.getProductBackSupplier()));
             modelMap.addAttribute("program", programService().getOneProductProgramById(productBackSupplierForm.getProductProgramId()));
             modelMap.addAttribute("supplier", OperationUtils.getUserLocation().getParentLocation());
-            modelMap.addAttribute("subTitle", "Retour des produits des sites <i class=\"fa fa-play\"></i> Entête");
+            modelMap.addAttribute("subTitle", "Retour de produit au fournisseur <i class=\"fa fa-play\"></i> Entête");
         }
         return null;
     }
 
-    @RequestMapping(value = "/module/pharmacy/operations/movement/backSupplier/editFlux.form", method = RequestMethod.GET)
+    @RequestMapping(value = "/module/pharmacy/operations/movement/site-back/editFlux.form", method = RequestMethod.GET)
     public String editSiteFlux(ModelMap modelMap,
                                @RequestParam(value = "backSupplierId") Integer backSupplierId,
                                @RequestParam(value = "selectedProductId", defaultValue = "0", required = false) Integer selectedProductId,

@@ -1393,11 +1393,13 @@
                 <not>
                     <sqlCheck expectedResult="16">SELECT COUNT(*) FROM role_privilege WHERE role = 'PGP'</sqlCheck>
                 </not>
-                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Edit Product Back Supplier'</sqlCheck>
+<!--                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Edit Product Back Supplier'</sqlCheck>-->
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'View Product Back Supplier'</sqlCheck>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM privilege WHERE privilege = 'Save Product Back Supplier'</sqlCheck>
             </and>
         </preConditions>
         <sql>
-            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Edit Product Back Supplier');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Product Back Supplier');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Transfer');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Delete Inventory');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Delete Movement');
@@ -1406,7 +1408,7 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Delete Product Back Supplier');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Delete Transfer');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Delete Reception');
-            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Edit Product Back Supplier');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Product Back Supplier');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Inventory');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Movement');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Operation');

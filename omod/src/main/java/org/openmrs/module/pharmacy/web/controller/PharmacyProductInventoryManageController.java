@@ -460,7 +460,7 @@ public class PharmacyProductInventoryManageController {
 
     ProductInventory latestInventory(ProductInventory productInventory) {
         ProductInventory inventory = inventoryService().getLastProductInventory(
-                Context.getLocationService().getDefaultLocation(),
+                OperationUtils.getUserLocation(),
                 productInventory.getProductProgram(),InventoryType.TOTAL);
         if (inventory != null) {
             if (inventory.getProductOperationId().equals(productInventory.getProductOperationId())) {

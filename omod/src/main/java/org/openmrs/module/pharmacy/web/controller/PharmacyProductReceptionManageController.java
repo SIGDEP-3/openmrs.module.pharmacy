@@ -306,19 +306,48 @@ public class PharmacyProductReceptionManageController {
     }
 
     private void modelMappingForView(ModelMap modelMap, ReceptionAttributeFluxForm receptionAttributeFluxForm, ProductReception productReception) {
+        modelMap.addAttribute("isFromDistribution", false);
         if (productReception.getIncidence().equals(Incidence.POSITIVE)) {
-            List<ProductReceptionFluxDTO> productAttributeFluxes = receptionService().getProductReceptionFluxDTOs(productReception);
-//        if (productAttributeFluxes.size() != 0) {
-//            Collections.sort(productAttributeFluxes, Collections.<ProductReceptionFluxDTO>reverseOrder());
-//        }
-            if (receptionAttributeFluxForm.getProductAttributeFluxId() != null) {
-                for (ProductReceptionFluxDTO fluxDTO : productAttributeFluxes) {
-                    if (fluxDTO.getProductAttributeFluxId().equals(receptionAttributeFluxForm.getProductAttributeFluxId())) {
-                        productAttributeFluxes.remove(fluxDTO);
-                        break;
+            if (productReception.getProductAttributeFluxes().size() == 0) {
+                ProductOperation operation = service().getOneProductOperationByOperationNumber(productReception.getOperationNumber(), Incidence.NEGATIVE);
+
+                if (operation != null) {
+                    ProductReport distribution = Context.getService(ProductReportService.class).getOneProductReportById(operation.getProductOperationId());
+                    if (distribution != null && distribution.getReportLocation().equals(OperationUtils.getUserLocation())) {
+                        for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
+                            ProductAttributeFlux newFlux = new ProductAttributeFlux();
+                            newFlux.setStatus(productReception.getOperationStatus());
+                            newFlux.setOperationDate(productReception.getOperationDate());
+                            newFlux.setLocation(productReception.getLocation());
+                            newFlux.setProductAttribute(flux.getProductAttribute());
+                            newFlux.setQuantity(flux.getQuantity());
+                            productReception.addProductAttributeFlux(newFlux);
+
+                            ProductAttributeOtherFlux newOtherFlux = new ProductAttributeOtherFlux();
+                            newOtherFlux.setLocation(productReception.getLocation());
+                            newOtherFlux.setLabel("Quantitié livrée");
+                            newOtherFlux.setProductAttribute(flux.getProductAttribute());
+                            newOtherFlux.setQuantity(flux.getQuantity().doubleValue());
+                            productReception.addProductAttributeOtherFlux(newOtherFlux);
+                        }
+                        productReception.setObservation("Livraison depuis la Distribution faite par le fournisseur le " + OperationUtils.formatDate(operation.getOperationDate()));
+
+                        receptionService().saveProductReception(productReception);
+                        modelMap.addAttribute("isFromDistribution", true);
                     }
                 }
+
             }
+            List<ProductReceptionFluxDTO> productAttributeFluxes = receptionService().getProductReceptionFluxDTOs(productReception);
+//            System.out.println("---------------------------------> After getting all lines ");
+//            if (receptionAttributeFluxForm.getProductAttributeFluxId() != null) {
+//                for (ProductReceptionFluxDTO fluxDTO : productAttributeFluxes) {
+//                    if (fluxDTO.getProductAttributeFluxId().equals(receptionAttributeFluxForm.getProductAttributeFluxId())) {
+//                        productAttributeFluxes.remove(fluxDTO);
+//                        break;
+//                    }
+//                }
+//            }
             modelMap.addAttribute("productAttributeFluxes", productAttributeFluxes);
             modelMap.addAttribute("products", programService().getOneProductProgramById(productReception.getProductProgram().getProductProgramId()).getProducts());
         } else if (productReception.getIncidence().equals(Incidence.NEGATIVE)){

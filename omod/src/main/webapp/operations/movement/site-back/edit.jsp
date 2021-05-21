@@ -1,10 +1,9 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
-<%@ page import="org.openmrs.module.pharmacy.enumerations.OperationStatus" %>
 
 <%@ include file="../../../template/operationHeader.jsp"%>
 
-<openmrs:require privilege="Save Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/edit.form" />
+<openmrs:require privilege="Save Edit Product Back Supplier" otherwise="/login.htm" redirect="/module/pharmacy/operations/movement/site-back/edit.form" />
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){

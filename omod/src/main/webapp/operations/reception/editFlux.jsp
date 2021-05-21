@@ -50,16 +50,51 @@
             }
         }
         </c:if>
+
+        <c:if test="${isFromDistribution}">
+        jQuery('.from-distribution').on('change', function (e) {
+            const input = jQuery(this);
+            const batchNumber = input.getAttribute('id').split('-')[1];
+            const mode = input.getAttribute('id').split('-')[2];
+            const conversion = parseInt(input.getAttribute('id').split('-')[3]);
+            const quantity = (mode === 'RETAIL') ? input.val() : parseInt(input.val()) * conversion;
+
+            saveFlux(batchNumber, quantity);
+        });
+
+        function saveFlux(batchNumber, quantity) {
+            if (quantity !== 0) {
+
+                jQuery.ajax({
+                    type: 'GET',
+                    url: '${pageContext.request.contextPath}/save-flux.form?batchNumber=' +
+                        batchNumber + '&operationId=${productReception.productOperationId}&quantity='+ quantity,
+                    dataType : "json",
+                    crossDomain:true,
+                    success : function(data) {
+                        // console.log(data);
+                        //jQuery('.' + batchNumber).parent().html(data.quantity)
+                        //alert(data.toString());
+                    },
+                    error : function(data) {
+                        console.log(data)
+                    }
+                });
+            }
+
+        }
+        </c:if>
+
+
     }
 
 </script>
 <div class="container-fluid mt-2">
     <div class="row mb-2">
         <div class="col-6 text-uppercase font-italic text-secondary">
-            <div class="h6"><i class="fa fa-pen-square"></i> ${subTitle}</div>
+            <div class="h6"><i class="fa fa-pen-square"></i>${subTitle}</div>
         </div>
         <div class="col-6 text-right">
-
             <c:if test="${productReception.operationStatus != 'VALIDATED' &&
                       productReception.operationStatus != 'DISABLED'}">
 
@@ -188,7 +223,7 @@
                     <table class="table table-condensed table-striped table-sm table-bordered">
                         <thead class="thead-light">
                         <c:if test="${(productReception.incidence == 'NEGATIVE' && (receptionAttributeFluxForm.selectedProductFluxId == null ||
-                    (receptionAttributeFluxForm.selectedProductFluxId != null && receptionAttributeFluxForm.productId != null )) && fct:length(products) > 0)  && receptionAttributeFluxForm.productAttributeFluxId == null }">
+                    (receptionAttributeFluxForm.selectedProductFluxId != null && receptionAttributeFluxForm.productId != null )) && fct:length(products) > 0) && receptionAttributeFluxForm.productAttributeFluxId == null}">
                             <tr>
                                 <td colspan="5">
                                     <table class="table table-borderless table-sm mb-1">
@@ -200,7 +235,9 @@
                                                 </form:select>
                                             </td>
                                             <td style="width: 10px">
-                                                <button class="btn btn-primary" type="button" onclick="goToSelectedProduct()"><i class="fa fa-arrow-circle-down"></i></button>
+                                                <button class="btn btn-primary" type="button" onclick="goToSelectedProduct()">
+                                                    <i class="fa fa-arrow-circle-down"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     </table>
@@ -238,7 +275,7 @@
                         </tr>
                         </thead>
                         <c:if test="${productReception.operationStatus == 'NOT_COMPLETED'}">
-                            <c:if test="${productReception.incidence == 'POSITIVE'}">
+                            <c:if test="${productReception.incidence == 'POSITIVE' && !isFromDistribution}">
                                 <td colspan="3">
                                     <form:select path="productId" cssClass="form-control s2">
                                         <form:option value="" label=""/>
@@ -315,60 +352,71 @@
                         </c:if>
 
                         <c:forEach var="productFlux" items="${productAttributeFluxes}">
-                            <tr>
-                                <td>${productFlux.code}</td>
-                                <td>
-                                        ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
-                                </td>
-                                <td>
-                                        ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailUnit : productFlux.wholesaleUnit}
-                                </td>
-                                <td class="text-center">${productFlux.batchNumber}</td>
-                                <td class="text-center">
-                                    <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                                </td>
-                                <c:if test="${productReception.incidence == 'POSITIVE'}">
-                                    <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
+                            <c:if test="${productFlux.productAttributeFluxId != receptionAttributeFluxForm.productAttributeFluxId}">
+                                <tr>
+                                    <td>${productFlux.code}</td>
+                                    <td>
+                                            ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailName : productFlux.wholesaleName}
                                     </td>
-                                    <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
+                                    <td>
+                                            ${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.retailUnit : productFlux.wholesaleUnit}
                                     </td>
-                                </c:if>
-                                <c:if test="${productReception.incidence == 'NEGATIVE'}">
+                                    <td class="text-center">${productFlux.batchNumber}</td>
                                     <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityReceived : productFlux.quantityReceived / productFlux.unitConversion}" />
+                                        <fmt:formatDate value="${productFlux.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
                                     </td>
-                                    <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityInStock : productFlux.quantityInStock / productFlux.unitConversion}" />
-                                    </td>
-                                    <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToReturn : productFlux.quantityToReturn / productFlux.unitConversion}" />
-                                    </td>
-                                    <td class="text-center">
-                                        <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ?
+                                    <c:if test="${productReception.incidence == 'POSITIVE'}">
+                                        <td class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToDeliver : productFlux.quantityToDeliver / productFlux.unitConversion}" />
+                                        </td>
+                                        <c:if test="${isFromDistribution}">
+                                            <td class="text-center">
+                                                <input type="text" id="distribution-${productFlux.batchNumber}-${productReception.receptionQuantityMode}-${productFlux.unitConversion}" class="form-control form-control-sm from-distribution" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
+                                            </td>
+                                        </c:if>
+                                        <c:if test="${!isFromDistribution}">
+                                            <td class="text-center">
+                                                <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantity : productFlux.quantity / productFlux.unitConversion}" />
+                                            </td>
+
+                                        </c:if>
+                                    </c:if>
+                                    <c:if test="${productReception.incidence == 'NEGATIVE'}">
+                                        <td class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityReceived : productFlux.quantityReceived / productFlux.unitConversion}" />
+                                        </td>
+                                        <td class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityInStock : productFlux.quantityInStock / productFlux.unitConversion}" />
+                                        </td>
+                                        <td class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ? productFlux.quantityToReturn : productFlux.quantityToReturn / productFlux.unitConversion}" />
+                                        </td>
+                                        <td class="text-center">
+                                            <fmt:parseNumber integerOnly = "true" type="number" value="${productReception.receptionQuantityMode == 'RETAIL' ?
                                         (productFlux.quantityInStock <= productFlux.quantityReceived ? productFlux.quantityInStock - productFlux.quantityToReturn : productFlux.quantityReceived - productFlux.quantityToReturn) :
                                         (productFlux.quantityInStock <= productFlux.quantityReceived ? productFlux.quantityInStock - productFlux.quantityToReturn : productFlux.quantityReceived - productFlux.quantityToReturn) / productFlux.unitConversion
                                         }" />
-                                    </td>
-                                </c:if>
-
-                                <td>${productFlux.observation}</td>
-                                <td>
-                                    <c:if test="${productReception.operationStatus == 'NOT_COMPLETED'}">
-                                        <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="editUrl">
-                                            <c:param name="receptionId" value="${productReception.productOperationId}"/>
-                                            <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
-                                        </c:url>
-                                        <a href="${editUrl}" class="text-info"><i class="fa fa-edit"></i></a>
-                                        <c:url value="/module/pharmacy/operations/reception/deleteFlux.form" var="deleteUrl">
-                                            <c:param name="receptionId" value="${productReception.productOperationId}"/>
-                                            <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
-                                        </c:url>
-                                        <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                                        </td>
                                     </c:if>
-                                </td>
-                            </tr>
+
+                                    <td>${productFlux.observation}</td>
+                                    <td>
+                                        <c:if test="${productReception.operationStatus == 'NOT_COMPLETED'}">
+                                            <c:url value="/module/pharmacy/operations/reception/editFlux.form" var="editUrl">
+                                                <c:param name="receptionId" value="${productReception.productOperationId}"/>
+                                                <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
+                                            </c:url>
+                                            <a href="${editUrl}" class="text-info"><i class="fa fa-edit"></i></a>
+                                            <c:url value="/module/pharmacy/operations/reception/deleteFlux.form" var="deleteUrl">
+                                                <c:param name="receptionId" value="${productReception.productOperationId}"/>
+                                                <c:param name="fluxId" value="${productFlux.productAttributeFluxId}"/>
+                                            </c:url>
+                                            <a href="${deleteUrl}" onclick="return confirm('Voulez vous supprimer ce regime ?')" class="text-danger"><i class="fa fa-trash"></i></a>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:if>
+
                         </c:forEach>
 
                         <c:if test="${fct:length(productAttributeFluxes) == 0}">
