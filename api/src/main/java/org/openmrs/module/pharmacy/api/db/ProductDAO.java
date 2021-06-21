@@ -14,6 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,4 +45,6 @@ public interface ProductDAO {
 
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
 	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
+
+    List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram);
 }

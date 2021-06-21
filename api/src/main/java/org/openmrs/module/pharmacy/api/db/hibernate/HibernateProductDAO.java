@@ -19,6 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductDAO;
@@ -27,6 +28,7 @@ import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -171,5 +173,37 @@ public class HibernateProductDAO implements ProductDAO {
 		} catch (IOException e) {
 			throw new RuntimeException("fail to store csv data: " + e.getMessage());
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class, "p");
+		/*List<Product> productList = sessionFactory.getCurrentSession().createQuery(
+				"SELECT p FROM Product p JOIN p.productPrograms pg " +
+						"WHERE pg.productProgramId = :programId AND p.productRegimens IS NULL "
+		).setParameter("programId", productProgram.getProductProgramId()).list();
+
+		if (productList != null) {
+			System.out.println("------------------------------------ > " + productList.size());
+		}*/
+		List<Product> productList = new ArrayList<>();
+		List<Product> products =
+				(List<Product>) criteria.createAlias("p.productPrograms", "pp")
+//				.createAlias("p.productRegimens", "pr")
+				.add(Restrictions.eq("pp.productProgramId", productProgram.getProductProgramId()))
+//				.add(Restrictions.or(Restrictions.isEmpty("p.productRegimens"),
+//						Restrictions.isNull("p.productRegimens")))
+//				.add(Restrictions.isEmpty("p.productRegimens"))
+				.list();
+		if (products != null) {
+			System.out.println("------------------------------------ > " + products.size());
+			for (Product product : products) {
+				if (product.getProductRegimens().size() == 0) {
+					productList.add(product);
+				}
+			}
+		}
+		return productList;
 	}
 }

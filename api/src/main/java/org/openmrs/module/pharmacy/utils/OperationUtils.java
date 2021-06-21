@@ -627,10 +627,10 @@ public class OperationUtils {
     public static List<ProductAttributeFlux> createProductAttributeFluxes(Product product, ProductOperation operation, Integer quantity) {
         List<ProductAttributeFlux> fluxes = new ArrayList<>();
         List<ProductAttributeStock> productAttributeStocks = stockService().getAllProductAttributeStockByProduct(product, operation.getLocation());
-        int countFlux = 0;
+        // int countFlux = 0;
         // int countOldFlux = operation.getProductAttributeFluxes().size();
         for (ProductAttributeStock stock : productAttributeStocks) {
-            countFlux ++;
+            // countFlux ++;
             ProductAttributeFlux productAttributeFlux = fluxService().getOneProductAttributeFluxByAttributeAndOperation(
                     stock.getProductAttribute(),
                     operation

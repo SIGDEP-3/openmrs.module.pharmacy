@@ -18,6 +18,7 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
@@ -60,4 +61,6 @@ public interface PharmacyService extends OpenmrsService {
 	ProductOperation saveProductOperation(ProductOperation productOperation);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
     List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+	ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation);
 }

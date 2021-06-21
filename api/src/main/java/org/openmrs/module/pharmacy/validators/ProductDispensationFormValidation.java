@@ -51,23 +51,11 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
                     if (form.getAge() == null) {
                         errors.rejectValue("age", null, "Ce champ est requis");
                     }
-                    if (form.getProductRegimenId() == null) {
-                        errors.rejectValue("productRegimenId", null, "Ce champ est requis");
-                    }
+//                    if (form.getProductRegimenId() == null) {
+//                        errors.rejectValue("productRegimenId", null, "Ce champ est requis");
+//                    }
                 }
             }
-//            if (form.getOperationNumber() != null && !form.getOperationNumber().isEmpty()) {
-//                ProductDispensation reception = (ProductDispensation) service().getOneProductOperationByOperationNumber(form.getOperationNumber());
-//                if (reception != null) {
-//                    if (form.getProductSupplierId() != null) {
-//                        if (!reception.getProductOperationId().equals(form.getProductOperationId())) {
-//                            errors.rejectValue("operationNumber", null, "Une réception avec ce BL existe déjà ");
-//                        }
-//                    }
-//                }
-//            }
-
-
 
 //            ProductDispensation dispensation = service().getOneProductOperationByOperationDateAndProductProgram(
 //                            form.getOperationDate(),

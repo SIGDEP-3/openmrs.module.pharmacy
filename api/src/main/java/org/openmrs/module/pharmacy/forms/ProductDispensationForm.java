@@ -216,9 +216,9 @@ public class ProductDispensationForm extends ProductOperationForm {
             info.setProvider(Context.getProviderService().getProvider(getProviderId()));
         }
         info.setTreatmentDays(getTreatmentDays());
-        info.setTreatmentEndDate(getTreatmentEndDate());
-        if (getProductRegimenId() != null) {
+        if (getProductRegimenId() != null /*&& getProductRegimenId() != 105281*/) {
             info.setProductRegimen(regimenService().getOneProductRegimenById(getProductRegimenId()));
+            info.setTreatmentEndDate(getTreatmentEndDate());
         }
         return info;
     }
@@ -257,8 +257,10 @@ public class ProductDispensationForm extends ProductOperationForm {
                         obs.setValueNumeric(getTreatmentDays().doubleValue());
                         obsSet.add(obs);
                     } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentEndDate"))) {
-                        obs.setValueDate(getTreatmentEndDate());
-                        obsSet.add(obs);
+                        if (getProductRegimenId() != null /*&& getProductRegimenId() != 105281*/) {
+                            obs.setValueDate(getTreatmentEndDate());
+                            obsSet.add(obs);
+                        }
                     }
                 }
                 encounter.setObs(obsSet);

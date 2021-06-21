@@ -23,10 +23,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
-import org.openmrs.Encounter;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.MobilePatient;
 import org.openmrs.module.pharmacy.MobilePatientDispensationInfo;
@@ -381,31 +378,56 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	public ProductDispensation getLastProductDispensationByPatient(String identifier, ProductProgram productProgram, Location location) throws HibernateException {
 		Patient patient = getPatientByIdentifier(identifier);
 		MobilePatient mobilePatient = getOneMobilePatientByIdentifier(identifier);
-		String queryStr = "";
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductDispensation.class, "d");
 		if (patient != null) {
-			queryStr = "SELECT p FROM ProductDispensation p " +
-					"WHERE " +
-					"p.encounter.patient = :patient AND " +
-					"p.productProgram = :program AND p.voided = false AND p.location = :location AND " +
-					"p.operationStatus = :status ORDER BY p.operationDate DESC ";
+			Concept concept = Context.getConceptService().getConcept(165033);
+			return (ProductDispensation) criteria.createAlias("d.encounter", "e")
+					.createAlias("e.obs", "o")
+					.add(Restrictions.eq("d.productProgram", productProgram))
+					.add(Restrictions.eq("d.operationStatus", OperationStatus.VALIDATED))
+					.add(Restrictions.eq("d.voided", false))
+					.add(Restrictions.eq("d.location", location))
+					.add(Restrictions.eq("o.concept", concept))
+					.add(Restrictions.eq("e.patient", patient))
+					.addOrder(Order.desc("d.operationDate")).setMaxResults(1).uniqueResult();
 		} else if (mobilePatient != null) {
-			queryStr = "SELECT p FROM ProductDispensation p " +
-					"WHERE " +
-					"p.mobilePatientDispensationInfo.mobilePatient = :mobilePatient AND " +
-					"p.productProgram = :program AND p.voided = false AND p.location = :location AND " +
-					"p.operationStatus = :status ORDER BY p.operationDate DESC ";
+			return (ProductDispensation) criteria.createAlias("d.mobilePatientDispensationInfo", "i")
+					.add(Restrictions.eq("d.productProgram", productProgram))
+					.add(Restrictions.eq("d.operationStatus", OperationStatus.VALIDATED))
+					.add(Restrictions.eq("d.voided", false))
+					.add(Restrictions.eq("d.location", location))
+					.add(Restrictions.eq("i.mobilePatient", mobilePatient))
+					.add(Restrictions.isNotNull("i.productRegimen"))
+					.addOrder(Order.desc("d.operationDate")).setMaxResults(1).uniqueResult();
 		}
-		Query query = sessionFactory.getCurrentSession().createQuery(queryStr)
-				.setParameter("program", productProgram)
-				.setParameter("status", OperationStatus.VALIDATED)
-				.setParameter("location", location);
-		if (patient != null) {
-			query.setParameter("patient", patient);
-		} else {
-			query.setParameter("mobilePatient", mobilePatient);
-		}
+		return null;
 
-		return (ProductDispensation) query.setMaxResults(1).uniqueResult();
+//		String queryStr = "";
+//		if (patient != null) {
+//			queryStr = "SELECT p FROM ProductDispensation p " +
+//					"WHERE " +
+//					"p.encounter.patient = :patient AND " +
+//					"p.productProgram = :program AND p.voided = false AND p.location = :location AND " +
+//					"p.operationStatus = :status ORDER BY p.operationDate DESC ";
+//		} else if (mobilePatient != null) {
+//			queryStr = "SELECT p FROM ProductDispensation p " +
+//					"WHERE " +
+//					"p.mobilePatientDispensationInfo.mobilePatient = :mobilePatient AND " +
+//					"p.mobilePatientDispensationInfo.productRegimen IS NOT NULL AND " +
+//					"p.productProgram = :program AND p.voided = false AND p.location = :location AND " +
+//					"p.operationStatus = :status ORDER BY p.operationDate DESC ";
+//		}
+//		Query query = sessionFactory.getCurrentSession().createQuery(queryStr)
+//				.setParameter("program", productProgram)
+//				.setParameter("status", OperationStatus.VALIDATED)
+//				.setParameter("location", location);
+//		if (patient != null) {
+//			query.setParameter("patient", patient);
+//		} else {
+//			query.setParameter("mobilePatient", mobilePatient);
+//		}
+//
+//		return (ProductDispensation) query.setMaxResults(1).uniqueResult();
 	}
 
 	@Override

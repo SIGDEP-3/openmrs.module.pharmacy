@@ -19,8 +19,10 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.ProductAttributeStock;
 import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
+import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -44,6 +46,9 @@ public class PharmacyManageController {
 	}
 	ProductProgramService programService() {
 		return Context.getService(ProductProgramService.class);
+	}
+	PharmacyService service() {
+		return Context.getService(PharmacyService.class);
 	}
 
 	@ModelAttribute("isDirectClient")
@@ -116,6 +121,30 @@ public class PharmacyManageController {
 			modelMap.addAttribute("title", "Etat de Stock");
 			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
 			modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
+		}
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/stock/productConsumption.form", method = RequestMethod.GET)
+	public void productConsumption(ModelMap modelMap,
+					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+					  @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+					  @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
+					  @RequestParam(value = "byWholesaleUnit", defaultValue = "false", required = false) Boolean byWholesaleUnit,
+					  @RequestParam(value = "bySite", defaultValue = "false", required = false) Boolean bySite) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Consommation de produit par période");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+			if (programId != null && startDate != null && endDate != null) {
+				ConsumptionReportDTO dto = service().getConsumptionReport(
+						programService().getOneProductProgramById(programId),
+						startDate,
+						endDate,
+						OperationUtils.getUserLocation(),
+						bySite
+				);
+				dto.setByWholesaleUnit(byWholesaleUnit);
+				modelMap.addAttribute("dto", dto);
+			}
 		}
 	}
 

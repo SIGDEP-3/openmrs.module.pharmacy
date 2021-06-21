@@ -22,6 +22,7 @@ import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 
 import java.util.Date;
@@ -83,6 +84,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation) {
         return dao.getProductOutFluxDTOs(productOperation);
+    }
+
+    @Override
+    public ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation) {
+        return dao.getConsumptionReport(productProgram, startDate, endDate, location, byLocation);
     }
 
 }

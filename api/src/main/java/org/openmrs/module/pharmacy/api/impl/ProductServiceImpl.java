@@ -122,4 +122,9 @@ public class ProductServiceImpl extends BaseOpenmrsService implements ProductSer
         return dao.uploadProductRegimens(file);
     }
 
+    @Override
+    public List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram) {
+        return dao.getProductWithoutRegimenByProgram(productProgram);
+    }
+
 }

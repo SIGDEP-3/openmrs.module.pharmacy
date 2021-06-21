@@ -219,6 +219,28 @@
 					<c:if test='<%= request.getRequestURI().contains("/stock") %>'>
 					<div class="col-7 text-right">
 						<div class="btn-group btn-group-sm">
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/list.form'"
+									<c:choose>
+										<c:when test='<%= request.getRequestURI().contains("/stock/list") %>'>
+											class="btn btn-secondary btn-sm"
+										</c:when>
+										<c:otherwise>
+											class="btn btn-outline-secondary btn-sm"
+										</c:otherwise>
+									</c:choose>>
+								Stock de produits par lots
+							</button>
+							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/productConsumption.form'"
+									<c:choose>
+										<c:when test='<%= request.getRequestURI().contains("/productConsumption") %>'>
+											class="btn btn-secondary btn-sm"
+										</c:when>
+										<c:otherwise>
+											class="btn btn-outline-secondary btn-sm"
+										</c:otherwise>
+									</c:choose>>
+								Consommation de produits
+							</button>
 							<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/stock/stockStatus.form'"
 									<c:choose>
 										<c:when test='<%= request.getRequestURI().contains("/stockStatus") %>'>

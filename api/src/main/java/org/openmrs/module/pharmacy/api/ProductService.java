@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.ProductProgram;
 import org.openmrs.module.pharmacy.ProductUnit;
 import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
@@ -69,4 +70,6 @@ public interface ProductService extends OpenmrsService {
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
 	@Authorized(value = {PrivilegeConstants.IMPORT_REGIMEN})
 	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
+	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
+	List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram);
 }

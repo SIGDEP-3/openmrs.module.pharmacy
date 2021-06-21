@@ -39,6 +39,7 @@ public class ProductAttribute extends AbstractPharmacyObject {
     }
 
     @Override
+
     public void setId(Integer integer) {
         setProductAttributeId(integer);
     }

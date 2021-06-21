@@ -315,11 +315,11 @@
                                                     <c:if test="${regimens != null && fct:length(regimens) != 0}">
                                                         <div class="row mb-2">
                                                             <div class="col-12">
-                                                                <label class="">R&eacute;gime <span
-                                                                        class="required">*</span></label>
+                                                                <label class="">R&eacute;gime<%-- <span
+                                                                        class="required">*</span>--%></label>
                                                                 <form:select path="productRegimenId"
                                                                              cssClass="form-control s2">
-                                                                    <form:option value="" label=""/>
+                                                                    <form:option value="" label="AUCUN REGIME"/>
                                                                     <form:options items="${regimens}"
                                                                                   itemValue="productRegimenId"
                                                                                   itemLabel="concept.name.name"/>

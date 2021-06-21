@@ -559,11 +559,11 @@ public class PharmacyProductDispensationManageController {
             }
         }
 
-        Set<Product> products = new HashSet<Product>();
+        Set<Product> products;
         if (regimen != null && regimen.getProducts().size() != 0) {
             products = regimen.getProducts();
         } else {
-            products = headerDTO.getProductProgram().getProducts();
+            products = new HashSet<Product>(productService().getProductWithoutRegimenByProgram(headerDTO.getProductProgram()));
         }
         List<ProductDispensationFluxDTO> productAttributeFluxes = dispensationService().getProductDispensationFluxDTOs(productDispensation);
         if (productAttributeFluxes == null) {
