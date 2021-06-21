@@ -69,8 +69,8 @@
                     <tr>
                         <td>P&eacute;riode</td>
                         <td class="font-weight-bold text-info align-middle">
-                            De <fmt:formatDate value="${dto.startDate}" pattern="dd/MM/yyyy" type="DATE"/>
-                            &agrave; <fmt:formatDate value="${dto.endDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                            Du <fmt:formatDate value="${dto.startDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                            au <fmt:formatDate value="${dto.endDate}" pattern="dd/MM/yyyy" type="DATE"/>
                         </td>
                         <td colspan="2" class="font-weight-bold text-info align-middle">
                             <c:if test="${dto.byLocation == true}">
