@@ -34,6 +34,7 @@ import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
 import org.openmrs.module.pharmacy.models.LocationProductQuantity;
 import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 import org.openmrs.module.pharmacy.models.ProductQuantity;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -220,36 +221,81 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		consumptionReportDTO.setStartDate(startDate);
 		consumptionReportDTO.setEndDate(endDate);
 		consumptionReportDTO.setProductProgramName(productProgram.getName());
-		StringBuilder locationIds = new StringBuilder("(" + location.getLocationId());
-		// locationIds.add(location.getLocationId());
-		if (byLocation) {
-			for (Location childLocation : location.getChildLocations()) {
-				locationIds.append(", ").append(childLocation.getLocationId());
-			}
-		}
-		locationIds.append(")");
+//		StringBuilder locationIds = new StringBuilder("(" + location.getLocationId());
+//		// locationIds.add(location.getLocationId());
+//		if (byLocation) {
+//			for (Location childLocation : location.getChildLocations()) {
+//				locationIds.append(", ").append(childLocation.getLocationId());
+//			}
+//		}
+//		locationIds.append(")");
+//		System.out.println("-------------------------------> creating sql");
 
 		String sqlQuery =
 				"SELECT " +
 						"    l.location_id locationId, " +
-						"    pp.code, " +
-						"    pp.retail_name retailName, " +
-						"    pp.wholesale_name wholesaleName, " +
-						"    SUM(ppaf.quantity) retailQuantity, " +
-						"    FLOOR(SUM(ppaf.quantity) / pp.unit_conversion) wholesaleQuantity " +
+						"    l.name locationName, " +
+						"    pps.code, " +
+						"    pps.retail_name retailName, " +
+						"    pps.wholesale_name wholesaleName, " +
+						"    SUM(IF(ppo.quantityDistributed, quantityDistributed, quantityReported)) retailQuantity, " +
+						"    FLOOR(SUM(IF(ppo.quantityDistributed, quantityDistributed, quantityReported)) / pps.unit_conversion) wholesaleQuantity " +
+						" " +
 						"FROM " +
-						"pharmacy_product_operation ppo " +
-						"INNER JOIN pharmacy_product_dispensation ppd on ppo.product_operation_id = ppd.product_operation_id " +
-						"LEFT JOIN pharmacy_product_attribute_flux ppaf on ppo.product_operation_id = ppaf.operation_id " +
-						"LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
-						"LEFT JOIN (SELECT * FROM location WHERE location_id IN " + locationIds + ") l on ppaf.location_id = l.location_id " +
+						"( " +
+						"    SELECT " +
+						"        po.operation_date, po.operation_status, ppaof.quantity quantityReported, NULL AS quantityDistributed, po.location_id, pp.product_id, program_id " +
+						"    FROM pharmacy_product_operation po, " +
+						"         pharmacy_product_report ppr, " +
+						"         pharmacy_product_attribute_other_flux ppaof, " +
+						"         (SELECT product_id FROM pharmacy_product) pp " +
+						"    WHERE " +
+						"        po.product_operation_id = ppr.product_operation_id AND " +
+						"        ppaof.operation_id = po.product_operation_id AND " +
+						"        pp.product_id = ppaof.product_id AND " +
+						"        ppr.report_period IN (:reportPeriod) AND " +
+						"        label = 'QD' AND po.voided = 0 " +
+						" " +
+						"    UNION " +
+						"    SELECT " +
+						"        po.operation_date, po.operation_status, NULL AS quantityReported, ppaf.quantity quantityDistributed, po.location_id, pp.product_id, program_id " +
+						"    FROM (SELECT * FROM pharmacy_product_operation WHERE operation_date BETWEEN :startDate AND :endDate) po " +
+						"             INNER JOIN pharmacy_product_dispensation ppd on po.product_operation_id = ppd.product_operation_id " +
+						"             LEFT JOIN pharmacy_product_attribute_flux ppaf on po.product_operation_id = ppaf.operation_id " +
+						"             LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id " +
+						"             LEFT JOIN (SELECT product_id FROM pharmacy_product) pp ON ppa.product_id = pp.product_id " +
+						"    WHERE " +
+						"        po.voided = 0 " +
+						") ppo " +
+						"LEFT JOIN pharmacy_product pps ON pps.product_id = ppo.product_id " +
+						"LEFT JOIN location l ON l.location_id = ppo.location_id " +
 						"WHERE " +
-						"      ppo.operation_status = 2 AND " +
-						"      ppo.program_id = :programId AND " +
-						"      ppo.operation_date BETWEEN :startDate AND :endDate " +
-						"GROUP BY l.location_id, pp.product_id ";
-
+						"    program_id = :programId AND " +
+						"    (l.location_id = :locationId OR l.parent_location = :locationId) AND " +
+						"    operation_status IN (2, 4, 5, 6) " +
+						"GROUP BY l.location_id, pps.product_id";
+//				"SELECT " +
+//						"    l.location_id locationId, " +
+//						"    pp.code, " +
+//						"    pp.retail_name retailName, " +
+//						"    pp.wholesale_name wholesaleName, " +
+//						"    SUM(IF(ppd.product_operation_id IS NOT NULL, ppaf.quantity, IF(ppaof.label = 'QD', ppaof.quantity, 0))) retailQuantity, " +
+//						"    FLOOR(SUM(IF(ppd.product_operation_id IS NOT NULL, ppaf.quantity, IF(ppaof.label = 'QD', ppaof.quantity, 0))) / pp.unit_conversion) wholesaleQuantity " +
+//						"FROM " +
+//						"pharmacy_product_operation ppo " +
+//						"INNER JOIN pharmacy_product_dispensation ppd on ppo.product_operation_id = ppd.product_operation_id " +
+//						"LEFT JOIN pharmacy_product_attribute_flux ppaf on ppo.product_operation_id = ppaf.operation_id " +
+//						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof on ppo.product_operation_id = ppaof.operation_id " +
+//						"LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id " +
+//						"LEFT JOIN (SELECT * FROM pharmacy_product_report WHERE is_urgent = 0 AND report_location_id IN " + locationIds + ") ppr ON ppo.product_operation_id = ppr.product_operation_id " +
+//						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
+//						"LEFT JOIN (SELECT * FROM location WHERE location_id IN " + locationIds + ") l on ppaf.location_id = l.location_id " +
+//						"WHERE " +
+//						"      ppo.operation_status = 2 AND " +
+//						"      ppo.program_id = :programId AND " +
+//						"      ppo.operation_date BETWEEN :startDate AND :endDate " +
+//						"GROUP BY l.location_id, pp.product_id ";
+//		System.out.println("-------------------------------> adding to query to execute ");
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("locationId", StandardBasicTypes.INTEGER)
 				.addScalar("code", StandardBasicTypes.STRING)
@@ -260,12 +306,11 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				.setParameter("programId", productProgram.getProductProgramId())
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
-//				.setParameterList("location", locationIds.toString())
+				.setParameter("locationId", location.getLocationId())
+				.setParameterList("reportPeriod", OperationUtils.getReportPeriodOfPeriod(startDate, endDate).toArray())
 				.setResultTransformer(new AliasToBeanResultTransformer(ProductQuantity.class));
 		try {
 			List<ProductQuantity> productQuantities = query.list();
-//			System.out.println("-------------------------------> productQuantities "+ productQuantities.size());
-
 
 			if (byLocation) {
 				for (Location l : location.getChildLocations()) {
@@ -289,9 +334,6 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantity);
 			}
 
-
-			System.out.println("-------------------------------> consumptionReportDTO getLocationProductQuantities "
-					+ consumptionReportDTO.getLocationProductQuantities().size());
 			return consumptionReportDTO;
 		} catch (HibernateException e) {
 			System.out.println(e.getMessage());

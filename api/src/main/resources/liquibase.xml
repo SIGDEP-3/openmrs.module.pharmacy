@@ -1669,5 +1669,25 @@
             ('Location', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 0, 1, '2021-02-27 21:10:08', 0, 'LOCATIONPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
         </sql>
     </changeSet>
+<!--    <changeSet id="pharmacy-update-file-active-listing" author="BOGUI SERGE">-->
+<!--        <preConditions>-->
+<!--            <sqlCheck expectedResult="0">-->
+<!--                <![CDATA[-->
+<!--                    SELECT COUNT(*) FROM serialized_object WHERE uuid = '338d665c-4486-471c-a62a-ddb1a1307a10' AND date_changed <= '2021-06-27 16:48:23'-->
+<!--                ]]>-->
+<!--            </sqlCheck>-->
+<!--        </preConditions>-->
+<!--        <sqlFile path="UPDATE.sql"/>-->
+<!--    </changeSet>-->
+    <changeSet id="pharmacy-dispensation-add-column-regimen-line" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="regimen_line"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_mobile_patient_dispensation_info">
+            <column name="regimen_line" type="int"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

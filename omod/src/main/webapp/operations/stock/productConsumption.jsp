@@ -82,7 +82,7 @@
                         </td>
                     </tr>
                 </table>
-                <c:if test="${fct:length(dto.locationProductQuantities) == 1}">
+                <c:if test="${dto.byLocation == false}">
                     <div class="border p-2">
                         <table class="table report table-striped table-bordered table-sm border">
                             <thead>
@@ -109,7 +109,7 @@
 
                 </c:if>
 
-                <c:if test="${fct:length(dto.locationProductQuantities) > 1}">
+                <c:if test="${dto.byLocation == true}">
                     <div class="border p-2 table-responsive">
                         <table class="table report table-striped table-bordered table-sm border small">
                             <thead>

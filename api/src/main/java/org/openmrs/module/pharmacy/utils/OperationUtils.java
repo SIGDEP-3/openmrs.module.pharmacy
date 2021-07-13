@@ -404,6 +404,117 @@ public class OperationUtils {
         return null;
     }
 
+    public static Date getFromPeriodStartDate(String period) {
+        String month = period.split(" ")[0].toLowerCase();
+        int year = Integer.parseInt(period.split(" ")[1]);
+        DateFormatSymbols french_dfs = new DateFormatSymbols(Locale.FRENCH);
+        String[] frenchMonths = french_dfs.getMonths();
+        for (int i = 0; i < frenchMonths.length; i++) {
+            String monthName = frenchMonths[i].replace("é", "e").replace("û", "u").toLowerCase();
+            if (month.equals(monthName)) {
+                Calendar calendar = Calendar.getInstance();
+                int count = i + 1;
+                if (count == 12) {
+                    count = 0;
+                    year += 1;
+                }
+                switch (count) {
+                    case Calendar.JANUARY:
+                        calendar.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+                        break;
+                    case Calendar.FEBRUARY:
+                        calendar.set(year, Calendar.FEBRUARY, 1, 0, 0, 0);
+                        break;
+                    case Calendar.MARCH:
+                        calendar.set(year, Calendar.MARCH, 1, 0, 0, 0);
+                        break;
+                    case Calendar.APRIL:
+                        calendar.set(year, Calendar.APRIL, 1, 0, 0, 0);
+                        break;
+                    case Calendar.MAY:
+                        calendar.set(year, Calendar.MAY, 1, 0, 0, 0);
+                        break;
+                    case Calendar.JUNE:
+                        calendar.set(year, Calendar.JUNE, 1, 0, 0, 0);
+                        break;
+                    case Calendar.JULY:
+                        calendar.set(year, Calendar.JULY, 1, 0, 0, 0);
+                        break;
+                    case Calendar.AUGUST:
+                        calendar.set(year, Calendar.AUGUST, 1, 0, 0, 0);
+                        break;
+                    case Calendar.SEPTEMBER:
+                        calendar.set(year, Calendar.SEPTEMBER, 1, 0, 0, 0);
+                        break;
+                    case Calendar.OCTOBER:
+                        calendar.set(year, Calendar.OCTOBER, 1, 0, 0, 0);
+                        break;
+                    case Calendar.NOVEMBER:
+                        calendar.set(year, Calendar.NOVEMBER, 1, 0, 0, 0);
+                        break;
+                    case Calendar.DECEMBER:
+                        calendar.set(year, Calendar.DECEMBER, 1, 0, 0, 0);
+                        break;
+                }
+                return calendar.getTime();
+            }
+        }
+
+        return null;
+    }
+
+    public static List<String> getReportPeriodOfPeriod(Date startDate, Date endDate) {
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+
+        beginCalendar.setTime(startDate);
+        finishCalendar.setTime(endDate);
+
+        List<String> periods = new ArrayList<>();
+        if (beginCalendar.before(finishCalendar)) {
+            while (beginCalendar.before(finishCalendar)) {
+                // add one month to date per loop
+                periods.add(getPeriod(beginCalendar));
+                beginCalendar.add(Calendar.MONTH, 1);
+            }
+        } else {
+            if (beginCalendar.equals(finishCalendar)) {
+                periods.add(getPeriod(beginCalendar));
+            }
+        }
+//        System.out.println("---------------------------------> Periods " + join(",", periods));
+        return periods;
+    }
+
+    private static String getPeriod(Calendar calendar) {
+        if ( calendar.get( Calendar.MONTH ) == Calendar.JANUARY ) {
+            return "Janvier " + calendar.getWeekYear();
+        }else if ( calendar.get( Calendar.MONTH ) == Calendar.FEBRUARY ) {
+            return "Février " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.MARCH ) {
+            return "Mars " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.APRIL ) {
+            return "Avril " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.MAY ) {
+            return "Mai " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.JUNE ) {
+            return "Juin " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.JULY ) {
+            return "Juillet " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.AUGUST ) {
+            return "Août " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.SEPTEMBER ) {
+            return "Septembre " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.OCTOBER ) {
+            return "Octobre " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.NOVEMBER ) {
+            return "Novembre " + calendar.getWeekYear();
+        } else if ( calendar.get( Calendar.MONTH ) == Calendar.DECEMBER ) {
+            return "Décembre " + calendar.getWeekYear();
+        }
+        return null;
+    }
+
     public static Date getFirstDateFromStockMax(Location location, Date endDate) {
         String locationType = "CenterAndNGOs";
         if (isDirectClient(location)) {

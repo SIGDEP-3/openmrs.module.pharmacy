@@ -20,6 +20,7 @@ import java.util.Set;
 
 public class ProductDispensationForm extends ProductOperationForm {
     private Integer productRegimenId;
+    private Integer productRegimenLine;
     private Goal goal;
     private Integer encounterId;
     private Date prescriptionDate;
@@ -38,6 +39,14 @@ public class ProductDispensationForm extends ProductOperationForm {
     public ProductDispensationForm() {
         super();
         setIncidence(Incidence.NEGATIVE);
+    }
+
+    public Integer getProductRegimenLine() {
+        return productRegimenLine;
+    }
+
+    public void setProductRegimenLine(Integer productRegimenLine) {
+        this.productRegimenLine = productRegimenLine;
     }
 
     public Goal getGoal() {
@@ -192,6 +201,7 @@ public class ProductDispensationForm extends ProductOperationForm {
         setPatientType(mobileDispensationInfo.getMobilePatient().getPatientType());
 
         setProductDispensation(mobileDispensationInfo.getDispensation());
+        setProductRegimenLine(mobileDispensationInfo.getRegimenLine());
     }
 
     public ProductDispensation getProductDispensation() {
@@ -219,6 +229,7 @@ public class ProductDispensationForm extends ProductOperationForm {
         if (getProductRegimenId() != null /*&& getProductRegimenId() != 105281*/) {
             info.setProductRegimen(regimenService().getOneProductRegimenById(getProductRegimenId()));
             info.setTreatmentEndDate(getTreatmentEndDate());
+            info.setRegimenLine(getProductRegimenLine());
         }
         return info;
     }
@@ -235,9 +246,12 @@ public class ProductDispensationForm extends ProductOperationForm {
             }
             encounter.addObs(getDispensationDateObs());
             encounter.addObs(getDispensationGoalObs());
-            encounter.addObs(getDispensationRegimenObs());
+            if (getProductRegimenId() != null) {
+                encounter.addObs(getDispensationRegimenObs());
+                encounter.addObs(getDispensationTreatmentEndDateObs());
+            }
+            encounter.addObs(getDispensationRegimenLineObs());
             encounter.addObs(getDispensationTreatmentDaysObs());
-            encounter.addObs(getDispensationTreatmentEndDateObs());
 
         } else {
             encounter = Context.getEncounterService().getEncounter(getEncounterId());
@@ -249,6 +263,15 @@ public class ProductDispensationForm extends ProductOperationForm {
                 for (Obs obs : encounter.getAllObs()) {
                     if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Regimen"))) {
                         obs.setValueCoded(regimenService().getOneProductRegimenById(getProductRegimenId()).getConcept());
+                        obsSet.add(obs);
+                    } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("RegimenLine"))) {
+                        if (getProductRegimenLine() == 1) {
+                            obs.setValueCoded(Context.getConceptService().getConcept(164730));
+                        } else if (getProductRegimenLine() == 2) {
+                            obs.setValueCoded(Context.getConceptService().getConcept(164732));
+                        } else if (getProductRegimenLine() == 3) {
+                            obs.setValueCoded(Context.getConceptService().getConcept(164734));
+                        }
                         obsSet.add(obs);
                     } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Goal"))) {
                         obs.setValueText(getGoal().name());
@@ -280,6 +303,14 @@ public class ProductDispensationForm extends ProductOperationForm {
         for (Obs obs : encounter.getAllObs()) {
             if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Regimen"))) {
                 setProductRegimenId(regimenService().getOneProductRegimenByConceptId(obs.getConcept().getConceptId()).getProductRegimenId());
+            } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("RegimenLine"))) {
+                if (obs.getValueCoded().getConceptId().equals(164730)) {
+                    setProductRegimenLine(1);
+                } else if (obs.getValueCoded().getConceptId().equals(164732)) {
+                    setProductRegimenLine(2);
+                } else if (obs.getValueCoded().getConceptId().equals(164734)) {
+                    setProductRegimenLine(3);
+                }
             } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("Goal"))) {
                 setGoal(Goal.valueOf(obs.getValueText()));
             } else if (obs.getConcept().getConceptId().equals(getConceptIdInGlobalProperties("TreatmentDays"))) {
@@ -310,6 +341,26 @@ public class ProductDispensationForm extends ProductOperationForm {
         obs.setValueCoded(Context.getService(ProductRegimenService.class).getOneProductRegimenById(getProductRegimenId()).getConcept());
         return obs;
     }
+
+    private Obs getDispensationRegimenLineObs() {
+        Obs obs = new Obs();
+        obs.setConcept(Context.getConceptService().getConcept(getConceptIdInGlobalProperties("RegimenLine")));
+        obs.setLocation(OperationUtils.getUserLocation());
+        obs.setPerson(Context.getPersonService().getPerson(getPatientId()));
+        if (getProductRegimenLine() == 1) {
+            obs.setValueCoded(Context.getConceptService().getConcept(164730));
+        } else if (getProductRegimenLine() == 2) {
+            obs.setValueCoded(Context.getConceptService().getConcept(164732));
+        } else if (getProductRegimenLine() == 3) {
+            obs.setValueCoded(Context.getConceptService().getConcept(164734));
+        }
+//        obs.setValueCoded(Context.getService(ProductRegimenService.class).getOneProductRegimenById(getProductRegimenId()).getConcept());
+        return obs;
+    }
+
+    // Préciser la ligne du régime ARV (164767)	Answers:	1 -> Ligne 1 du régime ARV (164730)
+    //2 -> Ligne 2 du régime ARV (164732)
+    //3 -> Ligne 3 du régime ARV (164734)
 
     private Obs getDispensationTreatmentDaysObs() {
         Obs obs = new Obs();
@@ -362,6 +413,7 @@ public class ProductDispensationForm extends ProductOperationForm {
         }
         return null;
     }
+
 
     public void setPatient(Patient patient) {
         setGender(patient.getGender());

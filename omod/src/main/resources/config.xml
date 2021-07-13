@@ -48,6 +48,11 @@
 		<description>Insert here the concept for the regimen concept for dispensation in pharmacy </description>
 	</globalProperty>
 	<globalProperty>
+		<property>pharmacy.dispensationRegimenLineConcept</property>
+		<defaultValue>164767</defaultValue>
+		<description>Insert here the concept for the regimen line concept for dispensation in pharmacy </description>
+	</globalProperty>
+	<globalProperty>
 		<property>pharmacy.stockMaxDistrict</property>
 		<defaultValue>4 Months</defaultValue>
 		<description>Insert here the stock max for district </description>

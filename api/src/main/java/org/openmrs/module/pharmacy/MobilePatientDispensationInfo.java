@@ -30,6 +30,9 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
     @JoinColumn(name = "regimen_id")
     private ProductRegimen productRegimen;
 
+    @Column(name = "regimen_line")
+    private Integer regimenLine;
+
     @Column(name = "treatment_days")
     private Integer treatmentDays;
 
@@ -72,6 +75,14 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
 
     public void setProductRegimen(ProductRegimen productRegimen) {
         this.productRegimen = productRegimen;
+    }
+
+    public Integer getRegimenLine() {
+        return regimenLine;
+    }
+
+    public void setRegimenLine(Integer regimenLine) {
+        this.regimenLine = regimenLine;
     }
 
     public MobilePatient getMobilePatient() {

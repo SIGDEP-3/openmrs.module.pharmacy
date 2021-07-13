@@ -20,6 +20,7 @@ public class DispensationHeaderDTO {
     private Provider provider;
     private String patientIdentifier;
     private Integer treatmentDays;
+    private Integer productRegimenLine;
     private Date treatmentEndDate;
     private Integer age;
     private String gender;
@@ -27,6 +28,7 @@ public class DispensationHeaderDTO {
     private Date lastDispensationDate;
     private ProductRegimen lastDispensationProductRegimen;
     private Integer lastDispensationTreatmentDays;
+    private Integer lastProductRegimenLine;
     private Date getLastDispensationTreatmentEndDate;
     private OperationStatus operationStatus;
     private MobilePatient mobilePatient;
@@ -184,5 +186,21 @@ public class DispensationHeaderDTO {
 
     public void setMobilePatient(MobilePatient mobilePatient) {
         this.mobilePatient = mobilePatient;
+    }
+
+    public Integer getProductRegimenLine() {
+        return productRegimenLine;
+    }
+
+    public void setProductRegimenLine(Integer productRegimenLine) {
+        this.productRegimenLine = productRegimenLine;
+    }
+
+    public Integer getLastProductRegimenLine() {
+        return lastProductRegimenLine;
+    }
+
+    public void setLastProductRegimenLine(Integer lastProductRegimenLine) {
+        this.lastProductRegimenLine = lastProductRegimenLine;
     }
 }

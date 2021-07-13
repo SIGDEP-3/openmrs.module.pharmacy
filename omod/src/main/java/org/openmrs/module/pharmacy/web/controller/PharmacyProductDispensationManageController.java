@@ -62,6 +62,10 @@ public class PharmacyProductDispensationManageController {
         return Context.getService(ProductAttributeFluxService.class);
     }
 
+    private ProductInventoryService getInventoryService() {
+        return Context.getService(ProductInventoryService.class);
+    }
+
     private ProductAttributeService attributeService(){
         return Context.getService(ProductAttributeService.class);
     }
@@ -87,11 +91,15 @@ public class PharmacyProductDispensationManageController {
                      @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
+            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
+                    OperationUtils.getUserLocation(),
+                    programService().getOneProductProgramById(1),
+                    InventoryType.TOTAL);
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    OperationUtils.getCurrentMonthRange().getStartDate(),
+                    latestInventory.getOperationDate(),
                     OperationUtils.getCurrentMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
             modelMap.addAttribute("numberPatientToTransform",
@@ -163,11 +171,15 @@ public class PharmacyProductDispensationManageController {
                                                         @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
                                                         @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
         if (startDate == null && endDate == null) {
+            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
+                    OperationUtils.getUserLocation(),
+                    programService().getOneProductProgramById(1),
+                    InventoryType.TOTAL);
             modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                    OperationUtils.getCurrentMonthRange().getStartDate(),
+                    latestInventory.getOperationDate(),
                     OperationUtils.getCurrentMonthRange().getEndDate(),
                     OperationUtils.getUserLocation()));
-            modelMap.addAttribute("subTitle", "Liste des Dispensations saisies ce jour");
+            modelMap.addAttribute("subTitle", "Liste des Dispensations");
         } else {
             modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
                     startDate,
@@ -509,6 +521,7 @@ public class PharmacyProductDispensationManageController {
                 headerDTO.setGoal(info.getGoal());
                 headerDTO.setTreatmentEndDate(info.getTreatmentEndDate());
                 headerDTO.setProductRegimen(info.getProductRegimen());
+                headerDTO.setProductRegimenLine(info.getRegimenLine());
                 regimen = info.getProductRegimen();
             }
         } else {
@@ -533,6 +546,15 @@ public class PharmacyProductDispensationManageController {
                         .equals(OperationUtils.getConceptIdInGlobalProperties("Regimen"))) {
                     headerDTO.setProductRegimen(regimenService().getOneProductRegimenByConceptId(obs.getValueCoded().getConceptId()));
                     regimen = headerDTO.getProductRegimen();
+                } else if (obs.getConcept().getConceptId()
+                        .equals(OperationUtils.getConceptIdInGlobalProperties("RegimenLine"))) {
+                    if (obs.getValueCoded().getConceptId().equals(164730)) {
+                        headerDTO.setProductRegimenLine(1);
+                    } else if (obs.getValueCoded().getConceptId().equals(164732)) {
+                        headerDTO.setProductRegimenLine(2);
+                    } else if (obs.getValueCoded().getConceptId().equals(164734)) {
+                        headerDTO.setProductRegimenLine(3);
+                    }
                 } else if (obs.getConcept().getConceptId()
                         .equals(OperationUtils.getConceptIdInGlobalProperties("Goal"))) {
                     headerDTO.setGoal(Goal.valueOf(obs.getValueText()));

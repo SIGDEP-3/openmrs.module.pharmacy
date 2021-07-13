@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.pharmacy.Product;
@@ -178,32 +179,51 @@ public class HibernateProductDAO implements ProductDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class, "p");
-		/*List<Product> productList = sessionFactory.getCurrentSession().createQuery(
-				"SELECT p FROM Product p JOIN p.productPrograms pg " +
-						"WHERE pg.productProgramId = :programId AND p.productRegimens IS NULL "
-		).setParameter("programId", productProgram.getProductProgramId()).list();
+		String sqlQuery =
+				"SELECT product_id FROM ( " +
+						"SELECT pp.product_id, count(ppr.product_regimen_id) countRegimen  FROM pharmacy_product pp " +
+						"LEFT JOIN pharmacy_product_regimen_members pprm on pp.product_id = pprm.product_id " +
+						"LEFT JOIN pharmacy_product_regimen ppr on ppr.product_regimen_id = pprm.regimen_id " +
+						"LEFT JOIN pharmacy_product_program_members pppm on pp.product_id = pppm.product_id " +
+						"WHERE program_id = " + productProgram.getProductProgramId() + " " +
+						"GROUP BY pp.product_id " +
+						"HAVING countRegimen = (SELECT COUNT(*) FROM pharmacy_product_regimen) OR countRegimen = 0) _";
 
-		if (productList != null) {
-			System.out.println("------------------------------------ > " + productList.size());
-		}*/
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+		List<Integer> productIds = query.list();
+
 		List<Product> productList = new ArrayList<>();
-		List<Product> products =
-				(List<Product>) criteria.createAlias("p.productPrograms", "pp")
-//				.createAlias("p.productRegimens", "pr")
-				.add(Restrictions.eq("pp.productProgramId", productProgram.getProductProgramId()))
-//				.add(Restrictions.or(Restrictions.isEmpty("p.productRegimens"),
-//						Restrictions.isNull("p.productRegimens")))
-//				.add(Restrictions.isEmpty("p.productRegimens"))
-				.list();
-		if (products != null) {
-			System.out.println("------------------------------------ > " + products.size());
-			for (Product product : products) {
-				if (product.getProductRegimens().size() == 0) {
-					productList.add(product);
-				}
+
+		if (productIds  != null) {
+			for (Integer productId : productIds) {
+				productList.add(getOneProductById(productId));
 			}
 		}
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class, "p");
+//		/*List<Product> productList = sessionFactory.getCurrentSession().createQuery(
+//				"SELECT p FROM Product p JOIN p.productPrograms pg " +
+//						"WHERE pg.productProgramId = :programId AND p.productRegimens IS NULL "
+//		).setParameter("programId", productProgram.getProductProgramId()).list();
+//
+//		if (productList != null) {
+//			System.out.println("------------------------------------ > " + productList.size());
+//		}*/
+//		List<Product> products =
+//				(List<Product>) criteria.createAlias("p.productPrograms", "pp")
+////				.createAlias("p.productRegimens", "pr")
+//				.add(Restrictions.eq("pp.productProgramId", productProgram.getProductProgramId()))
+////				.add(Restrictions.or(Restrictions.isEmpty("p.productRegimens"),
+////						Restrictions.isNull("p.productRegimens")))
+////				.add(Restrictions.isEmpty("p.productRegimens"))
+//				.list();
+//		if (products != null) {
+//			System.out.println("------------------------------------ > " + products.size());
+//			for (Product product : products) {
+//				if (product.getProductRegimens().size() == 0) {
+//					productList.add(product);
+//				}
+//			}
+//		}
 		return productList;
 	}
 }

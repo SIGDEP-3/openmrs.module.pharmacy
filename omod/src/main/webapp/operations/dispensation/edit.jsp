@@ -365,10 +365,16 @@
                                                         </c:if>
                                                         <c:if test="${lastDispensation != null}">
                                                             <div class="row mb-1">
-                                                                <div class="col-12">
+                                                                <div class="col-6">
                                                                     <label>Date</label>
                                                                     <div class="form-control form-control-sm bg-info text-white">
                                                                         <fmt:formatDate value="${lastDispensation.dispensationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <label>Derni&egrave;re ligne</label>
+                                                                    <div class="form-control form-control-sm bg-info text-white">
+                                                                        ${lastDispensation.regimenLine}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -434,7 +440,7 @@
                                                         <%--                                                    </c:if>--%>
                                                     <c:if test="${program.name == 'PNLSARVIO'}">
                                                         <div class="row mb-2">
-                                                            <div class="col-12">
+                                                            <div class="col-8">
                                                                 <label class="mb-1">But <span class="required">*</span></label>
                                                                 <br>
                                                                 <c:if test="${productDispensationForm.patientType == 'ON_SITE' || productDispensationForm.patientType == 'MOBILE'}">
@@ -452,6 +458,13 @@
                                                                     <form:radiobutton path="goal" value="PREP" label=" PREP" cssClass="ml-1 mr-2"/>
                                                                 </c:if>
                                                                 <form:errors path="goal" cssClass="error"/>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="mb-1">Ligne <span class="required">*</span></label>
+                                                                <br>
+                                                                <form:radiobutton path="productRegimenLine" tabindex="true" value="1" label="1" cssClass="mr-2"/>
+                                                                <form:radiobutton path="productRegimenLine" value="2" label=" 2" cssClass="ml-1 mr-2"/>
+                                                                <form:radiobutton path="productRegimenLine" value="3" label=" 3" cssClass="mr-2"/>
                                                             </div>
                                                         </div>
                                                     </c:if>

@@ -488,7 +488,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"            IF(patient_type = 2, 'OTHER_HIV', NULL))) patientType " +
 				"  FROM ( " +
 				"           SELECT " +
-				"               FLOOR(DATEDIFF(p.birthdate, NOW()) / 365.25) patientAge, " +
+				"               FLOOR(DATEDIFF(NOW(), p.birthdate) / 365.25) patientAge, " +
 				"               pmp.age mobileAge, " +
 				"               p.gender patientGender, " +
 				"               pmp.gender mobileGender, " +

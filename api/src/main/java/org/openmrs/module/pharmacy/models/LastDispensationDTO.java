@@ -13,6 +13,7 @@ public class LastDispensationDTO implements Serializable {
     private String regimen;
     private Integer treatmentDays;
     private Date treatmentEndDate;
+    private String regimenLine;
 
     public LastDispensationDTO() {
     }
@@ -54,6 +55,14 @@ public class LastDispensationDTO implements Serializable {
             for (Obs obs : dispensation.getEncounter().getAllObs()) {
                 if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("Regimen"))) {
                     setRegimen(obs.getValueCoded().getName().getName());
+                } else if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("RegimenLine"))) {
+                    if (obs.getValueCoded().getConceptId().equals(164730)) {
+                        setRegimenLine("Ligne 1");
+                    } else if (obs.getValueCoded().getConceptId().equals(164732)) {
+                        setRegimenLine("Ligne 2");
+                    } else if (obs.getValueCoded().getConceptId().equals(164734)) {
+                        setRegimenLine("Ligne 3");
+                    }
                 } else if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("TreatmentDays"))) {
                     setTreatmentDays(obs.getValueNumeric().intValue());
                 } else if (obs.getConcept().getConceptId().equals(OperationUtils.getConceptIdInGlobalProperties("TreatmentEndDate"))) {
@@ -64,9 +73,18 @@ public class LastDispensationDTO implements Serializable {
             setRegimen(dispensation.getMobilePatientDispensationInfo().getProductRegimen().getConcept().getName().getName());
             setTreatmentDays(dispensation.getMobilePatientDispensationInfo().getTreatmentDays());
             setTreatmentEndDate(dispensation.getMobilePatientDispensationInfo().getTreatmentEndDate());
+            setRegimenLine("Ligne " + dispensation.getMobilePatientDispensationInfo().getRegimenLine());
         }
 
         setDispensationDate(dispensation.getOperationDate());
         return this;
+    }
+
+    public String getRegimenLine() {
+        return regimenLine;
+    }
+
+    public void setRegimenLine(String regimenLine) {
+        this.regimenLine = regimenLine;
     }
 }

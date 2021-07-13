@@ -250,10 +250,16 @@
                                                     </c:if>
                                                     <c:if test="${lastDispensation != null}">
                                                         <div class="row mb-1">
-                                                            <div class="col-12">
+                                                            <div class="col-6">
                                                                 <label>Date</label>
                                                                 <div class="form-control form-control-sm bg-info text-white">
                                                                     <fmt:formatDate value="${lastDispensation.dispensationDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label>Derni&egrave;re ligne</label>
+                                                                <div class="form-control form-control-sm bg-info text-white">
+                                                                    ${lastDispensation.regimenLine}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -318,23 +324,35 @@
                                                 <c:if test="${headerDTO.productProgram.name == 'PNLSARVIO'}">
 
                                                     <div class="row mb-3">
-                                                        <div class="col-12">
+                                                        <div class="col-8">
                                                             <label class="mb-1">But</label>
                                                             <br>
                                                             <c:if test="${headerDTO.patientType == 'ON_SITE' || headerDTO.patientType == 'MOBILE'}">
-                                                        <span class="mr-3 text-info">
-                                                            ${headerDTO.goal == 'NOT_APPLICABLE' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;Non Applicable </span>
                                                                 <span class="mr-3 text-info">
-                                                            ${headerDTO.goal == 'PEC' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PEC </span>
+                                                                        ${headerDTO.goal == 'NOT_APPLICABLE' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;Non Applicable </span>
                                                                 <span class="mr-3 text-info">
-                                                            ${headerDTO.goal == 'PTME' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PTME </span>
+                                                                        ${headerDTO.goal == 'PEC' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PEC </span>
+                                                                <span class="mr-3 text-info">
+                                                                        ${headerDTO.goal == 'PTME' ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;PTME </span>
                                                             </c:if>
                                                             <c:if test="${headerDTO.patientType == 'OTHER_HIV'}">
-                                                        <span class="text-info">
-                                                            ${headerDTO.goal == 'AES' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;AES</span>
+                                                                <span class="mr-3 text-info">
+                                                                        ${headerDTO.goal == 'AES' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;AES
+                                                                </span>
                                                                 <span class="text-info">
-                                                            ${headerDTO.goal == 'PREP' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;PREP</span>
+                                                                        ${headerDTO.goal == 'PREP' ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;PREP
+                                                                </span>
                                                             </c:if>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <label class="mb-1">Ligne</label>
+                                                            <br>
+                                                            <span class="mr-3 text-info">
+                                                                        ${headerDTO.productRegimenLine == 1 ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;1 </span>
+                                                            <span class="mr-3 text-info">
+                                                                        ${headerDTO.productRegimenLine == 2 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;2 </span>
+                                                            <span class="text-info">
+                                                                        ${headerDTO.productRegimenLine == 3 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;3 </span>
                                                         </div>
                                                     </div>
                                                 </c:if>

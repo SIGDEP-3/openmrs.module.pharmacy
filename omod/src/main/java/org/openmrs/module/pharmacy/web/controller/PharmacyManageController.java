@@ -142,6 +142,7 @@ public class PharmacyManageController {
 						OperationUtils.getUserLocation(),
 						bySite
 				);
+//				System.out.println("Obtained values from query ");
 				dto.setByWholesaleUnit(byWholesaleUnit);
 				modelMap.addAttribute("dto", dto);
 			}
