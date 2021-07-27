@@ -95,13 +95,16 @@ public class PharmacyProductDispensationManageController {
                     OperationUtils.getUserLocation(),
                     programService().getOneProductProgramById(1),
                     InventoryType.TOTAL);
+            if (latestInventory != null) {
+                modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                        latestInventory.getOperationDate(),
+                        OperationUtils.getCurrentMonthRange().getEndDate(),
+                        OperationUtils.getUserLocation()));
+            }
+
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("findPatientForm", findPatientForm);
-            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    latestInventory.getOperationDate(),
-                    OperationUtils.getCurrentMonthRange().getEndDate(),
-                    OperationUtils.getUserLocation()));
             modelMap.addAttribute("numberPatientToTransform",
                     dispensationService().countPatientToTransform(OperationUtils.getUserLocation()));
         }
@@ -124,7 +127,11 @@ public class PharmacyProductDispensationManageController {
                     regimen = "1";
 
                     if (findPatientForm.getPatientIdentifier() != null) {
-                        if (findPatientForm.getPatientType().equals(PatientType.ON_SITE)) {
+                        if (findPatientForm.getPatientType().equals(PatientType.OTHER_HIV)) {
+                            mobile = "2";
+                            patientId = getPatientInfo(findPatientForm);
+                        } else
+                        /*if (findPatientForm.getPatientType().equals(PatientType.ON_SITE))*/ {
                             Patient patient = dispensationService().getPatientByIdentifier(findPatientForm.getPatientIdentifier());
                             if (patient != null) {
                                 MobilePatient mobilePatient = dispensationService().getOneMobilePatientByIdentifier(findPatientForm.getPatientIdentifier());
@@ -137,14 +144,14 @@ public class PharmacyProductDispensationManageController {
                                 patientId = getPatientInfo(findPatientForm);
                                 mobile = "1";
                             }
-                        } else {
+                        }/* else {
 //                            if (findPatientForm.getPatientType().equals(PatientType.MOBILE)) {
 //                                mobile = "1";
 //                            } else {
 //                            }
                             mobile = "2";
                             patientId = getPatientInfo(findPatientForm);
-                        }
+                        }*/
                     }
                 } else if (findPatientForm.getDispensationType().equals(DispensationType.OTHER_PATIENT)) {
                     patientId = getPatientInfo(findPatientForm);
@@ -175,10 +182,12 @@ public class PharmacyProductDispensationManageController {
                     OperationUtils.getUserLocation(),
                     programService().getOneProductProgramById(1),
                     InventoryType.TOTAL);
-            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                    latestInventory.getOperationDate(),
-                    OperationUtils.getCurrentMonthRange().getEndDate(),
-                    OperationUtils.getUserLocation()));
+            if (latestInventory != null) {
+                modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+                        latestInventory.getOperationDate(),
+                        OperationUtils.getCurrentMonthRange().getEndDate(),
+                        OperationUtils.getUserLocation()));
+            }
             modelMap.addAttribute("subTitle", "Liste des Dispensations");
         } else {
             modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
@@ -268,19 +277,21 @@ public class PharmacyProductDispensationManageController {
                 ProductDispensation dispensation = productDispensationForm.getProductDispensation();
                 if (dispensation != null) {
                     //dispensation.setIncidence(Incidence.NEGATIVE);
-                    if (productDispensationForm.getPatientType().equals(PatientType.ON_SITE) && programId == 1) {
+                    if (productDispensationForm.getPatientType().equals(PatientType.ON_SITE)/* && programId == 1*/) {
                         Encounter encounter = productDispensationForm.getEncounter();
                         dispensation.setEncounter(Context.getEncounterService().saveEncounter(encounter));
                     } else {
                         MobilePatientDispensationInfo info = productDispensationForm.getMobileDispensationInfo();
                         info.setDispensation(dispensation);
                         Patient patient = productDispensationForm.getPatient();
-                        if (patient != null) {
+                        if (patient != null &&
+                                dispensationService().isTransferred(patient, OperationUtils.getUserLocation())) {
                             info.setPatient(patient);
+                            info.setMobilePatient(null);
                         } else {
-                            info.setMobilePatient(dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient()));
+                            dispensationService().saveMobilePatientDispensationInfo(info);
                         }
-                        dispensationService().saveMobilePatientDispensationInfo(info);
+                        dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient());
                     }
                     dispensationService().saveProductDispensation(dispensation);
 

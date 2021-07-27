@@ -79,6 +79,12 @@ public class PrivilegeConstants {
     public static final String DELETE_MOVEMENT      = "Delete Movement";
     public static final String VALIDATE_MOVEMENT    = "Validate Movement";
 
+    public static final String MANAGE_DISTRIBUTION      = "Manage Distribution";
+    public static final String VIEW_DISTRIBUTION        = "View Distribution";
+    public static final String SAVE_DISTRIBUTION        = "Save Distribution";
+    public static final String DELETE_DISTRIBUTION      = "Delete Distribution";
+    public static final String VALIDATE_DISTRIBUTION    = "Validate Distribution";
+
     public static final String MANAGE_DISPENSATION      = "Manage Dispensation";
     public static final String VIEW_DISPENSATION        = "View Dispensation";
     public static final String SAVE_DISPENSATION        = "Save Dispensation";

@@ -329,6 +329,27 @@
 	</privilege>
 
 	<privilege>
+		<name>Manage Distribution</name>
+		<description>Can Manage Distribution</description>
+	</privilege>
+	<privilege>
+		<name>View Distribution</name>
+		<description>Can View Distribution</description>
+	</privilege>
+	<privilege>
+		<name>Save Movement</name>
+		<description>Can Save and Edit Distribution</description>
+	</privilege>
+	<privilege>
+		<name>Delete Movement</name>
+		<description>Can Delete Distribution</description>
+	</privilege>
+	<privilege>
+		<name>Validate Movement</name>
+		<description>Can Validate Distribution</description>
+	</privilege>
+
+	<privilege>
 		<name>Manage Dispensation</name>
 		<description>Can Manage Dispensation</description>
 	</privilege>

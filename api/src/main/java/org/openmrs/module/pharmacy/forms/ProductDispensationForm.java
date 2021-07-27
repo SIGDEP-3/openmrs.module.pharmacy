@@ -226,11 +226,12 @@ public class ProductDispensationForm extends ProductOperationForm {
             info.setProvider(Context.getProviderService().getProvider(getProviderId()));
         }
         info.setTreatmentDays(getTreatmentDays());
-        if (getProductRegimenId() != null /*&& getProductRegimenId() != 105281*/) {
+        if (getProductRegimenId() != null) {
             info.setProductRegimen(regimenService().getOneProductRegimenById(getProductRegimenId()));
             info.setTreatmentEndDate(getTreatmentEndDate());
             info.setRegimenLine(getProductRegimenLine());
         }
+        info.setMobilePatient(getMobilePatient());
         return info;
     }
 
@@ -240,7 +241,7 @@ public class ProductDispensationForm extends ProductOperationForm {
             encounter.setEncounterDatetime(getOperationDate());
             encounter.setPatient(Context.getPatientService().getPatient(getPatientId()));
             encounter.setLocation(OperationUtils.getUserLocation());
-            encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
+            encounter.setEncounterType(Context.getEncounterService().getEncounterTypeByUuid("cfb217pd-4af2-40f4-9d6e-0d1b38d2af86"));
             if (getProviderId() != null) {
                 encounter.addProvider(Context.getEncounterService().getEncounterRole(1), Context.getProviderService().getProvider(getProviderId()));
             }

@@ -640,13 +640,13 @@
                                  baseTableName="pharmacy_product_attribute_stock" baseColumnNames="location_id"
                                  referencedTableName="location" referencedColumnNames="location_id"/>
     </changeSet>
-    <changeSet id="add-encounter-type-dispensing" author="BOGUI SERGE">
-        <preConditions>
+    <changeSet id="add-encounter-type-dispensing-new" author="BOGUI SERGE">
+        <preConditions onFail="CONTINUE">
             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_type WHERE name = 'DISPENSATION'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT INTO encounter_type (encounter_type_id, name, description, creator, date_created, retired, uuid)
-            VALUE (17, 'DISPENSATION', NULL, 1, '2020-11-10', 0, 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86');
+            INSERT INTO encounter_type (name, description, creator, date_created, retired, uuid)
+            VALUE ('DISPENSATION', NULL, 1, '2020-11-10', 0, 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86');
         </sql>
     </changeSet>
 
@@ -1512,13 +1512,13 @@
         </sql>
     </changeSet>
 
-    <changeSet id="pharmacy-create-direct-clients" author="BOGUI SERGE">
+    <changeSet id="pharmacy-create-direct-clients-2" author="BOGUI SERGE" runAlways="true">
         <sql>
             INSERT INTO location_attribute (location_attribute_id, location_id, attribute_type_id, value_reference, uuid, creator, date_created, voided)
             SELECT NULL AS location_attribute_id, location_id, (SELECT location_attribute_type_id FROM location_attribute_type WHERE uuid = 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC' ) attribute_type_id, 'true' AS value_reference, uuid() AS uuid, 1, '2021-01-01 00:00:00', 0
             FROM location l
             WHERE
-            (name LIKE 'CHU%' OR name LIKE 'CHR%' OR name LIKE 'HG%' OR name LIKE 'DISTRICT SANITAIRE%')
+            (name LIKE 'CHU %' OR name LIKE 'CHR %' OR name LIKE 'HG %' OR name LIKE 'DISTRICT SANITAIRE %')
             AND location_id NOT IN (SELECT location_id FROM location_attribute la WHERE attribute_type_id = (SELECT location_attribute_type_id FROM location_attribute_type lat WHERE uuid = 'NPSPCLIENTCCCCCCCCCCCCCCCCCCCCCCCCCC' ) AND la.location_id = l.location_id)
         </sql>
     </changeSet>
@@ -1688,6 +1688,22 @@
         <addColumn tableName="pharmacy_mobile_patient_dispensation_info">
             <column name="regimen_line" type="int"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="pharmacy-update-encounter-type-dispensation" author="BOGUI SERGE" runOnChange="true">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                <![CDATA[
+                SELECT COUNT(*) FROM encounter_type WHERE name = 'DISPENSATION' AND encounter_type_id = 17;
+                ]]>
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            UPDATE encounter SET encounter_type = (SELECT encounter_type_id FROM encounter_type WHERE name = 'DISPENSATION')
+            WHERE encounter_type = 17;
+            ]]>
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -58,7 +58,7 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
             }
 
             if (form.getProductRegimenId() != null && form.getProductRegimenLine() == null) {
-                errors.rejectValue("productRegimenId", null, "Ce champ est requis");
+                errors.rejectValue("productRegimenLine", null, "Ce champ est requis");
             }
 
 //            ProductDispensation dispensation = service().getOneProductOperationByOperationDateAndProductProgram(

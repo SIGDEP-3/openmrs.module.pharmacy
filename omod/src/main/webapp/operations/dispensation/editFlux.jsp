@@ -344,16 +344,18 @@
                                                                 </span>
                                                             </c:if>
                                                         </div>
-                                                        <div class="col-4">
-                                                            <label class="mb-1">Ligne</label>
-                                                            <br>
-                                                            <span class="mr-3 text-info">
-                                                                        ${headerDTO.productRegimenLine == 1 ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;1 </span>
-                                                            <span class="mr-3 text-info">
-                                                                        ${headerDTO.productRegimenLine == 2 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;2 </span>
-                                                            <span class="text-info">
-                                                                        ${headerDTO.productRegimenLine == 3 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;3 </span>
-                                                        </div>
+                                                        <c:if test="${headerDTO.productRegimen != null}">
+                                                            <div class="col-4">
+                                                                <label class="mb-1">Ligne</label>
+                                                                <br>
+                                                                <span class="mr-3 text-info">
+                                                                            ${headerDTO.productRegimenLine == 1 ? '&ofcir;' : '&cir;'}&nbsp;&nbsp;1 </span>
+                                                                <span class="mr-3 text-info">
+                                                                            ${headerDTO.productRegimenLine == 2 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;2 </span>
+                                                                <span class="text-info">
+                                                                            ${headerDTO.productRegimenLine == 3 ? '&ofcir;' : '&cir;'} &nbsp;&nbsp;3 </span>
+                                                            </div>
+                                                        </c:if>
                                                     </div>
                                                 </c:if>
                                                 <div class="row mb-2">
