@@ -14,7 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductExchangeEntity;
+import org.openmrs.module.pharmacy.entities.ProductExchangeEntity;
 
 import java.util.List;
 

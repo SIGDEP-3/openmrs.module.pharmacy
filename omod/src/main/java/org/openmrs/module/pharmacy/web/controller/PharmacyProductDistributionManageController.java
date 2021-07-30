@@ -4,20 +4,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.forms.DistributionAttributeFluxForm;
-import org.openmrs.module.pharmacy.forms.ProductDistributionForm;
+import org.openmrs.module.pharmacy.forms.distribution.DistributionAttributeFluxForm;
+import org.openmrs.module.pharmacy.forms.distribution.ProductDistributionForm;
 //import org.openmrs.module.pharmacy.models.ProductDistributionFluxDTO;
-import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
-import org.openmrs.module.pharmacy.models.ProductReportLineExtendedDTO;
+import org.openmrs.module.pharmacy.dto.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.dto.ProductReportLineExtendedDTO;
 import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
-import org.openmrs.module.pharmacy.validators.ProductDistributionAttributeFluxFormValidation;
-//import org.openmrs.module.pharmacy.validators.ProductDistributionFormValidation;
-import org.openmrs.module.pharmacy.validators.ProductDistributionFormValidation;
+import org.openmrs.module.pharmacy.forms.distribution.validators.ProductDistributionAttributeFluxFormValidation;
+//import org.openmrs.module.pharmacy.forms.distribution.validators.ProductDistributionFormValidation;
+import org.openmrs.module.pharmacy.forms.distribution.validators.ProductDistributionFormValidation;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -382,6 +382,7 @@ public class PharmacyProductDistributionManageController {
 
                 reportLineDTOS.add(reportLineExtendedDTO);
             }
+            Collections.sort(reportLineDTOS);
             modelMap.addAttribute("reportData", reportLineDTOS);
             if (productDistribution.getOperationStatus().equals(OperationStatus.AWAITING_TREATMENT)) {
                 modelMap.addAttribute("subTitle", "Distribution <i class=\"fa fa-play\"></i> EN COURS DE TRAITEMENT");
@@ -478,7 +479,7 @@ public class PharmacyProductDistributionManageController {
             reportService().saveProductReport(childProductReport);
         }
         //attributeService().purgeUnusedAttributes();
-        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La distributiona été enregistrée avec " +
+        session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La distribution a été enregistrée avec " +
                 "succès et est en attente de traitement !");
         return "redirect:/module/pharmacy/operations/distribution/list.form";
     }

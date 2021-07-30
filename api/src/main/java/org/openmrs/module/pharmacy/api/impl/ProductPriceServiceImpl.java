@@ -16,7 +16,7 @@ package org.openmrs.module.pharmacy.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.ProductPrice;
+import org.openmrs.module.pharmacy.entities.ProductPrice;
 import org.openmrs.module.pharmacy.api.ProductPriceService;
 import org.openmrs.module.pharmacy.api.db.ProductPriceDAO;
 

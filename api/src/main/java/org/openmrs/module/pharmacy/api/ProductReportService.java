@@ -17,9 +17,8 @@ import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.enumerations.ReportType;
-import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.entities.*;
+import org.openmrs.module.pharmacy.dto.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,7 +112,7 @@ public interface ProductReportService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
-	ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) throws APIException;
+    ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) throws APIException;
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReportByProductAndByDate(Location location, ProductProgram productProgram, Product product, Date reportDate, Boolean urgent);
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})

@@ -15,17 +15,12 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductReceptionService;
 import org.openmrs.module.pharmacy.api.ProductRegimenService;
-import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductRegimenDAO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.entities.ProductRegimen;
 
-import java.util.Date;
 import java.util.List;
 
 /**

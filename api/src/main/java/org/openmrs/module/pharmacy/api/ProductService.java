@@ -15,10 +15,10 @@ package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductUnit;
-import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductUnit;
+import org.openmrs.module.pharmacy.dto.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

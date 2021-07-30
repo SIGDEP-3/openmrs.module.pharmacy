@@ -3,12 +3,10 @@ package org.openmrs.module.pharmacy.utils;
 import com.mifmif.common.regex.Generex;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
-import org.openmrs.module.pharmacy.enumerations.Goal;
+import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.models.PharmacyDateRange;
+import org.openmrs.module.pharmacy.dto.PharmacyDateRangeDTO;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
@@ -141,7 +139,7 @@ public class OperationUtils {
         return lastElement;
     }
 
-    public static PharmacyDateRange getCurrentMonthRange() {
+    public static PharmacyDateRangeDTO getCurrentMonthRange() {
         Date start, end;
         {
             Calendar calendar = getCalendarForNow();
@@ -159,10 +157,10 @@ public class OperationUtils {
         }
 //        System.out.println("---------------------Get Month Range beginning :" + start);
 //        System.out.println("---------------------Get Month Range end :" + end);
-        return new PharmacyDateRange(start, end);
+        return new PharmacyDateRangeDTO(start, end);
     }
 
-    public static PharmacyDateRange getMonthRange(Date date) {
+    public static PharmacyDateRangeDTO getMonthRange(Date date) {
         Date start, end;
         {
             Calendar calendar = getCalendarForDate(date);
@@ -180,10 +178,10 @@ public class OperationUtils {
         }
 //        System.out.println("---------------------Get Month Range beginning :" + start);
 //        System.out.println("---------------------Get Month Range end :" + end);
-        return new PharmacyDateRange(start, end);
+        return new PharmacyDateRangeDTO(start, end);
     }
 
-    public static PharmacyDateRange getDayRange () {
+    public static PharmacyDateRangeDTO getDayRange () {
         Date start, end;
         {
             Calendar calendar = getCalendarForNow();
@@ -196,7 +194,7 @@ public class OperationUtils {
             end = calendar.getTime();
         }
 
-        return new PharmacyDateRange(start, end);
+        return new PharmacyDateRangeDTO(start, end);
     }
 
     private static Calendar getCalendarForNow() {

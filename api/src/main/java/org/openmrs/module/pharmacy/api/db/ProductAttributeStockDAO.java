@@ -14,9 +14,9 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 
 import java.util.List;
 
@@ -46,4 +46,6 @@ public interface ProductAttributeStockDAO {
     Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren);
 
 	Integer getProductAttributeStocksByProductCount(Product product);
+
+    void voidProductAttributeStock(ProductAttributeStock attributeStock);
 }

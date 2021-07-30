@@ -1,8 +1,10 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductAttributeFlux;
+import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 

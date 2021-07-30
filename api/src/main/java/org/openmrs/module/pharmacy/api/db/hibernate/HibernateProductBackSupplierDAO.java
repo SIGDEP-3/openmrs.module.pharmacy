@@ -21,7 +21,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductBackSupplier;
+import org.openmrs.module.pharmacy.entities.ProductBackSupplier;
 import org.openmrs.module.pharmacy.api.db.ProductBackSupplierDAO;
 
 import java.util.Date;

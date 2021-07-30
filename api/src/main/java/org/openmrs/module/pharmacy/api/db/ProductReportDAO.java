@@ -14,9 +14,8 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.enumerations.ReportType;
-import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.entities.*;
+import org.openmrs.module.pharmacy.dto.ProductReportLineDTO;
 
 import java.util.Date;
 import java.util.List;

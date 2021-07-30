@@ -15,18 +15,16 @@ package org.openmrs.module.pharmacy.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductService;
-import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductDAO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
-import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductUnit;
+import org.openmrs.module.pharmacy.dto.ProductUploadResumeDTO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
 import java.util.List;
 
 /**

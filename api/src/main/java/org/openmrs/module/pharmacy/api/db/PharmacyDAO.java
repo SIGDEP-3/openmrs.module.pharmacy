@@ -14,12 +14,12 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.entities.ProductOperation;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
+import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
 
 import java.util.Date;
 import java.util.List;

@@ -18,10 +18,9 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductProgramDAO;
-import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.List;
 

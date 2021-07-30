@@ -20,12 +20,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductTransfer;
+import org.openmrs.module.pharmacy.entities.ProductTransfer;
 import org.openmrs.module.pharmacy.api.db.ProductTransferDAO;
-import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
 
 import java.util.Date;
 import java.util.List;

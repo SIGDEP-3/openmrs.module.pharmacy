@@ -13,15 +13,12 @@
  */
 package org.openmrs.module.pharmacy.api;
 
-import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.entities.ProductRegimen;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +34,7 @@ import java.util.List;
 @Transactional
 public interface ProductRegimenService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.SAVE_REGIMEN})
-	ProductRegimen saveProductRegimen(ProductRegimen productRegimen);
+    ProductRegimen saveProductRegimen(ProductRegimen productRegimen);
 	@Authorized(value = {PrivilegeConstants.DELETE_REGIMEN})
 	void removeProductRegimen(ProductRegimen productRegimen);
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})

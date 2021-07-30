@@ -17,9 +17,9 @@ import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.ProductMovementEntry;
-import org.openmrs.module.pharmacy.ProductMovementOut;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductMovementEntry;
+import org.openmrs.module.pharmacy.entities.ProductMovementOut;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 

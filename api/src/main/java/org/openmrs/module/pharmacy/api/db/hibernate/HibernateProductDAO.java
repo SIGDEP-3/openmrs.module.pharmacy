@@ -19,12 +19,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductUnit;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductDAO;
-import org.openmrs.module.pharmacy.models.ProductUploadResumeDTO;
+import org.openmrs.module.pharmacy.dto.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.utils.CSVHelper;
 import org.springframework.web.multipart.MultipartFile;
 

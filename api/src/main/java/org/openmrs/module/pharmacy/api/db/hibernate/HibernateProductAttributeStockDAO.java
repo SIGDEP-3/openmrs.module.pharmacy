@@ -21,13 +21,14 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductAttribute;
-import org.openmrs.module.pharmacy.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -167,6 +168,13 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 			quantity += stock.getQuantityInStock();
 		}
 		return quantity;
+	}
+
+	@Override
+	public void voidProductAttributeStock(ProductAttributeStock attributeStock) {
+		attributeStock.setVoided(true);
+		attributeStock.setDateVoided(new Date());
+		saveProductAttributeStock(attributeStock);
 	}
 
 }

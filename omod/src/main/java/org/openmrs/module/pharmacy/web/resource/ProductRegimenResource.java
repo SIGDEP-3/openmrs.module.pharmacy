@@ -1,8 +1,7 @@
 package org.openmrs.module.pharmacy.web.resource;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductRegimen;
-import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.entities.ProductRegimen;
 import org.openmrs.module.pharmacy.api.ProductRegimenService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.web.RequestContext;

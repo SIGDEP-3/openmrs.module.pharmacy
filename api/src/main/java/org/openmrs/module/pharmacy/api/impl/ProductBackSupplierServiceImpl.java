@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.ProductBackSupplier;
+import org.openmrs.module.pharmacy.entities.ProductBackSupplier;
 import org.openmrs.module.pharmacy.api.ProductBackSupplierService;
 import org.openmrs.module.pharmacy.api.db.ProductBackSupplierDAO;
 

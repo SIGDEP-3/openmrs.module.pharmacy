@@ -1,12 +1,11 @@
 package org.openmrs.module.pharmacy.parameter;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class OperationSearchCriteriaBuilder {
     private Location location;

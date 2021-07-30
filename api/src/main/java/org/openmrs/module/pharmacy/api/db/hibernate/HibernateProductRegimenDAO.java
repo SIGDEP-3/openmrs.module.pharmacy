@@ -20,7 +20,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductRegimen;
+import org.openmrs.module.pharmacy.entities.ProductRegimen;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductRegimenDAO;
 

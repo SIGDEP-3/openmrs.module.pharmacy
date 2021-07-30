@@ -24,15 +24,15 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductInventory;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductInventory;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
 
 import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
-import org.openmrs.module.pharmacy.models.ProductInventoryFluxDTO;
+import org.openmrs.module.pharmacy.dto.ProductInventoryFluxDTO;
 
 /**
  * It is a default implementation of  {@link ProductInventoryDAO}.

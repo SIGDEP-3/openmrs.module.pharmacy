@@ -14,7 +14,7 @@
 package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductBackSupplier;
+import org.openmrs.module.pharmacy.entities.ProductBackSupplier;
 
 import java.util.Date;
 import java.util.List;

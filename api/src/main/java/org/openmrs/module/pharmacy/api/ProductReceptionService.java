@@ -16,10 +16,12 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.*;
-import org.openmrs.module.pharmacy.models.ProductReceptionFluxDTO;
-import org.openmrs.module.pharmacy.models.ProductReceptionListDTO;
-import org.openmrs.module.pharmacy.models.ProductReceptionReturnDTO;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductReception;
+import org.openmrs.module.pharmacy.dto.ProductReceptionFluxDTO;
+import org.openmrs.module.pharmacy.dto.ProductReceptionListDTO;
+import org.openmrs.module.pharmacy.dto.ProductReceptionReturnDTO;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 

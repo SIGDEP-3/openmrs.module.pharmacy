@@ -20,9 +20,9 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
+import org.openmrs.module.pharmacy.entities.*;
 
 import java.util.Date;
 import java.util.List;

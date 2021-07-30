@@ -1,7 +1,7 @@
 package org.openmrs.module.pharmacy.web;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.Product;
+import org.openmrs.module.pharmacy.entities.Product;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.utils.OperationUtils;

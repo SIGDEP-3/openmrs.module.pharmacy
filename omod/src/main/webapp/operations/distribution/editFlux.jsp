@@ -91,13 +91,13 @@
                 </c:if>
 
 
-                <c:if test="${productDistribution.operationStatus != 'NOT_COMPLETED'}">
-                    <%--                    <c:url value="/module/pharmacy/operations/distribution/incomplete.form" var="incompleteUrl">--%>
-                    <%--                        <c:param name="reportId" value="${productDistribution.productOperationId}"/>--%>
-                    <%--                    </c:url>--%>
-                    <%--                    <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">--%>
-                    <%--                        <i class="fa fa-pen"></i> Editer le rapport--%>
-                    <%--                    </button>--%>
+                <c:if test="${productDistribution.operationStatus != 'NOT_COMPLETED' && productDistribution.operationStatus != 'TREATED'}">
+                    <c:url value="/module/pharmacy/operations/distribution/incomplete.form" var="incompleteUrl">
+                        <c:param name="reportId" value="${productDistribution.productOperationId}"/>
+                    </c:url>
+                    <button class="btn btn-primary btn-sm mr-2" onclick="window.location='${incompleteUrl}'">
+                        <i class="fa fa-pen"></i> Editer le rapport
+                    </button>
                     <%--                    <c:if test="${productDistribution.operationStatus == 'AWAITING_VALIDATION'}">--%>
                     <%--                        <openmes:hasPrivilege privilege="Validate Report">--%>
 

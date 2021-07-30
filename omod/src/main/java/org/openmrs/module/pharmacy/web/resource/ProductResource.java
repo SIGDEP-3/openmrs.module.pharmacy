@@ -2,10 +2,8 @@ package org.openmrs.module.pharmacy.web.resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.Product;
-import org.openmrs.module.pharmacy.ProductSupplier;
-import org.openmrs.module.pharmacy.ProductUnit;
-import org.openmrs.module.pharmacy.api.PharmacyService;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductUnit;
 import org.openmrs.module.pharmacy.api.ProductService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;

@@ -20,10 +20,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
-import org.openmrs.module.pharmacy.ProductMovementEntry;
-import org.openmrs.module.pharmacy.ProductMovementOut;
-import org.openmrs.module.pharmacy.ProductProgram;
-import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.entities.ProductMovementEntry;
+import org.openmrs.module.pharmacy.entities.ProductMovementOut;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductMovementDAO;
 
 import java.util.Date;

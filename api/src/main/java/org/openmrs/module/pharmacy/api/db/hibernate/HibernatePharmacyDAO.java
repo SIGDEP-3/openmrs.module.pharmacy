@@ -24,19 +24,21 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.entities.ProductAttributeFlux;
+import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.ProductOperation;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.models.LocationProductQuantity;
-import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
-import org.openmrs.module.pharmacy.models.ProductQuantity;
+import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
+import org.openmrs.module.pharmacy.dto.LocationProductQuantityDTO;
+import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
+import org.openmrs.module.pharmacy.dto.ProductQuantityDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -87,18 +89,23 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
 				if (fluxes != null && fluxes.size() != 0) {
 					for (ProductAttributeFlux flux : fluxes) {
-						ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class).getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
+						Integer quantityInStock = 0;
+
+						ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
+								.getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
 						if (attributeStock != null) {
-							Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-									attributeStock.getQuantityInStock() + flux.getQuantity() :
-									(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() - flux.getQuantity() : flux.getQuantity());
-							attributeStock.setQuantityInStock(quantity);
-						} else {
-							attributeStock = new ProductAttributeStock();
-							attributeStock.setQuantityInStock(flux.getQuantity());
-							attributeStock.setLocation(operation.getLocation());
-							attributeStock.setProductAttribute(flux.getProductAttribute());
+							quantityInStock = attributeStock.getQuantityInStock();
+							Context.getService(ProductAttributeStockService.class).voidProductAttributeStock(attributeStock);
 						}
+						Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+								quantityInStock + flux.getQuantity() :
+								(operation.getIncidence().equals(Incidence.NEGATIVE) ? quantityInStock - flux.getQuantity() : flux.getQuantity());
+
+						attributeStock = new ProductAttributeStock();
+						attributeStock.setQuantityInStock(quantity);
+						attributeStock.setLocation(operation.getLocation());
+						attributeStock.setProductAttribute(flux.getProductAttribute());
+						attributeStock.setOperation(operation);
 						Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
 
 						flux.setStatus(OperationStatus.VALIDATED);
@@ -120,13 +127,25 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				if (fluxes != null && fluxes.size() != 0) {
 					for (ProductAttributeFlux flux : fluxes) {
 						if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
-							ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class).getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
+							Integer quantityInStock = 0;
+							ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
+									.getOneProductAttributeStockByAttribute(
+											flux.getProductAttribute(),
+											operation.getLocation(), false);
 							if (attributeStock != null) {
-								Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-										attributeStock.getQuantityInStock() - flux.getQuantity() :
-										(operation.getIncidence().equals(Incidence.NEGATIVE) ? attributeStock.getQuantityInStock() + flux.getQuantity() : flux.getQuantity());
-								attributeStock.setQuantityInStock(quantity);
+								quantityInStock = attributeStock.getQuantityInStock();
+								Context.getService(ProductAttributeStockService.class).voidProductAttributeStock(attributeStock);
 							}
+							Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
+									quantityInStock - flux.getQuantity() :
+									(operation.getIncidence().equals(Incidence.NEGATIVE) ? quantityInStock + flux.getQuantity() : flux.getQuantity());
+
+							attributeStock = new ProductAttributeStock();
+							attributeStock.setQuantityInStock(quantity);
+							attributeStock.setLocation(operation.getLocation());
+							attributeStock.setProductAttribute(flux.getProductAttribute());
+							attributeStock.setOperation(operation);
+
 							Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
 
 							flux.setStatus(OperationStatus.DISABLED);
@@ -308,30 +327,30 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				.setParameter("endDate", endDate)
 				.setParameter("locationId", location.getLocationId())
 				.setParameterList("reportPeriod", OperationUtils.getReportPeriodOfPeriod(startDate, endDate).toArray())
-				.setResultTransformer(new AliasToBeanResultTransformer(ProductQuantity.class));
+				.setResultTransformer(new AliasToBeanResultTransformer(ProductQuantityDTO.class));
 		try {
-			List<ProductQuantity> productQuantities = query.list();
+			List<ProductQuantityDTO> productQuantities = query.list();
 
 			if (byLocation) {
 				for (Location l : location.getChildLocations()) {
-					LocationProductQuantity locationProductQuantity = new LocationProductQuantity(l.getName());
+					LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(l.getName());
 
-					for (ProductQuantity productQuantity : productQuantities) {
-						if (productQuantity.getLocationId().equals(l.getLocationId())) {
-							locationProductQuantity.getProductQuantities().add(productQuantity);
+					for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+						if (productQuantityDTO.getLocationId().equals(l.getLocationId())) {
+							locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
 						}
 					}
-					consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantity);
+					consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
 				}
 			} else {
-				LocationProductQuantity locationProductQuantity = new LocationProductQuantity(location.getName());
+				LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(location.getName());
 
-				for (ProductQuantity productQuantity : productQuantities) {
-					if (productQuantity.getLocationId().equals(location.getLocationId())) {
-						locationProductQuantity.getProductQuantities().add(productQuantity);
+				for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+					if (productQuantityDTO.getLocationId().equals(location.getLocationId())) {
+						locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
 					}
 				}
-				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantity);
+				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
 			}
 
 			return consumptionReportDTO;

@@ -17,9 +17,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeFluxDAO;
+import org.openmrs.module.pharmacy.entities.*;
 
 import java.util.Date;
 import java.util.List;

@@ -17,7 +17,9 @@ import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.*;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,4 +71,6 @@ public interface ProductAttributeStockService extends OpenmrsService {
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren);
+	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
+    void voidProductAttributeStock(ProductAttributeStock attributeStock);
 }

@@ -1706,4 +1706,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="pharmacy-add-column-operation-id-to-stock" author="BOGUI SERGE">
+        <preConditions>
+            <not>
+                <columnExists tableName="pharmacy_product_attribute_stock" columnName="operation_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="pharmacy_product_attribute_stock">
+            <column name="operation_id" type="int"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="pharmacy_product_attribute_stock" baseColumnNames="operation_id"
+                                 constraintName="pharmacy_product_attribute_stock_operation"
+                                 referencedTableName="pharmacy_product_operation"
+                                 referencedColumnNames="product_operation_id"/>
+    </changeSet>
+
 </databaseChangeLog>

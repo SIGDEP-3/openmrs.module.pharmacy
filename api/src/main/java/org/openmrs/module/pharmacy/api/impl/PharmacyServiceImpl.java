@@ -17,13 +17,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.ProductOperation;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.ProductOperation;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.models.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.models.ProductOutFluxDTO;
+import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
+import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
 
 import java.util.Date;
 import java.util.List;

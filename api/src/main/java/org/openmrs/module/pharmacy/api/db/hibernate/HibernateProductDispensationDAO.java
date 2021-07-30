@@ -25,17 +25,17 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.MobilePatient;
-import org.openmrs.module.pharmacy.MobilePatientDispensationInfo;
-import org.openmrs.module.pharmacy.ProductDispensation;
-import org.openmrs.module.pharmacy.ProductProgram;
+import org.openmrs.module.pharmacy.entities.MobilePatient;
+import org.openmrs.module.pharmacy.entities.MobilePatientDispensationInfo;
+import org.openmrs.module.pharmacy.entities.ProductDispensation;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductDispensationDAO;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.enumerations.PatientType;
-import org.openmrs.module.pharmacy.models.DispensationListDTO;
-import org.openmrs.module.pharmacy.models.DispensationResultDTO;
-import org.openmrs.module.pharmacy.models.DispensationTransformationResultDTO;
-import org.openmrs.module.pharmacy.models.ProductDispensationFluxDTO;
+import org.openmrs.module.pharmacy.dto.DispensationListDTO;
+import org.openmrs.module.pharmacy.dto.DispensationResultDTO;
+import org.openmrs.module.pharmacy.dto.DispensationTransformationResultDTO;
+import org.openmrs.module.pharmacy.dto.ProductDispensationFluxDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
@@ -302,7 +302,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DispensationListDTO> getDispensationListDTOsByDate(Date startDate, Date endDate, Location location) {
-		String sqlQuery = "SELECT  " +
+		String sqlQuery = "SELECT  DISTINCT " +
 				"       ppd.product_operation_id productOperationId,  " +
 				"       ppd.prescription_date prescriptionDate,  " +
 				"       ppo.operation_date operationDate,  " +

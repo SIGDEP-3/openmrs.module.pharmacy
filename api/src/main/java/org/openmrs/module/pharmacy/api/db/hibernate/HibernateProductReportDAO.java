@@ -22,11 +22,11 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
+import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.enumerations.*;
-import org.openmrs.module.pharmacy.models.ProductReportLineDTO;
+import org.openmrs.module.pharmacy.dto.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;

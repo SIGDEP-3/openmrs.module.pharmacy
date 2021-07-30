@@ -4,8 +4,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.entities.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -18,12 +18,14 @@ import java.util.List;
 
 public class CSVHelper {
     //    public static String TYPE = "text/csv";
-    public static String TYPE = "application/vnd.ms-excel";
+    public static String CSV_APP_TYPE = "application/vnd.ms-excel";
+    public static String CSV_TEXT_TYPE = "text/csv";
     static String[] HEADERs = { "#Code", "#Designation", "#Designation de dispensation", "#Unite de conditionnement",
             "#Nombre unite", "#Unite de dispensation", "#Prix de vente", "#Programme"};
 
     public static boolean hasCSVFormat(MultipartFile file) {
-        return TYPE.equals(file.getContentType());
+        System.out.println("----------------------------------------> " + file.getContentType());
+        return CSV_APP_TYPE.equals(file.getContentType()) || CSV_TEXT_TYPE.equals(file.getContentType());
     }
 
     public static List<Product> csvProductRegimens(InputStream is) {

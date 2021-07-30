@@ -1,13 +1,12 @@
 package org.openmrs.module.pharmacy.forms;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacy.ProductOperation;
+import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
-import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Date;
 import java.util.UUID;

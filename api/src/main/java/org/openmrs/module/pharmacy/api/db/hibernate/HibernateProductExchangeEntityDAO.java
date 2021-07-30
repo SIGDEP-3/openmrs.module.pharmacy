@@ -19,7 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
-import org.openmrs.module.pharmacy.ProductExchangeEntity;
+import org.openmrs.module.pharmacy.entities.ProductExchangeEntity;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductExchangeEntityDAO;
 

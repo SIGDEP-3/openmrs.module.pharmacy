@@ -15,8 +15,7 @@ package org.openmrs.module.pharmacy.api;
 
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.pharmacy.ProductPrice;
-import org.openmrs.module.pharmacy.ProductUnit;
+import org.openmrs.module.pharmacy.entities.ProductPrice;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
-import org.openmrs.module.pharmacy.ProductPrice;
+import org.openmrs.module.pharmacy.entities.ProductPrice;
 
 import java.util.List;
 

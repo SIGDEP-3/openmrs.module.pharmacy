@@ -18,9 +18,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.*;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
+import org.openmrs.module.pharmacy.entities.Product;
+import org.openmrs.module.pharmacy.entities.ProductAttribute;
+import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 
 import java.util.List;
 
@@ -115,6 +117,11 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     @Override
     public Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren) {
         return dao.getAllProductAttributeStockByProductCount(product, location, includeChildren);
+    }
+
+    @Override
+    public void voidProductAttributeStock(ProductAttributeStock attributeStock) {
+        dao.voidProductAttributeStock(attributeStock);
     }
 
 }
