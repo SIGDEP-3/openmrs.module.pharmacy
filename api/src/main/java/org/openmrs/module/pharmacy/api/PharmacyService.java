@@ -16,6 +16,7 @@ package org.openmrs.module.pharmacy.api;
 import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.pharmacy.dto.ProductMovementHistoryDTO;
 import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
@@ -63,4 +64,6 @@ public interface PharmacyService extends OpenmrsService {
     List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+	List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
 }

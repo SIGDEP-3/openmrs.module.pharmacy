@@ -5,7 +5,7 @@
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){
-            jQuery('.table').DataTable();
+            jQuery('.table').dataTable();
         });
     }
 </script>
@@ -18,7 +18,8 @@
                         <label for="programId">Programme</label>
                         <select name="programId" id="programId" class="s2">
                             <c:forEach var="program" items="${programs}">
-                                <option value="${program.productProgramId}">${program.name}</option>
+                                <option value="${program.productProgramId}" <c:if test='${program.productProgramId == programId}'>selected="selected"</c:if>
+                                >${program.name}</option>
                             </c:forEach>
                         </select>
                         <button class="btn btn-primary btn-sm">Afficher</button>
@@ -47,7 +48,9 @@
                         <td>${stock.productAttribute.product.retailName}</td>
                         <td>${stock.productAttribute.product.productRetailUnit.name}</td>
                         <td>${stock.productAttribute.batchNumber}</td>
-                        <td>${stock.productAttribute.expiryDate}</td>
+                        <td>
+                            <fmt:formatDate value="${stock.productAttribute.expiryDate}" pattern="dd/MM/yyyy" type="DATE"/>
+                        </td>
                         <td>${stock.quantityInStock}</td>
                     </tr>
                 </c:forEach>

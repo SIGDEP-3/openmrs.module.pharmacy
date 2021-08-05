@@ -78,25 +78,38 @@ public class PharmacyManageController {
 				if (productProgram != null) {
 					List<ProductAttributeStock> tmpStocks = stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false);
 					for (ProductAttributeStock stock : tmpStocks) {
-						if (stock.getProductAttribute().getProduct().getProductPrograms().contains(productProgram)){
+						if (stock.getOperation() != null && stock.getOperation().getProductProgram().equals(productProgram)){
+							stocks.add(stock);
+						} else if (stock.getProductAttribute().getProduct().getProductPrograms().contains(productProgram)) {
 							stocks.add(stock);
 						}
 					}
 				}
 			}
 			modelMap.addAttribute("stocks", stocks);
+			modelMap.addAttribute("programId", programId);
 		}
 	}
 
 	@RequestMapping(value = "/module/pharmacy/operations/stock/operationStatus.form", method = RequestMethod.GET)
 	public void operations(ModelMap modelMap,
 					  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
-					  @RequestParam(value = "startDade", defaultValue = "", required = false) Date startDate,
-					  @RequestParam(value = "endDade", defaultValue = "", required = false) Date endDade) {
+					  @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+					  @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
 		if (Context.isAuthenticated()) {
-			modelMap.addAttribute("title", "Etats des mouvenents de stock");
+			modelMap.addAttribute("title", "Etats des mouvenents de produits");
 			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
-			modelMap.addAttribute("stocks", stockService().getAllProductAttributeStocks(OperationUtils.getUserLocation(), false));
+
+			if (programId != 0 && startDate != null && endDate != null) {
+				modelMap.addAttribute("selectedProgram", programService().getOneProductProgramById(programId));
+				modelMap.addAttribute("selectedStartDate", startDate);
+				modelMap.addAttribute("selectedEndDate", endDate);
+				modelMap.addAttribute("stocks", service().getProductMovementHistory(
+						startDate,
+						endDate,
+						OperationUtils.getUserLocation(),
+						programService().getOneProductProgramById(programId)));
+			}
 		}
 	}
 

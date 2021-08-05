@@ -27,18 +27,17 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
+import org.openmrs.module.pharmacy.dto.*;
 import org.openmrs.module.pharmacy.entities.ProductAttributeFlux;
 import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
-import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.dto.LocationProductQuantityDTO;
-import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
-import org.openmrs.module.pharmacy.dto.ProductQuantityDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -83,6 +82,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	}
 
 	@Override
+	@Transactional
 	public Boolean validateOperation(ProductOperation operation) {
 		if (!operation.getIncidence().equals(Incidence.NONE)) {
 			if (!operation.getOperationStatus().equals(OperationStatus.VALIDATED)) {
@@ -94,9 +94,17 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
 								.getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
 						if (attributeStock != null) {
+//							System.out.println("--------------------------------------> attribute stock found");
 							quantityInStock = attributeStock.getQuantityInStock();
-							Context.getService(ProductAttributeStockService.class).voidProductAttributeStock(attributeStock);
+//							System.out.println("--------------------------------------> got quantity");
+							attributeStock.setVoided(true);
+							attributeStock.setDateVoided(new Date());
+							attributeStock.setVoidedBy(Context.getAuthenticatedUser());
+							attributeStock.setVoidReason("Voided by user because not to be used");
+							Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
+//							System.out.println("--------------------------------------> attribute stock voided");
 						}
+
 						Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
 								quantityInStock + flux.getQuantity() :
 								(operation.getIncidence().equals(Incidence.NEGATIVE) ? quantityInStock - flux.getQuantity() : flux.getQuantity());
@@ -134,7 +142,11 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 											operation.getLocation(), false);
 							if (attributeStock != null) {
 								quantityInStock = attributeStock.getQuantityInStock();
-								Context.getService(ProductAttributeStockService.class).voidProductAttributeStock(attributeStock);
+								attributeStock.setVoided(true);
+								attributeStock.setDateVoided(new Date());
+								attributeStock.setVoidedBy(Context.getAuthenticatedUser());
+								attributeStock.setVoidReason("Voided by user because not to be used");
+								Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
 							}
 							Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
 									quantityInStock - flux.getQuantity() :
@@ -193,7 +205,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	public List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation) {
 		String sqlQuery =
 				"SELECT " +
-						"ppaf.product_attribute_flux_id productAttributeFluxId, " +
+						"DISTINCT ppaf.product_attribute_flux_id productAttributeFluxId, " +
 						"pp.code, " +
 						"pp.retail_name retailName, " +
 						"ppu.name retailUnit, " +
@@ -293,28 +305,7 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 						"    (l.location_id = :locationId OR l.parent_location = :locationId) AND " +
 						"    operation_status IN (2, 4, 5, 6) " +
 						"GROUP BY l.location_id, pps.product_id";
-//				"SELECT " +
-//						"    l.location_id locationId, " +
-//						"    pp.code, " +
-//						"    pp.retail_name retailName, " +
-//						"    pp.wholesale_name wholesaleName, " +
-//						"    SUM(IF(ppd.product_operation_id IS NOT NULL, ppaf.quantity, IF(ppaof.label = 'QD', ppaof.quantity, 0))) retailQuantity, " +
-//						"    FLOOR(SUM(IF(ppd.product_operation_id IS NOT NULL, ppaf.quantity, IF(ppaof.label = 'QD', ppaof.quantity, 0))) / pp.unit_conversion) wholesaleQuantity " +
-//						"FROM " +
-//						"pharmacy_product_operation ppo " +
-//						"INNER JOIN pharmacy_product_dispensation ppd on ppo.product_operation_id = ppd.product_operation_id " +
-//						"LEFT JOIN pharmacy_product_attribute_flux ppaf on ppo.product_operation_id = ppaf.operation_id " +
-//						"LEFT JOIN pharmacy_product_attribute_other_flux ppaof on ppo.product_operation_id = ppaof.operation_id " +
-//						"LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-//						"LEFT JOIN (SELECT * FROM pharmacy_product_report WHERE is_urgent = 0 AND report_location_id IN " + locationIds + ") ppr ON ppo.product_operation_id = ppr.product_operation_id " +
-//						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
-//						"LEFT JOIN (SELECT * FROM location WHERE location_id IN " + locationIds + ") l on ppaf.location_id = l.location_id " +
-//						"WHERE " +
-//						"      ppo.operation_status = 2 AND " +
-//						"      ppo.program_id = :programId AND " +
-//						"      ppo.operation_date BETWEEN :startDate AND :endDate " +
-//						"GROUP BY l.location_id, pp.product_id ";
-//		System.out.println("-------------------------------> adding to query to execute ");
+
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("locationId", StandardBasicTypes.INTEGER)
 				.addScalar("code", StandardBasicTypes.STRING)
@@ -359,4 +350,73 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		}
 		return null;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
+		String sqlQuery =
+				"SELECT " +
+						"    ppo.operation_date operationDate, " +
+						"    pp.code, pp.retail_name productName, " +
+						"    ppa.batch_number batchNumber, " +
+						"    IF(ppd.product_operation_id IS NOT NULL, IF(ppo.incidence = 0, 'Dispensation', 'Annulation de Dispensation'), " +
+						"        IF(ppi.product_operation_id IS NOT NULL, IF(ppi.inventory_type = 1, 'Inventaire total', 'Inventaire partiel'), " +
+						"            IF(ppmo.product_operation_id IS NOT NULL, " +
+						"                IF(ppmo.stock_out_type = 1, 'Autre perte de produits', " +
+						"                    IF(ppmo.stock_out_type = 2, 'Vol', " +
+						"                        IF(ppmo.stock_out_type = 4, 'Produits périmés', " +
+						"                            IF(ppmo.stock_out_type = 5, 'Produits avariés', " +
+						"                                IF(ppmo.stock_out_type = 6, 'Produits endommagés', NULL))))), " +
+						"                IF(ppme.product_operation_id IS NOT NULL, 'Don de produits', " +
+						"                    IF(ppr.product_operation_id IS NOT NULL, IF(ppo.incidence = 1, 'Réception', 'Retour de réception'), " +
+						"                        IF(ppt.product_operation_id IS NOT NULL, IF(ppt.transfer_type = 0, 'Transfert entrant', 'Transfert sortant'), " +
+						"                            IF(pprp.product_operation_id IS NOT NULL, 'Distribution', NULL))))))) operationType, " +
+						"    quantity, " +
+						"    quantity_in_stock quantityInStock, " +
+						"    CONCAT(family_name, ' ', given_name) createdBy, " +
+						"    ppo.date_created dateCreated " +
+						" " +
+						"FROM " +
+						"    pharmacy_product_attribute_stock ppas " +
+						"    INNER JOIN users u on ppas.creator = u.user_id " +
+						"    INNER JOIN person p on u.person_id = p.person_id " +
+						"    INNER JOIN person_name pn on p.person_id = pn.person_id " +
+						"    INNER JOIN pharmacy_product_attribute ppa ON ppas.product_attribute_id = ppa.product_attribute_id " +
+						"    INNER JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
+						"    INNER JOIN pharmacy_product_operation ppo ON ppas.operation_id = ppo.product_operation_id " +
+						"    INNER JOIN pharmacy_product_attribute_flux ppaf on ppa.product_attribute_id = ppaf.product_attribute_id AND ppo.product_operation_id = ppaf.operation_id " +
+						"    LEFT JOIN pharmacy_product_dispensation ppd ON ppo.product_operation_id = ppd.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_inventory ppi ON ppo.product_operation_id = ppi.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_reception ppr on ppo.product_operation_id = ppr.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_report pprp on ppo.product_operation_id = pprp.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_transfer ppt on ppo.product_operation_id = ppt.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_movement_entry ppme ON ppo.product_operation_id = ppme.product_operation_id " +
+						"    LEFT JOIN pharmacy_product_movement_out ppmo ON ppo.product_operation_id = ppmo.product_operation_id " +
+						" WHERE ppo.operation_date BETWEEN :startDate AND :endDate AND ppo.location_id = :locationId AND ppo.program_id = :programId " +
+						"ORDER BY pp.retail_name, ppo.operation_date";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+				.addScalar("operationDate", StandardBasicTypes.DATE)
+				.addScalar("code", StandardBasicTypes.STRING)
+				.addScalar("productName", StandardBasicTypes.STRING)
+				.addScalar("batchNumber", StandardBasicTypes.STRING)
+				.addScalar("operationType", StandardBasicTypes.STRING)
+				.addScalar("quantity", StandardBasicTypes.INTEGER)
+				.addScalar("quantityInStock", StandardBasicTypes.INTEGER)
+				.addScalar("createdBy", StandardBasicTypes.STRING)
+				.addScalar("dateCreated", StandardBasicTypes.TIMESTAMP)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("locationId", location.getLocationId())
+				.setParameter("programId", productProgram.getProductProgramId())
+				.setResultTransformer(new AliasToBeanResultTransformer(ProductMovementHistoryDTO.class));
+		try {
+			return query.list();
+		} catch (HibernateException e) {
+			System.out.println(e.getMessage());
+		}
+		return new ArrayList<>();
+	}
+
+
+
 }

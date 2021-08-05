@@ -420,7 +420,8 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Override
 	public Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws HibernateException {
 		if (isUrgent) {
-			return Context.getService(ProductAttributeStockService.class).getAllProductAttributeStockByProductCount(product, location, false);
+			return Context.getService(ProductAttributeStockService.class)
+					.getAllProductAttributeStockByProductCount(product, inventory.getProductProgram(), location, false);
 		}
 		Double quantity = 0.0;
 		for (ProductAttributeFlux flux : inventory.getProductAttributeFluxes()) {

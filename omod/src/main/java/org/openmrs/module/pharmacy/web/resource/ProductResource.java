@@ -12,6 +12,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -72,8 +73,10 @@ public class ProductResource extends DelegatingCrudResource<Product> {
             description.addProperty("unitConversion");
             description.addProperty("productPrograms", Representation.DEFAULT);
             description.addProperty("productRegimens", Representation.DEFAULT);
+            description.addProperty("currentPrice", Representation.DEFAULT);
+            description.addProperty("productPrices", Representation.DEFAULT);
             description.addProperty("uuid");
-        } else if (representation instanceof DefaultRepresentation) {
+        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
             description = new DelegatingResourceDescription();
             description.addProperty("code");
             description.addProperty("retailName");
@@ -81,6 +84,7 @@ public class ProductResource extends DelegatingCrudResource<Product> {
             description.addProperty("productRetailUnit", Representation.DEFAULT);
             description.addProperty("productWholesaleUnit", Representation.DEFAULT);
             description.addProperty("unitConversion");
+            description.addProperty("currentPrice", Representation.DEFAULT);
             description.addProperty("uuid");
         }
         return description;
@@ -88,15 +92,6 @@ public class ProductResource extends DelegatingCrudResource<Product> {
 
     @Override
     public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
-        return getDelegatingResourceDescription();
-    }
-
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-        return getDelegatingResourceDescription();
-    }
-
-    private DelegatingResourceDescription getDelegatingResourceDescription() {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addRequiredProperty("code");
         description.addRequiredProperty("retailName");
@@ -104,7 +99,21 @@ public class ProductResource extends DelegatingCrudResource<Product> {
         description.addRequiredProperty("productRetailUnit");
         description.addRequiredProperty("productWholesaleUnit");
         description.addRequiredProperty("unitConversion");
+        description.addProperty("productPrograms");
+        description.addProperty("productRegimens");
         description.addProperty("uuid");
+        return description;
+    }
+
+    @Override
+    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+        DelegatingResourceDescription description = new DelegatingResourceDescription();
+        description.addProperty("code");
+        description.addProperty("retailName");
+        description.addProperty("wholesaleName");
+        description.addProperty("productRetailUnit");
+        description.addProperty("productWholesaleUnit");
+        description.addProperty("unitConversion");
         return description;
     }
 

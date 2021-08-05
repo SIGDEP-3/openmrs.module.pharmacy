@@ -20,6 +20,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacy.entities.Product;
 import org.openmrs.module.pharmacy.entities.ProductAttribute;
 import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.utils.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,11 +67,11 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
-	Integer getProductAttributeStocksByProductCount(Product product);
+	Integer getProductAttributeStocksByProductCount(Product product, ProductProgram productProgram);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
-    Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren);
+    Integer getAllProductAttributeStockByProductCount(Product product, ProductProgram productProgram, Location location, Boolean includeChildren);
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
-    void voidProductAttributeStock(ProductAttributeStock attributeStock);
+    void voidProductAttributeStock(ProductAttributeStock attributeStock) throws APIException;
 }

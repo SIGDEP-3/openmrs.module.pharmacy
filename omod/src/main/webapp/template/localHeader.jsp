@@ -2,8 +2,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fct" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<%@ include file="includeStyle.jsp"%>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
 
+<%@ include file="includeStyle.jsp"%>
 <script type="application/javascript" >
 	if (jQuery) {
 		jQuery(document).ready(function () {

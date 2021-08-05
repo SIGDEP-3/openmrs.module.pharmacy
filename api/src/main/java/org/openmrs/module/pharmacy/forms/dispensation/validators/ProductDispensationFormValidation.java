@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy.forms.dispensation.validators;
 
+import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -33,9 +34,12 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
 //            ValidationUtils.rejectIfEmpty(errors, "operationNumber", null, "Ce champ est requis");
 
             if (form.getOperationDate() != null){
-                if (dispensationService().isDead(patientService().getPatient(form.getPatientId()), OperationUtils.getUserLocation())) {
-                    if (form.getOperationDate().after(dispensationService().deathDate(patientService().getPatient(form.getPatientId()), OperationUtils.getUserLocation() ))) {
-                        errors.rejectValue("operationDate", null, "Le patient est décédé au moment de cette dispensation ! ");
+                Patient patient = dispensationService().getPatientByIdentifier(form.getPatientIdentifier());
+                if (patient != null) {
+                    if (dispensationService().isDead(patient,OperationUtils.getUserLocation())){
+                        if (form.getOperationDate().after(dispensationService().deathDate(patientService().getPatient(form.getPatientId()), OperationUtils.getUserLocation()))) {
+                            errors.rejectValue("operationDate", null, "Le patient est décédé au moment de cette dispensation ! ");
+                        }
                     }
                 }
             }
@@ -54,24 +58,9 @@ public class ProductDispensationFormValidation extends ProductOperationFormValid
                 }
             }
 
-            if (form.getProductRegimenId() != null && form.getProductRegimenLine() == null) {
+            if (form.getProductRegimenLine() == null) {
                 errors.rejectValue("productRegimenLine", null, "Ce champ est requis");
             }
-
-//            ProductDispensation dispensation = service().getOneProductOperationByOperationDateAndProductProgram(
-//                            form.getOperationDate(),
-//                            programService().getOneProductProgramById(form.getProductProgramId()),
-//                            OperationUtils.getUserLocation(), false
-//                    );
-//
-//                    if (operation != null) {
-//                        if (!operation.getProductOperationId().equals(form.getProductOperationId())) {
-//                            if (operation.getOperationDate().equals(form.getOperationDate()) &&
-//                                    operation.getProductProgram().getProductProgramId().equals(form.getProductProgramId())) {
-//                                errors.rejectValue("operationDate", null, "Un operatiob à cette date existe déjà !");
-//                            }
-//                        }
-//                    }
 
         }
     }

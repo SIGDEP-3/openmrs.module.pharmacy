@@ -4,12 +4,15 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -61,7 +64,7 @@ public class ProductProgramResource extends DelegatingCrudResource<ProductProgra
             description.addProperty("description");
             description.addProperty("products", Representation.DEFAULT);
             description.addProperty("uuid");
-        } else if (representation instanceof DefaultRepresentation) {
+        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
             description = new DelegatingResourceDescription();
             description.addProperty("name");
             description.addProperty("uuid");
@@ -81,9 +84,19 @@ public class ProductProgramResource extends DelegatingCrudResource<ProductProgra
     @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addRequiredProperty("name");
+        description.addProperty("name");
         description.addProperty("description");
         description.addProperty("uuid");
         return description;
+    }
+
+    @Override
+    protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+        return super.doGetAll(context);
+    }
+
+    @Override
+    public SimpleObject search(RequestContext context) throws ResponseException {
+        return super.search(context);
     }
 }

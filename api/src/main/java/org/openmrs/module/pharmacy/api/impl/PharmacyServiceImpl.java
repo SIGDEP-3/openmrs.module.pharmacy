@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacy.dto.ProductMovementHistoryDTO;
 import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
@@ -89,6 +90,11 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation) {
         return dao.getConsumptionReport(productProgram, startDate, endDate, location, byLocation);
+    }
+
+    @Override
+    public List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
+        return dao.getProductMovementHistory(startDate, endDate, location, productProgram);
     }
 
 }

@@ -15,7 +15,11 @@
             var identifierElement = jQuery("#patientIdentifier");
             var programElement = jQuery("#program");
 
-            jQuery('.list').DataTable();
+            jQuery('.list').dataTable({
+                columnDefs: [
+                    { type: 'date-uk', targets: 0 }
+                ]
+            });
             programElement.change(function () {
                 if (jQuery(this).val()){
                     jQuery('#selectMe').text('');

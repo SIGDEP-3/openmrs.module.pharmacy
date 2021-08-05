@@ -285,15 +285,16 @@ public class PharmacyProductDispensationManageController {
                         info.setDispensation(dispensation);
                         Patient patient = productDispensationForm.getPatient();
                         if (patient != null &&
-                                dispensationService().isTransferred(patient, OperationUtils.getUserLocation())) {
+                                dispensationService().isTransferred(patient, OperationUtils.getUserLocation())
+                                && productDispensationForm.getPatientIdentifier().equals(patient.getPatientIdentifier().getIdentifier())) {
                             info.setPatient(patient);
                             info.setMobilePatient(null);
                         } else {
-                            dispensationService().saveMobilePatientDispensationInfo(info);
+                            dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient());
                         }
-                        dispensationService().saveMobilePatient(productDispensationForm.getMobilePatient());
+                        dispensationService().saveMobilePatientDispensationInfo(info);
                     }
-                    dispensationService().saveProductDispensation(dispensation);
+//                    dispensationService().saveProductDispensation(dispensation);
 
 //                    if (dispensation.getProductAttributeFluxes().size() == 0) {
 //                    } else {
@@ -301,7 +302,7 @@ public class PharmacyProductDispensationManageController {
 //                    }
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez maintenant ajouter les produits !");
                     return "redirect:/module/pharmacy/operations/dispensation/editFlux.form?dispensationId=" +
-                            dispensation.getProductOperationId();
+                            dispensationService().saveProductDispensation(dispensation).getProductOperationId();
                 }
             }
 
@@ -468,7 +469,9 @@ public class PharmacyProductDispensationManageController {
             Product product =  productService().getOneProductById(selectedProductId);
             modelMap.addAttribute("selectedProduct", product);
             List<ProductAttributeStock> stocks = stockService().getProductAttributeStocksByProduct(product, OperationUtils.getUserLocation());
-            Integer quantity = stockService().getAllProductAttributeStockByProductCount(product, OperationUtils.getUserLocation(), false);
+            Integer quantity = stockService().getAllProductAttributeStockByProductCount(
+                    product, productDispensation.getProductProgram(),
+                    OperationUtils.getUserLocation(), false);
 
             modelMap.addAttribute("selectedProductQuantityInStock", quantity);
             if (stocks.size() == 0) {

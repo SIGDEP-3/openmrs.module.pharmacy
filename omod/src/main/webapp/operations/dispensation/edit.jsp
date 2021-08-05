@@ -122,7 +122,7 @@
                 const endDateByOperationDate = addDays(operationDate, treatmentDays);
 
                 let lastTreatmentEndDate = jQuery("#lastTreatmentEndDate");
-                console.log('------ lastTreatmentEndDate', lastTreatmentEndDate)
+                // console.log('------ lastTreatmentEndDate', lastTreatmentEndDate)
                 if (lastTreatmentEndDate.text()) {
                     let endDateByLastTreatmentEndDate = addDays(getDate(lastTreatmentEndDate.text()), treatmentDays);
                     let treatmentDaysLost = jQuery("#treatmentDaysLost").val();
@@ -135,7 +135,7 @@
                         treatmentEndDateInput.val(formatDate(endDateByOperationDate));
                     }
                 } else {
-                    console.log('Operation date before adding ', operationDate);
+                    // console.log('Operation date before adding ', operationDate);
                     treatmentEndDateInput.val(formatDate(addDays(operationDate, treatmentDays)));
                 }
             }
@@ -465,6 +465,8 @@
                                                                 <form:radiobutton path="productRegimenLine" tabindex="true" value="1" label="1" cssClass="mr-2"/>
                                                                 <form:radiobutton path="productRegimenLine" value="2" label=" 2" cssClass="ml-1 mr-2"/>
                                                                 <form:radiobutton path="productRegimenLine" value="3" label=" 3" cssClass="mr-2"/>
+
+                                                                <form:errors path="productRegimenLine" cssClass="error"/>
                                                             </div>
                                                         </div>
                                                     </c:if>

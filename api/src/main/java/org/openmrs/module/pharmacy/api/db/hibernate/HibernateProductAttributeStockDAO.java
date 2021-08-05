@@ -26,9 +26,9 @@ import org.openmrs.module.pharmacy.entities.ProductAttribute;
 import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -144,9 +144,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location IN :location ORDER BY s.productAttribute.expiryDate ASC ");
+	public Integer getAllProductAttributeStockByProductCount(Product product, ProductProgram productProgram, Location location, Boolean includeChildren) {
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program AND s.location IN :location ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
+				.setParameter("program", productProgram)
 				.setParameter("location", !includeChildren ? location : OperationUtils.getUserLocations());
 		List<ProductAttributeStock> stocks = query.list();
 		Integer quantity = 0;
@@ -158,9 +159,11 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Integer getProductAttributeStocksByProductCount(Product product) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product ORDER BY s.productAttribute.expiryDate DESC ");
-		query.setParameter("product", product);
+	public Integer getProductAttributeStocksByProductCount(Product product, ProductProgram productProgram) {
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program " +
+						"ORDER BY s.productAttribute.expiryDate DESC ");
+		query.setParameter("product", product).setParameter("program", productProgram);
 
 		List<ProductAttributeStock> stocks = query.list();
 		Integer quantity = 0;
@@ -171,10 +174,15 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	}
 
 	@Override
-	public void voidProductAttributeStock(ProductAttributeStock attributeStock) {
+	public void voidProductAttributeStock(ProductAttributeStock attributeStock) throws HibernateException {
 		attributeStock.setVoided(true);
-		attributeStock.setDateVoided(new Date());
-		saveProductAttributeStock(attributeStock);
+//		attributeStock.setDateVoided(new Date());
+//		attributeStock.setVoidedBy(Context.getAuthenticatedUser());
+		attributeStock.setVoidReason("Voided by user because not to be used");
+		System.out.println("Voided info set");
+		sessionFactory.getCurrentSession().saveOrUpdate(attributeStock);
+//		saveProductAttributeStock(attributeStock);
+		System.out.println("Attribute stock voided successfully");
 	}
 
 }

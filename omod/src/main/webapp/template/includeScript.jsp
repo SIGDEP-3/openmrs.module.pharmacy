@@ -7,6 +7,7 @@
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/fontawesome-free/js/all.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/select2/js/select2.min.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/jquery.monthpicker.js"/>
+<%--<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/themes/theme.min.js"/>--%>
 
 <script type="application/javascript" >
     if (jQuery) {
@@ -15,7 +16,7 @@
             language: {
                 "lengthMenu": "Afficher _MENU_ lignes",
                 "zeroRecords": "Aucune ligne",
-                "info": "Page _PAGE_ sur _PAGES_",
+                "info": "Page _PAGE_ sur _PAGES_ (_TOTAL_ lignes)",
                 "infoEmpty": "Aucun enregistrement",
                 "infoFiltered": "(lignes sur _MAX_ )",
                 "loadingRecords": "Chargement...",
@@ -26,6 +27,30 @@
                     "sFirst": '<i class="fa fa-angle-double-left"></i>',
                     "sLast": '<i class="fa fa-angle-double-right"></i>'
                 }
+            }
+        } );
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+            "date-uk-pre": function ( a ) {
+                if (a == null || a === "") {
+                    return 0;
+                }
+                var ukDatea = a.split('/');
+                var ukDatea2 = ukDatea[2].split(' ');
+                if (ukDatea2.length === 1){
+                    return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+                } else {
+                    var ukTimea = ukDatea2[1].split(':');
+                    return (ukDatea[2] + ukDatea[1] + ukDatea[0] + ukTimea[0] + ukTimea[1] + ukTimea[2]) * 1;
+                }
+            },
+
+            "date-uk-asc": function ( a, b ) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+
+            "date-uk-desc": function ( a, b ) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
             }
         } );
 

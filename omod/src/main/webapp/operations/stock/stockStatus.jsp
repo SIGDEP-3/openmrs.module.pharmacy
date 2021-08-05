@@ -18,6 +18,7 @@
                     <div class="col-2">
                         <label for="programId" class="sr-only">Programme</label>
                         <select name="programId" id="programId" class="s2 form-control form-control-sm">
+                            <option value=""></option>
                             <c:forEach var="program" items="${programs}">
                                 <option value="${program.productProgramId}">${program.name}</option>
                             </c:forEach>

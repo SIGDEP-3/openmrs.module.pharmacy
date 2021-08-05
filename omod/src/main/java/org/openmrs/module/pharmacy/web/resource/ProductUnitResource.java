@@ -9,6 +9,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -57,7 +58,7 @@ public class ProductUnitResource extends DelegatingCrudResource<ProductUnit> {
             description.addProperty("name");
             description.addProperty("description");
             description.addProperty("uuid");
-        } else if (representation instanceof DefaultRepresentation) {
+        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
             description = new DelegatingResourceDescription();
             description.addProperty("name");
             description.addProperty("uuid");
@@ -77,7 +78,7 @@ public class ProductUnitResource extends DelegatingCrudResource<ProductUnit> {
     @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addRequiredProperty("name");
+        description.addProperty("name");
         description.addProperty("description");
         description.addProperty("uuid");
         return description;

@@ -1721,4 +1721,102 @@
                                  referencedColumnNames="product_operation_id"/>
     </changeSet>
 
+    <changeSet id="pharmacy-add-TDF-3TC-concept-to-regimen-list" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM pharmacy_product_regimen WHERE concept_id = 161364;
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            INSERT INTO pharmacy_product_regimen (concept_id, uuid)
+            VALUES (161364, '161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+            UPDATE concept_name t
+            SET t.name = 'TDF 3TC'
+            WHERE t.concept_name_id = 99248;
+            ]]>
+        </sql>
+    </changeSet>
+
+<!--    <changeSet id="pharmacy-change-product-supplier-to-location" author="BOGUI SEBE">-->
+<!--        <dropForeignKeyConstraint constraintName="pharmacy_product_reception_product_supplier" baseTableName="pharmacy_product_reception"/>-->
+<!--    </changeSet>-->
+
+<!--    <changeSet id="pharmacy-add-NPSP-to-location-list" author="BOGUI SERGE" runAlways="true">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <sqlCheck expectedResult="0">-->
+<!--                SELECT COUNT(*) FROM location WHERE uuid = 'NPSPCIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';-->
+<!--            </sqlCheck>-->
+<!--        </preConditions>-->
+<!--        <sql>-->
+<!--            <![CDATA[-->
+<!--            INSERT INTO location (name, description, address1, address2, city_village, state_province, postal_code, country,-->
+<!--                              latitude, longitude, creator, date_created, county_district, address3, address4, address5,-->
+<!--                              address6, retired, retired_by, date_retired, retire_reason, parent_location, uuid,-->
+<!--                              changed_by, date_changed)-->
+<!--            VALUES ('NOUVELLE PHARMACIE DE COTE D''IVOIRE', 'NOUVELLE PHARMACIE DE COTE D''IVOIRE', null, null, null, null, null, null, null, null, 1,-->
+<!--            '2021-08-01 22:16:54', null, null, null, null, null, 0, null, null, null, 1,-->
+<!--            'NPSPCIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', null, null);-->
+
+<!--            UPDATE pharmacy_product_reception SET product_supplier_id = (SELECT location_id FROM location WHERE uuid = 'NPSPCIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')-->
+<!--            WHERE location_id IS NOT NULL;-->
+<!--            ]]>-->
+<!--        </sql>-->
+<!--    </changeSet>-->
+
+    <changeSet id="pharmacy-add-goal_new-concept" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">SELECT COUNT(concept_id) FROM concept WHERE concept_id = 163000</sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            INSERT INTO concept (concept_id, retired, datatype_id, class_id, is_set, creator, date_created, uuid)
+            VALUES (163000, 0, 3, 7, 0, 1, '2020-11-27 00:00:00', '163000AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+
+            INSERT INTO concept_name (concept_id, name, date_created, concept_name_type, creator, locale, locale_preferred, voided, uuid)
+            VALUES (163000, 'Goal', '2020-11-27 00:00:00', 'FULLY_SPECIFIED', 1, 'fr', 1, 0, '163000AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+
+            INSERT INTO concept_word (concept_id, word, locale, concept_name_id, weight)
+            VALUES (163000, 'Goal', 'fr', (SELECT concept_name_id FROM concept_name WHERE concept_id = 163000), (PI() - 1.0));
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-change-goal-concept-global-property" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM global_property WHERE property LIKE 'pharmacy.dispensationGoalConcept' ESCAPE '#'
+                AND property_value = '163000';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            UPDATE global_property t
+            SET t.property_value = '163000'
+            WHERE t.property LIKE 'pharmacy.dispensationGoalConcept' ESCAPE '#';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-update-dispensation-goal-165009-to-163000" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM obs o, encounter e, encounter_type et
+                    WHERE o.encounter_id = e.encounter_id AND et.encounter_type_id = e.encounter_type
+                    AND et.uuid = 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86' AND o.concept_id = 165009;
+                </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            UPDATE obs o
+            INNER JOIN encounter e ON o.encounter_id = e.encounter_id
+            INNER JOIN encounter_type et ON et.encounter_type_id = e.encounter_type
+            SET o.concept_id = 163000
+            WHERE et.uuid = 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86' AND o.concept_id = 165009
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

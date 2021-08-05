@@ -23,6 +23,7 @@ import org.openmrs.module.pharmacy.api.db.ProductAttributeStockDAO;
 import org.openmrs.module.pharmacy.entities.Product;
 import org.openmrs.module.pharmacy.entities.ProductAttribute;
 import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.ProductProgram;
 
 import java.util.List;
 
@@ -105,8 +106,8 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     }
 
     @Override
-    public Integer getProductAttributeStocksByProductCount(Product product) {
-        return dao.getProductAttributeStocksByProductCount(product);
+    public Integer getProductAttributeStocksByProductCount(Product product, ProductProgram productProgram) {
+        return dao.getProductAttributeStocksByProductCount(product, productProgram);
     }
 
     @Override
@@ -115,8 +116,8 @@ public class ProductAttributeStockServiceImpl extends BaseOpenmrsService impleme
     }
 
     @Override
-    public Integer getAllProductAttributeStockByProductCount(Product product, Location location, Boolean includeChildren) {
-        return dao.getAllProductAttributeStockByProductCount(product, location, includeChildren);
+    public Integer getAllProductAttributeStockByProductCount(Product product, ProductProgram productProgram, Location location, Boolean includeChildren) {
+        return dao.getAllProductAttributeStockByProductCount(product, productProgram, location, includeChildren);
     }
 
     @Override

@@ -6,4 +6,5 @@
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/css/dataTables.bootstrap4.min.css"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/fontawesome-free/css/all.css"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/select2/css/select2.min.css"/>
+<%--<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/themes/theme.min.css"/>--%>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/style.css"/>

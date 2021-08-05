@@ -28,25 +28,28 @@
         }
     }
 </script>
-<div class="container-fluid mt-2">
-
-    <div class="row mb-2">
-        <div class="col-6 text-uppercase font-italic text-secondary">
-            <div class="h6"><i class="fa fa-list"></i> ${subTitle}</div>
-        </div>
-        <div class="col-6 text-right">
+<main class="container-fluid mt-2">
+    <div class="d-flex justify-content-between align-middle">
+        <h6 class="text-uppercase font-italic text-secondary">
+            <i class="fa fa-list"></i> ${subTitle}
+        </h6>
+        <div class="form-inline">
             <span id="selectMe"></span>
-            <label for="program">Programme : </label>
+            <label for="program" class="col-form-label mr-1">Programme : </label>
             <select name="program" class="s2 form-control-sm" id="program">
                 <option value=""></option>
                 <c:forEach var="program" items="${programs}">
                     <option value="${program.productProgramId}">${program.name}</option>
                 </c:forEach>
             </select>
-            <button class="btn btn-primary btn-sm" onclick="create()">
+            <button class="btn btn-primary btn-sm ml-2" onclick="create()">
                 <i class="fa fa-plus"></i> Nouvelle r&eacute;ception
             </button>
         </div>
+    </div>
+    <div class="row mb-2">
+
+
     </div>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
@@ -169,6 +172,6 @@
             </table>
         </div>
     </div>
-</div>
+</main>
 <%@ include file="../../template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

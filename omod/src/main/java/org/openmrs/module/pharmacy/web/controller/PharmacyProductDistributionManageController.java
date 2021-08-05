@@ -352,7 +352,7 @@ public class PharmacyProductDistributionManageController {
 
                 reportLineExtendedDTO.setParentQuantityInStock(stockService().getAllProductAttributeStockByProductCount(
                         product,
-                        productDistribution.getLocation(),
+                        productDistribution.getProductProgram(), productDistribution.getLocation(),
                         false
                 ));
 
@@ -493,6 +493,12 @@ public class PharmacyProductDistributionManageController {
         ProductReport report = reportService().getOneProductReportById(distributionId);
         report.setOperationStatus(OperationStatus.NOT_COMPLETED);
         reportService().saveProductReport(report);
+        if (report.getChildLocationReport() != null) {
+            if (report.getChildLocationReport().getCreator().equals(Context.getAuthenticatedUser())) {
+                report.getChildLocationReport().setOperationStatus(OperationStatus.NOT_COMPLETED);
+                reportService().saveProductReport(report.getChildLocationReport());
+            }
+        }
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Vous pouvez " +
                 "continuer à modifier la distribution !");
         return "redirect:/module/pharmacy/operations/distribution/editFlux.form?distributionId=" + distributionId;
@@ -559,8 +565,8 @@ public class PharmacyProductDistributionManageController {
         if (!Context.isAuthenticated())
             return null;
         ProductReport operation = reportService().getOneProductReportById(distributionId);
-
         if (operation != null) {
+            System.out.println("-------------------------------------> Report selected");
 //            OperationUtils.emptyStock(OperationUtils.getUserLocation(), operation.getProductProgram());
             operation.setOperationNumber(OperationUtils.generateNumber());
             if (OperationUtils.getDifferenceDays(operation.getOperationDate(), new Date()) < 10) {
@@ -568,11 +574,13 @@ public class PharmacyProductDistributionManageController {
             } else {
                 operation.setTreatmentDate(operation.getOperationDate());
             }
+            System.out.println("-------------------------------------> Report treatment date selected");
             ProductReport childReport = operation.getChildLocationReport();
             childReport.setOperationStatus(OperationStatus.TREATED);
             reportService().saveProductReport(childReport);
-
+            System.out.println("-------------------------------------> Report treatment saved");
             if (OperationUtils.validateOperation(operation)) {
+                System.out.println("-------------------------------------> Report treatment validated");
                 HttpSession session = request.getSession();
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Votre distribution a été validée avec succès !");
                 return "redirect:/module/pharmacy/operations/distribution/list.form";

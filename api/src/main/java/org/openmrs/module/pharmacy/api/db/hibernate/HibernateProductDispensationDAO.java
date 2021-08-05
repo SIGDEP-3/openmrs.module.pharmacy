@@ -168,7 +168,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 						"LEFT JOIN pharmacy_product pp on pp.product_id = ppaof.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu on ppu.product_unit_id = pp.product_retail_unit and ppu.product_unit_id = pp.product_wholesale_unit " +
 						"LEFT JOIN ( " +
-						"    SELECT pa.product_attribute_id, pa.product_id, SUM(ppas.quantity_in_stock) quantityInStock FROM pharmacy_product_attribute_stock ppas LEFT JOIN pharmacy_product_attribute pa ON ppas.product_attribute_id = pa.product_attribute_id  GROUP BY pa.product_id " +
+						"    SELECT pa.product_attribute_id, pa.product_id, SUM(ppas.quantity_in_stock) quantityInStock FROM pharmacy_product_attribute_stock ppas LEFT JOIN pharmacy_product_attribute pa ON ppas.product_attribute_id = pa.product_attribute_id LEFT JOIN pharmacy_product_operation ppo on ppas.operation_id = ppo.product_operation_id WHERE program_id = :program GROUP BY pa.product_id " +
 						"    ) ps ON ps.product_id = ppaof.product_id " +
 						"WHERE ppd.product_operation_id = :productOperationId HAVING quantityInStock IS NOT NULL ORDER BY pf.date_created DESC ";
 
@@ -182,6 +182,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				.addScalar("quantityInStock", StandardBasicTypes.INTEGER)
 				.addScalar("dateCreated", StandardBasicTypes.DATE)
 				.setParameter("productOperationId", productDispensation.getProductOperationId())
+				.setParameter("program", productDispensation.getProductProgram().getProductProgramId())
 				.setResultTransformer(new AliasToBeanResultTransformer(ProductDispensationFluxDTO.class));
 		try {
 			return query.list();
