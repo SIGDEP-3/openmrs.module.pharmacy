@@ -110,7 +110,7 @@ public interface ProductDispensationService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
 	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
-	Integer countPatientToTransform(Location location);
+	List<Patient> countPatientToTransform(Location location);
 	Boolean isDead(Patient patient, Location location);
 	Boolean isTransferred(Patient patient, Location location);
 	Date admissionDate(Patient patient, Location location);

@@ -80,6 +80,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		return criteria
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
 	}
 
@@ -91,6 +92,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("voided", includeVoided))
 				.add(Restrictions.eq("productProgram", program))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
 				.add(Restrictions.between("operationDate", operationStartDate, operationEndDate)).list();
 	}
 
@@ -272,7 +274,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"LEFT JOIN pharmacy_mobile_patient_dispensation_info pmpdi on ppd.product_operation_id = pmpdi.mobile_dispensation_info_id  " +
 				"LEFT JOIN encounter e on e.encounter_id = ppd.encounter_id  " +
 				"LEFT JOIN (SELECT name conceptRegimen, encounter_id FROM obs o LEFT JOIN concept_name cn ON o.concept_id = cn.concept_id WHERE o.concept_id = 165033 AND o.voided = 0) R on e.encounter_id = R.encounter_id  " +
-				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
+				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id AND (name LIKE '% 3TC %' OR name LIKE '% FTC %' OR name LIKE '% ABC %' OR name LIKE '% DDI %' OR name = 'COTRIMOXAZOLE')) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
 				"LEFT JOIN (SELECT encounter_id, value_numeric treatmentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
 				"LEFT JOIN (SELECT mobile_patient_id, identifier identifierMobilePatient, patient_type FROM pharmacy_mobile_patient) pmp ON pmpdi.mobile_patient_id = pmp.mobile_patient_id  " +
 				"LEFT JOIN (SELECT patient_id, identifier identifierPatientRegistered FROM patient_identifier) pi on e.patient_id = pi.patient_id  " +
@@ -321,12 +323,12 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 				"               IF(pmp.patient_type = 2, 'PREVENTION', 'PAS DE PATIENT')) ) patientType, " +
 				"       ppo.date_created dateCreated " +
 				"FROM pharmacy_product_dispensation ppd " +
-				"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE date_created BETWEEN :startDate AND :endDate AND voided = 0) ppo ON ppd.product_operation_id = ppo.product_operation_id  " +
+				"INNER JOIN (SELECT * FROM pharmacy_product_operation WHERE operation_date BETWEEN :startDate AND :endDate AND voided = 0) ppo ON ppd.product_operation_id = ppo.product_operation_id  " +
 				"LEFT JOIN pharmacy_product_program ppp ON ppo.program_id = ppp.product_program_id  " +
 				"LEFT JOIN pharmacy_mobile_patient_dispensation_info pmpdi on ppd.product_operation_id = pmpdi.mobile_dispensation_info_id  " +
 				"LEFT JOIN encounter e on e.encounter_id = ppd.encounter_id  " +
 				"LEFT JOIN (SELECT name conceptRegimen, encounter_id FROM obs o LEFT JOIN concept_name cn ON o.value_coded = cn.concept_id WHERE o.concept_id = 165033 AND o.voided = 0) R on e.encounter_id = R.encounter_id  " +
-				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
+				"LEFT JOIN (SELECT DISTINCT product_regimen_id, name mobileRegimen FROM pharmacy_product_regimen p, concept_name n WHERE p.concept_id = n.concept_id AND (name LIKE '% 3TC %' OR name LIKE '% FTC %' OR name LIKE '% ABC %' OR name LIKE '% DDI %' OR name = 'COTRIMOXAZOLE')) ppr on ppr.product_regimen_id = pmpdi.regimen_id  " +
 				"LEFT JOIN (SELECT encounter_id, value_numeric treatmentDaysConcept FROM obs WHERE concept_id = 165011) D ON D.encounter_id = e.encounter_id  " +
 				"LEFT JOIN (SELECT mobile_patient_id, identifier identifierMobilePatient, patient_type FROM pharmacy_mobile_patient) pmp ON pmpdi.mobile_patient_id = pmp.mobile_patient_id  " +
 				"LEFT JOIN (SELECT patient_id, identifier identifierPatientRegistered FROM patient_identifier) pi on e.patient_id = pi.patient_id  " +
@@ -539,27 +541,38 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public DispensationTransformationResultDTO transformDispensation(Location location) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
-		List<MobilePatient> mobilePatients = criteria.add(Restrictions.eq("location", location))
-				.add(Restrictions.eq("patientType", PatientType.MOBILE)).list();
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
+//		List<MobilePatient> mobilePatients = criteria.add(Restrictions.eq("location", location))
+//				.add(Restrictions.eq("patientType", PatientType.MOBILE)).list();
+
+		List<Patient> patients = countPatientToTransform(location);
 
 		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
-		transformationResultDTO.setTotalPatient(mobilePatients.size());
-		for (MobilePatient mobilePatient : mobilePatients) {
+		transformationResultDTO.setTotalPatient(patients.size());
+		for (Patient patient : patients) {
 			Integer patientTotalDispensation = 0;
 			Integer patientTotalDispensationTransformed = 0;
-			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
-			if (patient != null) {
+			MobilePatient mobilePatient = getOneMobilePatientByIdentifier(patient.getPatientIdentifier().getIdentifier());
+			if (mobilePatient != null) {
 				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
-				patientTotalDispensation = dispensationInfos.size();
-				transformationResultDTO.setTotalDispensation(transformationResultDTO.getTotalDispensation() + dispensationInfos.size());
 				transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
-				if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
-					removeMobilePatient(mobilePatient);
-				}
+				removeMobilePatient(mobilePatient);
 			}
 		}
-
+//		for (MobilePatient mobilePatient : mobilePatients) {
+//			Integer patientTotalDispensation = 0;
+//			Integer patientTotalDispensationTransformed = 0;
+//			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
+//			if (patient != null) {
+//				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
+//				patientTotalDispensation = dispensationInfos.size();
+//				transformationResultDTO.setTotalDispensation(transformationResultDTO.getTotalDispensation() + dispensationInfos.size());
+//				transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
+//				if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
+//					removeMobilePatient(mobilePatient);
+//				}
+//			}
+//		}
 		return transformationResultDTO;
 	}
 
@@ -616,16 +629,16 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	}
 
 	@Override
-	public Integer countPatientToTransform(Location location) {
-		int quantity = 0;
+	public List<Patient> countPatientToTransform(Location location) {
+		List<Patient> patients = new ArrayList<>();
 		List<MobilePatient> mobilePatients = getAllMobilePatients(location);
 		for (MobilePatient mobilePatient : mobilePatients) {
 			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
 			if (patient != null) {
-				quantity = quantity + 1;
+				patients.add(patient);
 			}
 		}
-		return quantity;
+		return patients;
 	}
 
 	private Encounter createEncounter(Patient patient, MobilePatientDispensationInfo dispensationInfo) {
@@ -636,7 +649,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		encounter.setEncounterType(Context.getEncounterService().getEncounterType(17));
 		encounter.addProvider(Context.getEncounterService().getEncounterRole(1), dispensationInfo.getProvider());
 
-		encounter.setObs(OperationUtils.getDispensationObsList(dispensationInfo, patient));
+		encounter.setObs(OperationUtils.getDispensationObsList(dispensationInfo, patient, dispensationInfo.getDispensation().getOperationDate()));
 		return encounter;
 	}
 

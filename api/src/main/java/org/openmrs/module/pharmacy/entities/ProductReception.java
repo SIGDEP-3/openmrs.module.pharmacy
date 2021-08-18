@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductReception")
+//@DiscriminatorValue("ProductReception")
 @Table(name = "pharmacy_product_reception")
 public class ProductReception extends ProductOperation {
     private static final long serialVersionUID = 1L;

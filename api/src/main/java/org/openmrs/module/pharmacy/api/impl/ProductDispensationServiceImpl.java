@@ -207,7 +207,7 @@ public class ProductDispensationServiceImpl extends BaseOpenmrsService implement
     }
 
     @Override
-    public Integer countPatientToTransform(Location location) {
+    public List<Patient> countPatientToTransform(Location location) {
         return dao.countPatientToTransform(location);
     }
 

@@ -126,7 +126,7 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location AND s.quantityInStock <> 0 ORDER BY s.productAttribute.expiryDate ASC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location AND s.quantityInStock <> 0 AND s.voided = false ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product);
 		query.setParameter("location", userLocation);
 
@@ -136,7 +136,7 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location ORDER BY s.productAttribute.expiryDate ASC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.location = :location AND s.voided = false ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
 				.setParameter("location", location);
 		return query.list();
@@ -145,7 +145,7 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@SuppressWarnings("unchecked")
 	@Override
 	public Integer getAllProductAttributeStockByProductCount(Product product, ProductProgram productProgram, Location location, Boolean includeChildren) {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program AND s.location IN :location ORDER BY s.productAttribute.expiryDate ASC ");
+		Query query = sessionFactory.getCurrentSession().createQuery("FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program AND s.location IN :location AND s.voided = false ORDER BY s.productAttribute.expiryDate ASC ");
 		query.setParameter("product", product)
 				.setParameter("program", productProgram)
 				.setParameter("location", !includeChildren ? location : OperationUtils.getUserLocations());
@@ -161,9 +161,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@Override
 	public Integer getProductAttributeStocksByProductCount(Product product, ProductProgram productProgram) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
-				"FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program " +
+				"FROM ProductAttributeStock s WHERE s.productAttribute.product = :product AND s.operation.productProgram = :program AND s.voided = false " +
 						"ORDER BY s.productAttribute.expiryDate DESC ");
-		query.setParameter("product", product).setParameter("program", productProgram);
+		query.setParameter("product", product)
+				.setParameter("program", productProgram);
 
 		List<ProductAttributeStock> stocks = query.list();
 		Integer quantity = 0;

@@ -17,13 +17,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacy.api.*;
+import org.openmrs.module.pharmacy.dto.DispensationHistoryDTO;
+import org.openmrs.module.pharmacy.dto.RegimenReportDTO;
+import org.openmrs.module.pharmacy.dto.RegimenReportIndicatorDTO;
 import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
+import org.openmrs.module.pharmacy.entities.ProductDispensation;
+import org.openmrs.module.pharmacy.entities.ProductInventory;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
-import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
-import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
+import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.openmrs.web.WebConstants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -49,6 +58,12 @@ public class PharmacyManageController {
 	}
 	PharmacyService service() {
 		return Context.getService(PharmacyService.class);
+	}
+	ProductDispensationService dispensationService() {
+		return Context.getService(ProductDispensationService.class);
+	}
+	ProductInventoryService inventoryService() {
+		return Context.getService(ProductInventoryService.class);
 	}
 
 	@ModelAttribute("isDirectClient")
@@ -207,5 +222,86 @@ public class PharmacyManageController {
 			modelMap.addAttribute("allLocations", allLocations);
 			modelMap.addAttribute("services", OperationUtils.getServices());
 		}
+	}
+
+	@RequestMapping(value = "/module/pharmacy/operations/dispensation/indicators/regimenIndicator.form", method = RequestMethod.GET)
+	public void dispensationRegimenIndicator(ModelMap modelMap,
+						   @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+						   @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+						   @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Rapport : Regime et Indicateurs");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+
+			if (programId != 0 && startDate != null && endDate != null) {
+				modelMap.addAttribute("selectedProgram", programService().getOneProductProgramById(programId));
+				modelMap.addAttribute("selectedStartDate", startDate);
+				modelMap.addAttribute("selectedEndDate", endDate);
+
+				RegimenReportDTO regimenReportDTO = new RegimenReportDTO();
+				List<RegimenReportIndicatorDTO> regimenReportIndicatorDTOs = service().getRegimenAndIndicatorReport(
+						startDate,
+						endDate,
+						OperationUtils.getUserLocation(),
+						programService().getOneProductProgramById(programId));
+
+				if (regimenReportIndicatorDTOs != null) {
+//					System.out.println("----------------------------------------> Set report list");
+
+					regimenReportDTO.setRegimenReportIndicatorDTOList(regimenReportIndicatorDTOs);
+				}
+				modelMap.addAttribute("report", regimenReportDTO);
+			}
+		}
+	}
+	@RequestMapping(value = "/module/pharmacy/operations/dispensation/indicators/dispensationHistory.form", method = RequestMethod.GET)
+	public String dispensationHistory(HttpServletRequest request, ModelMap modelMap,
+									  @RequestParam(value = "programId", defaultValue = "0", required = false) Integer programId,
+									  @RequestParam(value = "cancelId", defaultValue = "0", required = false) Integer cancelId,
+									  @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
+									  @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
+		if (Context.isAuthenticated()) {
+			modelMap.addAttribute("title", "Historique des dispensations");
+			modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
+
+//			if (cancelId != 0) {
+//				ProductDispensation dispensation = dispensationService().getOneProductDispensationById(cancelId);
+//				if (dispensation != null) {
+//					HttpSession session = request.getSession();
+////					System.out.println("------------------------------------------> " + dispensation.getOperationDate() + " id = " + dispensation.getProductOperationId());
+//					if (OperationUtils.cancelOperation(dispensation)) {
+//						session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La dispensation a été annulée avec succès !");
+//						return "redirect:/module/pharmacy/operations/dispensation/indicators/dispensationHistory.form?" +
+//								"programId=" + programId + "&startDate=" + startDate + "&endDate=" + endDate;
+//					}
+//				}
+//			}
+
+			if (programId != 0 && startDate != null && endDate != null) {
+				ProductProgram productProgram = programService().getOneProductProgramById(programId);
+				ProductInventory latestInventory = inventoryService().getLastProductInventory(
+						OperationUtils.getUserLocation(),
+						programService().getOneProductProgramById(programId),
+						InventoryType.TOTAL);
+
+				if (latestInventory != null) {
+					modelMap.addAttribute("latestInventoryDate", latestInventory.getOperationDate());
+				}
+				modelMap.addAttribute("selectedProgram", productProgram);
+				modelMap.addAttribute("selectedStartDate", startDate);
+				modelMap.addAttribute("selectedEndDate", endDate);
+
+				List<DispensationHistoryDTO> productDispensations = service().getProductDispensationHistory(
+						startDate,
+						endDate,
+						OperationUtils.getUserLocation(),
+						productProgram
+				);
+
+				modelMap.addAttribute("dispensations", productDispensations);
+			}
+		}
+
+		return null;
 	}
 }

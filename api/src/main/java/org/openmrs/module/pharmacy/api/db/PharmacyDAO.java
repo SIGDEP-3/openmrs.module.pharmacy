@@ -15,12 +15,10 @@ package org.openmrs.module.pharmacy.api.db;
 
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.api.PharmacyService;
-import org.openmrs.module.pharmacy.dto.ProductMovementHistoryDTO;
+import org.openmrs.module.pharmacy.dto.*;
 import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -47,4 +45,8 @@ public interface PharmacyDAO {
 	ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation);
 
 	List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
+
+	List<RegimenReportIndicatorDTO> getRegimenAndIndicatorReport(Date startDate, Date endDate, Location location, ProductProgram productProgram);
+
+	List<DispensationHistoryDTO> getProductDispensationHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
 }

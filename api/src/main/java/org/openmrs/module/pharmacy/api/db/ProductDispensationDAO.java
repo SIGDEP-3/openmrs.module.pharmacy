@@ -76,7 +76,7 @@ public interface ProductDispensationDAO {
     DispensationTransformationResultDTO transformDispensation(Location location);
 	DispensationTransformationResultDTO transformPatientDispensation(MobilePatient mobilePatient);
 
-    Integer countPatientToTransform(Location location);
+    List<Patient> countPatientToTransform(Location location);
 
 	Boolean isDead(Patient patient, Location location);
 	Boolean isTransferred(Patient patient, Location location);

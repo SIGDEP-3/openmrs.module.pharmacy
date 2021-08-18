@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.dto.ProductInventoryFluxDTO;
+import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 /**
  * It is a default implementation of  {@link ProductInventoryDAO}.
@@ -178,6 +179,8 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("inventoryType", inventoryType))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("voided", false))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
@@ -189,6 +192,8 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.add(Restrictions.eq("productProgram", productProgram))
 				.add(Restrictions.eq("inventoryType", inventoryType))
 				.add(Restrictions.lt("operationDate", inventoryDate))
+				.add(Restrictions.eq("operationStatus", OperationStatus.VALIDATED))
+				.add(Restrictions.eq("voided", false))
 				.addOrder(Order.desc("operationDate")).setMaxResults(1).uniqueResult();
 	}
 
@@ -252,6 +257,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", program))
 				.add(Restrictions.eq("inventoryType", InventoryType.TOTAL))
+				.add(Restrictions.eq("voided", false))
 				.add(Restrictions.eq("operationDate", operationDate)).uniqueResult();
 	}
 
@@ -262,6 +268,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 				.add(Restrictions.eq("location", location))
 				.add(Restrictions.eq("productProgram", program))
 				.add(Restrictions.eq("inventoryType", inventoryType))
+				.add(Restrictions.eq("voided", false))
 				.add(Restrictions.eq("operationNumber", operationNumber)).uniqueResult();
 	}
 }

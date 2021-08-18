@@ -1819,4 +1819,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="pharmacy-update-stock-values-by-operation" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="pharmacy_product_attribute_stock" columnName="operation_id"/>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            UPDATE
+            (SELECT MAX(product_attribute_flux_id) m_product_attribute_flux_id, product_attribute_id FROM pharmacy_product_attribute_flux
+            WHERE status IN (2,6) GROUP BY product_attribute_id) mppaf
+            INNER  JOIN pharmacy_product_attribute_flux ppaf ON ppaf.product_attribute_flux_id = mppaf.m_product_attribute_flux_id
+            INNER JOIN pharmacy_product_attribute_stock ppas on ppaf.product_attribute_id = ppas.product_attribute_id
+            SET ppas.operation_id = ppaf.operation_id
+            WHERE ppas.operation_id IS NULL;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

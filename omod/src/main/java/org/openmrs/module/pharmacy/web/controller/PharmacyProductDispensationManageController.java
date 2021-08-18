@@ -91,22 +91,38 @@ public class PharmacyProductDispensationManageController {
                      @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
-            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
-                    OperationUtils.getUserLocation(),
-                    programService().getOneProductProgramById(1),
-                    InventoryType.TOTAL);
-            if (latestInventory != null) {
-                modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                        latestInventory.getOperationDate(),
-                        OperationUtils.getCurrentMonthRange().getEndDate(),
-                        OperationUtils.getUserLocation()));
+            if (startDate == null) {
+                ProductInventory latestInventory = getInventoryService().getLastProductInventory(
+                        OperationUtils.getUserLocation(),
+                        programService().getOneProductProgramById(1),
+                        InventoryType.TOTAL);
+
+                if (latestInventory != null) {
+                    startDate = latestInventory.getOperationDate();
+                }
             }
+            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                    startDate,
+                    new Date(),
+                    OperationUtils.getUserLocation()));
+
+            DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
+            if (resultDTO.getTotalPatient() != 0) {
+                modelMap.addAttribute("transformationMessage", resultDTO);
+            }
+
+            if (endDate == null) {
+                endDate = new Date();
+            }
+
+            System.out.println("-------------------------------------------> Start date = " + OperationUtils.dateToDdMmYyyy(startDate));
+            System.out.println("-------------------------------------------> End date = " + OperationUtils.dateToDdMmYyyy(endDate));
 
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("numberPatientToTransform",
-                    dispensationService().countPatientToTransform(OperationUtils.getUserLocation()));
+                    dispensationService().countPatientToTransform(OperationUtils.getUserLocation()).size());
         }
     }
 
@@ -175,28 +191,28 @@ public class PharmacyProductDispensationManageController {
     }
 
     private void getDispensationByPeriodIndicatedByUser(ModelMap modelMap,
-                                                        @RequestParam(value = "startDate", defaultValue = "", required = false) Date startDate,
-                                                        @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate) {
-        if (startDate == null && endDate == null) {
-            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
-                    OperationUtils.getUserLocation(),
-                    programService().getOneProductProgramById(1),
-                    InventoryType.TOTAL);
-            if (latestInventory != null) {
-                modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                        latestInventory.getOperationDate(),
-                        OperationUtils.getCurrentMonthRange().getEndDate(),
-                        OperationUtils.getUserLocation()));
-            }
-            modelMap.addAttribute("subTitle", "Liste des Dispensations");
-        } else {
-            modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
-                    startDate,
-                    endDate,
-                    OperationUtils.getUserLocation()));
-            modelMap.addAttribute("subTitle", "Liste des Dispensations du " +
-                    OperationUtils.dateToDdMmYyyy(startDate) + " au " + OperationUtils.dateToDdMmYyyy(endDate));
-        }
+                                                        Date startDate,
+                                                        Date endDate) {
+        modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+                startDate,
+                endDate,
+                OperationUtils.getUserLocation()));
+        modelMap.addAttribute("subTitle", "Liste des Dispensations");
+//        if (startDate == null && endDate == null) {
+//            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
+//                    OperationUtils.getUserLocation(),
+//                    programService().getOneProductProgramById(1),
+//                    InventoryType.TOTAL);
+//            if (latestInventory != null) {
+//                modelMap.addAttribute("dispensations", dispensationService().getDispensationListDTOsByDate(
+//                        latestInventory.getOperationDate(),
+//                        new Date(),
+//                        OperationUtils.getUserLocation()));
+//            }
+//            modelMap.addAttribute("subTitle", "Liste des Dispensations");
+//        } else {
+//
+//        }
     }
 
     private String getPatientInfo(FindPatientForm findPatientForm) {
@@ -793,7 +809,7 @@ public class PharmacyProductDispensationManageController {
             return null;
         HttpSession session = request.getSession();
         ProductDispensation dispensation = dispensationService().getOneProductDispensationById(dispensationId);
-        if (OperationUtils.cancelOperation(dispensation)) {
+        if (OperationUtils.cancelDispensation(dispensation)) {
             session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "La dispensation a été annulée avec succès !");
             return "redirect:/module/pharmacy/operations/dispensation/list.form";
         }

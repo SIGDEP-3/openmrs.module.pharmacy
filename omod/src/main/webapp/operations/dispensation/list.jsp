@@ -76,6 +76,11 @@
     }
 </script>
 <div class="container-fluid mt-2">
+    <c:if test="${transformationMessage != null}">
+        <div class="alert alert-info">
+            ${transformationMessage}
+        </div>
+    </c:if>
     <div class="row bg-light pt-2 pb-2 border border-secondary">
         <div class="col-12">
             <form:form modelAttribute="findPatientForm" method="post" action="" id="form">

@@ -5,12 +5,14 @@ import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductInventory")
+//@DiscriminatorValue("ProductInventory")
 @Table(name = "pharmacy_product_inventory")
 public class ProductInventory extends ProductOperation {
 

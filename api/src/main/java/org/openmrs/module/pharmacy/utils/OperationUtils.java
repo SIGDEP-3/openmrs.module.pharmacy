@@ -34,6 +34,21 @@ public class OperationUtils {
         return service().cancelOperation(operation);
     }
 
+    public static Boolean cancelDispensation(ProductDispensation dispensation) {
+        if (service().cancelOperation(dispensation)) {
+            if (dispensation.getEncounter() != null) {
+                Context.getEncounterService().voidEncounter(dispensation.getEncounter(), "Canceled By User because error");
+            } else if (dispensation.getMobilePatientDispensationInfo() != null) {
+                Context.getService(ProductDispensationService.class).removeMobilePatientInfo(dispensation.getMobilePatientDispensationInfo());
+                if (dispensation.getMobilePatientDispensationInfo().getMobilePatient().getMobilePatientDispensationInfos().size() == 0) {
+                    Context.getService(ProductDispensationService.class).removeMobilePatient(dispensation.getMobilePatientDispensationInfo().getMobilePatient());
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     private static PharmacyService service() {
         return Context.getService(PharmacyService.class);
     }
@@ -275,23 +290,38 @@ public class OperationUtils {
         return obs;
     }
 
-    public static Set<Obs> getDispensationObsList(MobilePatientDispensationInfo dispensationInfo, Patient patient) {
+    public static Set<Obs> getDispensationObsList(MobilePatientDispensationInfo dispensationInfo, Patient patient, Date encounterDate) {
         Set<Obs> obsSet = new HashSet<>();
-        Obs obsRegimen = getObs("Regimen", dispensationInfo.getLocation(), patient);
-        obsRegimen.setValueCoded(dispensationInfo.getProductRegimen().getConcept());
-        obsSet.add(obsRegimen);
+        if (dispensationInfo.getProductRegimen() != null) {
+            Obs obsRegimen = getObs("Regimen", dispensationInfo.getLocation(), patient);
+            obsRegimen.setValueCoded(dispensationInfo.getProductRegimen().getConcept());
+            obsRegimen.setObsDatetime(encounterDate);
+            obsSet.add(obsRegimen);
+        }
 
         Obs obsGoal = getObs("Goal", dispensationInfo.getLocation(), patient);
         obsGoal.setValueText(dispensationInfo.getGoal().name());
+        obsGoal.setObsDatetime(encounterDate);
         obsSet.add(obsGoal);
 
-        Obs obsTreatmentDays = getObs("treatmentDays", dispensationInfo.getLocation(), patient);
+        Obs obsTreatmentDays = getObs("TreatmentDays", dispensationInfo.getLocation(), patient);
         obsTreatmentDays.setValueNumeric(dispensationInfo.getTreatmentDays().doubleValue());
+        obsTreatmentDays.setObsDatetime(encounterDate);
         obsSet.add(obsTreatmentDays);
 
-        Obs obsTreatmentEndDate = getObs("treatmentEndDate", dispensationInfo.getLocation(), patient);
-        obsTreatmentEndDate.setValueDate(dispensationInfo.getTreatmentEndDate());
-        obsSet.add(obsTreatmentEndDate);
+        if (dispensationInfo.getRegimenLine() != null) {
+            Obs obsRegimenLine = getObs("RegimenLine", dispensationInfo.getLocation(), patient);
+            obsRegimenLine.setValueNumeric(dispensationInfo.getRegimenLine().doubleValue());
+            obsRegimenLine.setObsDatetime(encounterDate);
+            obsSet.add(obsRegimenLine);
+        }
+
+        if (dispensationInfo.getTreatmentEndDate() != null) {
+            Obs obsTreatmentEndDate = getObs("TreatmentEndDate", dispensationInfo.getLocation(), patient);
+            obsTreatmentEndDate.setValueDate(dispensationInfo.getTreatmentEndDate());
+            obsTreatmentEndDate.setObsDatetime(encounterDate);
+            obsSet.add(obsTreatmentEndDate);
+        }
 
         return obsSet;
     }

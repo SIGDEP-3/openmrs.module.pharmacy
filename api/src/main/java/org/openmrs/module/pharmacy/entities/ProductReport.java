@@ -9,6 +9,7 @@ import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductReport")
+//@DiscriminatorValue("ProductReport")
 @Table(name = "pharmacy_product_report")
 public class ProductReport extends ProductOperation {
     private static final long serialVersionUID = 1L;
