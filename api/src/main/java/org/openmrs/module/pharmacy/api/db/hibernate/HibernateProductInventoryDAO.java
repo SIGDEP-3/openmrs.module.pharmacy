@@ -140,7 +140,7 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 						"FROM (SELECT product_attribute_id, product_id, batch_number, expiry_date FROM pharmacy_product_attribute) ppa " +
 						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_flux WHERE operation_id = :productOperationId) ppaf ON ppaf.product_attribute_id = ppa.product_attribute_id " +
 						"LEFT JOIN (SELECT * FROM pharmacy_product_operation WHERE product_operation_id = :productOperationId AND program_id = :productProgramId) ppo ON ppaf.operation_id = ppo.product_operation_id " +
-						"LEFT JOIN pharmacy_product_attribute_stock ppas ON ppas.product_attribute_id = ppa.product_attribute_id " +
+						"LEFT JOIN (SELECT * FROM pharmacy_product_attribute_stock WHERE voided = 0) ppas ON ppas.product_attribute_id = ppa.product_attribute_id " +
 						"LEFT JOIN pharmacy_product pp ON ppa.product_id = pp.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu ON pp.product_retail_unit = ppu.product_unit_id " +
 						"LEFT JOIN pharmacy_product_unit ppu2 ON pp.product_wholesale_unit = ppu2.product_unit_id " +

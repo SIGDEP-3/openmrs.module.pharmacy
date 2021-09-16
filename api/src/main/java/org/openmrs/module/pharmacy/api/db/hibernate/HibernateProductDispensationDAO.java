@@ -170,7 +170,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 						"LEFT JOIN pharmacy_product pp on pp.product_id = ppaof.product_id " +
 						"LEFT JOIN pharmacy_product_unit ppu on ppu.product_unit_id = pp.product_retail_unit and ppu.product_unit_id = pp.product_wholesale_unit " +
 						"LEFT JOIN ( " +
-						"    SELECT pa.product_attribute_id, pa.product_id, SUM(ppas.quantity_in_stock) quantityInStock FROM pharmacy_product_attribute_stock ppas LEFT JOIN pharmacy_product_attribute pa ON ppas.product_attribute_id = pa.product_attribute_id LEFT JOIN pharmacy_product_operation ppo on ppas.operation_id = ppo.product_operation_id WHERE program_id = :program GROUP BY pa.product_id " +
+						"    SELECT pa.product_attribute_id, pa.product_id, SUM(ppas.quantity_in_stock) quantityInStock FROM pharmacy_product_attribute_stock ppas LEFT JOIN pharmacy_product_attribute pa ON ppas.product_attribute_id = pa.product_attribute_id LEFT JOIN pharmacy_product_operation ppo on ppas.operation_id = ppo.product_operation_id AND ppas.voided = 0 WHERE program_id = :program GROUP BY pa.product_id " +
 						"    ) ps ON ps.product_id = ppaof.product_id " +
 						"WHERE ppd.product_operation_id = :productOperationId HAVING quantityInStock IS NOT NULL ORDER BY pf.date_created DESC ";
 
@@ -216,8 +216,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@Override
 	public List<MobilePatient> getAllMobilePatients(Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
-		return criteria
-				.add(Restrictions.eq("location", location)).list();
+		return criteria.add(Restrictions.eq("location", location)).list();
 	}
 
 	@Override
@@ -462,7 +461,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		} else {
 			query.setParameter("mobilePatient", mobilePatient);
 		}
-		System.out.println("-------------------------- Before return in query getLastProductDispensationByPatient ");
+//		System.out.println("-------------------------- Before return in query getLastProductDispensationByPatient ");
 		return (ProductDispensation) query.setMaxResults(1).uniqueResult();
 	}
 
@@ -541,22 +540,26 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public DispensationTransformationResultDTO transformDispensation(Location location) {
+
 //		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MobilePatient.class);
 //		List<MobilePatient> mobilePatients = criteria.add(Restrictions.eq("location", location))
-//				.add(Restrictions.eq("patientType", PatientType.MOBILE)).list();
+//				.createAlias("mobilePatientDispensationInfos", "mpd")
+//				.add(Restrictions.eq("patientType", PatientType.ON_SITE)).list();
 
 		List<Patient> patients = countPatientToTransform(location);
 
 		DispensationTransformationResultDTO transformationResultDTO = new DispensationTransformationResultDTO();
 		transformationResultDTO.setTotalPatient(patients.size());
 		for (Patient patient : patients) {
-			Integer patientTotalDispensation = 0;
 			Integer patientTotalDispensationTransformed = 0;
 			MobilePatient mobilePatient = getOneMobilePatientByIdentifier(patient.getPatientIdentifier().getIdentifier());
 			if (mobilePatient != null) {
 				Set<MobilePatientDispensationInfo> dispensationInfos = mobilePatient.getMobilePatientDispensationInfos();
+				Integer patientTotalDispensation = dispensationInfos.size();
 				transform(transformationResultDTO, patient, dispensationInfos, patientTotalDispensationTransformed);
-				removeMobilePatient(mobilePatient);
+				if (patientTotalDispensation.equals(patientTotalDispensationTransformed)){
+					removeMobilePatient(mobilePatient);
+				}
 			}
 		}
 //		for (MobilePatient mobilePatient : mobilePatients) {
@@ -633,9 +636,11 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 		List<Patient> patients = new ArrayList<>();
 		List<MobilePatient> mobilePatients = getAllMobilePatients(location);
 		for (MobilePatient mobilePatient : mobilePatients) {
-			Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
-			if (patient != null) {
-				patients.add(patient);
+			if (!mobilePatient.getPatientType().equals(PatientType.MOBILE) || mobilePatient.getPatientType().equals(PatientType.OTHER_HIV)) {
+				Patient patient = getPatientByIdentifier(mobilePatient.getIdentifier());
+				if (patient != null) {
+					patients.add(patient);
+				}
 			}
 		}
 		return patients;
@@ -655,14 +660,6 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 
 	@Override
 	public Boolean isTransferred(Patient patient, Location location) {
-//		Patient transferredPatient = (Patient) sessionFactory.getCurrentSession().createQuery(
-//				"SELECT p FROM Patient p, Obs o " +
-//						"WHERE p.patient = :patient AND o.person.personId = p.patient.patientId AND o.concept.conceptId = 164595 AND " +
-//						" o.valueDatetime >= (SELECT MAX(e.encounterDatetime) FROM Encounter e WHERE e.patient = :patient AND e.encounterType.name = 'PEC - Ouverture de dossier' AND e.voided = false AND e.location = :location GROUP BY e.patient) AND " +
-//						" o.voided = false AND o.location = :location"
-//		)
-//				.setParameter("patient", patient)
-//				.setParameter("location", location).uniqueResult();
 		return transferDate(patient, location) != null;
 	}
 
@@ -675,7 +672,7 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 						" o.voided = false AND o.location = :location"
 		)
 				.setParameter("patient", patient)
-				.setParameter("location", location).uniqueResult();
+				.setParameter("location", location).setMaxResults(1).uniqueResult();
 		if (obs != null) {
 			return obs.getValueDate() != null ? obs.getValueDate() : obs.getValueDatetime();
 		}
@@ -684,12 +681,6 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 
 	@Override
 	public Boolean isDead(Patient patient, Location location) {
-//		Patient deadPatient = (Patient) sessionFactory.getCurrentSession().createQuery("SELECT p FROM Patient p, Obs o " +
-//				"WHERE o.person.personId = p.patient.patientId AND o.concept.conceptId = 1543 AND  p.patient = :patient AND " +
-//				"o.voided = false AND o.location = :location")
-//				.setParameter("patient", patient)
-//				.setParameter("location", location)
-//				.uniqueResult();
 		return deathDate(patient, location) != null;
 	}
 

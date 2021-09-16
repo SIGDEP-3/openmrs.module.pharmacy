@@ -101,22 +101,22 @@ public class PharmacyProductDispensationManageController {
                     startDate = latestInventory.getOperationDate();
                 }
             }
-            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    startDate,
-                    new Date(),
-                    OperationUtils.getUserLocation()));
-
             DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
             if (resultDTO.getTotalPatient() != 0) {
                 modelMap.addAttribute("transformationMessage", resultDTO);
             }
 
+            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                    startDate,
+                    new Date(),
+                    OperationUtils.getUserLocation()));
+
             if (endDate == null) {
                 endDate = new Date();
             }
 
-            System.out.println("-------------------------------------------> Start date = " + OperationUtils.dateToDdMmYyyy(startDate));
-            System.out.println("-------------------------------------------> End date = " + OperationUtils.dateToDdMmYyyy(endDate));
+//            System.out.println("-------------------------------------------> Start date = " + OperationUtils.dateToDdMmYyyy(startDate));
+//            System.out.println("-------------------------------------------> End date = " + OperationUtils.dateToDdMmYyyy(endDate));
 
             getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
