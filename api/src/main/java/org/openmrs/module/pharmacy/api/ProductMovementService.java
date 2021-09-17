@@ -38,44 +38,84 @@ import java.util.List;
  */
 @Transactional
 public interface ProductMovementService extends OpenmrsService {
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementEntry> getAllProductMovementEntry(Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementEntry getOneProductMovementEntryById(Integer id) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.SAVE_MOVEMENT})
 	ProductMovementEntry saveProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.SAVE_MOVEMENT})
 	ProductMovementEntry editProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.DELETE_MOVEMENT})
 	void removeProductMovementEntry(ProductMovementEntry productMovementEntry) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementEntry getOneProductMovementEntryByUuid(String uuid) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	List<ProductMovementOut> getAllProductMovementOut(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut getOneProductMovementOutById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut saveProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut editProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	void removeProductMovementOut(ProductMovementOut productMovementOut) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_MOVEMENT})
 	ProductMovementOut getOneProductMovementOutByUuid(String uuid) throws APIException;
 }

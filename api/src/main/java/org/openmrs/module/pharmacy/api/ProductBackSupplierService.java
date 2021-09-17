@@ -40,6 +40,8 @@ public interface ProductBackSupplierService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_BACK_SUPPLIER})
 	List<ProductBackSupplier> getAllProductBackSuppliers(Location location, Boolean includeVoided);
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_BACK_SUPPLIER})

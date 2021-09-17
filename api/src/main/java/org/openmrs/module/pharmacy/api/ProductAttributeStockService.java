@@ -44,34 +44,63 @@ public interface ProductAttributeStockService extends OpenmrsService {
 	 * 
 	 */
 
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStocks(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getAllProductAttributeStockByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockByAttribute(ProductAttribute productAttribute, Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	ProductAttributeStock saveProductAttributeStock(ProductAttributeStock productAttributeStock);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	ProductAttributeStock editProductAttributeStock(ProductAttributeStock productAttributeStock);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.MANAGE_STOCK})
 	void removeProductAttributeStock(ProductAttributeStock productAttributeStock);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	ProductAttributeStock getOneProductAttributeStockByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	List<ProductAttributeStock> getProductAttributeStocksByProduct(Product product, Location userLocation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
 	Integer getProductAttributeStocksByProductCount(Product product, ProductProgram productProgram);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     List<ProductAttributeStock> getAllProductAttributeStockByProduct(Product product, Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     Integer getAllProductAttributeStockByProductCount(Product product, ProductProgram productProgram, Location location, Boolean includeChildren);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_STOCK})
     void voidProductAttributeStock(ProductAttributeStock attributeStock) throws APIException;
 }

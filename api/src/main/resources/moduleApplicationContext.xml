@@ -35,15 +35,15 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PharmacyServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePharmacyDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-									<constructor-arg>
-										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeFluxDAO"/>
-									</constructor-arg>
-									<constructor-arg>
-										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeStockDAO"/>
-									</constructor-arg>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
+<!--									<constructor-arg>-->
+<!--										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeFluxDAO"/>-->
+<!--									</constructor-arg>-->
+<!--									<constructor-arg>-->
+<!--										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeStockDAO"/>-->
+<!--									</constructor-arg>-->
 								</bean>
 							</property>
 						</bean>
@@ -73,9 +73,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -105,9 +105,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductAttributeServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -137,9 +137,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductAttributeFluxServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeFluxDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -169,9 +169,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductAttributeStockServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeStockDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -201,9 +201,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductDispensationServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductDispensationDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -233,9 +233,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductExchangeEntityServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductExchangeEntityDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -265,9 +265,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductInventoryServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductInventoryDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -297,9 +297,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductMovementServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductMovementDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -329,9 +329,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductPriceServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductPriceDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -361,9 +361,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductProgramServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductProgramDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -393,9 +393,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductReceptionServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductReceptionDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -425,9 +425,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductRegimenServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductRegimenDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -457,9 +457,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductSupplierServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductSupplierDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -489,9 +489,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductUnitServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductUnitDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -521,9 +521,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductTransferServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductTransferDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -553,9 +553,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductReportServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductReportDAO">
-									<property name="sessionFactory">
+									<!--<property name="sessionFactory">
 										<ref bean="sessionFactory" />
-									</property>
+									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -585,9 +585,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductBackSupplierServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductBackSupplierDAO">
-									<property name="sessionFactory">
+									<!--<property name="sessionFactory">
 										<ref bean="sessionFactory" />
-									</property>
+									</property>-->
 								</bean>
 							</property>
 						</bean>

@@ -23,6 +23,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.entities.ProductAttribute;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.entities.ProductReception;
@@ -32,6 +33,8 @@ import org.openmrs.module.pharmacy.dto.ProductReceptionFluxDTO;
 import org.openmrs.module.pharmacy.dto.ProductReceptionListDTO;
 import org.openmrs.module.pharmacy.dto.ProductReceptionReturnDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
@@ -39,24 +42,12 @@ import java.util.List;
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
  */
+@Repository
 public class HibernateProductReceptionDAO implements ProductReceptionDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
 	@SuppressWarnings("unchecked")
 	@Override

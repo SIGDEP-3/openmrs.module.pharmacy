@@ -20,34 +20,24 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.entities.ProductRegimen;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.api.db.ProductRegimenDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
  */
+@Repository
 public class HibernateProductRegimenDAO implements ProductRegimenDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
 	@Override
 	public ProductRegimen saveProductRegimen(ProductRegimen productRegimen) {

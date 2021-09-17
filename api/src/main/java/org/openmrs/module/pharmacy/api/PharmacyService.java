@@ -40,6 +40,8 @@ import java.util.List;
  */
 @Transactional
 public interface PharmacyService extends OpenmrsService {
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VALIDATE_OPERATION,
 			PrivilegeConstants.VALIDATE_DISPENSATION,
 			PrivilegeConstants.VALIDATE_INVENTORY,
@@ -50,20 +52,36 @@ public interface PharmacyService extends OpenmrsService {
 			PrivilegeConstants.VALIDATE_FLUX
 	})
 	Boolean validateOperation(ProductOperation operation);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.CANCEL_DISPENSATION, PrivilegeConstants.CANCEL_OPERATION})
 	Boolean cancelOperation(ProductOperation operation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationById(Integer productOperationId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationByOperationNumber(String operationNumber, Incidence incidence);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation getOneProductOperationByOperationDateAndProductProgram(Date operationDate, ProductProgram productProgram, Location location, Boolean includeVoided);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ProductOperation saveProductOperation(ProductOperation productOperation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
     List<ProductOutFluxDTO> getProductOutFluxDTOs(ProductOperation productOperation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	ConsumptionReportDTO getConsumptionReport(ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean byLocation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
 }

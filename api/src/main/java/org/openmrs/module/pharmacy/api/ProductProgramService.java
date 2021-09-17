@@ -34,16 +34,27 @@ import java.util.List;
 @Transactional
 public interface ProductProgramService extends OpenmrsService {
 
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PROGRAM})
     ProductProgram saveProductProgram(ProductProgram programForm);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_PROGRAM})
 	void removeProductProgram(ProductProgram productProgram);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramById(Integer programId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	ProductProgram getOneProductProgramByName(String name);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PROGRAM})
 	List<ProductProgram> getAllProductProgram();
 

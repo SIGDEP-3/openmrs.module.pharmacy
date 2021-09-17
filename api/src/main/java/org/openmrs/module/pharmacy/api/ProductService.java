@@ -42,34 +42,63 @@ public interface ProductService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT})
 	Product saveProduct(Product product);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT})
 	Product editProduct(Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductById(Integer productId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByCode(String code);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByRetailName(String retailName);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByWholesaleName(String wholesaleName);
+	@Transactional(readOnly = true)
+
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByName(String name);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProduct();
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProductByRetailUnit(ProductUnit retailUnit);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getAllProductByWholesaleUnit(ProductUnit wholesaleUnit);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> searchProductByNameLike(String nameSearch);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.IMPORT_PRODUCT})
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.IMPORT_REGIMEN})
 	ProductUploadResumeDTO uploadProductRegimens(MultipartFile file);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> getProductWithoutRegimenByProgram(ProductProgram productProgram);
 }

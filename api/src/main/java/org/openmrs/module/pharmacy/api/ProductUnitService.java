@@ -33,18 +33,31 @@ import java.util.List;
  */
 @Transactional
 public interface ProductUnitService extends OpenmrsService {
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRICE})
     ProductUnit saveProductUnit(ProductUnit productUnit);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRICE})
 	ProductUnit editProductUnit(ProductUnit productUnit);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_PRICE})
 	void removeProductUnit(ProductUnit productUnit);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductUnit getOneProductUnitById(Integer productUnitId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductUnit getOneProductUnitByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductUnit getOneProductUnitByName(String name);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	List<ProductUnit> getAllProductUnit();
 

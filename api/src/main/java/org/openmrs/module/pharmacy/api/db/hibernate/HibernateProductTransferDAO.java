@@ -21,8 +21,11 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.entities.ProductTransfer;
 import org.openmrs.module.pharmacy.api.db.ProductTransferDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
@@ -30,24 +33,12 @@ import java.util.List;
 /**
  * It is a default implementation of  {@link ProductTransferDAO}.
  */
+@Repository
 public class HibernateProductTransferDAO implements ProductTransferDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
 	@SuppressWarnings("unchecked")
 	@Override

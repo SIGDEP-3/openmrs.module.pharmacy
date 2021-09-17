@@ -33,18 +33,32 @@ import java.util.List;
  */
 @Transactional
 public interface ProductRegimenService extends OpenmrsService {
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_REGIMEN})
     ProductRegimen saveProductRegimen(ProductRegimen productRegimen);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_REGIMEN})
 	void removeProductRegimen(ProductRegimen productRegimen);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})
 	ProductRegimen getOneProductRegimenById(Integer regimenId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})
 	ProductRegimen getOneProductRegimenByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})
 	ProductRegimen getOneProductRegimenByConceptName(String name);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})
 	ProductRegimen getOneProductRegimenByConceptId(Integer conceptId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REGIMEN})
 	List<ProductRegimen> getAllProductRegimen();
 }

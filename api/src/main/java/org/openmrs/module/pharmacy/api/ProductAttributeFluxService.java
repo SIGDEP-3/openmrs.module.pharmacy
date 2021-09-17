@@ -40,58 +40,112 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxes(Location location, Date startDate, Date endDate, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxByAttribute(ProductAttribute productAttribute, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeFlux> getAllProductAttributeFluxByOperation(ProductOperation productOperation, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeFlux getOneProductAttributeFluxById(Integer id);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeFlux getOneProductAttributeFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_FLUX})
 	ProductAttributeFlux saveProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_FLUX})
 	ProductAttributeFlux editProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_FLUX})
 	void removeProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeFlux getOneProductAttributeFluxByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxes(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation, Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperation(ProductOperation reception, Boolean b);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     List<ProductAttributeFlux> getAllProductAttributeFluxByOperationAndProduct(ProductOperation operation, Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	Integer getAllProductAttributeFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByOperationAndProduct(ProductOperation operation, Product product, Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	Integer getAllProductAttributeOtherFluxByOperationAndProductCount(ProductOperation operation, Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location);
 }

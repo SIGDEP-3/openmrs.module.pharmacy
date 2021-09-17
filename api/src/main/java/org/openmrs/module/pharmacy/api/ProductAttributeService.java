@@ -36,28 +36,52 @@ import java.util.List;
  */
 @Transactional
 public interface ProductAttributeService extends OpenmrsService {
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	List<ProductAttribute> getAllProductAttributes(Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
 	ProductAttribute saveProductAttribute(ProductAttribute productAttribute);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
 	ProductAttribute editProductAttribute(ProductAttribute productAttribute);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_PRODUCT_ATTRIBUTE})
 	void removeProductAttribute(ProductAttribute productAttribute);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT_ATTRIBUTE})
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
     Integer purgeUnusedAttributes();
 }

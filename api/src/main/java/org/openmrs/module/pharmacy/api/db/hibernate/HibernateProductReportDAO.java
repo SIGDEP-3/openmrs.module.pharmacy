@@ -22,12 +22,15 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.api.db.ProductReportDAO;
 import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.enumerations.*;
 import org.openmrs.module.pharmacy.dto.ProductReportLineDTO;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,24 +39,12 @@ import java.util.List;
 /**
  * It is a default implementation of  {@link ProductReportDAO}.
  */
+@Repository
 public class HibernateProductReportDAO implements ProductReportDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
 	@SuppressWarnings("unchecked")
 	@Override

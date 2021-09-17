@@ -3,7 +3,7 @@
 
 <%@ include file="template/operationHeader.jsp"%>
 
-<p>Hello ${user.systemId}!</p>
+<h1 class="">Hello ${user.systemId}!</h1>
 
 <%@ include file="template/localFooter.jsp"%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

@@ -35,20 +35,35 @@ import java.util.List;
 @Transactional
 public interface ProductExchangeEntityService extends OpenmrsService {
 
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	List<ProductExchangeEntity> getAllProductExchange();
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	List<ProductExchangeEntity> getAllProductExchange(Location location);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_EXCHANGE_ENTITY})
 	ProductExchangeEntity saveProductExchange(ProductExchangeEntity productExchangeEntity);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_EXCHANGE_ENTITY})
 	ProductExchangeEntity editProductExchange(ProductExchangeEntity productExchangeEntity);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_EXCHANGE_ENTITY})
 	void removeProductExchange(ProductExchangeEntity productExchangeEntity);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeById(Integer productExchangeId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_EXCHANGE_ENTITY})
 	ProductExchangeEntity getOneProductExchangeByName(String name);
 

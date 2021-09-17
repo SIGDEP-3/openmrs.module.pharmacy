@@ -41,32 +41,59 @@ import java.util.List;
 @Transactional
 public interface ProductReceptionService extends OpenmrsService {
 
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(ProductProgram productProgram, Location location, Boolean includeVoided, Date startDate, Date endDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReception> getAllProductReceptions(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReception getOneProductReceptionById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_RECEPTION})
 	ProductReception saveProductReception(ProductReception productReception);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_RECEPTION})
 	ProductReception editProductReception(ProductReception productReception);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_RECEPTION})
 	void removeProductReception(ProductReception productReception);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReception getOneProductReceptionByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionFluxDTO> getProductReceptionFluxDTOs(ProductReception productReception);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionReturnDTO> getProductReceptionReturnDTOs(ProductReception productReception);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	ProductReceptionReturnDTO getOneProductReceptionReturnDTO(ProductReception reception, ProductAttribute productAttribute);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_RECEPTION})
 	List<ProductReceptionListDTO> getProductReceptionListDTOs();
 }

@@ -43,81 +43,151 @@ public interface ProductReportService extends OpenmrsService {
 	 * 
 	 */
 
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, ProductProgram productProgram, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductDistributionReports(Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllSubmittedChildProductReports(Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllTreatedChildProductReports(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastTreatedProductReports(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastTreatedProductReportsByProduct(Product product, Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getPeriodTreatedChildProductReports(Location location, ProductInventory inventory, Boolean includeVoided, Date operationDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getCountProductQuantityInLastTreatment(Location location, Boolean includeVoided, ProductProgram productProgram, Date operationDate, Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getCountProductQuantityInPeriodTreatment(Location location, ProductInventory productProgram, Boolean includeVoided, Date operationDate, Product product);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReport> getAllProductReports(Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportById(Integer id) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportByReportPeriodAndProgram(String reportPeriod, ProductProgram productProgram, Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
 	ProductReport saveProductReport(ProductReport productReport) throws APIException;
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_REPORT})
 	ProductReport editProductReport(ProductReport productReport) throws APIException;
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.REMOVE_REPORT})
 	void removeProductReport(ProductReport productReport) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getOneProductReportByUuid(String uuid) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReportLineDTO> getProductReportFluxDTOs(ProductReport productReport) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductReceivedQuantityInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityInStockInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityInStockOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityLostInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityAdjustmentInLastOperationByProduct(Product product, ProductInventory inventory, Location location, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityDistributedInLastOperationByProduct(Product product, ProductInventory inventory, Location userLocation, Boolean isUrgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getChildLocationsThatKnownRupture(Product product, ProductInventory inventory, Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityDistributedInAgo1MonthOperationByProduct(Product product, ProductInventory inventory, Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Integer getProductQuantityDistributedInAgo2MonthOperationByProduct(Product product, ProductInventory inventory, Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	Double getProductAverageMonthlyConsumption(Product product, ProductProgram productProgram, Location location, Boolean includeVoided) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<Product> getAllActivityProducts(ProductInventory inventory) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReport(Location location, ProductProgram productProgram, Boolean urgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReportByDate(Location location, ProductProgram productProgram, Date reportDate, Boolean urgent) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	List<ProductReportLineDTO> getReportDistributionLines(ProductReport report) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
     ProductAttributeOtherFlux getPreviousReportProductAttributeOtherFluxByLabel(Product product, String label, ProductReport report, Location location) throws APIException;
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
 	ProductReport getLastProductReportByProductAndByDate(Location location, ProductProgram productProgram, Product product, Date reportDate, Boolean urgent);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_REPORT})
     ProductReport getPeriodTreatedProductReportsByReportPeriodAndLocation(String operationNumber, ProductProgram program, Location childLocation, boolean isUrgent);
-//	List<ProductReportReturnDTO> getProductReportReturnDTOs(ProductReport productReport) throws APIException;
-//	ProductReportReturnDTO getOneProductReportReturnDTO(ProductReport reception, ProductAttribute productAttribute) throws APIException;
-//	List<ProductReportListDTO> getProductReportListDTOs() throws APIException;
 }

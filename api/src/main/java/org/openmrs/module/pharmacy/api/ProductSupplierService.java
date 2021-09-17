@@ -38,18 +38,31 @@ public interface ProductSupplierService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	List<ProductSupplier> getAllProductSuppliers();
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_SUPPLIER})
 	ProductSupplier saveProductSupplier(ProductSupplier productSupplier);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_SUPPLIER})
 	ProductSupplier editProductSupplier(ProductSupplier productSupplier);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_SUPPLIER})
 	void removeProductSupplier(ProductSupplier productSupplier);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierById(Integer productSupplierId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_SUPPLIER})
 	ProductSupplier getOneProductSupplierByName(String name);
 

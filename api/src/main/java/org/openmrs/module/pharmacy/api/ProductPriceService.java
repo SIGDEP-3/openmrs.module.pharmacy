@@ -33,22 +33,40 @@ import java.util.List;
  */
 @Transactional
 public interface ProductPriceService extends OpenmrsService {
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_PRICE})
 	ProductPrice saveProductPrice(ProductPrice productPrice);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_PRICE})
 	void removeProductPrice(ProductPrice productPrice);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceById(Integer productPriceId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByProductProgramId(Integer productProgramId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneProductPriceByProductId(Integer productId);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	ProductPrice getOneActiveProductPriceByProductAndProductProgram();
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	List<ProductPrice> getAllProductPriceByStatus(Boolean status);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRICE})
 	List<ProductPrice> getAllProductPrices();
 

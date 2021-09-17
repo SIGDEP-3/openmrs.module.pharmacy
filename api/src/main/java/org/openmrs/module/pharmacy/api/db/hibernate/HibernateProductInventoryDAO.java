@@ -24,6 +24,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.entities.ProductInventory;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.db.ProductInventoryDAO;
@@ -33,28 +34,18 @@ import java.util.List;
 
 import org.openmrs.module.pharmacy.enumerations.InventoryType;
 import org.openmrs.module.pharmacy.dto.ProductInventoryFluxDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * It is a default implementation of  {@link ProductInventoryDAO}.
  */
+@Repository
 public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
 	@SuppressWarnings("unchecked")
 	@Override

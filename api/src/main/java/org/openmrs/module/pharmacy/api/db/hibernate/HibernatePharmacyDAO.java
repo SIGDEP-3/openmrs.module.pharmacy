@@ -24,6 +24,7 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
@@ -35,6 +36,8 @@ import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -45,41 +48,15 @@ import java.util.Set;
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
  */
+@Repository
 public class HibernatePharmacyDAO implements PharmacyDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	private SessionFactory sessionFactory;
+//	private SessionFactory sessionFactory;
+	@Autowired
+	private DbSessionFactory sessionFactory;
 
-	private final HibernateProductAttributeFluxDAO productAttributeFluxDAO;
-	private final HibernateProductAttributeStockDAO productAttributeStockDAO;
-
-	public HibernatePharmacyDAO(HibernateProductAttributeFluxDAO productAttributeFluxDAO,
-								HibernateProductAttributeStockDAO productAttributeStockDAO) {
-		this.productAttributeFluxDAO = productAttributeFluxDAO;
-		this.productAttributeStockDAO = productAttributeStockDAO;
-	}
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public HibernateProductAttributeFluxDAO getProductAttributeFluxDAO() {
-		return productAttributeFluxDAO;
-	}
-
-	public HibernateProductAttributeStockDAO getProductAttributeStockDAO() {
-		return productAttributeStockDAO;
-	}
+	public HibernatePharmacyDAO() {}
 
 	@Override
 	@Transactional

@@ -41,24 +41,43 @@ public interface ProductTransferService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<ProductTransfer> getAllProductTransfers(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	ProductTransfer getOneProductTransferById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_TRANSFER})
 	ProductTransfer saveProductTransfer(ProductTransfer productTransfer);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_TRANSFER})
 	ProductTransfer editProductTransfer(ProductTransfer productTransfer);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_TRANSFER})
 	void removeProductTransfer(ProductTransfer productTransfer);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	ProductTransfer getOneProductTransferByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_TRANSFER})
 	List<Location> getAllClientLocation(Boolean includeVoided);
 //	List<ProductOutFluxDTO> getProductTransferFluxDTOs(ProductTransfer productTransfer);

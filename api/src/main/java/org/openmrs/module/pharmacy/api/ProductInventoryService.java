@@ -43,34 +43,64 @@ public interface ProductInventoryService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided, Date operationStartDate, Date operationEndDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Location location);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventory> getAllProductInventories(Boolean includeVoided);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryById(Integer id);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_INVENTORY})
 	ProductInventory saveProductInventory(ProductInventory productInventory);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_INVENTORY})
 	ProductInventory editProductInventory(ProductInventory productInventory);
+
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_INVENTORY})
 	void removeProductInventory(ProductInventory productInventory);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryByUuid(String uuid);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getLastProductInventory(Location location, ProductProgram productProgram, InventoryType inventoryType);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getLastProductInventoryByDate(Location location, ProductProgram productProgram, Date inventoryDate, InventoryType inventoryType);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxDTOs(ProductInventory productInventory);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	List<ProductInventoryFluxDTO> getProductInventoryFluxValidatedDTO(ProductInventory productInventory);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
     ProductInventory getProductInventoryByDate(Location userLocation, ProductProgram oneProductProgramById, Date operationDate);
+
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_INVENTORY})
 	ProductInventory getOneProductInventoryByOperationNumber(Location location, ProductProgram program, String operationNumber, InventoryType inventoryType);
 }
