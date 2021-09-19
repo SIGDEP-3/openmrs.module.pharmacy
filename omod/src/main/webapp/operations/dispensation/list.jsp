@@ -76,104 +76,87 @@
     }
 </script>
 <div class="container-fluid mt-2">
-    <div class="row bg-light pt-2 pb-2 border border-secondary">
-        <div class="col-12">
-            <form:form modelAttribute="findPatientForm" method="post" action="" id="form">
-                <form:errors path="productProgramId" cssClass="error"/>
-                <form:errors path="patientIdentifier" cssClass="error"/>
-                <form:errors path="dispensationType" cssClass="error"/>
-                <form:errors path="patientType" cssClass="error"/>
-                <div class="d-flex justify-content-between align-middle">
-                    <div class="d-flex justify-content-start">
-                        <div class="form-inline pr-2">
-                            <i class="fa fa-medkit"></i> &nbsp;<label class="col-form-label">
-                            Nouvelle dispensation
-                        </label>
-                        </div>
-                        <div class="form-inline pl-1 pr-2 bg-summer-sky">
-                            <label for="program" class="col-form-label mr-2">Programme : </label>
-                            <form:select path="productProgramId" cssClass="form-control s2" id="program">
-                                <form:option value="" label=""/>
-                                <form:options items="${programs}" itemValue="productProgramId"
-                                              itemLabel="name"/>
-                            </form:select>
-                        </div>
-                        <div class="form-inline pl-2 pr-2 bg-info border-left border-dark">
-                            <form:radiobutton path="dispensationType" value="HIV_PATIENT" label=" Patient VIH" cssClass="mr-2 ml-1"/>
+    <div class="card card-fluid bg-light">
+        <%--<div class="card-header">
+            Saisie de dispensation
+        </div>--%>
+        <form:form modelAttribute="findPatientForm" method="post" action="" id="form">
+            <form:errors path="productProgramId" cssClass="error"/>
+            <form:errors path="patientIdentifier" cssClass="error"/>
+            <form:errors path="dispensationType" cssClass="error"/>
+            <form:errors path="patientType" cssClass="error"/>
+            <div class="d-flex justify-content-between">
+                <table class="table table-borderless table-condensed table-sm table-responsive mb-0">
+                    <tbody>
+                    <tr class="bg-light">
+                        <td class="align-middle">
+                            <div class="form-inline pl-1 pr-2">
+                                <label for="program" class="col-form-label mr-2">Programme : </label>
+                                <form:select path="productProgramId" cssClass="form-control s2" id="program">
+                                    <form:option value="" label=""/>
+                                    <form:options items="${programs}" itemValue="productProgramId"
+                                                  itemLabel="name"/>
+                                </form:select>
+                            </div>
+                        </td>
+                        <td class="align-middle bg-light">
+                            <table class="table table-borderless table-sm mb-0">
+                                <tbody>
+                                <tr>
+                                    <td class="align-middle bg-light">
+                                        <div class="custom-radio custom-control-inline pt-1">
+                                            <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="Patient VIH" cssClass="mr-2 mt-1"/>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle bg-joust-blue">
+                                        <form:input path="patientIdentifier" cssClass="form-control mr-2 ml-3" />
+                                    </td>
+                                    <td class="align-middle bg-joust-blue">
+                                        <div class="custom-radio custom-control mr-2 pt-1">
+                                            <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="mr-2"/>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle bg-joust-blue">
+                                        <div class="custom-radio custom-control mr-2 pt-1">
+                                            <form:radiobutton path="patientType" value="OTHER_HIV" label="Pxophylaxie VIH" cssClass="mr-2 "/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-between">
+                            </div>
 
-                            <form:input path="patientIdentifier" cssClass="form-control form-control-sm mr-2 ml-3" />
-                            <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="form-check-input mr-2 ml-3"/>
-                            <form:radiobutton path="patientType" value="OTHER_HIV" label="Autre VIH" cssClass="mr-2 ml-3"/>
-                        </div>
-                        <div class="form-inline pl-3 pr-2 bg-emerald border-left border-dark">
-                            <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2 ml-2"/>
-                        </div>
-                        <div class="form-inline pl-3 pr-1 bg-emerald border-left border-dark">
-                            <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre dispensation" cssClass="mr-2"/>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm" title="Creer nouveau">
-                        <i class="fa fa-plus"></i> Ajouter
+                        </td>
+
+                        <td class="align-middle bg-light">
+                            <div class="custom-radio custom-control mr-2 pt-1">
+                                <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2"/>
+                            </div>
+                        </td>
+                        <td class="align-middle bg-light">
+                            <div class="custom-radio custom-control mr-2 pt-1">
+                                <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre dispensation" cssClass=" mr-2"/>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+<%--                <div class="d-flex justify-content-start">--%>
+<%--                        &lt;%&ndash;                        <div class="form-inline pr-2">&ndash;%&gt;--%>
+<%--                        &lt;%&ndash;                            <i class="fa fa-medkit"></i> &nbsp;<label class="col-form-label">&ndash;%&gt;--%>
+<%--                        &lt;%&ndash;                            Nouvelle dispensation&ndash;%&gt;--%>
+<%--                        &lt;%&ndash;                        </label>&ndash;%&gt;--%>
+<%--                        &lt;%&ndash;                        </div>&ndash;%&gt;--%>
+<%--                </div>--%>
+                <div class="m-2">
+                    <button type="submit" class="btn btn-primary" title="Creer nouveau">
+                        <i class="fa fa-plus"></i> Nouvelle dispensation
                     </button>
                 </div>
 
-                <%--  <div class="row align-items-center">
-                      <div class="col-11">
-                          <div class="form-row">
-                              <div class="col-4 bg-summer-sky">
-                                  <div class="row align-items-center">
-                                      <label class="col-4 pt-2">Programme : </label>
-                                      <div class="col-8 pt-1">
-                                          <form:select path="productProgramId" cssClass="form-control s2">
-                                              <form:option value="" label=""/>
-                                              <form:options items="${programs}" itemValue="productProgramId"
-                                                            itemLabel="name"/>
-                                          </form:select>
-                                      </div>
-                                  </div>
-                              </div>
-  &lt;%&ndash;                        </div>&ndash;%&gt;
-  &lt;%&ndash;                        <div class="form-row align-items-center">&ndash;%&gt;
-                              <div class="col-5 bg-gray">
-                                  <div class="row align-items-center">
-                                      <div class="col-2 pt-2">
-                                          <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="VIH" cssClass="mr-2"/>
-                                      </div>
-                                      <div class="col-5">
-                                          <form:input path="patientIdentifier" cssClass="form-control form-control-sm" />
-                                      </div>
-                                      <div class="col-2 pt-2">
-                                          <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="form-check-input mr-2"/>
-                                      </div>
-  &lt;%&ndash;                                    <div class="col-2 pt-1">&ndash;%&gt;
-  &lt;%&ndash;                                        <form:radiobutton path="patientType" value="MOBILE" label="Mobile" cssClass="mr-2"/>&ndash;%&gt;
-  &lt;%&ndash;                                    </div>&ndash;%&gt;
-                                      <div class="col-3 pt-2">
-                                          <form:radiobutton path="patientType" value="OTHER_HIV" label="Autre VIH" cssClass="mr-2"/>
-                                      </div>
-
-                                  </div>
-                              </div>
-                              <div class="col-3 align-items-center bg-cyanite">
-                                  <div class="row align-items-center text-center">
-                                      <div class="col-6 pt-2">
-                                          <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2"/>
-                                      </div>
-                                      <div class="col-6 pt-2">
-                                          <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre vente" cssClass="mr-2"/>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="col-1 text-right">
-                          <button type="submit" class="btn btn-primary btn-sm" title="Creer nouveau">
-                              <i class="fa fa-plus"></i>
-                          </button>
-                      </div>
-                  </div>--%>
-            </form:form>
-        </div>
+            </div>
+        </form:form>
     </div>
     <div class="row mt-3">
         <div class="col-12">
@@ -185,7 +168,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.total}
+                        ${dispensationResult.total != null ? dispensationResult.total : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">Total</div>
                 </div>
@@ -195,7 +178,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.onSite}
+                        ${dispensationResult.onSite != null ? dispensationResult.onSite : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">Patients du Site</div>
                 </div>
@@ -205,7 +188,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.adult}
+                        ${dispensationResult.adult != null ? dispensationResult.adult : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">Adultes</div>
                 </div>
@@ -215,7 +198,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.child}
+                        ${dispensationResult.child != null ? dispensationResult.child : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">Enfants</div>
                 </div>
@@ -225,7 +208,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.male}
+                        ${dispensationResult.male != null ? dispensationResult.male : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">Masculin</div>
                 </div>
@@ -235,7 +218,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.female}
+                        ${dispensationResult.female != null ? dispensationResult.female : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">F&eacute;minin</div>
                 </div>
@@ -245,7 +228,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.pec}
+                        ${dispensationResult.pec != null ? dispensationResult.onSite : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">PEC</div>
                 </div>
@@ -255,7 +238,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.ptme}
+                        ${dispensationResult.ptme != null ? dispensationResult.ptme : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">PTME</div>
                 </div>
@@ -275,7 +258,7 @@
             <div class="card card-fluid p-0 border-info bg-light" style="border-radius: 0">
                 <div class="card-body m-0 p-1">
                     <div class="h2 text-center mb-0 text-primary">
-                        ${dispensationResult.notApplicable}
+                        ${dispensationResult.notApplicable != null ? dispensationResult.notApplicable : 0}
                     </div>
                     <div class="card-title text-info text-center small mb-0">NA</div>
                 </div>

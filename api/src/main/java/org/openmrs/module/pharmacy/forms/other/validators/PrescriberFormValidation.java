@@ -22,7 +22,9 @@ public class PrescriberFormValidation implements Validator {
         if (form == null) {
             errors.reject("pharmacy", "general.error");
         } else {
-            ValidationUtils.rejectIfEmpty(errors, "name", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "familyName", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "givenName", null, "Ce champ est requis");
+            ValidationUtils.rejectIfEmpty(errors, "gender", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "identifier", null, "Ce champ est requis");
             ValidationUtils.rejectIfEmpty(errors, "location", null, "Ce champ est requis");
 

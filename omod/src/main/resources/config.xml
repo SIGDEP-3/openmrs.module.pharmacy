@@ -34,7 +34,7 @@
 	</globalProperty>
 	<globalProperty>
 		<property>pharmacy.dispensationGoalConcept</property>
-		<defaultValue>165009</defaultValue>
+		<defaultValue>163000</defaultValue>
 		<description>Insert here the concept for the goal concept for dispensation in pharmacy </description>
 	</globalProperty>
 	<globalProperty>

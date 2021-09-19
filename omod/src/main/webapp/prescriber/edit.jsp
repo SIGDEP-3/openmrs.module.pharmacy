@@ -23,10 +23,23 @@
         <form:hidden path="providerId"/>
 
         <div class="row">
+            <div class="col-4 mb-2">
+                <labe>Nom<span class="required">*</span></labe>
+                <form:input path="familyName" cssClass="form-control form-control-sm" />
+                <form:errors path="familyName" cssClass="error"/>
+            </div>
             <div class="col-6 mb-2">
-                <labe>Nom et pr&eacute;noms <span class="required">*</span></labe>
-                <form:input path="name" cssClass="form-control form-control-sm" />
-                <form:errors path="name" cssClass="error"/>
+                <labe>Pr&eacute;noms <span class="required">*</span></labe>
+                <form:input path="givenName" cssClass="form-control form-control-sm" />
+                <form:errors path="givenName" cssClass="error"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 mb-2">
+                <labe>Sexe <span class="required">*</span></labe>
+                <form:radiobutton path="gender" tabindex="true" value="M" label="M" cssClass="mr-2"/>
+                <form:radiobutton path="gender" tabindex="true" value="F" label="F" cssClass="mr-2"/>
+                <form:errors path="gender" cssClass="error"/>
             </div>
         </div>
         <div class="row">

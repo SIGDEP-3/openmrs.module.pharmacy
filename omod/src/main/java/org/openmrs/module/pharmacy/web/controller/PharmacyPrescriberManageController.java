@@ -2,6 +2,8 @@ package org.openmrs.module.pharmacy.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.api.ProductProgramService;
@@ -82,8 +84,31 @@ public class PharmacyPrescriberManageController {
             new PrescriberFormValidation().validate(prescriberForm, result);
 
             if (!result.hasErrors()) {
+                Provider provider = prescriberForm.getPrescriber();
+
+                Person person;
+                PersonName personName;
+                if (prescriberForm.getPersonId() != null) {
+                    person = Context.getPersonService().getPerson(prescriberForm.getPersonId());
+                    personName = person.getPersonName();
+                    personName.setFamilyName(prescriberForm.getFamilyName());
+                    personName.setGivenName(prescriberForm.getGivenName());
+                    Context.getPersonService().savePersonName(personName);
+                } else {
+                    person = new Person();
+                    personName = new PersonName();
+                    personName.setFamilyName(prescriberForm.getFamilyName());
+                    personName.setGivenName(prescriberForm.getGivenName());
+                    personName.setPreferred(true);
+                    person.addName(personName);
+                }
+                person.setGender(prescriberForm.getGender());
+
+                provider.setPerson(Context.getPersonService().savePerson(person));
+
                 boolean idExist = (prescriberForm.getPrescriber().getProviderId() != null);
-                Context.getProviderService().saveProvider(prescriberForm.getPrescriber());
+                // System.out.println("--------------- Prescriber " + prescriberForm.getPrescriber());
+                Context.getProviderService().saveProvider(provider);
                 if (!idExist) {
                     session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Precripteur ajouté avec succès");
                 } else {
@@ -93,7 +118,7 @@ public class PharmacyPrescriberManageController {
             }
 
             modelMap.addAttribute("prescriberForm", prescriberForm);
-            modelMap.addAttribute("locations", Context.getLocationService().getAllLocations());
+            modelMap.addAttribute("locations", OperationUtils.getUserLocations());
             modelMap.addAttribute("title", "Saisie de Prescripteurs");
         }
 
