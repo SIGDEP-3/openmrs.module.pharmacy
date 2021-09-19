@@ -52,7 +52,6 @@ import java.util.Set;
 public class HibernatePharmacyDAO implements PharmacyDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-//	private SessionFactory sessionFactory;
 	@Autowired
 	private DbSessionFactory sessionFactory;
 

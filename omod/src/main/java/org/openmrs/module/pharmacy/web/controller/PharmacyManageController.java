@@ -64,6 +64,7 @@ public class PharmacyManageController {
 	@RequestMapping(value = "/module/pharmacy/manage", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
+		model.addAttribute("defaultLocation", OperationUtils.getUserLocation().getName());
 	}
 
 	@RequestMapping(value = "/module/pharmacy/operations/stock/list.form", method = RequestMethod.GET)

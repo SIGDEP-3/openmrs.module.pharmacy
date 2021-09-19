@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>pharmacy</artifactId>
-		<version>1.1</version>
+		<version>2.0</version>
 	</parent>
 
 	<artifactId>pharmacy-api</artifactId>
@@ -51,14 +51,14 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>webservices.rest-omod</artifactId>
-			<version>2.13</version>
+			<version>2.26.0</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>webservices.rest-omod-common</artifactId>
-			<version>2.13</version>
+			<version>2.26.0</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>

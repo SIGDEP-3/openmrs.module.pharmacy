@@ -22,17 +22,17 @@ public abstract class AbstractPharmacyObject extends BaseOpenmrsObject implement
     public void setId(Integer integer) {
     }
 
-    @Basic
-    @Access(AccessType.PROPERTY)
-    @Column(name = "uuid", length = 38, unique = true, nullable = false)
-    @Override
-    public String getUuid() {
-        return super.getUuid();
-    }
-
-    @Override
-    public void setUuid(String uuid) {
-        super.setUuid(uuid);
-    }
+    //    @Basic
+    //    @Access(AccessType.PROPERTY)
+    //    @Column(name = "uuid", length = 38, unique = true, nullable = false)
+    //    @Override
+    //    public String getUuid() {
+    //        return super.getUuid();
+    //    }
+    //
+    //    @Override
+    //    public void setUuid(String uuid) {
+    //        super.setUuid(uuid);
+    //    }
 
 }

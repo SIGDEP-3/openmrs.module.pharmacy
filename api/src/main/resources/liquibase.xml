@@ -934,23 +934,23 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="pharmacy-add-goal_concept" author="BOGUI SERGE">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <sqlCheck expectedResult="165009">SELECT concept_id FROM concept WHERE concept_id = 165009</sqlCheck>
-            </not>
-        </preConditions>
-        <sql>
-            INSERT INTO concept (concept_id, retired, datatype_id, class_id, is_set, creator, date_created, uuid)
-            VALUES (165009, 0, 3, 7, 0, 1, '2020-11-27 00:00:00', '165009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+<!--    <changeSet id="pharmacy-add-goal_concept" author="BOGUI SERGE">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <sqlCheck expectedResult="165009">SELECT concept_id FROM concept WHERE concept_id = 165009</sqlCheck>-->
+<!--            </not>-->
+<!--        </preConditions>-->
+<!--        <sql>-->
+<!--            INSERT INTO concept (concept_id, retired, datatype_id, class_id, is_set, creator, date_created, uuid)-->
+<!--            VALUES (165009, 0, 3, 7, 0, 1, '2020-11-27 00:00:00', '165009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');-->
 
-            INSERT INTO concept_name (concept_id, name, date_created, concept_name_type, creator, locale, locale_preferred, voided, uuid)
-            VALUES (165009, 'Goal', '2020-11-27 00:00:00', 'FULLY_SPECIFIED', 1, 'fr', 1, 0, '165009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+<!--            INSERT INTO concept_name (concept_id, name, date_created, concept_name_type, creator, locale, locale_preferred, voided, uuid)-->
+<!--            VALUES (165009, 'Goal', '2020-11-27 00:00:00', 'FULLY_SPECIFIED', 1, 'fr', 1, 0, '165009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');-->
 
-            INSERT INTO concept_word (concept_id, word, locale, concept_name_id, weight)
-            VALUES (concept_id, 'Goal', 'fr', (SELECT concept-name_id FROM concept_name WHERE concept_id = 165009), (PI() - 1.0));
-        </sql>
-    </changeSet>
+<!--            INSERT INTO concept_word (concept_id, word, locale, concept_name_id, weight)-->
+<!--            VALUES (concept_id, 'Goal', 'fr', (SELECT concept-name_id FROM concept_name WHERE concept_id = 165009), (PI() - 1.0));-->
+<!--        </sql>-->
+<!--    </changeSet>-->
 
     <changeSet id="pharmacy-add-patient-type-to-mobile-patient" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
@@ -1776,9 +1776,6 @@
 
             INSERT INTO concept_name (concept_id, name, date_created, concept_name_type, creator, locale, locale_preferred, voided, uuid)
             VALUES (163000, 'Goal', '2020-11-27 00:00:00', 'FULLY_SPECIFIED', 1, 'fr', 1, 0, '163000AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-
-            INSERT INTO concept_word (concept_id, word, locale, concept_name_id, weight)
-            VALUES (163000, 'Goal', 'fr', (SELECT concept_name_id FROM concept_name WHERE concept_id = 163000), (PI() - 1.0));
         </sql>
     </changeSet>
 
@@ -1815,6 +1812,16 @@
             INNER JOIN encounter_type et ON et.encounter_type_id = e.encounter_type
             SET o.concept_id = 163000
             WHERE et.uuid = 'cfb217pd-4af2-40f4-9d6e-0d1b38d2af86' AND o.concept_id = 165009
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy-add-default-location-property" author="BOGUI SERGE">
+        <sql>
+            <![CDATA[
+            INSERT INTO user_property (user_id, property, property_value)
+            SELECT user_id, 'defaultLocation' AS property, '' AS property_value FROM users
+            WHERE user_id NOT IN (SELECT user_id FROM user_property WHERE property = 'defaultLocation');
             ]]>
         </sql>
     </changeSet>
