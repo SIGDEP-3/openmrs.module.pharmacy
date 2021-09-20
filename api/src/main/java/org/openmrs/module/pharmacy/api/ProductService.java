@@ -69,8 +69,8 @@ public interface ProductService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByWholesaleName(String wholesaleName);
-	@Transactional(readOnly = true)
 
+	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	Product getOneProductByName(String name);
 
@@ -90,7 +90,7 @@ public interface ProductService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_PRODUCT})
 	List<Product> searchProductByNameLike(String nameSearch);
 
-	@Transactional(readOnly = true)
+	@Transactional
 	@Authorized(value = {PrivilegeConstants.IMPORT_PRODUCT})
 	ProductUploadResumeDTO uploadProducts(MultipartFile file);
 

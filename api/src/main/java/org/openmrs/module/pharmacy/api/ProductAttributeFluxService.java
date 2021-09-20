@@ -73,15 +73,15 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeFlux getOneProductAttributeFluxByAttributeAndOperation(ProductAttribute productAttribute, ProductOperation productOperation);
 
-	@Transactional
+	// @Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_FLUX})
 	ProductAttributeFlux saveProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
 
-	@Transactional
+	// @Transactional
 	@Authorized(value = {PrivilegeConstants.SAVE_FLUX})
 	ProductAttributeFlux editProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
 
-	@Transactional
+//	@Transactional
 	@Authorized(value = {PrivilegeConstants.DELETE_FLUX})
 	void removeProductAttributeFlux(ProductAttributeFlux productAttributeFlux);
 
@@ -105,15 +105,15 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux getOneProductAttributeOtherFluxById(Integer id);
 
-	@Transactional
+	// @Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux saveProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 
-	@Transactional
+	// @Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	ProductAttributeOtherFlux editProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 
-	@Transactional
+	// @Transactional
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	void removeProductAttributeOtherFlux(ProductAttributeOtherFlux productAttributeOtherFlux);
 

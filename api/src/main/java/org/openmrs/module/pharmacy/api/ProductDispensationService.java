@@ -172,7 +172,7 @@ public interface ProductDispensationService extends OpenmrsService {
 
 	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.TRANSFORM_DISPENSATION})
-	Integer countPatientToTransform(Location location);
+	List<Patient> countPatientToTransform(Location location);
 
 	@Transactional(readOnly = true)
 	Boolean isDead(Patient patient, Location location);

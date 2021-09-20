@@ -167,7 +167,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-supplier" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_supplier"/>
             </not>
@@ -194,7 +194,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-attribute" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_attribute"/>
             </not>
@@ -229,7 +229,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-operation" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_operation"/>
             </not>
@@ -292,7 +292,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-attribute-flux" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_attribute_flux"/>
             </not>
@@ -359,7 +359,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-attribute-other-flux" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_attribute_other_flux"/>
             </not>
@@ -396,7 +396,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-reception" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_reception"/>
             </not>
@@ -421,7 +421,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-inventory" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_inventory"/>
             </not>
@@ -448,7 +448,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-dispensing" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_dispensing"/>
             </not>
@@ -480,7 +480,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-mobile-patient" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_mobile_patient"/>
             </not>
@@ -528,7 +528,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-exchange-entity" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_exchange_entity"/>
             </not>
@@ -552,7 +552,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-movement-entry" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_movement_entry"/>
             </not>
@@ -579,7 +579,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-movement-out" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_movement_out"/>
             </not>
@@ -607,7 +607,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-attribute-stock" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_attribute_stock"/>
             </not>
@@ -737,7 +737,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-add-column-observation-flux" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_product_attribute_flux" columnName="observation"/>
             </not>
@@ -850,7 +850,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-mobile-patient-dispensation-info" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_mobile_patient_dispensation_info"/>
             </not>
@@ -922,7 +922,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-add-treatment-days-dispensation-info" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="treatment_days"/>
             </not>
@@ -996,7 +996,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-dispensation-add-one-to-one-mobile-patient-info" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <columnExists columnName="product_dispensation_id" tableName="pharmacy_mobile_patient_dispensation_info"/>
         </preConditions>
         <dropForeignKeyConstraint baseTableName="pharmacy_mobile_patient_dispensation_info" constraintName="pharmacy_mobile_patient_dispensation_info_dispensation"/>
@@ -1169,7 +1169,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-transfer-create" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_transfer"/>
             </not>
@@ -1192,7 +1192,7 @@
     </changeSet>
 
     <changeSet id="location_attribute_is_direct_client" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <sqlCheck expectedResult="1">SELECT COUNT(name) FROM location_attribute_type WHERE name = 'Client Direct NPSP'; </sqlCheck>
             </not>
@@ -1212,7 +1212,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-report" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_report"/>
             </not>
@@ -1248,7 +1248,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-product-back-supplier-create" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="pharmacy_product_back_supplier"/>
             </not>
@@ -1418,7 +1418,7 @@
         </sql>
     </changeSet>
     <changeSet id="pharmacy-create-role-pharmacist" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(role) FROM role WHERE role = 'PHARMACIEN'</sqlCheck>
         </preConditions>
         <sql>
@@ -1532,7 +1532,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-create-role-pharmacist-anonymous" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(role) FROM role WHERE role = 'PHARMACIEN ANONYME'</sqlCheck>
         </preConditions>
         <sql>
@@ -1609,14 +1609,14 @@
 <!--    </changeSet>-->
 
     <changeSet id="pharmacy-drop-mobile-dispensing-members" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <tableExists tableName="pharmacy_mobile_patient_product_dispensing_members"/>
         </preConditions>
         <dropTable tableName="pharmacy_mobile_patient_product_dispensing_members"/>
     </changeSet>
 
     <changeSet id="pharmacy-mobile-dispensation-info-add-column" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="patient_id"/>
             </not>
@@ -1631,7 +1631,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-add-program-number-program" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_product_program" columnName="program_number"/>
             </not>
@@ -1680,7 +1680,7 @@
 <!--        <sqlFile path="UPDATE.sql"/>-->
 <!--    </changeSet>-->
     <changeSet id="pharmacy-dispensation-add-column-regimen-line" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_mobile_patient_dispensation_info" columnName="regimen_line"/>
             </not>
@@ -1707,7 +1707,7 @@
     </changeSet>
 
     <changeSet id="pharmacy-add-column-operation-id-to-stock" author="BOGUI SERGE">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="pharmacy_product_attribute_stock" columnName="operation_id"/>
             </not>

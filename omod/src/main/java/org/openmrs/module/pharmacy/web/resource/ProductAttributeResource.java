@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 
-@Resource(name = RestConstants.VERSION_1 + PharmacyResourceController.PHARMACY_REST_NAMESPACE + "/product-unit",
+@Resource(name = RestConstants.VERSION_1 + PharmacyResourceController.PHARMACY_REST_NAMESPACE + "/attribute",
         supportedClass = ProductUnit.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.11.*", "1.12.*", "2.*"})
 public class ProductAttributeResource extends DelegatingCrudResource<ProductAttribute> {
 

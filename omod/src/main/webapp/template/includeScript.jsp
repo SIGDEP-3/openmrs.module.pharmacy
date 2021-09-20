@@ -3,8 +3,9 @@
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/bootstrap/js/bootstrap.min.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/bootstrap/js/bootstrap.bundle.min.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/datatables.min.js"/>
-<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/js/dataTables.bootstrap4.min.js"/>
-<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/js/date-ue.js"/>
+<%--<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/dataTables.bootstrap4.min.js"/>--%>
+<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/Bootstrap-4-4.6.0/js/bootstrap.min.js"/>
+<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/DataTables/date-ue.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/fontawesome-free/js/all.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/select2/js/select2.min.js"/>
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/pharmacy/jquery.monthpicker.js"/>
