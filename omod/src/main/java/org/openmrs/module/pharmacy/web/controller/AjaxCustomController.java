@@ -8,6 +8,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.api.*;
 import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
+import org.openmrs.web.WebConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,10 @@ public class AjaxCustomController {
     }
     private ProductProgramService programService() {
         return Context.getService(ProductProgramService.class);
+    }
+
+    private ProductDispensationService dispensationService() {
+        return Context.getService(ProductDispensationService.class);
     }
 
     @ResponseBody
@@ -284,4 +289,17 @@ public class AjaxCustomController {
         return new ResponseEntity<String>("Saved successfully", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "cancel-dispensation.form", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> cancelDispensationAjax(
+            @RequestParam("dispensationId") Integer dispensationId) {
+
+        ProductDispensation dispensation = dispensationService().getOneProductDispensationById(dispensationId);
+        if (dispensation != null) {
+            if (OperationUtils.cancelDispensation(dispensation)) {
+                return new ResponseEntity<String>("Cancelled successfully", HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<String>("Not cancelled", HttpStatus.OK);
+    }
 }

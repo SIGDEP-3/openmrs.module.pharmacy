@@ -12,6 +12,7 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductOperation")
 @Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name="operation_type")
 @Table(name = "pharmacy_product_operation")
 public abstract class ProductOperation extends AbstractPharmacyData {
 

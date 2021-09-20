@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductMovementOut")
+//@DiscriminatorValue("ProductMovementOut")
 @Table(name = "pharmacy_product_movement_out")
 public class ProductMovementOut extends ProductOperation {
 

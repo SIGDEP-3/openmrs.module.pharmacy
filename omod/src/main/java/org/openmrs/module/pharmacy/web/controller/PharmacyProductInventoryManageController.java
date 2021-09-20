@@ -290,10 +290,8 @@ public class PharmacyProductInventoryManageController {
             if (inventory.getInventoryType().equals(InventoryType.PARTIAL)) {
                 for (ProductAttributeFlux flux : attributeFluxService().getAllProductAttributeFluxByOperation(inventory, false)) {
                     if (flux.getQuantity().equals(0)) {
-                        System.out.println("-------------------------> : In flux = " + flux.getQuantity());
                         attributeFluxService().removeProductAttributeFlux(flux);
 //                    inventory.removeProductAttributeFlux(flux);
-                        System.out.println("-------------------------> :  after flux = 0");
                     }
                 }
             }
@@ -335,8 +333,8 @@ public class PharmacyProductInventoryManageController {
         for (ProductAttributeFlux flux : attributeFluxService().getAllProductAttributeFluxByOperation(inventory, false)){
             attributeFluxService().removeProductAttributeFlux(flux);
         }
-        inventoryService().removeProductInventory(inventory);
         attributeService().purgeUnusedAttributes();
+        inventoryService().removeProductInventory(inventory);
         session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "L'inventaire a été supprimé avec succès !");
         return "redirect:/module/pharmacy/operations/inventory/list.form";
     }

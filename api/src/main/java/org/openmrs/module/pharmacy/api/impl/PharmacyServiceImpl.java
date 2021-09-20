@@ -17,14 +17,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacy.dto.ProductMovementHistoryDTO;
+import org.openmrs.module.pharmacy.dto.*;
 import org.openmrs.module.pharmacy.entities.ProductOperation;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
-import org.openmrs.module.pharmacy.dto.ConsumptionReportDTO;
-import org.openmrs.module.pharmacy.dto.ProductOutFluxDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -95,6 +93,16 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public List<ProductMovementHistoryDTO> getProductMovementHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
         return dao.getProductMovementHistory(startDate, endDate, location, productProgram);
+    }
+
+    @Override
+    public List<RegimenReportIndicatorDTO> getRegimenAndIndicatorReport(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
+        return dao.getRegimenAndIndicatorReport(startDate, endDate, location, productProgram);
+    }
+
+    @Override
+    public List<DispensationHistoryDTO> getProductDispensationHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
+        return dao.getProductDispensationHistory(startDate, endDate, location, productProgram);
     }
 
 }

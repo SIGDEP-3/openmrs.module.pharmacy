@@ -276,6 +276,46 @@
 						</button>
 					</div>
 				</c:if>
+				<c:if test='<%= request.getRequestURI().contains("/dispensation") %>'>
+					<div class="btn-group btn-group-sm">
+						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/list.form'"
+								<c:choose>
+									<c:when test='<%= request.getRequestURI().contains("/dispensation/list") %>'>
+										class="btn btn-secondary btn-sm"
+									</c:when>
+									<c:when test='<%= request.getRequestURI().contains("/dispensation/edit") %>'>
+										class="btn btn-secondary btn-sm"
+									</c:when>
+									<c:otherwise>
+										class="btn btn-outline-secondary btn-sm"
+									</c:otherwise>
+								</c:choose>>
+							Saisie dispensation
+						</button>
+						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/indicators/dispensationHistory.form'"
+								<c:choose>
+									<c:when test='<%= request.getRequestURI().contains("/dispensationHistory") %>'>
+										class="btn btn-secondary btn-sm"
+									</c:when>
+									<c:otherwise>
+										class="btn btn-outline-secondary btn-sm"
+									</c:otherwise>
+								</c:choose>>
+							Historique des dispensations
+						</button>
+						<button onclick="window.location='${pageContext.request.contextPath}/module/pharmacy/operations/dispensation/indicators/regimenIndicator.form'"
+								<c:choose>
+									<c:when test='<%= request.getRequestURI().contains("/regimenIndicator") %>'>
+										class="btn btn-secondary btn-sm"
+									</c:when>
+									<c:otherwise>
+										class="btn btn-outline-secondary btn-sm"
+									</c:otherwise>
+								</c:choose>>
+							Regimes et indicateurs
+						</button>
+					</div>
+				</c:if>
 			</div>
 		</div>
 
