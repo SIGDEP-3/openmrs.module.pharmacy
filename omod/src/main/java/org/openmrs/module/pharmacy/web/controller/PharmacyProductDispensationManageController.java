@@ -91,6 +91,7 @@ public class PharmacyProductDispensationManageController {
                      @RequestParam(value = "endDate", defaultValue = "", required = false) Date endDate,
                      FindPatientForm findPatientForm) {
         if (Context.isAuthenticated()) {
+            boolean canShowList = false;
             if (startDate == null) {
                 ProductInventory latestInventory = getInventoryService().getLastProductInventory(
                         OperationUtils.getUserLocation(),
@@ -99,30 +100,37 @@ public class PharmacyProductDispensationManageController {
 
                 if (latestInventory != null) {
                     startDate = latestInventory.getOperationDate();
+                    canShowList = true;
                 }
+            } else {
+                canShowList = true;
             }
             DispensationTransformationResultDTO resultDTO = dispensationService().transformDispensation(OperationUtils.getUserLocation());
             if (resultDTO.getTotalPatient() != 0) {
                 modelMap.addAttribute("transformationMessage", resultDTO);
             }
 
-            modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
-                    startDate,
-                    new Date(),
-                    OperationUtils.getUserLocation()));
+            if (canShowList) {
+                modelMap.addAttribute("dispensationResult", dispensationService().getDispensationResult(
+                        startDate,
+                        new Date(),
+                        OperationUtils.getUserLocation()));
 
-            if (endDate == null) {
-                endDate = new Date();
-            }
+                if (endDate == null) {
+                    endDate = new Date();
+                }
 
 //            System.out.println("-------------------------------------------> Start date = " + OperationUtils.dateToDdMmYyyy(startDate));
 //            System.out.println("-------------------------------------------> End date = " + OperationUtils.dateToDdMmYyyy(endDate));
 
-            getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
+                getDispensationByPeriodIndicatedByUser(modelMap, startDate, endDate);
+            }
+
             modelMap.addAttribute("programs", OperationUtils.getUserLocationPrograms());
             modelMap.addAttribute("findPatientForm", findPatientForm);
             modelMap.addAttribute("numberPatientToTransform",
                     dispensationService().countPatientToTransform(OperationUtils.getUserLocation()).size());
+            modelMap.addAttribute("subTitle", "Liste des Dispensations");
         }
     }
 
@@ -197,7 +205,7 @@ public class PharmacyProductDispensationManageController {
                 startDate,
                 endDate,
                 OperationUtils.getUserLocation()));
-        modelMap.addAttribute("subTitle", "Liste des Dispensations");
+        // modelMap.addAttribute("subTitle", "Liste des Dispensations");
 //        if (startDate == null && endDate == null) {
 //            ProductInventory latestInventory = getInventoryService().getLastProductInventory(
 //                    OperationUtils.getUserLocation(),

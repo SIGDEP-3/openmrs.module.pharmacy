@@ -107,8 +107,8 @@
                             <form:radiobutton path="dispensationType" value="HIV_PATIENT" label=" Patient VIH" cssClass="mr-2 ml-1"/>
 
                             <form:input path="patientIdentifier" cssClass="form-control form-control-sm mr-2 ml-3" />
-                            <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="form-check-input mr-2 ml-3"/>
-                            <form:radiobutton path="patientType" value="OTHER_HIV" label="Autre VIH" cssClass="mr-2 ml-3"/>
+                            <form:radiobutton path="patientType" value="ON_SITE" label=" PEC" cssClass="form-check-input mr-2 ml-3"/>
+                            <form:radiobutton path="patientType" value="OTHER_HIV" label=" Prophylaxie VIH" cssClass="mr-2 ml-3"/>
                         </div>
                         <div class="form-inline pl-3 pr-2 bg-emerald border-left border-dark">
                             <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2 ml-2"/>
