@@ -1764,7 +1764,7 @@
 <!--        </sql>-->
 <!--    </changeSet>-->
 
-    <!--<changeSet id="pharmacy-add-goal_new-concept" author="BOGUI SERGE">
+    <changeSet id="pharmacy-add-goal_new-concept" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(concept_id) FROM concept WHERE concept_id = 163000</sqlCheck>
         </preConditions>
@@ -1775,7 +1775,7 @@
             INSERT INTO concept_name (concept_id, name, date_created, concept_name_type, creator, locale, locale_preferred, voided, uuid)
             VALUES (163000, 'Goal', '2020-11-27 00:00:00', 'FULLY_SPECIFIED', 1, 'fr', 1, 0, '163000AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
         </sql>
-    </changeSet>-->
+    </changeSet>
 
     <changeSet id="pharmacy-change-goal-concept-global-property" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">

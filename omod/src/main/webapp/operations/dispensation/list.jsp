@@ -12,19 +12,45 @@
 <script>
     if (jQuery) {
         jQuery(document).ready(function (){
-            var identifierElement = jQuery("#patientIdentifier");
-            var programElement = jQuery("#program");
+            const identifierElement = jQuery("#patientIdentifier");
+            const programElement = jQuery("#productProgramId");
+            const hivPatient = jQuery("#dispensationType1");
+            const hivDispensation = jQuery(".hivPatient");
+            const patientType1 = jQuery("#patientType1");
+            const patientType2 = jQuery("#patientType2");
+            const notHiv = jQuery(".notHiv");
+
+            notHiv.hide();
+            hivDispensation.hide();
 
             jQuery('.list').dataTable({
                 columnDefs: [
                     { type: 'date-uk', targets: 0 }
                 ]
             });
+
             programElement.change(function () {
-                if (jQuery(this).val()){
-                    jQuery('#selectMe').text('');
+                const program = jQuery(this).val();
+                // console.log('value changed = ' + program)
+                if (program){
+                    if (program === '1') {
+                        identifierElement.removeAttr('disabled');
+                        hivPatient.attr('checked', 'checked');
+                        notHiv.hide();
+                        hivDispensation.show();
+                    } else {
+                        identifierElement.attr('disabled', 'disabled');
+                        identifierElement.val('');
+                        hivPatient.removeAttr('checked');
+                        notHiv.show();
+                        hivDispensation.hide();
+                    }
+                    // jQuery('#selectMe').text('');
                 } else {
-                    jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+                    // jQuery('#selectMe').html('<i class="fa fa-hand-point-right fa-2x text-danger"></i>');
+                    hivPatient.removeAttr('checked');
+                    notHiv.hide();
+                    hivDispensation.hide();
                 }
             });
 
@@ -36,7 +62,9 @@
                 if (jQuery(this).val() !== 'HIV_PATIENT') {
                     identifierElement.attr('disabled', 'disabled');
                     identifierElement.val('');
-                    jQuery('input[name="patientType"]').val('');
+                    // jQuery('input[name="patientType"]').removeAttr('checked');
+                    patientType1.removeAttr('checked');
+                    patientType2.removeAttr('checked');
                 } else {
                     identifierElement.removeAttr('disabled');
                 }
@@ -91,21 +119,21 @@
                     <tr class="bg-light">
                         <td class="align-middle">
                             <div class="form-inline pl-1 pr-2">
-                                <label for="program" class="col-form-label mr-2">Programme : </label>
-                                <form:select path="productProgramId" cssClass="form-control s2" id="program">
+                                <label class="col-form-label mr-2">Programme : </label>
+                                <form:select path="productProgramId" cssClass="form-control s2">
                                     <form:option value="" label=""/>
                                     <form:options items="${programs}" itemValue="productProgramId"
                                                   itemLabel="name"/>
                                 </form:select>
                             </div>
                         </td>
-                        <td class="align-middle bg-light">
+                        <td class="align-middle bg-light hivPatient">
                             <table class="table table-borderless table-sm mb-0">
                                 <tbody>
                                 <tr>
                                     <td class="align-middle bg-light">
                                         <div class="custom-radio custom-control-inline pt-1">
-                                            <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="Patient VIH" cssClass="mr-2 mt-1"/>
+                                            <form:radiobutton path="dispensationType" value="HIV_PATIENT" label="Patient lie au VIH" cssClass="mr-2 mt-1"/>
                                         </div>
                                     </td>
                                     <td class="align-middle bg-joust-blue">
@@ -113,28 +141,26 @@
                                     </td>
                                     <td class="align-middle bg-joust-blue">
                                         <div class="custom-radio custom-control mr-2 pt-1">
-                                            <form:radiobutton path="patientType" value="ON_SITE" label="PEC" cssClass="mr-2"/>
+                                            <form:radiobutton path="patientType" value="ON_SITE" label=" PEC" cssClass="mr-2"/>
                                         </div>
                                     </td>
                                     <td class="align-middle bg-joust-blue">
                                         <div class="custom-radio custom-control mr-2 pt-1">
-                                            <form:radiobutton path="patientType" value="OTHER_HIV" label="Pxophylaxie VIH" cssClass="mr-2 "/>
+                                            <form:radiobutton path="patientType" value="OTHER_HIV" label=" Pxophylaxie" cssClass="mr-2 "/>
                                         </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-between">
-                            </div>
-
+                            <%--<div class="d-flex justify-content-between">--%><%--</div>--%>
                         </td>
 
-                        <td class="align-middle bg-light">
+                        <td class="align-middle bg-light notHiv">
                             <div class="custom-radio custom-control mr-2 pt-1">
                                 <form:radiobutton path="dispensationType" value="OTHER_PATIENT" label=" Autre Patient" cssClass="mr-2"/>
                             </div>
                         </td>
-                        <td class="align-middle bg-light">
+                        <td class="align-middle bg-light notHiv">
                             <div class="custom-radio custom-control mr-2 pt-1">
                                 <form:radiobutton path="dispensationType" value="OTHER_DISPENSATION" label=" Autre dispensation" cssClass=" mr-2"/>
                             </div>

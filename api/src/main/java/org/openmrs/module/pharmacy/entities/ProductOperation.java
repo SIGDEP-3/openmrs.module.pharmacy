@@ -47,10 +47,10 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @Column(name = "observation")
     private String observation;
 
-    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private Set<ProductAttributeFlux> productAttributeFluxes = new HashSet<>();
 
-    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private Set<ProductAttributeOtherFlux> productAttributeOtherFluxes = new HashSet<>();
 
     public ProductOperation() {

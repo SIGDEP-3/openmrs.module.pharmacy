@@ -6,12 +6,13 @@ import org.openmrs.module.pharmacy.AbstractPharmacyData;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "ProductAttributeFlux")
 @Table(name = "pharmacy_product_attribute_flux")
-public class ProductAttributeFlux extends AbstractPharmacyData implements Comparable<ProductAttributeFlux> {
+public class ProductAttributeFlux extends AbstractPharmacyData implements Comparable<ProductAttributeFlux>, Serializable {
 
     private static final long serialVersionUID = 1L;
 

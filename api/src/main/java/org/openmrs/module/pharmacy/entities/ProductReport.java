@@ -18,7 +18,7 @@ public class ProductReport extends ProductOperation {
     private ReportType reportType;
     @Column(name = "report_period", nullable = false)
     private String reportPeriod;
-    @Column(name = "report_info", nullable = false)
+    @Column(name = "report_info")
     private String reportInfo;
     @ManyToOne
     @JoinColumn(name = "report_location_id")
