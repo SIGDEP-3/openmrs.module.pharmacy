@@ -154,8 +154,7 @@ public class PharmacyProductDispensationManageController {
                         if (findPatientForm.getPatientType().equals(PatientType.OTHER_HIV)) {
                             mobile = "2";
                             patientId = getPatientInfo(findPatientForm);
-                        } else
-                        /*if (findPatientForm.getPatientType().equals(PatientType.ON_SITE))*/ {
+                        } else {
                             Patient patient = dispensationService().getPatientByIdentifier(findPatientForm.getPatientIdentifier());
                             if (patient != null) {
                                 MobilePatient mobilePatient = dispensationService().getOneMobilePatientByIdentifier(findPatientForm.getPatientIdentifier());
@@ -307,7 +306,7 @@ public class PharmacyProductDispensationManageController {
                     } else {
                         MobilePatientDispensationInfo info = productDispensationForm.getMobileDispensationInfo();
                         info.setDispensation(dispensation);
-                        Patient patient = productDispensationForm.getPatient();
+                        Patient patient = dispensationService().getPatientByIdentifier(productDispensationForm.getPatientIdentifier());
                         if (patient != null &&
                                 dispensationService().isTransferred(patient, OperationUtils.getUserLocation())
                                 && productDispensationForm.getPatientIdentifier().equals(patient.getPatientIdentifier().getIdentifier())) {

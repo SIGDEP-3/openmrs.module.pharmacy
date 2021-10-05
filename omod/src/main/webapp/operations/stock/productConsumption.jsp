@@ -111,37 +111,42 @@
 
                 <c:if test="${dto.byLocation == true}">
                     <div class="border p-2 table-responsive">
-                        <table class="table report table-striped table-bordered table-sm border small">
-                            <thead>
-                            <tr>
-                                <th rowspan="2" class="text-center align-middle">Site/PPS</th>
-                                <c:forEach var="col11" items="${dto.locationProductQuantities[0].productQuantities}">
-                                    <th  class="text-center align-middle">${col11.code}</th>
-                                </c:forEach>
-                            </tr>
-                            <tr>
-                                <c:forEach var="col12" items="${dto.locationProductQuantities[0].productQuantities}">
-                                    <th class="align-middle">
-                                        <c:if test="${dto.byWholesaleUnit == false}">${col12.retailName}</c:if>
-                                        <c:if test="${dto.byWholesaleUnit == true}">${col12.wholesaleName}</c:if>
-                                    </th>
-                                </c:forEach>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="line" items="${dto.locationProductQuantities}">
+                        <c:if test="${fct:length(dto.locationProductQuantities) == 0}">
+                            <div class="alert alert-warning text-center h5 mb-0">Aucune donn&eacute;e &agrave; afficher</div>
+                        </c:if>
+                        <c:if test="${fct:length(dto.locationProductQuantities) > 0}">
+                            <table class="table report table-striped table-bordered table-sm border small">
+                                <thead>
                                 <tr>
-                                    <td>${line.locationName}</td>
-                                    <c:forEach var="col" items="${line.productQuantities}">
-                                        <td class="text-center align-middle font-weight-bold text-info">
-                                            <c:if test="${dto.byWholesaleUnit == false}">${col.retailQuantity}</c:if>
-                                            <c:if test="${dto.byWholesaleUnit == true}">${col.wholesaleQuantity}</c:if>
-                                        </td>
+                                    <th rowspan="2" class="text-center align-middle">Site/PPS</th>
+                                    <c:forEach var="col11" items="${dto.locationProductQuantities[0].productQuantities}">
+                                        <th  class="text-center align-middle">${col11.code}</th>
                                     </c:forEach>
                                 </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
+                                <tr>
+                                    <c:forEach var="col12" items="${dto.locationProductQuantities[0].productQuantities}">
+                                        <th class="align-middle">
+                                            <c:if test="${dto.byWholesaleUnit == false}">${col12.retailName}</c:if>
+                                            <c:if test="${dto.byWholesaleUnit == true}">${col12.wholesaleName}</c:if>
+                                        </th>
+                                    </c:forEach>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="line" items="${dto.locationProductQuantities}">
+                                    <tr>
+                                        <td>${line.locationName}</td>
+                                        <c:forEach var="col" items="${line.productQuantities}">
+                                            <td class="text-center align-middle font-weight-bold text-info">
+                                                <c:if test="${dto.byWholesaleUnit == false}">${col.retailQuantity}</c:if>
+                                                <c:if test="${dto.byWholesaleUnit == true}">${col.wholesaleQuantity}</c:if>
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </c:if>
                     </div>
                 </c:if>
 

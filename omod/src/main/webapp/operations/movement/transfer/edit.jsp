@@ -131,11 +131,11 @@
                             <div class="col-4">
                                 <label>Num&eacute;ro BL <span class="required">*</span></label>
                                 <c:if test="${type == 'IN'}">
-                                    <form:input path="operationNumber" cssClass="form-control form-control-sm picker" />
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" />
                                     <form:errors path="operationNumber" cssClass="error"/>
                                 </c:if>
                                 <c:if test="${type == 'OUT'}">
-                                    <form:input path="operationNumber" cssClass="form-control form-control-sm picker" readonly="true" />
+                                    <form:input path="operationNumber" cssClass="form-control form-control-sm" readonly="true" />
                                     <form:errors path="operationNumber" cssClass="error"/>
                                 </c:if>
                             </div>

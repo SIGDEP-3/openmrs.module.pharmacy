@@ -252,61 +252,153 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		consumptionReportDTO.setStartDate(startDate);
 		consumptionReportDTO.setEndDate(endDate);
 		consumptionReportDTO.setProductProgramName(productProgram.getName());
-//		StringBuilder locationIds = new StringBuilder("(" + location.getLocationId());
-//		// locationIds.add(location.getLocationId());
-//		if (byLocation) {
-//			for (Location childLocation : location.getChildLocations()) {
-//				locationIds.append(", ").append(childLocation.getLocationId());
-//			}
-//		}
-//		locationIds.append(")");
-//		System.out.println("-------------------------------> creating sql");
 
-		String sqlQuery =
-				"SELECT " +
-						"    l.location_id locationId, " +
-						"    l.name locationName, " +
-						"    pps.code, " +
-						"    pps.retail_name retailName, " +
-						"    pps.wholesale_name wholesaleName, " +
-						"    SUM(IF(ppo.quantityDistributed, quantityDistributed, quantityReported)) retailQuantity, " +
-						"    FLOOR(SUM(IF(ppo.quantityDistributed, quantityDistributed, quantityReported)) / pps.unit_conversion) wholesaleQuantity " +
-						" " +
+		String whereLocation = byLocation ? " WHERE l2.parent_location = :locationId" : " WHERE l2.location_id = :locationId ";
+		String sqlQueryDispensation =
+				"SELECT" +
+						"    location_id locationId," +
+						"    name locationName," +
+						"    code," +
+						"    retail_name retailName," +
+						"    wholesale_name wholesaleName," +
+						"    SUM(quantityDistributed) retailQuantity," +
+						"    FLOOR(SUM(quantityDistributed) / unit_conversion) wholesaleQuantity " +
 						"FROM " +
-						"( " +
-						"    SELECT " +
-						"        po.operation_date, po.operation_status, ppaof.quantity quantityReported, NULL AS quantityDistributed, po.location_id, pp.product_id, program_id " +
-						"    FROM pharmacy_product_operation po, " +
-						"         pharmacy_product_report ppr, " +
-						"         pharmacy_product_attribute_other_flux ppaof, " +
-						"         (SELECT product_id FROM pharmacy_product) pp " +
-						"    WHERE " +
-						"        po.product_operation_id = ppr.product_operation_id AND " +
-						"        ppaof.operation_id = po.product_operation_id AND " +
-						"        pp.product_id = ppaof.product_id AND " +
-						"        ppr.report_period IN (:reportPeriod) AND " +
-						"        label = 'QD' AND po.voided = 0 " +
-						" " +
-						"    UNION " +
-						"    SELECT " +
-						"        po.operation_date, po.operation_status, NULL AS quantityReported, ppaf.quantity quantityDistributed, po.location_id, pp.product_id, program_id " +
-						"    FROM (SELECT * FROM pharmacy_product_operation WHERE operation_date BETWEEN :startDate AND :endDate) po " +
-						"             INNER JOIN pharmacy_product_dispensation ppd on po.product_operation_id = ppd.product_operation_id " +
-						"             LEFT JOIN pharmacy_product_attribute_flux ppaf on po.product_operation_id = ppaf.operation_id " +
-						"             LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id " +
-						"             LEFT JOIN (SELECT product_id FROM pharmacy_product) pp ON ppa.product_id = pp.product_id " +
-						"    WHERE " +
-						"        po.voided = 0 " +
-						") ppo " +
-						"LEFT JOIN pharmacy_product pps ON pps.product_id = ppo.product_id " +
-						"LEFT JOIN location l ON l.location_id = ppo.location_id " +
-						"WHERE " +
-						"    program_id = :programId AND " +
-						"    (l.location_id = :locationId OR l.parent_location = :locationId) AND " +
-						"    operation_status IN (2, 4, 5, 6) " +
-						"GROUP BY l.location_id, pps.product_id";
+						"    (" +
+						"        SELECT" +
+						"            ppaf.quantity quantityDistributed, po.location_id, l2.name, retail_name, code, wholesale_name, unit_conversion " +
+						"        FROM ( " +
+						"                 SELECT * FROM pharmacy_product_operation" +
+						"                 WHERE operation_date BETWEEN :startDate AND :endDate AND operation_status = 2 AND voided = 0 AND program_id = :programId) po" +
+						"                 INNER JOIN pharmacy_product_dispensation ppd on po.product_operation_id = ppd.product_operation_id" +
+						"                 LEFT JOIN pharmacy_product_attribute_flux ppaf on po.product_operation_id = ppaf.operation_id" +
+						"                 LEFT JOIN pharmacy_product_attribute ppa ON ppaf.product_attribute_id = ppa.product_attribute_id" +
+						"                 LEFT JOIN (SELECT product_id, retail_name, code, wholesale_name, unit_conversion FROM pharmacy_product) pp ON ppa.product_id = pp.product_id" +
+						"                 LEFT JOIN location l2 on po.location_id = l2.location_id " +
+						whereLocation +
+						"    )  po " +
+						"GROUP BY location_id, retail_name " +
+						"ORDER BY retail_name";
 
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+		List<ProductQuantityDTO> productQuantities = getConsumptionDto(sqlQueryDispensation, productProgram, startDate, endDate, location, false);
+		if (productQuantities == null || productQuantities.size() == 0) {
+			String queryReport = "SELECT " +
+					"    l.location_id locationId, " +
+					"    l.name locationName, " +
+					"    pps.code, " +
+					"    pps.retail_name retailName, " +
+					"    pps.wholesale_name wholesaleName, " +
+					"    SUM(quantityReported) retailQuantity, " +
+					"    FLOOR(SUM(quantityReported) / pps.unit_conversion) wholesaleQuantity " +
+					" " +
+					"FROM " +
+					"( " +
+					"    SELECT " +
+					"        po.operation_date, po.operation_status, ppaof.quantity quantityReported, po.location_id, pp.product_id, program_id " +
+					"    FROM pharmacy_product_operation po, " +
+					"         pharmacy_product_report ppr, " +
+					"         pharmacy_product_attribute_other_flux ppaof, " +
+					"         (SELECT product_id FROM pharmacy_product) pp " +
+					"    WHERE " +
+					"        po.product_operation_id = ppr.product_operation_id AND " +
+					"        ppaof.operation_id = po.product_operation_id AND " +
+					"        pp.product_id = ppaof.product_id AND " +
+					"        ppr.report_period IN (:reportPeriod) AND " +
+					"        po.operation_status IN (2, 4, 5, 6) AND " +
+					"        po.program_id = :programId AND " +
+					"        label = 'QD' AND po.voided = 0 " +
+					") ppo " +
+					"LEFT JOIN pharmacy_product pps ON pps.product_id = ppo.product_id " +
+					"LEFT JOIN location l ON l.location_id = ppo.location_id " +
+					"WHERE " +
+					"    (l.location_id = :locationId OR l.parent_location = :locationId) " +
+					"GROUP BY l.location_id, pps.product_id";
+			productQuantities = getConsumptionDto(queryReport, productProgram, startDate, endDate, location, true);
+			if (productQuantities == null || productQuantities.size() == 0) {
+				return consumptionReportDTO;
+			}
+		}
+
+		if (byLocation) {
+			for (Location l : location.getChildLocations()) {
+				LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(l.getName());
+
+				for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+					if (productQuantityDTO.getLocationId().equals(l.getLocationId())) {
+						locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
+					}
+				}
+				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
+			}
+		} else {
+			LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(location.getName());
+
+			for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+				if (productQuantityDTO.getLocationId().equals(location.getLocationId())) {
+					locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
+				}
+			}
+			consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
+		}
+
+		return consumptionReportDTO;
+//
+//		try {
+//			Query query = getQuery(sqlQueryDispensation, productProgram, startDate, endDate, location);
+//			List<ProductQuantityDTO> productQuantities = query.list();
+//			if (productQuantities.size() == 0) {
+//				if (byLocation) {
+//					query = getQuery(queryReport, productProgram, startDate, endDate, location);
+//					productQuantities = query.list();
+//
+//					if (productQuantities.size() == 0) {
+//						return consumptionReportDTO;
+//					}
+//				}
+//			}
+//
+//			if (byLocation) {
+//				for (Location l : location.getChildLocations()) {
+//					LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(l.getName());
+//
+//					for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+//						if (productQuantityDTO.getLocationId().equals(l.getLocationId())) {
+//							locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
+//						}
+//					}
+//					consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
+//				}
+//			} else {
+//				LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(location.getName());
+//
+//				for (ProductQuantityDTO productQuantityDTO : productQuantities) {
+//					if (productQuantityDTO.getLocationId().equals(location.getLocationId())) {
+//						locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
+//					}
+//				}
+//				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
+//			}
+//
+//
+//		} catch (HibernateException e) {
+//			System.out.println(e.getMessage());
+//		}
+//		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<ProductQuantityDTO> getConsumptionDto(String sqlQuery, ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean isReport) {
+		try {
+			Query query = getQuery(sqlQuery, productProgram, startDate, endDate, location, isReport);
+			return (List<ProductQuantityDTO>) query.list();
+		} catch (HibernateException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+	private Query getQuery(String sqlQuery, ProductProgram productProgram, Date startDate, Date endDate, Location location, boolean isReport) {
+		Query query =  sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
 				.addScalar("locationId", StandardBasicTypes.INTEGER)
 				.addScalar("code", StandardBasicTypes.STRING)
 				.addScalar("retailName", StandardBasicTypes.STRING)
@@ -314,41 +406,17 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				.addScalar("retailQuantity", StandardBasicTypes.INTEGER)
 				.addScalar("wholesaleQuantity", StandardBasicTypes.INTEGER)
 				.setParameter("programId", productProgram.getProductProgramId())
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.setParameter("locationId", location.getLocationId())
-				.setParameterList("reportPeriod", OperationUtils.getReportPeriodOfPeriod(startDate, endDate).toArray())
-				.setResultTransformer(new AliasToBeanResultTransformer(ProductQuantityDTO.class));
-		try {
-			List<ProductQuantityDTO> productQuantities = query.list();
-
-			if (byLocation) {
-				for (Location l : location.getChildLocations()) {
-					LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(l.getName());
-
-					for (ProductQuantityDTO productQuantityDTO : productQuantities) {
-						if (productQuantityDTO.getLocationId().equals(l.getLocationId())) {
-							locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
-						}
-					}
-					consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
-				}
-			} else {
-				LocationProductQuantityDTO locationProductQuantityDTO = new LocationProductQuantityDTO(location.getName());
-
-				for (ProductQuantityDTO productQuantityDTO : productQuantities) {
-					if (productQuantityDTO.getLocationId().equals(location.getLocationId())) {
-						locationProductQuantityDTO.getProductQuantities().add(productQuantityDTO);
-					}
-				}
-				consumptionReportDTO.getLocationProductQuantities().add(locationProductQuantityDTO);
-			}
-
-			return consumptionReportDTO;
-		} catch (HibernateException e) {
-			System.out.println(e.getMessage());
+				.setParameter("locationId", location.getLocationId());
+		if (isReport) {
+			query.setParameterList("reportPeriod", OperationUtils.getReportPeriodOfPeriod(startDate, endDate).toArray());
+		} else {
+			query.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate);
 		}
-		return null;
+
+		query.setResultTransformer(new AliasToBeanResultTransformer(ProductQuantityDTO.class));
+
+		return query;
 	}
 
 	@Override

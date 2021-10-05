@@ -43,21 +43,22 @@
                 <form:errors path="description" cssClass="error"/>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <button class="btn btn-success">
-                    <c:if test="${not empty programForm.productProgramId}">
-                        <i class="fa fa-edit"></i>
-                        <spring:message code="pharmacy.edit" />
-                    </c:if>
-                    <c:if test="${empty programForm.productProgramId}">
-                        <i class="fa fa-save"></i>
-                        <spring:message code="pharmacy.save" />
-                    </c:if>
-                </button>
+        <openmrs:hasPrivilege privilege="Manage Program">
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-success">
+                        <c:if test="${not empty programForm.productProgramId}">
+                            <i class="fa fa-edit"></i>
+                            <spring:message code="pharmacy.edit" />
+                        </c:if>
+                        <c:if test="${empty programForm.productProgramId}">
+                            <i class="fa fa-save"></i>
+                            <spring:message code="pharmacy.save" />
+                        </c:if>
+                    </button>
+                </div>
             </div>
-        </div>
-
+        </openmrs:hasPrivilege>
     </form:form>
 </div>
 

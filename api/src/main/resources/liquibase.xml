@@ -1377,6 +1377,11 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Transform Dispensation');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Manage Pharmacy');
             REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Manage Stock');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Providers');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View People');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Visits');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Cancel Operation');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Validate Dispensation');
         </sql>
     </changeSet>
     <changeSet id="pharmacy-create-role-pgp" author="BOGUI SERGE">
@@ -1415,6 +1420,9 @@
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Transfer');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Product Attribute');
             REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Save Reception');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Manage Locations');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'Manage Locations');
+            REPLACE INTO role_privilege (role, privilege) VALUES ('PGP', 'View Parameters');
         </sql>
     </changeSet>
     <changeSet id="pharmacy-create-role-pharmacist" author="BOGUI SERGE">

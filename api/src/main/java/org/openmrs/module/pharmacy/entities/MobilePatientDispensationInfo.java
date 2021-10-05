@@ -48,7 +48,7 @@ public class MobilePatientDispensationInfo extends AbstractPharmacyData {
     @Column(name = "goal")
     private Goal goal;
 
-    @Column(name = "treatment_end_date", nullable = false)
+    @Column(name = "treatment_end_date")
     private Date treatmentEndDate;
 
     @ManyToOne

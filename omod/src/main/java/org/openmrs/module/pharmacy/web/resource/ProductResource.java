@@ -21,6 +21,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -130,7 +131,7 @@ public class ProductResource extends DelegatingCrudResource<Product> {
         String retailUnitName = context.getRequest().getParameter("retailUnit");
         String wholesaleUnitName = context.getRequest().getParameter("wholesaleUnit");
 
-        List<Product> products = null;
+        List<Product> products = new ArrayList<Product>();
 
         if (StringUtils.isNotBlank(name)) {
             products = getService().searchProductByNameLike(name);

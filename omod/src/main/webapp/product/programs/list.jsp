@@ -24,10 +24,13 @@
 <%--        </button>--%>
 <%--    </div>--%>
     <div class="col-6 text-right">
-        <c:url value="/module/pharmacy/product/programs/edit.form" var="url"/>
-        <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau programme">
-            <i class="fa fa-plus"></i>
-        </button>
+        <openmrs:hasPrivilege privilege="Manage Program">
+            <c:url value="/module/pharmacy/product/programs/edit.form" var="url"/>
+            <button class="btn btn-primary" onclick="window.location='${url}'" title="Créer nouveau programme">
+                <i class="fa fa-plus"></i>
+            </button>
+        </openmrs:hasPrivilege>
+
     </div>
 </div>
 <hr>

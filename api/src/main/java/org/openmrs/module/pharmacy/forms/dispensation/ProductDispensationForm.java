@@ -229,7 +229,10 @@ public class ProductDispensationForm extends ProductOperationForm {
         info.setTreatmentDays(getTreatmentDays());
         if (getProductRegimenId() != null) {
             info.setProductRegimen(regimenService().getOneProductRegimenById(getProductRegimenId()));
-            info.setTreatmentEndDate(getTreatmentEndDate());
+            if (getTreatmentEndDate() != null) {
+                info.setTreatmentEndDate(getTreatmentEndDate());
+            }
+
             info.setRegimenLine(getProductRegimenLine());
         }
         info.setMobilePatient(getMobilePatient());
