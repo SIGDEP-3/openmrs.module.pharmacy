@@ -23,6 +23,7 @@ import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.api.PharmacyService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
+import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -103,6 +104,21 @@ public class PharmacyServiceImpl extends BaseOpenmrsService implements PharmacyS
     @Override
     public List<DispensationHistoryDTO> getProductDispensationHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram) {
         return dao.getProductDispensationHistory(startDate, endDate, location, productProgram);
+    }
+
+    @Override
+    public ProductOperation getOneProductOperationByUuid(String uuid) {
+        return dao.getOneProductOperationByUuid(uuid);
+    }
+
+    @Override
+    public void removeProductOperation(ProductOperation productOperation) {
+        dao.removeProductOperation(productOperation);
+    }
+
+    @Override
+    public List<ProductOperation> getAll(boolean includeVoided) {
+        return dao.getAll(includeVoided, OperationUtils.getUserLocation());
     }
 
 }

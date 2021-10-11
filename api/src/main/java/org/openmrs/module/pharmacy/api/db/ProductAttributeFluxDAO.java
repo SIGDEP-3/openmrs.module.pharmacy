@@ -61,4 +61,8 @@ public interface ProductAttributeFluxDAO {
 
     ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location);
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location);
+
+    ProductAttributeFlux getOneProductAttributeFluxUuid(String uuid);
+
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxUuid(String uuid);
 }

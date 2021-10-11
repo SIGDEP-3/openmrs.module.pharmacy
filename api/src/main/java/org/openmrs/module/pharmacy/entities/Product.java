@@ -88,32 +88,32 @@ public class Product extends AbstractPharmacyObject {
         return retailName;
     }
 
-    public void setRetailName(String detailedName) {
-        this.retailName = detailedName;
+    public void setRetailName(String retailName) {
+        this.retailName = retailName;
     }
 
     public String getWholesaleName() {
         return wholesaleName;
     }
 
-    public void setWholesaleName(String packagedName) {
-        this.wholesaleName = packagedName;
+    public void setWholesaleName(String wholesaleName) {
+        this.wholesaleName = wholesaleName;
     }
 
     public ProductUnit getProductRetailUnit() {
         return productRetailUnit;
     }
 
-    public void setProductRetailUnit(ProductUnit productDetailedUnit) {
-        this.productRetailUnit = productDetailedUnit;
+    public void setProductRetailUnit(ProductUnit retailUnit) {
+        this.productRetailUnit = retailUnit;
     }
 
     public ProductUnit getProductWholesaleUnit() {
         return productWholesaleUnit;
     }
 
-    public void setProductWholesaleUnit(ProductUnit productPackagedUnit) {
-        this.productWholesaleUnit = productPackagedUnit;
+    public void setProductWholesaleUnit(ProductUnit wholesaleUnit) {
+        this.productWholesaleUnit = wholesaleUnit;
     }
 
     public Double getUnitConversion() {

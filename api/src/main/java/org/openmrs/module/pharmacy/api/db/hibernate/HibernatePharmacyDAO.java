@@ -29,10 +29,7 @@ import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.dto.*;
-import org.openmrs.module.pharmacy.entities.ProductAttributeFlux;
-import org.openmrs.module.pharmacy.entities.ProductAttributeStock;
-import org.openmrs.module.pharmacy.entities.ProductOperation;
-import org.openmrs.module.pharmacy.entities.ProductProgram;
+import org.openmrs.module.pharmacy.entities.*;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -924,6 +921,25 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 			System.out.println(e.getMessage());
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public ProductOperation getOneProductOperationByUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductOperation.class);
+		return (ProductOperation) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public void removeProductOperation(ProductOperation productOperation) {
+		sessionFactory.getCurrentSession().delete(productOperation);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductOperation> getAll(boolean includeVoided, Location userLocation) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductOperation.class);
+		return (List<ProductOperation>) criteria.add(Restrictions.eq("voided", includeVoided))
+				.add(Restrictions.eq("location", userLocation)).list();
 	}
 
 

@@ -1,5 +1,10 @@
 package org.openmrs.module.pharmacy.web.resource;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.api.ProductAttributeService;
 import org.openmrs.module.pharmacy.api.ProductUnitService;
@@ -10,6 +15,7 @@ import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -67,20 +73,35 @@ public class ProductAttributeResource extends DelegatingCrudResource<ProductAttr
         DelegatingResourceDescription description = null;
         if (representation instanceof FullRepresentation) {
             description = new DelegatingResourceDescription();
-            description.addProperty("product", Representation.FULL);
+            description.addProperty("product", Representation.DEFAULT);
             description.addProperty("batchNumber");
             description.addProperty("expiryDate");
-            description.addProperty("location");
+            description.addProperty("location", Representation.REF);
             description.addProperty("uuid");
-        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
+        } else if (representation instanceof DefaultRepresentation) {
             description = new DelegatingResourceDescription();
             description.addProperty("product", Representation.DEFAULT);
             description.addProperty("batchNumber");
             description.addProperty("expiryDate");
-            description.addProperty("location");
+            description.addProperty("location", Representation.REF);
+            description.addProperty("uuid");
+        } else if (representation instanceof RefRepresentation) {
+            description = new DelegatingResourceDescription();
+            description.addProperty("display");
             description.addProperty("uuid");
         }
         return description;
+    }
+
+    @Override
+    public Model getGETModel(Representation rep) {
+        ModelImpl model = new ModelImpl();
+        model.property("product", new StringProperty())
+                .property("batchNumber", new StringProperty())
+                .property("expiryDate", new DateProperty())
+                .property("location", new RefProperty("#/definitions/LocationGet"))
+                .property("uuid", new StringProperty());
+        return model;
     }
 
     @Override
@@ -95,6 +116,18 @@ public class ProductAttributeResource extends DelegatingCrudResource<ProductAttr
     }
 
     @Override
+    public Model getCREATEModel(Representation rep) {
+        ModelImpl model = new ModelImpl();
+        model.property("product", new StringProperty())
+                .property("batchNumber", new StringProperty())
+                .property("expiryDate", new DateProperty())
+                .property("location", new RefProperty("#/definitions/LocationGet"))
+                .property("uuid", new StringProperty())
+                .required("product"). required("batchNumber").required("location");
+        return model;
+    }
+
+    @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("product");
@@ -106,8 +139,18 @@ public class ProductAttributeResource extends DelegatingCrudResource<ProductAttr
     }
 
     @Override
+    public Model getUPDATEModel(Representation rep) {
+        ModelImpl model = new ModelImpl();
+        model.property("product", new StringProperty())
+                .property("batchNumber", new StringProperty())
+                .property("expiryDate", new DateProperty())
+                .property("location", new RefProperty("#/definitions/LocationGet"));
+        return model;
+    }
+
+    @Override
     protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-        return new NeedsPaging<ProductAttribute>(getService().getAllProductAttributes(false), context);
+        return new NeedsPaging<ProductAttribute>(getService().getAllProductAttributes(OperationUtils.getUserLocation()), context);
     }
 
     @Override
@@ -128,5 +171,13 @@ public class ProductAttributeResource extends DelegatingCrudResource<ProductAttr
             }
         }
         return new NeedsPaging<ProductAttribute>(attributes, context);
+    }
+
+    @PropertyGetter("display")
+    public String getDisplayString(ProductAttribute attribute) {
+        if (attribute.getProduct() == null)
+            return "";
+
+        return attribute.getProduct().getRetailNameWithCode() + " - " + attribute.getBatchNumber() + " - " + attribute.getExpiryDate();
     }
 }

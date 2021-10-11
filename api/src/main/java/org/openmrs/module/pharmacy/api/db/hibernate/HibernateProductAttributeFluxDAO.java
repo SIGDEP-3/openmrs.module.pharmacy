@@ -251,6 +251,18 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 	}
 
 	@Override
+	public ProductAttributeFlux getOneProductAttributeFluxUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeFlux.class);
+		return (ProductAttributeFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
+	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxUuid(String uuid) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ProductAttributeOtherFlux.class);
+		return (ProductAttributeOtherFlux) criteria.add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+
+	@Override
 	public ProductAttributeOtherFlux getOneProductAttributeOtherFluxByProductAndOperationAndLabel(Product product, ProductOperation productOperation, String label, Location location) {
 		Query query = getSession().createQuery("FROM ProductAttributeOtherFlux s WHERE s.product = :product AND s.productOperation = :operation AND s.label = :label AND s.location = :location");
 		query.setParameter("product", product)

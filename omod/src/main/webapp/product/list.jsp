@@ -81,9 +81,9 @@
             <td>${product.productId}</td>
             <td>${product.code}</td>
             <td>${product.retailName}</td>
-            <td>${product.productRetailUnit.name}</td>
+            <td>${product.retailUnit.name}</td>
             <td>${product.wholesaleName}</td>
-            <td>${product.productWholesaleUnit.name}</td>
+            <td>${product.wholesaleUnit.name}</td>
             <td>${product.unitConversion}</td>
             <td>
                 <c:url value="/module/pharmacy/product/edit.form" var="editUrl">

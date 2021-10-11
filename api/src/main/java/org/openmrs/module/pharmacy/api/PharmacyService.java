@@ -86,4 +86,10 @@ public interface PharmacyService extends OpenmrsService {
 	List<RegimenReportIndicatorDTO> getRegimenAndIndicatorReport(Date startDate, Date endDate, Location location, ProductProgram productProgram);
 	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
 	List<DispensationHistoryDTO> getProductDispensationHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+    ProductOperation getOneProductOperationByUuid(String uuid);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+	void removeProductOperation(ProductOperation productOperation);
+	@Authorized(value = {PrivilegeConstants.VIEW_OPERATION, PrivilegeConstants.VALIDATE_OPERATION})
+	List<ProductOperation> getAll(boolean includeVoided);
 }

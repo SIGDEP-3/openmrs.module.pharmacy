@@ -1,5 +1,11 @@
 package org.openmrs.module.pharmacy.web.resource;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.entities.Product;
@@ -9,6 +15,7 @@ import org.openmrs.module.pharmacy.api.ProductUnitService;
 import org.openmrs.module.pharmacy.web.controller.PharmacyResourceController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -68,26 +75,63 @@ public class ProductResource extends DelegatingCrudResource<Product> {
             description.addProperty("code");
             description.addProperty("retailName");
             description.addProperty("wholesaleName");
-            description.addProperty("productRetailUnit", Representation.FULL);
-            description.addProperty("productWholesaleUnit", Representation.FULL);
+            description.addProperty("retailUnit");
+            description.addProperty("wholesaleUnit");
             description.addProperty("unitConversion");
             description.addProperty("productPrograms", Representation.DEFAULT);
             description.addProperty("productRegimens", Representation.DEFAULT);
             description.addProperty("currentPrice", Representation.DEFAULT);
             description.addProperty("productPrices", Representation.DEFAULT);
             description.addProperty("uuid");
-        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
+        } else if (representation instanceof DefaultRepresentation) {
             description = new DelegatingResourceDescription();
             description.addProperty("code");
             description.addProperty("retailName");
             description.addProperty("wholesaleName");
-            description.addProperty("productRetailUnit", Representation.DEFAULT);
-            description.addProperty("productWholesaleUnit", Representation.DEFAULT);
+            description.addProperty("retailUnit");
+            description.addProperty("wholesaleUnit");
             description.addProperty("unitConversion");
             description.addProperty("currentPrice", Representation.DEFAULT);
             description.addProperty("uuid");
+        } else if (representation instanceof RefRepresentation) {
+            description = new DelegatingResourceDescription();
+            description.addProperty("code");
+            description.addProperty("retailName");
+            description.addProperty("retailUnit");
+            description.addProperty("uuid");
         }
         return description;
+    }
+
+    @PropertyGetter("retailUnit")
+    public static String getRetailUnit(Product product) {
+        return product.getProductRetailUnit().getName();
+    }
+
+    @PropertyGetter("wholesaleUnit")
+    public static String getWholesaleUnit(Product product) {
+        return product.getProductWholesaleUnit().getName();
+    }
+
+    @Override
+    public Model getGETModel(Representation rep) {
+        ModelImpl model = (ModelImpl) super.getGETModel(rep);
+        model.property("code", new StringProperty())
+                .property("retailName", new StringProperty())
+                .property("wholesaleName", new StringProperty())
+                .property("retailUnit", new StringProperty())
+                .property("wholesaleUnit", new StringProperty())
+                .property("unitConversion", new DoubleProperty())
+                .property("productPrograms", new ArrayProperty(new RefProperty("#/definitions/ProductProgramGet")))
+                .property("productRegimens", new ArrayProperty(new RefProperty("#/definitions/ProductRegimenGet")))
+                .property("productPrices", new ArrayProperty(new RefProperty("#/definitions/ProductPriceGet")))
+                .property("currentPrice", new RefProperty("#/definitions/ProductPriceGet"))
+                .property("uuid", new StringProperty());
+        if (rep instanceof FullRepresentation) {
+            model.property("productPrices", new RefProperty("#/definitions/ProductPriceGet"));
+        }
+
+        return model;
     }
 
     @Override
@@ -96,8 +140,8 @@ public class ProductResource extends DelegatingCrudResource<Product> {
         description.addRequiredProperty("code");
         description.addRequiredProperty("retailName");
         description.addRequiredProperty("wholesaleName");
-        description.addRequiredProperty("productRetailUnit");
-        description.addRequiredProperty("productWholesaleUnit");
+        description.addRequiredProperty("retailUnit");
+        description.addRequiredProperty("wholesaleUnit");
         description.addRequiredProperty("unitConversion");
         description.addProperty("productPrograms");
         description.addProperty("productRegimens");
@@ -106,15 +150,54 @@ public class ProductResource extends DelegatingCrudResource<Product> {
     }
 
     @Override
+    public Model getCREATEModel(Representation rep) {
+        ModelImpl model = new ModelImpl();
+        model.property("code", new StringProperty())
+                .property("retailName", new StringProperty())
+                .property("wholesaleName", new StringProperty())
+                .property("unitConversion", new DoubleProperty())
+                .property("uuid", new StringProperty())
+                .property("productPrograms", new ArrayProperty(new RefProperty("#/definitions/ProductProgramCreate")))
+                .property("productRegimens", new ArrayProperty(new RefProperty("#/definitions/ProductRegimenCreate")));
+        if (rep instanceof FullRepresentation) {
+            model.property("productRetailUnit", new RefProperty("#/definitions/ProductUnitGet"))
+                    .property("productWholesaleUnit", new RefProperty("#/definitions/ProductUnitGet"));
+        } else {
+            model.property("productRetailUnit", new StringProperty())
+                    .property("productWholesaleUnit", new StringProperty());
+        }
+        model.required("code").required("retailName")
+                .required("wholesaleName").required("unitConversion")
+                .required("productPrograms").required("productRegimens")
+                .required("productRetailUnit").required("productWholesaleUnit");
+        return model;
+    }
+
+    @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("code");
         description.addProperty("retailName");
         description.addProperty("wholesaleName");
-        description.addProperty("productRetailUnit");
-        description.addProperty("productWholesaleUnit");
+        description.addProperty("retailUnit");
+        description.addProperty("wholesaleUnit");
         description.addProperty("unitConversion");
         return description;
+    }
+
+    @Override
+    public Model getUPDATEModel(Representation rep) {
+        ModelImpl model = (ModelImpl) super.getGETModel(rep);
+        model.property("code", new StringProperty())
+                .property("retailName", new StringProperty())
+                .property("wholesaleName", new StringProperty())
+                .property("unitConversion", new DoubleProperty())
+                .property("uuid", new StringProperty())
+                .property("productPrograms", new ArrayProperty(new RefProperty("#/definitions/ProductProgramCreate")))
+                .property("productRegimens", new ArrayProperty(new RefProperty("#/definitions/ProductRegimenCreate")))
+                .property("productRetailUnit", new StringProperty())
+                .property("productWholesaleUnit", new StringProperty());
+        return model;
     }
 
     @Override

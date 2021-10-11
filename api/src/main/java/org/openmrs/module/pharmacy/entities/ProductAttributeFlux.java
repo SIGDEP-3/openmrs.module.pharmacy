@@ -1,5 +1,6 @@
 package org.openmrs.module.pharmacy.entities;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.Location;
 import org.openmrs.module.pharmacy.AbstractPharmacyData;

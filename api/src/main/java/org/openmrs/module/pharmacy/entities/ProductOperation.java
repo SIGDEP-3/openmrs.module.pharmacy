@@ -14,7 +14,7 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name="operation_type")
 @Table(name = "pharmacy_product_operation")
-public abstract class ProductOperation extends AbstractPharmacyData {
+public class ProductOperation extends AbstractPharmacyData {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,13 +47,43 @@ public abstract class ProductOperation extends AbstractPharmacyData {
     @Column(name = "observation")
     private String observation;
 
-    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductAttributeFlux> productAttributeFluxes = new HashSet<>();
 
-    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productOperation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductAttributeOtherFlux> productAttributeOtherFluxes = new HashSet<>();
 
     public ProductOperation() {
+    }
+
+    public ProductOperation(ProductOperation operation) {
+        if (operation == null) {
+            return;
+        }
+        productOperationId = operation.getProductOperationId();
+        operationNumber = operation.getOperationNumber();
+        productProgram = operation.getProductProgram();
+        operationDate = operation.getOperationDate();
+        location = operation.getLocation();
+        operationStatus = operation.getOperationStatus();
+        incidence = operation.getIncidence();
+        observation = operation.getObservation();
+        productAttributeFluxes = operation.getProductAttributeFluxes();
+        productAttributeOtherFluxes = operation.getProductAttributeOtherFluxes();
+
+        setCreator(operation.getCreator());
+        setDateCreated(operation.getDateCreated());
+        setChangedBy(operation.getChangedBy());
+        setDateChanged(operation.getDateChanged());
+        setVoided(operation.getVoided());
+        setVoidedBy(operation.getVoidedBy());
+        setDateVoided(operation.getDateVoided());
+        setVoidReason(operation.getVoidReason());
+        setUuid(operation.getUuid());
+    }
+
+    public ProductOperation(Integer productOperationId) {
+        this.productOperationId = productOperationId;
     }
 
     public Integer getProductOperationId() {

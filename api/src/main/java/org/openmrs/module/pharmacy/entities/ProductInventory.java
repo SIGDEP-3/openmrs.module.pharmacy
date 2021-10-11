@@ -34,6 +34,10 @@ public class ProductInventory extends ProductOperation {
         this.setIncidence(Incidence.EQUAL);
     }
 
+    public ProductInventory(ProductOperation operation) {
+        super(operation);
+    }
+
 //    public Date getInventoryDate() {
 //        return inventoryDate;
 //    }
@@ -64,5 +68,8 @@ public class ProductInventory extends ProductOperation {
 //    public void setInventoryEndDate(Date inventoryEndDate) {
 //        this.inventoryEndDate = inventoryEndDate;
 //    }
+    public ProductOperation getProductOperation() {
+        return this;
+    }
 
 }

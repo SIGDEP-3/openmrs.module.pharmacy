@@ -148,4 +148,8 @@ public interface ProductAttributeFluxService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	@Authorized(value = {PrivilegeConstants.VIEW_FLUX})
 	List<ProductAttributeOtherFlux> getAllProductAttributeOtherFluxByProductAndOperation(Product product, ProductOperation productOperation, Location location);
+
+    ProductAttributeFlux getOneProductAttributeFluxUuid(String uuid);
+
+	ProductAttributeOtherFlux getOneProductAttributeOtherFluxUuid(String uuid);
 }

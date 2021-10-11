@@ -49,4 +49,10 @@ public interface PharmacyDAO {
 	List<RegimenReportIndicatorDTO> getRegimenAndIndicatorReport(Date startDate, Date endDate, Location location, ProductProgram productProgram);
 
 	List<DispensationHistoryDTO> getProductDispensationHistory(Date startDate, Date endDate, Location location, ProductProgram productProgram);
+
+	ProductOperation getOneProductOperationByUuid(String uuid);
+
+	void removeProductOperation(ProductOperation productOperation);
+
+	List<ProductOperation> getAll(boolean includeVoided, Location userLocation);
 }

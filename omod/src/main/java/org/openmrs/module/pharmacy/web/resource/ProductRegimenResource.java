@@ -1,5 +1,11 @@
 package org.openmrs.module.pharmacy.web.resource;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.entities.ProductRegimen;
 import org.openmrs.module.pharmacy.api.ProductRegimenService;
@@ -11,10 +17,14 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.List;
 
 
 @Resource(name = RestConstants.VERSION_1 + PharmacyResourceController.PHARMACY_REST_NAMESPACE + "/regimen",
@@ -55,15 +65,28 @@ public class ProductRegimenResource extends DelegatingCrudResource<ProductRegime
         DelegatingResourceDescription description = null;
         if (representation instanceof FullRepresentation) {
             description = new DelegatingResourceDescription();
-            description.addProperty("concept");
+            description.addProperty("concept", Representation.DEFAULT);
+            description.addProperty("products", Representation.REF);
             description.addProperty("uuid");
-            description.addProperty("products", Representation.DEFAULT);
-        } else if (representation instanceof DefaultRepresentation || representation instanceof RefRepresentation) {
+        } else if (representation instanceof DefaultRepresentation) {
             description = new DelegatingResourceDescription();
-            description.addProperty("name");
+            description.addProperty("concept", Representation.DEFAULT);
+            description.addProperty("uuid");
+        } else if (representation instanceof RefRepresentation) {
+            description = new DelegatingResourceDescription();
+            description.addProperty("concept", Representation.REF);
             description.addProperty("uuid");
         }
         return description;
+    }
+
+    @Override
+    public Model getGETModel(Representation rep) {
+        ModelImpl model = (ModelImpl) super.getGETModel(rep);
+        model.property("concept", new RefProperty("#/definitions/ConceptGet"))
+                .property("products", new ArrayProperty(new RefProperty("#/definitions/ProductGet")))
+                .property("uuid", new StringProperty());
+        return model;
     }
 
     @Override
@@ -75,10 +98,31 @@ public class ProductRegimenResource extends DelegatingCrudResource<ProductRegime
     }
 
     @Override
+    public Model getCREATEModel(Representation rep) {
+        ModelImpl model = (ModelImpl) super.getGETModel(rep);
+        model.property("concept", new RefProperty("#/definitions/ConceptGet"))
+                .property("uuid", new StringProperty()).required("concept");
+        return model;
+    }
+
+    @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("concept");
         description.addProperty("uuid");
         return description;
+    }
+
+    @Override
+    public Model getUPDATEModel(Representation rep) {
+        ModelImpl model = (ModelImpl) super.getGETModel(rep);
+        model.property("concept", new RefProperty("#/definitions/ConceptGet"));
+        return model;
+    }
+
+    @Override
+    protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+        List<ProductRegimen> regimen = getService().getAllProductRegimen();
+        return new NeedsPaging<ProductRegimen>(regimen, context);
     }
 }
