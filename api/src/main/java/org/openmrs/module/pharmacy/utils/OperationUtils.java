@@ -21,13 +21,14 @@ public class OperationUtils {
     }
 
     public static void emptyStock(Location location, ProductProgram productProgram) {
-        List<ProductAttributeStock> stocks = stockService().getAllProductAttributeStocks(location, false);
-        for (ProductAttributeStock stock : stocks) {
-            if (productProgram.getProducts().contains(stock.getProductAttribute().getProduct())) {
-                stock.setQuantityInStock(0);
-                stockService().saveProductAttributeStock(stock);
-            }
-        }
+        attributeService().purgeUnusedAttributes();
+//        List<ProductAttributeStock> stocks = stockService().getAllProductAttributeStocks(location, false);
+//        for (ProductAttributeStock stock : stocks) {
+//            if (productProgram.getProducts().contains(stock.getProductAttribute().getProduct())) {
+//                stock.setQuantityInStock(0);
+//                stockService().saveProductAttributeStock(stock);
+//            }
+//        }
     }
 
     public static Boolean cancelOperation(ProductOperation operation) {
@@ -67,6 +68,10 @@ public class OperationUtils {
 
     private static ProductAttributeStockService stockService() {
         return Context.getService(ProductAttributeStockService.class);
+    }
+
+    private static ProductAttributeService attributeService() {
+        return Context.getService(ProductAttributeService.class);
     }
 
     public static Location getUserLocation() {
@@ -869,5 +874,25 @@ public class OperationUtils {
         Locale locale = new Locale("fr", "FR");
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
         return  dateFormat.format(date);
+    }
+
+    public static ProductAttributeOtherFlux getLastReportOtherFluxByLabel(String label, Product product, ProductReport report) {
+        Set<ProductAttributeOtherFlux> otherFluxes = report.getProductAttributeOtherFluxes();
+        for (ProductAttributeOtherFlux otherFlux : report.getProductAttributeOtherFluxes()) {
+            if (otherFlux.getProduct() != null && otherFlux.getLabel().equals(label) && otherFlux.getProduct().equals(product)) {
+                return otherFlux;
+            }
+        }
+        return null;
+    }
+
+    public static ProductAttributeFlux getLastDistributionFluxByLabel(Product product, ProductReport report) {
+        for (ProductAttributeFlux flux : report.getProductAttributeFluxes()) {
+            if (flux.getProductWithAttribute() != null &&
+                    flux.getProductWithAttribute().contains(product.getRetailName())) {
+                return flux;
+            }
+        }
+        return null;
     }
 }

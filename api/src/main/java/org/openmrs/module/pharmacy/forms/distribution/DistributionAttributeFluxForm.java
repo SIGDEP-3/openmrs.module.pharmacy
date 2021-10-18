@@ -9,6 +9,7 @@ import org.openmrs.module.pharmacy.utils.OperationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
     private Integer initialQuantity;
@@ -20,6 +21,7 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
     private Integer numDaysOfRupture;
     private Integer quantityDistributed2monthAgo;
     private Integer quantityDistributed1monthAgo;
+    private ProductReport latestReport;
 
     public DistributionAttributeFluxForm() {
     }
@@ -96,10 +98,19 @@ public class DistributionAttributeFluxForm extends ProductAttributeFluxForm {
         this.quantityDistributed1monthAgo = quantityDistributed1monthAgo;
     }
 
+    public ProductReport getLatestReport() {
+        return latestReport;
+    }
+
+    public void setLatestReport(ProductReport latestReport) {
+        this.latestReport = latestReport;
+    }
+
     public List<ProductAttributeOtherFlux> getAllOtherFluxes() {
         List<ProductAttributeOtherFlux> otherFluxes = new ArrayList<>();
         Product product = productService().getOneProductById(getProductId());
         if (product != null) {
+
             otherFluxes.add(createProductAttributeOtherFlux(product, getInitialQuantity() == null ? 0.0 : getInitialQuantity().doubleValue(), "SI"));
 
             if (getReceivedQuantity() == null) {

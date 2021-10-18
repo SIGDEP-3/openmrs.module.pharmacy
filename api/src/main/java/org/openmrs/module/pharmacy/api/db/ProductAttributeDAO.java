@@ -41,4 +41,6 @@ public interface ProductAttributeDAO {
 	ProductAttribute getOneProductAttributeByBatchNumber(String batchNumber, Location location);
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
 	Integer purgeUnusedAttributes();
+
+    List<ProductAttribute> getAllAttributesNotInStock(Location location, Boolean includeVoided);
 }

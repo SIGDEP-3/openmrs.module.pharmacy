@@ -367,7 +367,9 @@ public class PharmacyProductInventoryManageController {
             ProductMovementEntry movementEntry = new ProductMovementEntry();
 
             for (ProductAttributeFlux flux : operation.getProductAttributeFluxes()) {
-                ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(flux.getProductAttribute(), operation, operation.getLocation());
+                ProductAttributeOtherFlux otherFlux = attributeFluxService().getOneProductAttributeOtherFluxByAttributeAndOperation(
+                        flux.getProductAttribute(), operation, operation.getLocation()
+                );
                 if (otherFlux == null) {
                     otherFlux = new ProductAttributeOtherFlux();
                     otherFlux.setProductOperation(operation);

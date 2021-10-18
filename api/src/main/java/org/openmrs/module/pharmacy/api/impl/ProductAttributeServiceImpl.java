@@ -108,4 +108,9 @@ public class ProductAttributeServiceImpl extends BaseOpenmrsService implements P
         return dao.purgeUnusedAttributes();
     }
 
+    @Override
+    public List<ProductAttribute> getAllAttributesNotInStock(Location location, Boolean includeVoided) {
+        return dao.getAllAttributesNotInStock(location, includeVoided);
+    }
+
 }

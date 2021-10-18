@@ -89,27 +89,9 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				Set<ProductAttributeFlux> fluxes = operation.getProductAttributeFluxes();
 				if (fluxes != null && fluxes.size() != 0) {
 					for (ProductAttributeFlux flux : fluxes) {
-						Integer quantityInStock = 0;
+						Integer quantity = getQuantity(operation, flux, true);
 
-						ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
-								.getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
-						if (attributeStock != null) {
-//							System.out.println("--------------------------------------> attribute stock found");
-							quantityInStock = attributeStock.getQuantityInStock();
-//							System.out.println("--------------------------------------> got quantity");
-							attributeStock.setVoided(true);
-							attributeStock.setDateVoided(new Date());
-							attributeStock.setVoidedBy(Context.getAuthenticatedUser());
-							attributeStock.setVoidReason("Voided by user because not to be used");
-							Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
-//							System.out.println("--------------------------------------> attribute stock voided");
-						}
-
-						Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-								quantityInStock + flux.getQuantity() :
-								(operation.getIncidence().equals(Incidence.NEGATIVE) ? quantityInStock - flux.getQuantity() : flux.getQuantity());
-
-						attributeStock = new ProductAttributeStock();
+						ProductAttributeStock attributeStock = new ProductAttributeStock();
 						attributeStock.setQuantityInStock(quantity);
 						attributeStock.setLocation(operation.getLocation());
 						attributeStock.setProductAttribute(flux.getProductAttribute());
@@ -135,24 +117,9 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 				if (fluxes != null && fluxes.size() != 0) {
 					for (ProductAttributeFlux flux : fluxes) {
 						if (flux.getStatus().equals(OperationStatus.VALIDATED)) {
-							Integer quantityInStock = 0;
-							ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
-									.getOneProductAttributeStockByAttribute(
-											flux.getProductAttribute(),
-											operation.getLocation(), false);
-							if (attributeStock != null) {
-								quantityInStock = attributeStock.getQuantityInStock();
-								attributeStock.setVoided(true);
-								attributeStock.setDateVoided(new Date());
-								attributeStock.setVoidedBy(Context.getAuthenticatedUser());
-								attributeStock.setVoidReason("Voided by user because not to be used");
-								Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
-							}
-							Integer quantity = operation.getIncidence().equals(Incidence.POSITIVE) ?
-									quantityInStock - flux.getQuantity() :
-									(operation.getIncidence().equals(Incidence.NEGATIVE) ? quantityInStock + flux.getQuantity() : flux.getQuantity());
+							Integer quantity = getQuantity(operation, flux, false);
 
-							attributeStock = new ProductAttributeStock();
+							ProductAttributeStock attributeStock = new ProductAttributeStock();
 							attributeStock.setQuantityInStock(quantity);
 							attributeStock.setLocation(operation.getLocation());
 							attributeStock.setProductAttribute(flux.getProductAttribute());
@@ -169,6 +136,39 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 		}
 		operation.setOperationStatus(OperationStatus.DISABLED);
 		return saveProductOperation(operation) != null;
+	}
+
+	private Integer voidPreviousStock(ProductOperation operation, ProductAttributeFlux flux) {
+		Integer quantityInStock = 0;
+		ProductAttributeStock attributeStock = Context.getService(ProductAttributeStockService.class)
+				.getOneProductAttributeStockByAttribute(flux.getProductAttribute(), operation.getLocation(), false);
+		if (attributeStock != null) {
+			quantityInStock = attributeStock.getQuantityInStock();
+			attributeStock.setVoided(true);
+			attributeStock.setDateVoided(new Date());
+			attributeStock.setVoidedBy(Context.getAuthenticatedUser());
+			attributeStock.setVoidReason("Voided by user because not to be used");
+			Context.getService(ProductAttributeStockService.class).saveProductAttributeStock(attributeStock);
+		}
+		return quantityInStock;
+	}
+
+	private Integer getQuantity(ProductOperation operation, ProductAttributeFlux flux, Boolean isValidation) {
+		Integer quantityInStock = voidPreviousStock(operation, flux);
+		if (isValidation) {
+			if (operation.getIncidence().equals(Incidence.POSITIVE)) {
+				return quantityInStock + flux.getQuantity();
+			} else if (operation.getIncidence().equals(Incidence.NEGATIVE)) {
+				return quantityInStock - flux.getQuantity();
+			}
+		} else {
+			if (operation.getIncidence().equals(Incidence.POSITIVE)) {
+				return quantityInStock - flux.getQuantity();
+			} else if (operation.getIncidence().equals(Incidence.NEGATIVE)) {
+				return quantityInStock + flux.getQuantity();
+			}
+		}
+		return flux.getQuantity();
 	}
 
 	@Override

@@ -128,10 +128,19 @@ public class HibernateProductAttributeDAO implements ProductAttributeDAO {
 	@Override
 	public Integer purgeUnusedAttributes() {
 		List<ProductAttribute> productAttributes = sessionFactory.getCurrentSession().createQuery("" +
-				"FROM ProductAttribute p WHERE p.productAttributeId NOT IN (SELECT pf.productAttribute.productAttributeId FROM ProductAttributeFlux pf)").list();
+				"FROM ProductAttribute p WHERE " +
+				"p.productAttributeId NOT IN (SELECT pf.productAttribute.productAttributeId FROM ProductAttributeFlux pf) " +
+				"AND p.productAttributeId NOT IN (SELECT pof.productAttribute.productAttributeId FROM ProductAttributeOtherFlux pof) " +
+				"AND p.productAttributeId NOT IN (SELECT ps.productAttribute.productAttributeId FROM ProductAttributeStock ps)").list();
+		Integer quantityDeleted = productAttributes.size();
 		for (ProductAttribute attribute : productAttributes) {
 			removeProductAttribute(attribute);
 		}
-		return productAttributes.size();
+		return quantityDeleted;
+	}
+
+	@Override
+	public List<ProductAttribute> getAllAttributesNotInStock(Location location, Boolean includeVoided) {
+		return null;
 	}
 }

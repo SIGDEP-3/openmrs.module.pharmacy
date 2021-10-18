@@ -237,6 +237,20 @@ public class PharmacyProductDistributionManageController {
                 distributionAttributeFluxForm = new DistributionAttributeFluxForm();
                 distributionAttributeFluxForm.setProductOperationId(productDistribution.getProductOperationId());
             }
+            ProductInventory latestInventory = inventoryService().getLastProductInventory(
+                    productDistribution.getReportLocation(),
+                    productDistribution.getProductProgram(),
+                    productDistribution.getUrgent() ? InventoryType.PARTIAL : InventoryType.TOTAL
+            );
+            if (latestInventory != null) {
+                ProductReport report = reportService().getLatestReportByProductAndLocationAndInventory(
+                        productDistribution.getReportLocation(),
+                        latestInventory);
+                if (report != null) {
+                    distributionAttributeFluxForm.setLatestReport(report);
+                }
+            }
+
             modelMappingForView(modelMap, distributionAttributeFluxForm, productDistribution, slip);
         }
         return null;

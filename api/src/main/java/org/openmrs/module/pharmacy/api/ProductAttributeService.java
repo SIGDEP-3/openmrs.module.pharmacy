@@ -60,4 +60,6 @@ public interface ProductAttributeService extends OpenmrsService {
     ProductAttribute getOneProductAttributeByBatchNumberAndExpiryDate(String batchNumber, Date expiryDate);
 	@Authorized(value = {PrivilegeConstants.SAVE_PRODUCT_ATTRIBUTE})
     Integer purgeUnusedAttributes();
+
+    List<ProductAttribute> getAllAttributesNotInStock(Location location, Boolean includeVoided);
 }
