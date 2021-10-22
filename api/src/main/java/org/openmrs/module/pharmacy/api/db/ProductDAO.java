@@ -13,10 +13,10 @@
  */
 package org.openmrs.module.pharmacy.api.db;
 
+import org.openmrs.module.pharmacy.dto.ProductUploadResumeDTO;
 import org.openmrs.module.pharmacy.entities.Product;
 import org.openmrs.module.pharmacy.entities.ProductProgram;
 import org.openmrs.module.pharmacy.entities.ProductUnit;
-import org.openmrs.module.pharmacy.dto.ProductUploadResumeDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

@@ -33,12 +33,16 @@ import java.util.List;
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
  */
-@Repository
+//@Repository
 public class HibernateProductAttributeDAO implements ProductAttributeDAO {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-	@Autowired
+//	@Autowired
 	private DbSessionFactory sessionFactory;
+
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

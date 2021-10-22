@@ -25,8 +25,8 @@ public class ProductProgram extends AbstractPharmacyObject {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "program_number", nullable = false)
-    private Integer programNumber;
+//    @Column(name = "program_number", nullable = false)
+//    private Integer programNumber;
 
     @ManyToMany(mappedBy="productPrograms", fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<Product>();
@@ -65,13 +65,13 @@ public class ProductProgram extends AbstractPharmacyObject {
         this.description = description;
     }
 
-    public Integer getProgramNumber() {
-        return programNumber;
-    }
-
-    public void setProgramNumber(Integer programNumber) {
-        this.programNumber = programNumber;
-    }
+//    public Integer getProgramNumber() {
+//        return programNumber;
+//    }
+//
+//    public void setProgramNumber(Integer programNumber) {
+//        this.programNumber = programNumber;
+//    }
 
     public Set<Product> getProducts() {
         return products;

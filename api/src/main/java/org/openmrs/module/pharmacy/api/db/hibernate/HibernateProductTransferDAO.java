@@ -40,6 +40,10 @@ public class HibernateProductTransferDAO implements ProductTransferDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductTransfer> getAllProductTransfers(Location location, Boolean includeVoided) {

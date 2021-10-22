@@ -44,6 +44,10 @@ public class HibernateProductDAO implements ProductDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	/******* PRODUCTS *******/
 
 	@Override

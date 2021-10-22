@@ -44,6 +44,10 @@ public class HibernateProductAttributeStockDAO implements ProductAttributeStockD
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductAttributeStock> getAllProductAttributeStocks(Location location, Boolean includeVoided) {

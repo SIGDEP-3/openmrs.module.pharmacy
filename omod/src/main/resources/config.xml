@@ -22,7 +22,11 @@
 		<require_module version="2.13">
 			org.openmrs.module.webservices.rest
 		</require_module>
-			
+
+		<require_module version="1.8.1">
+			org.openmrs.module.legacyui
+		</require_module>
+
 	</require_modules>
 	<!-- / Required Modules -->
 

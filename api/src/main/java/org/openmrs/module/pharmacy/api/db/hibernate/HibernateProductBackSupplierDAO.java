@@ -40,6 +40,10 @@ public class HibernateProductBackSupplierDAO implements ProductBackSupplierDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductBackSupplier> getAllProductBackSuppliers(Location location, Boolean includeVoided) {

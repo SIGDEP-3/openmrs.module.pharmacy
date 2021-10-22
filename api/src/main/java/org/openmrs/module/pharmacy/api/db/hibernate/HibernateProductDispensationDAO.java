@@ -56,6 +56,10 @@ public class HibernateProductDispensationDAO implements ProductDispensationDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductDispensation> getAllProductDispensations(Location location, Boolean includeVoided) {

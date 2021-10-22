@@ -37,6 +37,10 @@ public class HibernateProductProgramDAO implements ProductProgramDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@Override
 	public ProductProgram saveProductProgram(ProductProgram productProgram) {
 		sessionFactory.getCurrentSession().saveOrUpdate(productProgram);

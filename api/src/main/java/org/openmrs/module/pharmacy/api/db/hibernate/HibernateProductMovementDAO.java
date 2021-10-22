@@ -41,6 +41,10 @@ public class HibernateProductMovementDAO implements ProductMovementDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	/********* PRODUCT MOVEMENT ENTRY ***********/
 
 	@SuppressWarnings("unchecked")

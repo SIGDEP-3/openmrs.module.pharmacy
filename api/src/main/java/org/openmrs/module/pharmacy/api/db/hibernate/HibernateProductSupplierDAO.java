@@ -38,6 +38,10 @@ public class HibernateProductSupplierDAO implements ProductSupplierDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductSupplier> getAllProductSuppliers() {

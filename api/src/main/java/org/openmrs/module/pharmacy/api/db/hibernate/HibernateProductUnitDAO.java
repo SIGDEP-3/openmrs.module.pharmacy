@@ -36,6 +36,10 @@ public class HibernateProductUnitDAO implements ProductUnitDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	/******* PRODUCTS UNITS *******/
 
 	@Override

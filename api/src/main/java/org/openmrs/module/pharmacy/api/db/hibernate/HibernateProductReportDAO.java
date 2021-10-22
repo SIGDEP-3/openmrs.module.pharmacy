@@ -45,6 +45,10 @@ public class HibernateProductReportDAO implements ProductReportDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReport> getAllProductReports(Location location, Boolean includeVoided) {

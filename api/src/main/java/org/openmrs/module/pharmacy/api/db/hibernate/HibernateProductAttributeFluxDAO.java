@@ -40,6 +40,10 @@ public class HibernateProductAttributeFluxDAO implements ProductAttributeFluxDAO
 
 	@Autowired
 	private DbSessionFactory sessionFactory;
+
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
 	
 	private DbSession getSession() {
 		return sessionFactory.getCurrentSession();

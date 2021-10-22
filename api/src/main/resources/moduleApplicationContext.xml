@@ -22,6 +22,31 @@
 	
 	<!-- Services accessible via Context.getService() -->
 	<!-- Pharmacy Service	-->
+<!--	<bean id="pharmacyService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">-->
+<!--		<property name="transactionManager">-->
+<!--			<ref bean="transactionManager"/>-->
+<!--		</property>-->
+<!--		<property name="target">-->
+<!--			<ref bean="pharmacyServiceImpl"/>-->
+<!--		</property>-->
+<!--		<property name="preInterceptors">-->
+<!--			<ref bean="serviceInterceptors"/>  &lt;!&ndash;  handles common metadata fields &ndash;&gt;-->
+<!--		</property>-->
+<!--		<property name="transactionAttributeSource">-->
+<!--			<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>-->
+<!--		</property>-->
+<!--	</bean>-->
+
+<!--	<bean id="pharmacyServiceImpl" class="org.openmrs.module.pharmacy.api.impl.PharmacyServiceImpl">-->
+<!--		<property name="dao">-->
+<!--			<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePharmacyDAO">-->
+<!--				<property name="sessionFactory">-->
+<!--					<ref bean="sessionFactory"/>-->
+<!--				</property>-->
+<!--			</bean>-->
+<!--		</property>-->
+<!--	</bean>-->
+
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
@@ -38,12 +63,6 @@
 <!--									<property name="sessionFactory">-->
 <!--										<ref bean="sessionFactory" />-->
 <!--									</property>-->
-<!--									<constructor-arg>-->
-<!--										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeFluxDAO"/>-->
-<!--									</constructor-arg>-->
-<!--									<constructor-arg>-->
-<!--										<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductAttributeStockDAO"/>-->
-<!--									</constructor-arg>-->
 								</bean>
 							</property>
 						</bean>
@@ -553,9 +572,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductReportServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductReportDAO">
-									<!--<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>-->
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>
@@ -585,9 +604,9 @@
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.ProductBackSupplierServiceImpl">
 							<property name="dao">
 								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProductBackSupplierDAO">
-									<!--<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>-->
+<!--									<property name="sessionFactory">-->
+<!--										<ref bean="sessionFactory" />-->
+<!--									</property>-->
 								</bean>
 							</property>
 						</bean>

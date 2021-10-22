@@ -37,6 +37,10 @@ public class HibernateProductPriceDAO implements ProductPriceDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@Override
 	public ProductPrice saveProductPrice(ProductPrice productPrice) {
 		sessionFactory.getCurrentSession().saveOrUpdate(productPrice);

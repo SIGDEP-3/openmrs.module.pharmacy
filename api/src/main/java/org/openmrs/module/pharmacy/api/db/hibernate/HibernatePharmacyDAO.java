@@ -52,6 +52,10 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	public HibernatePharmacyDAO() {}
 
 	@Override

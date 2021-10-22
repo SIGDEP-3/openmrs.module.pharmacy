@@ -49,6 +49,10 @@ public class HibernateProductReceptionDAO implements ProductReceptionDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductReception> getAllProductReceptions(Location location, Boolean includeVoided) {

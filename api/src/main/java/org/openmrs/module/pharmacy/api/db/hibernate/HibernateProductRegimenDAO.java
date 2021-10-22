@@ -39,6 +39,10 @@ public class HibernateProductRegimenDAO implements ProductRegimenDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@Override
 	public ProductRegimen saveProductRegimen(ProductRegimen productRegimen) {
 		sessionFactory.getCurrentSession().saveOrUpdate(productRegimen);

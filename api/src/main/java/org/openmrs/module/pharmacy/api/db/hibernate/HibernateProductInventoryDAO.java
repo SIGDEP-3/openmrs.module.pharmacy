@@ -47,6 +47,10 @@ public class HibernateProductInventoryDAO implements ProductInventoryDAO {
 	@Autowired
 	private DbSessionFactory sessionFactory;
 
+//	public void setSessionFactory(DbSessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProductInventory> getAllProductInventories(Location location, Boolean includeVoided) {
