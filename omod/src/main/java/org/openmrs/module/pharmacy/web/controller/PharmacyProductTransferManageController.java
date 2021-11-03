@@ -123,7 +123,10 @@ public class PharmacyProductTransferManageController {
                         productTransferForm.setOperationNumber(OperationUtils.generateNumber());
                     }
                     productTransferForm.setProductProgramId(program.getProductProgramId());
-                    productTransferForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
+                    if (OperationUtils.getUserLocation() != null) {
+                        productTransferForm.setLocationId(OperationUtils.getUserLocation().getLocationId());
+                    }
+
                     productTransferForm.setTransferType(type.equals("IN") ? TransferType.IN : TransferType.OUT);
                     modelMap.addAttribute("program", program);
                 }
@@ -394,7 +397,7 @@ public class PharmacyProductTransferManageController {
                 }
                 transferService().removeProductTransfer(transfer);
                 String transferTypeStr = transfer.getTransferType().equals(TransferType.IN) ? "Entrant" : "Sortant";
-                attributeService().purgeUnusedAttributes();
+                // attributeService().purgeUnusedAttributes();
                 HttpSession session = request.getSession();
                 session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Le transfert " + transferTypeStr +
                         " a été supprimé avec succès");

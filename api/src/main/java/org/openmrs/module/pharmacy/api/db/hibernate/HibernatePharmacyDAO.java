@@ -13,23 +13,28 @@
  */
 package org.openmrs.module.pharmacy.api.db.hibernate;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
-import org.openmrs.Location;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.pharmacy.api.ProductAttributeFluxService;
 import org.openmrs.module.pharmacy.api.ProductAttributeStockService;
+import org.openmrs.module.pharmacy.api.ProductDispensationService;
+import org.openmrs.module.pharmacy.api.ProductProgramService;
 import org.openmrs.module.pharmacy.api.db.PharmacyDAO;
 import org.openmrs.module.pharmacy.dto.*;
 import org.openmrs.module.pharmacy.entities.*;
+import org.openmrs.module.pharmacy.enumerations.Goal;
 import org.openmrs.module.pharmacy.enumerations.Incidence;
 import org.openmrs.module.pharmacy.enumerations.OperationStatus;
 import org.openmrs.module.pharmacy.utils.OperationUtils;
@@ -37,10 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * It is a default implementation of  {@link PharmacyDAO}.
@@ -800,6 +802,221 @@ public class HibernatePharmacyDAO implements PharmacyDAO {
 			System.out.println(e.getMessage());
 		}
 		return new ArrayList<>();
+	}
+
+	public List<RegimenReportIndicatorDTO> getReport(Date startDate, Date endDate, Location location) {
+		ProductProgram productProgram = Context.getService(ProductProgramService.class).getOneProductProgramByName("PNLSARVIO");
+		if (productProgram == null) {
+			return null;
+		}
+		List<ProductDispensation> dispensations = Context.getService(ProductDispensationService.class).getAllProductDispensations(
+				productProgram,
+				location,
+				false,
+				startDate,
+				endDate);
+		if (dispensations != null) {
+			List<RegimenReportIndicatorDTO> dtos = new ArrayList<>();
+			for (ProductDispensation dispensation : dispensations) {
+				String regimen;
+				Integer regimenLine = null;
+				boolean isLocalPatient = false;
+				if (dispensation.getEncounter() != null) {
+					isLocalPatient = true;
+					Obs regimenObs = OperationUtils.getObsFromEncounter(dispensation.getEncounter(), 165033);
+					regimen = (regimenObs == null) ? "Aucun régime" : regimenObs.getValueCoded().getName(Locale.FRANCE).getName();
+					Obs regimenLineObs = OperationUtils.getObsFromEncounter(dispensation.getEncounter(), 164767);
+					if (regimenLineObs != null) {
+						Integer conceptId = regimenLineObs.getValueCoded().getConceptId();
+						regimenLine = conceptId.equals(164730) ? 1 : (conceptId.equals(164732) ? 2 : 3);
+					} else {
+						regimenLine = 1;
+					}
+				} else {
+					ProductRegimen productRegimen = dispensation.getMobilePatientDispensationInfo().getProductRegimen();
+					if (productRegimen != null) {
+						regimen = productRegimen.getConcept().getName().getName();
+					} else {
+						regimen = "Aucun régime";
+					}
+
+					regimenLine = dispensation.getMobilePatientDispensationInfo().getRegimenLine();
+					if (regimenLine == null) {
+						regimenLine = 1;
+					}
+				}
+
+				if (regimen.contains("COTRIM")) {
+
+				}
+
+				RegimenReportIndicatorDTO dto = existingRegimenIndicatorDTO(regimen, regimenLine, dtos);
+				Boolean isCtx = isCtx(dispensation.getFluxesProductList());
+				Boolean isAES = isAES(dispensation);
+				Boolean isPMCT = isPMCT(dispensation);
+
+
+				if (isLocalPatient) {
+					Boolean isHep = false;
+					Boolean isAnemia = false;
+					Boolean isTB = false;
+					Boolean isStable = false;
+					Boolean isNewInTreatment = false;
+					Boolean isTransferred = false;
+
+					Patient patient = dispensation.getEncounter().getPatient();
+					Encounter encounter = latestVisitEncounter(patient, endDate, location);
+
+					if (patient.getAge() > 14) {
+						dto.setAdult(dto.getAdult() + 1);
+						if (isNewInTreatment(patient, startDate, endDate)) {
+							dto.setAdultInclusion(dto.getAdultInclusion() + 1);
+						}
+						if (isStablePatient(patient, endDate)) {
+							dto.setAdultStable(dto.getAdultStable() + 1);
+						} else {
+							dto.setAdultNotStable(dto.getAdultNotStable() + 1);
+						}
+					} else {
+						dto.setChild(dto.getChild() + 1);
+						if (isNewInTreatment(patient, startDate, endDate)) {
+							dto.setChildInclusion(dto.getChildInclusion() + 1);
+						}
+						if (isStablePatient(patient, endDate)) {
+							dto.setChildStable(dto.getChildStable() + 1);
+						} else {
+							dto.setChildNotStable(dto.getChildNotStable() + 1);
+						}
+					}
+
+					if (isReferred(patient, startDate, endDate)) {
+						dto.setReferred(dto.getReferred() + 1);
+					}
+					if (isTransferred(patient, startDate, endDate)) {
+						dto.setTransferred(dto.getTransferred() + 1);
+					} else if (isDead(patient, startDate, endDate)) {
+						dto.setDead(dto.getDead() + 1);
+					}
+
+					if (isCtx(dispensation.getFluxesProductList())) {
+						dto.setAdultCtx(dto.getAdultCtx() + 1);
+					}
+				}
+
+			}
+
+			return dtos;
+		}
+
+		return null;
+	}
+
+	private Boolean isCtx(List<Product> products) {
+		for (Product product : products) {
+			if (product.getCode().contains("AR01321") ||
+					product.getCode().contains("AR01340") ||
+					product.getCode().contains("AR01350")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Boolean isAES(ProductDispensation dispensation) {
+		if (dispensation.getMobilePatientDispensationInfo() != null) {
+			return dispensation.getMobilePatientDispensationInfo().getGoal().equals(Goal.AES);
+		} else if (dispensation.getEncounter() != null) {
+			Obs obs = OperationUtils.getObsFromEncounter(dispensation.getEncounter(), 163000);
+			if (obs != null) {
+				return obs.getValueText().equals("AES");
+			}
+		}
+		return false;
+	}
+
+	private Boolean isPMCT(ProductDispensation dispensation) {
+		if (dispensation.getMobilePatientDispensationInfo() != null) {
+			return dispensation.getMobilePatientDispensationInfo().getGoal().equals(Goal.PTME);
+		} else if (dispensation.getEncounter() != null) {
+			Obs obs = OperationUtils.getObsFromEncounter(dispensation.getEncounter(), 163000);
+			if (obs != null) {
+				return obs.getValueText().equals("PTME");
+			}
+		}
+		return false;
+	}
+
+	private RegimenReportIndicatorDTO existingRegimenIndicatorDTO(String regimen, Integer line, List<RegimenReportIndicatorDTO> dtos) {
+		for (RegimenReportIndicatorDTO dto : dtos) {
+			if (dto.getRegimen().equals(regimen) && dto.getRegimenLine().equals(line)) {
+				return dto;
+			}
+		}
+		return new RegimenReportIndicatorDTO(line, regimen);
+	}
+
+	private Boolean isStablePatient(Patient patient, Date endDate) {
+
+		return false;
+	}
+
+	private Encounter latestVisitEncounter(Patient patient , Date endDate, Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
+		return (Encounter) criteria
+				.add(Restrictions.eq("location", location))
+				.add(Restrictions.eq("encounterType", Context.getEncounterService().getEncounterType(2)))
+				.add(Restrictions.eq("patient", patient))
+				.add(Restrictions.le("encounterDatetime", endDate))
+				.add(Restrictions.le("voided", false))
+				.addOrder(Order.desc("encounterDatetime")).setMaxResults(1).uniqueResult();
+	}
+
+	private Boolean isTBPatient(Encounter encounter) {
+		Obs obs = OperationUtils.getObsFromEncounter(encounter, 164772);
+		if (obs != null) {
+			return obs.getValueCoded().getConceptId().equals(164762);
+		}
+		return false;
+	}
+
+	private Boolean isPatient(Patient patient, Date startDate, Date endDate) {
+
+		return false;
+	}
+
+	private Boolean isHepPatient(Encounter encounter) {
+		Obs obs = OperationUtils.getObsFromEncounter(encounter, 164733);
+		if (obs != null) {
+			return obs.getValueText().equals("Hep");
+		}
+		return false;
+	}
+
+	private Boolean isAnemiaPatient(Encounter encounter) {
+		Obs obs = OperationUtils.getObsFromEncounter(encounter, 164733);
+		if (obs != null) {
+			return obs.getValueText().equals("Anemie");
+		}
+		return false;
+	}
+
+	private Boolean isNewInTreatment(Patient patient, Date startDate, Date endDate) {
+
+		return false;
+	}
+
+	private Boolean isTransferred(Patient patient, Date startDate, Date endDate) {
+
+		return false;
+	}
+
+	private Boolean isReferred(Patient patient, Date startDate, Date endDate) {
+
+		return false;
+	}
+
+	private Boolean isDead(Patient patient, Date startDate, Date endDate) {
+		return false;
 	}
 
 

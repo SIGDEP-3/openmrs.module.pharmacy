@@ -32,9 +32,14 @@
 
 	<!-- Global Properties -->
 	<globalProperty>
+		<property>pharmacy.dispensationDispensationDateConcept</property>
+		<defaultValue>165010</defaultValue>
+		<description>Insert here the concept for the dispensation date concept for dispensation in pharmacy</description>
+	</globalProperty>
+	<globalProperty>
 		<property>pharmacy.dispensationTreatmentDaysConcept</property>
 		<defaultValue>165011</defaultValue>
-		<description>Insert here the concept for the treatment days concept for dispensation in pharmacy </description>
+		<description>Insert here the concept for the treatment days concept for dispensation in pharmacy</description>
 	</globalProperty>
 	<globalProperty>
 		<property>pharmacy.dispensationGoalConcept</property>

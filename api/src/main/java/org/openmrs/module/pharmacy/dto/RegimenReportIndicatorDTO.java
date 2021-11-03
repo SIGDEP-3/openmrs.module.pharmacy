@@ -93,6 +93,11 @@ public class RegimenReportIndicatorDTO {
     public RegimenReportIndicatorDTO() {
     }
 
+    public RegimenReportIndicatorDTO(Integer regimenLine, String regimen) {
+        this.regimenLine = regimenLine;
+        this.regimen = regimen;
+    }
+
     public Integer getRegimenLine() {
         return regimenLine;
     }

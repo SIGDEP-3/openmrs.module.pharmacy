@@ -1410,11 +1410,11 @@
             INSERT INTO role (role, description, uuid) VALUES ('AUXILIAIRE', 'Auxiliaire de la pharmacie', 'AUXILIAIRERRRRRRRRRRRRRRRRRRRRRRRRRR');
         </sql>
     </changeSet>
-    <changeSet id="pharmacy-add-privilege-auxiliary-0" author="BOGUI SERGE" runOnChange="true" dbms="mysql">
-        <preConditions onFail="CONTINUE" onError="CONTINUE">
+    <changeSet id="pharmacy-add-privilege-auxiliary-2" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN" onError="CONTINUE">
             <and>
                 <not>
-                    <sqlCheck expectedResult="45">
+                    <sqlCheck expectedResult="44">
                         SELECT COUNT(*) FROM role_privilege WHERE role = 'AUXILIAIRE'
                     </sqlCheck>
                 </not>
@@ -1437,8 +1437,6 @@
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Report Objects');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Reports');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Roles');
-            INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Synchronization Records');
-            INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Synchronization Status');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Users');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Dispensation');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Exchange Entity');
@@ -1461,7 +1459,7 @@
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Save Flux');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Add Encounters');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Delete Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Encounter Roles');
+            INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Manage Encounter Roles');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Encounters');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'View Encounter Types');
             INSERT INTO role_privilege (role, privilege) VALUES ('AUXILIAIRE', 'Transform Dispensation');

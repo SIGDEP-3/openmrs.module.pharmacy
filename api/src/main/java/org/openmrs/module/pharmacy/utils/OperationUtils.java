@@ -1,6 +1,7 @@
 package org.openmrs.module.pharmacy.utils;
 
 import com.mifmif.common.regex.Generex;
+import liquibase.pro.packaged.O;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacy.api.*;
@@ -72,23 +73,34 @@ public class OperationUtils {
     public static Location getUserLocation() {
         if (Context.getUserContext().getLocation() != null) {
             return Context.getUserContext().getLocation();
+        } else {
+            return null;
         }
-        return Context.getLocationService().getDefaultLocation();
+        // return Context.getLocationService().getDefaultLocation();
     }
 
     public static List<Location> getUserLocations() {
         List<Location> locations = new ArrayList<>();
-        locations.add(getUserLocation());
-        locations.addAll(getUserLocation().getChildLocations());
-        return locations;
+        if (getUserLocation() != null) {
+            locations.add(getUserLocation());
+            locations.addAll(getUserLocation().getChildLocations());
+            return locations;
+        }
+        return null;
     }
 
     public static List<ProductProgram> getUserLocationPrograms() {
-        return getLocationPrograms(getUserLocation());
+        if (getUserLocation() != null) {
+            return getLocationPrograms(getUserLocation());
+        }
+        return null;
     }
 
     public static List<Location> getUserChildLocationsByProgram(ProductProgram productProgram) {
-        return getChildLocationsByProgram(getUserLocation(), productProgram);
+        if (getUserLocation() != null) {
+            return getChildLocationsByProgram(getUserLocation(), productProgram);
+        }
+        return null;
     }
 
     public static List<Location> getChildLocationsByProgram(Location location, ProductProgram productProgram) {
@@ -131,7 +143,10 @@ public class OperationUtils {
     }
 
     public static String getUserLocationCode() {
-        return getLocationCode(getUserLocation());
+        if (getUserLocation() != null) {
+            return getLocationCode(getUserLocation());
+        }
+        return null;
     }
 
     public static <T> List<T> getLastElements(final Iterable<T> elements, Integer numberOfLast) {
@@ -323,33 +338,49 @@ public class OperationUtils {
             obsSet.add(obsTreatmentEndDate);
         }
 
+        if (dispensationInfo.getDispensation().getOperationDate() != null) {
+            Obs obsDispensationDate = getObs("DispensationDate", dispensationInfo.getLocation(), patient);
+            obsDispensationDate.setValueDate(dispensationInfo.getDispensation().getOperationDate());
+            obsDispensationDate.setObsDatetime(encounterDate);
+            obsSet.add(obsDispensationDate);
+        }
+
         return obsSet;
     }
 
     public static String generateNumber() {
-        String prefix = getUserLocation().getPostalCode();
-        DateFormat df = new SimpleDateFormat("yy");
-        String formattedDate = df.format(Calendar.getInstance().getTime());
-        String returnedNumber;
-        do {
-            if (prefix != null) {
-                String[] prefixSplit = prefix.split("/");
-                Generex generex = new Generex(prefixSplit[0] + "-" + prefixSplit[1] + formattedDate + "-[0-9a-z]{4}");
-                returnedNumber = generex.random();
-            } else {
-                Generex generex = new Generex("[0-9]{4}-[a-b0-9]{2}" + formattedDate + "[0-9a-z]{4}");
-                returnedNumber = generex.random();
-            }
-        } while (service().getOneProductOperationByOperationNumber(returnedNumber, Incidence.NEGATIVE) != null);
+        if (getUserLocation() != null) {
+            String prefix = getUserLocation().getPostalCode();
+            DateFormat df = new SimpleDateFormat("yy");
+            String formattedDate = df.format(Calendar.getInstance().getTime());
+            String returnedNumber;
+            do {
+                if (prefix != null) {
+                    String[] prefixSplit = prefix.split("/");
+                    Generex generex = new Generex(prefixSplit[0] + "-" + prefixSplit[1] + formattedDate + "-[0-9a-z]{4}");
+                    returnedNumber = generex.random();
+                } else {
+                    Generex generex = new Generex("[0-9]{4}-[a-b0-9]{2}" + formattedDate + "[0-9a-z]{4}");
+                    returnedNumber = generex.random();
+                }
+            } while (service().getOneProductOperationByOperationNumber(returnedNumber, Incidence.NEGATIVE) != null);
 
-        return returnedNumber.toUpperCase();
+            return returnedNumber.toUpperCase();
+        }
+        return null;
     }
 
     public static Boolean canDistribute(Location location) {
+        if (location == null) {
+            return false;
+        }
         return location.getChildLocations() != null && location.getChildLocations().size() != 0;
     }
 
     public static Boolean isDirectClient(Location location) {
+        if (location == null) {
+            return false;
+        }
         for (LocationAttribute attribute : location.getActiveAttributes()) {
             if (attribute.getAttributeType().getName().equals("Client Direct NPSP")) {
                 if (attribute.getValue().equals(true)) {
@@ -869,5 +900,15 @@ public class OperationUtils {
         Locale locale = new Locale("fr", "FR");
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
         return  dateFormat.format(date);
+    }
+
+    public static Obs getObsFromEncounter(Encounter encounter, Integer conceptId) {
+        for (Obs obs : encounter.getObs()) {
+            Concept concept = Context.getConceptService().getConcept(conceptId);
+            if (concept != null && obs.getConcept().equals(concept)) {
+                return obs;
+            }
+        }
+        return null;
     }
 }

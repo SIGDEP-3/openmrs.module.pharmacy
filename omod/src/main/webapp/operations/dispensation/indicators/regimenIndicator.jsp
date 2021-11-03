@@ -61,7 +61,7 @@
                         <fmt:formatDate value="${selectedStartDate}" pattern="dd/MM/yyyy" type="DATE"/>
                     </div>
                     <label>Date de fin de p&eacute;riode : </label>
-                    <div class="form-control text-info" text-info>
+                    <div class="form-control text-info">
                         <fmt:formatDate value="${selectedEndDate}" pattern="dd/MM/yyyy" type="DATE"/>
                     </div>
                 </div>

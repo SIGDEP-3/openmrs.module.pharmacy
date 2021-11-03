@@ -2,13 +2,9 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/operationHeader.jsp"%>
-
-<%--<h1 class="">Hello ${user.systemId}!</h1>--%>
-Bienvenue &agrave; la pharmacie : <span class="badge badge-info">${defaultLocation}</span>
-
-<div id="main">
-
-</div>
+<c:if test="${defaultLocation != null}">
+    Bienvenue &agrave; la pharmacie : <span class="badge badge-info">${defaultLocation}</span>
+</c:if>
 
 <%@ include file="template/localFooter.jsp"%>
 

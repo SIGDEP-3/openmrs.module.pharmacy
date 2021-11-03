@@ -24,13 +24,17 @@ public abstract class ProductOperationForm {
 
     public ProductOperationForm() {
         operationStatus = OperationStatus.NOT_COMPLETED;
-        setLocationId(OperationUtils.getUserLocation().getLocationId());
+        if (OperationUtils.getUserLocation() != null) {
+            setLocationId(OperationUtils.getUserLocation().getLocationId());
+        }
     }
 
     public ProductOperationForm(Integer productProgramId) {
         this.productProgramId = productProgramId;
         operationStatus = OperationStatus.NOT_COMPLETED;
-        setLocationId(OperationUtils.getUserLocation().getLocationId());
+        if (OperationUtils.getUserLocation() != null) {
+            setLocationId(OperationUtils.getUserLocation().getLocationId());
+        }
     }
 
     public Integer getProductOperationId() {

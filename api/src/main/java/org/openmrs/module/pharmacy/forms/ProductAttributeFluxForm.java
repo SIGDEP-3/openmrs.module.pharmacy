@@ -22,7 +22,9 @@ public abstract class ProductAttributeFluxForm {
     private String uuid;
 
     public ProductAttributeFluxForm() {
-        setLocationId(OperationUtils.getUserLocation().getLocationId());
+        if (OperationUtils.getUserLocation() != null) {
+            setLocationId(OperationUtils.getUserLocation().getLocationId());
+        }
     }
 
     public Integer getProductAttributeFluxId() {

@@ -68,18 +68,41 @@ public class PharmacyManageController {
 
 	@ModelAttribute("isDirectClient")
 	public Boolean isDirectClient() {
-		return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
+		if (OperationUtils.getUserLocation() != null) {
+			return OperationUtils.isDirectClient(OperationUtils.getUserLocation());
+		}
+		return false;
 	}
 
 	@ModelAttribute("canDistribute")
 	public Boolean canDistribute() {
-		return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+		if (OperationUtils.getUserLocation() != null) {
+			return OperationUtils.canDistribute(OperationUtils.getUserLocation());
+		}
+		return false;
+	}
+
+	@ModelAttribute("canOperate")
+	public Boolean canOperate() {
+		if (OperationUtils.getUserLocation() != null) {
+			return !OperationUtils.getUserLocation().getName().startsWith("REGION")
+					&& !OperationUtils.getUserLocation().getName().equals("CÔTE D'IVOIRE")
+					&& !OperationUtils.getUserLocation().getName().equals("Unknown Location");
+		}
+		return false;
 	}
 
 	@RequestMapping(value = "/module/pharmacy/manage", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
-		model.addAttribute("user", Context.getAuthenticatedUser());
-		model.addAttribute("defaultLocation", OperationUtils.getUserLocation().getName());
+		model.addAttribute("defaultLocation", OperationUtils.getUserLocation());
+//		model.addAttribute("user", Context.getAuthenticatedUser());
+//		Location defaultLocation = OperationUtils.getUserLocation();
+//		if (defaultLocation != null) {
+//			model.addAttribute("canOperate", !defaultLocation.getName().startsWith("REGION")
+//					&& !defaultLocation.getName().equals("CÔTE D'IVOIRE")
+//					&& !defaultLocation.getName().equals("Unknown Location"));
+//		}
+
 	}
 
 	@RequestMapping(value = "/module/pharmacy/operations/stock/list.form", method = RequestMethod.GET)
